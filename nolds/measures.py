@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+# TODO require pyplot only for debug printing
 import matplotlib.pyplot as plt
 import warnings
 
