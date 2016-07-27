@@ -3,7 +3,7 @@ setup(
   name = 'nolds',
   packages = ['nolds'],
   version = '0.1',
-  description = 'Nonlinear measures for dynamical systems (based on one-dimensional timeseries)',
+  description = 'Nonlinear measures for dynamical systems (based on one-dimensional time series)',
   author = 'Christopher Schölzel',
   author_email = 'christopher.schoelzel@gmx.net',
   #url = 'https://github.com/peterldowns/mypackage', # use the URL to the github repo
