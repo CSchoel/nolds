@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-# TODO require pyplot only for debug printing
-import matplotlib.pyplot as plt
 import warnings
 
 # TODO: use RANSAC instead of simple polyfit?
@@ -403,6 +401,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1, debug
 	return lexp
 
 def plot_dists(dists, tolerance, m, title=None, fname=None):
+	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
 	nstd = 3
 	nbins = 50
 	dists_full = np.concatenate(dists)
@@ -633,6 +632,7 @@ def rs(data, n):
 		return np.mean(r/s)
 
 def plot_histogram_matrix(data, name, fname=None):
+	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
 	nhists = len(data[0])
 	nbins = 25
 	ylim = (0, 0.5)
@@ -672,6 +672,7 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data", re
 		fname (str): file name (if not None, the plot will be saved to disc instead of
 		             showing it though plt.show())
 	"""
+	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
 	plt.plot(xvals, yvals, "bo", label=data_label)
 	if not (poly is None):
 		plt.plot(xvals, np.polyval(poly, xvals), "r-", label=reg_label)
@@ -1006,6 +1007,7 @@ def dfa(data, nvals= None, overlap=True, order=1, debug_plot=False, plot_file=No
 	return poly[0]
 
 def test_lyap():
+	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
 	rvalues = np.arange(2, 4, 0.01)
 	lambdas = []
 	lambdas_est = []
@@ -1066,6 +1068,7 @@ def test_corr():
 	print(corr_dim(data, 4))
 
 def test_dfa():
+	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
 	n = 10000
 	data = np.arange(n)
 	data = np.random.randn(n)
@@ -1075,6 +1078,7 @@ def test_dfa():
 	print(dfa(data))
 
 def test_logarithmic_n():
+	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
 	print(binary_n(1000))
 	print(logarithmic_n(4,100,1.1))
 	x = logarithmic_n(4,100,1.1)
