@@ -3,6 +3,7 @@ import numpy as np
 import warnings
 
 # TODO: use RANSAC instead of simple polyfit?
+# FIXME: dfa fails for very small input sequences
 
 # TODO more detailed description of fbm
 def fbm(n, H=0.75):
