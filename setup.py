@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
   name = 'nolds',
   packages = ['nolds'],
-  version = '0.1',
+  version = '0.1.0',
   description = 'Nonlinear measures for dynamical systems (based on one-dimensional time series)',
   author = 'Christopher Schölzel',
   author_email = 'christopher.schoelzel@gmx.net',
