@@ -7,8 +7,8 @@ setup(
   description = 'Nonlinear measures for dynamical systems (based on one-dimensional time series)',
   author = 'Christopher Schölzel',
   author_email = 'christopher.schoelzel@gmx.net',
-  #url = 'https://github.com/peterldowns/mypackage', # use the URL to the github repo
-  #download_url = 'https://github.com/peterldowns/mypackage/tarball/0.1',
+  url = 'https://github.com/CSchoel/nolds',
+  download_url = 'https://github.com/CSchoel/nolds/tarball/0.1.0',
   keywords = [
     'nonlinear', 'dynamical system', 'chaos', 
     'lyapunov', 'hurst', 'hurst exponent', 'rescaled range', 'DFA', 
