@@ -14,4 +14,5 @@ setup(
     'lyapunov', 'hurst', 'hurst exponent', 'rescaled range', 'DFA', 
     'detrended fluctuation analysis', 'sample entropy', 'correlation dimension'],
   classifiers = [],
+  install_requires = ['numpy'],
 )
