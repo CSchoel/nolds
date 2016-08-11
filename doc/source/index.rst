@@ -11,8 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-.. autofunction:: io.open
-.. autofunction:: nolds.dfa
+   nolds
 
 
 Indices and tables
