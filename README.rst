@@ -8,7 +8,7 @@ Currently the following measures are implemented:
   Measures the complexity of a time-series, based on approximate entropy
 **correlation dimension** (``corr_dim``)
   A measure of the *fractal dimension* of a time series which is also related to complexity.
-**Lyapunov exponent** (``lyap_r``, ``lyap_r``)
+**Lyapunov exponent** (``lyap_r``, ``lyap_e``)
   Positive Lyapunov exponents indicate chaos and unpredictability.
   Nolds provides the algorithm of Rosenstein et al. (``lyap_r``) to estimate the largest Lyapunov exponent and the algorithm of Eckmann et al. (``lyap_e``) to estimate the whole spectrum of Lyapunov exponents.
 **Hurst exponent** (``hurst_rs``)
