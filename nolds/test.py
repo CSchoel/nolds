@@ -1,5 +1,21 @@
 import numpy as np
 import nolds.measures as nolds # import internal module to test helping functions
+import unittest
+
+class TestHelperFunctions(unittest.TestCase):
+	def test_delay_embed(self):
+		data = np.arange(10, dtype="float32")
+		embedded = nolds.delay_embedding(data,4,lag=2)
+		expected = np.array([
+			[0,2,4,6],
+			[1,3,5,7],
+			[2,4,6,8],
+			[3,5,7,9]
+		], dtype="float32")
+		print(embedded)
+		print("==")
+		print(expected)
+		self.assertTrue(np.alltrue(embedded == expected))
 
 def test_lyap():
 	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
@@ -81,22 +97,20 @@ def test_logarithmic_n():
 	plt.plot(x,np.arange(len(x)))
 	plt.show()
 
-def test_delay_embed():
-	data = np.arange(57)
-	print(nolds.delay_embedding(data,4,lag=2))
-
 def profiling():
 	import cProfile
 	n = 100000
 	data = np.cumsum(np.random.random(n)-0.5)
 	cProfile.runctx('lyap_e(data)',{'lyap_e': lyap_e},{'data': data})
 
+
 if __name__ == "__main__":
+	unittest.main()
 	#test_hurst()
 	#test_lyap()
 	#test_corr()
 	#test_dfa()
-	test_delay_embed()
+	#test_delay_embed()
 	# r = 3.9
 	# logistic = lambda x : r * x * (1 - x)
 	# x = [0.1]
