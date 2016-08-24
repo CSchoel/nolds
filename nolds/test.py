@@ -1,5 +1,5 @@
 import numpy as np
-import nolds.measures as nolds # import internal module to test helping functions
+from . import measures as nolds # import internal module to test helping functions
 import unittest
 
 class TestNoldsHelperFunctions(unittest.TestCase):
