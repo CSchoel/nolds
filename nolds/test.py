@@ -2,8 +2,17 @@ import numpy as np
 import nolds.measures as nolds # import internal module to test helping functions
 import unittest
 
-class TestHelperFunctions(unittest.TestCase):
-	def test_delay_embed(self):
+class TestNoldsHelperFunctions(unittest.TestCase):
+	"""
+	Tests for internal helper functions that are not part of the public API
+	"""
+	def assert_array_equals(self, expected, actual):
+		print(actual)
+		print("==")
+		print(expected)
+		print()
+		self.assertTrue(np.alltrue(actual == expected))
+	def test_delay_embed_lag2(self):
 		data = np.arange(10, dtype="float32")
 		embedded = nolds.delay_embedding(data,4,lag=2)
 		expected = np.array([
@@ -12,10 +21,47 @@ class TestHelperFunctions(unittest.TestCase):
 			[2,4,6,8],
 			[3,5,7,9]
 		], dtype="float32")
-		print(embedded)
-		print("==")
-		print(expected)
-		self.assertTrue(np.alltrue(embedded == expected))
+		self.assert_array_equals(expected, embedded)
+	def test_delay_embed(self):
+		data = np.arange(6, dtype="float32")
+		embedded = nolds.delay_embedding(data,4)
+		expected = np.array([
+			[0,1,2,3],
+			[1,2,3,4],
+			[2,3,4,5]
+		], dtype="float32")
+		self.assert_array_equals(expected, embedded)
+	def test_delay_embed_lag3(self):
+		data = np.arange(10, dtype="float32")
+		embedded = nolds.delay_embedding(data,4,lag=3)
+		expected = np.array([
+			[0,3,6,9]
+		], dtype="float32")
+		self.assert_array_equals(expected, embedded)
+	def test_delay_embed_empty(self):
+		data = np.arange(10, dtype="float32")
+		try:
+			embedded = nolds.delay_embedding(data,11)
+			self.fail("embedding array of size 10 with embedding dimension 11 should fail, got {} instead".format(embedded))
+		except ValueError:
+			pass
+		data = np.arange(10, dtype="float32")
+		try:
+			embedded = nolds.delay_embedding(data,4,lag=4)
+			self.fail("embedding array of size 10 with embedding dimension 4 and lag 4 should fail, got {} instead".format(embedded))
+		except ValueError:
+			pass
+
+class TestNoldsUtility(unittest.TestCase):
+	"""
+	Tests for small utility functions that are part of the public API
+	"""
+	def test_logarithmic_n(self):
+		x = nolds.logarithmic_n(4,11,1.51)
+		self.assertSequenceEqual(x, [4,6,9])
+	def test_logarithmic_r(self):
+		x = nolds.logarithmic_r(4,10,1.51)
+		self.assertSequenceEqual(x, [4, 6.04, 9.1204])
 
 def test_lyap():
 	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
