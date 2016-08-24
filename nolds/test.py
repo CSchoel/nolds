@@ -134,15 +134,6 @@ def test_dfa():
 	plt.show()
 	print(nolds.dfa(data))
 
-def test_logarithmic_n():
-	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
-	print(nolds.binary_n(1000))
-	print(nolds.logarithmic_n(4,100,1.1))
-	x = nolds.logarithmic_n(4,100,1.1)
-	x = np.log(list(x))
-	plt.plot(x,np.arange(len(x)))
-	plt.show()
-
 def profiling():
 	import cProfile
 	n = 100000
