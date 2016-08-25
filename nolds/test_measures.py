@@ -56,6 +56,12 @@ class TestNoldsUtility(unittest.TestCase):
 	"""
 	Tests for small utility functions that are part of the public API
 	"""
+	def test_binary_n(self):
+		x = nolds.binary_n(1000, min_n=50)
+		self.assertSequenceEqual(x, [500, 250, 125, 62])
+	def test_binary_n_empty(self):
+		x = nolds.binary_n(50, min_n=50)
+		self.assertSequenceEqual(x, [])
 	def test_logarithmic_n(self):
 		x = nolds.logarithmic_n(4,11,1.51)
 		self.assertSequenceEqual(x, [4,6,9])
