@@ -71,6 +71,7 @@ class TestNoldsUtility(unittest.TestCase):
 
 class TestNoldsLyap(unittest.TestCase):
 	def test_lyap(self):
+		# TODO maybe this should not be a unittest but an example?
 		import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
 		rvalues = np.arange(2, 4, 0.01)
 		lambdas = []
