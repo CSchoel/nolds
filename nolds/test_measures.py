@@ -110,6 +110,11 @@ class TestNoldsLyap(unittest.TestCase):
 		plt.legend(loc="best")
 		plt.show()
 		# TODO add some asserts
+	def test_lyap_fbm(self):
+		# TODO use logistic function as example
+		data = nolds.fbm(1000, H=0.3)
+		le = nolds.lyap_e(data, emb_dim=7, matrix_dim=3)
+		self.assertGreater(np.max(le), 0)
 
 def test_lyap2():
 	#test_lyap()
