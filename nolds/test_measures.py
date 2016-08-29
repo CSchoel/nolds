@@ -70,8 +70,23 @@ class TestNoldsUtility(unittest.TestCase):
 		self.assertSequenceEqual(x, [4, 6.04, 9.1204])
 
 class TestNoldsLyap(unittest.TestCase):
+	def test_lyap_logistic(self):
+		rvals = [2.5, 3.4, 3.7, 4.0]
+		sign = [-1, -1, 1, 1]
+		x0 = 0.1
+		logistic = lambda x,r : r * x * (1 - x)
+		for r,s in zip(rvals, sign):
+			log = []
+			x = x0
+			for i in range(100):
+				x = logistic(x, r)
+				log.append(x)
+			log = np.array(log, dtype="float32")
+			le = np.max(nolds.lyap_e(log, emb_dim=6, matrix_dim=2))
+			lr = nolds.lyap_r(log, emb_dim=6, lag=2, min_tsep=10, trajectory_len=20)
+			self.assertEqual(s, int(np.sign(le)), "r = {}".format(r))
+			self.assertEqual(s, int(np.sign(lr)), "r = {}".format(r))
 	def test_lyap_fbm(self):
-		# TODO use logistic function as example
 		data = nolds.fbm(1000, H=0.3)
 		le = nolds.lyap_e(data, emb_dim=7, matrix_dim=3)
 		self.assertGreater(np.max(le), 0)
