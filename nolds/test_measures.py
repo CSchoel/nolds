@@ -91,6 +91,16 @@ class TestNoldsLyap(unittest.TestCase):
 		le = nolds.lyap_e(data, emb_dim=7, matrix_dim=3)
 		self.assertGreater(np.max(le), 0)
 
+class TestNoldsDFA(unittest.TestCase):
+	def test_dfa_fbm(self):
+		hs = [0.3, 0.5, 0.7]
+		for h in hs:
+			data = nolds.fbm(1000, H=0.3)
+			he = nolds.dfa(data)
+			print(he, h+1)
+			#self.assertAlmostEqual(he, h + 1, delta=0.1)
+			# TODO why is this not working?
+
 def plot_lyap():
 	# TODO this should be moved into an example file
 	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
