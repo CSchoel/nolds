@@ -74,7 +74,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 
 		For each such vector X_i, we find the closest neighbor X_j using the euclidean
 		distance. We know that as we follow the trajectories from X_i and X_j in time in a
-		chaotic system the distances betwen X_(i+k) and X_(j+k) denoted as d_i(k) will 
+		chaotic system the distances between X_(i+k) and X_(j+k) denoted as d_i(k) will 
 		increase according to a power law d_i(k) = c * e^(lambda * k) where lambda is a good
 		approximation of the highest lyapunov exponent, because the exponential expansion
 		along the axis associated with this exponent will quickly dominate the expansion or
