@@ -1,11 +1,11 @@
 ``nolds`` module
-==============
+================
 
 Nolds only consists of a single module called ``nolds`` which contains all relevant algorithms and helper functions.
 
 Algorithms
 ----------
-.. autofunction:: nolds.yap_r
+.. autofunction:: nolds.lyap_r
 .. autofunction:: nolds.lyap_e
 .. autofunction:: nolds.sampen
 .. autofunction:: nolds.hurst_rs
