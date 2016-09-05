@@ -58,6 +58,7 @@ def delay_embedding(data, emb_dim, lag=1):
 def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, trajectory_len=20, debug_plot=False, plot_file=None):
 	"""
 	Estimates the largest lyapunov exponent using the algorithm of Rosenstein et al.
+	[lr-1]_.
 
 	Explanation of Lyapunov exponents:
 		See lyap_e.
@@ -105,36 +106,46 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 		if the user sets lag = None.
 
 	References:
-		[1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca, “A practical method for 
-		    calculating largest Lyapunov exponents from small data sets,” Physica D: Nonlinear 
-		    Phenomena, vol. 65, no. 1, pp. 117–134, 1993.
+		.. [lr-1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca, “A practical method for 
+		   calculating largest Lyapunov exponents from small data sets,” Physica D: Nonlinear 
+		   Phenomena, vol. 65, no. 1, pp. 117–134, 1993.
 
 	Reference Code:
-		[a] mirwais, "Largest Lyapunov Exponent with Rosenstein's Algorithm",
-		    url: http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm
-		[b] Shapour Mohammadi, "LYAPROSEN: MATLAB function to calculate Lyapunov exponent",
-		    url: https://ideas.repec.org/c/boc/bocode/t741502.html
+		.. [lr-a] mirwais, "Largest Lyapunov Exponent with Rosenstein's Algorithm",
+		   url: http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm
+		.. [lr-b] Shapour Mohammadi, "LYAPROSEN: MATLAB function to calculate Lyapunov exponent",
+		   url: https://ideas.repec.org/c/boc/bocode/t741502.html
 
 	Args:
-		data (iterable of float): (one-dimensional) time series
+		data (iterable of float):
+			(one-dimensional) time series
 	Kwargs:
-		emb_dim (int): embedding dimension for delay embedding
-		lag (float): lag for delay embedding
-		min_tsep (float): minimal temporal separation between two "neighbors" (default: 
-		                  find a suitable value by calculating the mean period of the data)
-		tau (float): step size between data points in the time series in seconds (default:
-		             find a suitable value using the autocorrelation function)
-		min_vectors (int): if lag=None, the search for a suitable lag will be stopped
-		                   when the number of resulting vectors drops below min_vectors
-		trajectory_len (int): the time (in number of data points) to follow the distance
-		                      trajectories between two neighboring points
-		debug_plot (boolean): if True, a simple plot of the final line-fitting step will
-		                      be shown
-		plot_file (str): if debug_plot is True and plot_file is not None, the plot will be saved
-		                 under the given file name instead of directly showing it through plt.show()
+		emb_dim (int):
+			embedding dimension for delay embedding
+		lag (float):
+			lag for delay embedding
+		min_tsep (float): 
+			minimal temporal separation between two "neighbors" (default: 
+			find a suitable value by calculating the mean period of the data)
+		tau (float):
+			step size between data points in the time series in seconds (default:
+			find a suitable value using the autocorrelation function)
+		min_vectors (int):
+			if lag=None, the search for a suitable lag will be stopped
+			when the number of resulting vectors drops below min_vectors
+		trajectory_len (int): 
+			the time (in number of data points) to follow the distance
+			trajectories between two neighboring points
+		debug_plot (boolean):
+			if True, a simple plot of the final line-fitting step will
+			be shown
+		plot_file (str): 
+			if debug_plot is True and plot_file is not None, the plot will be saved
+			under the given file name instead of directly showing it through plt.show()
 	Returns:
-		float: an estimate of the largest lyapunov exponent (a positive exponent is
-		       a strong indicator for chaos)
+		float: 
+			an estimate of the largest lyapunov exponent (a positive exponent is
+			a strong indicator for chaos)
 	"""
 	# convert data to float to avoid overflow errors in rowwise_euler
 	data = data.astype("float32")
@@ -223,7 +234,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1, debug
 		trajectories of a dynamical system in phase space. In a chaotic system, these trajectories
 		diverge exponentially following the equation:
 
-		|X(t, X_0) - X(t, X_0 + eps)| = e^(lambda * t) * |eps|
+		\|X(t, X_0) - X(t, X_0 + eps)| = e^(lambda * t) * \|eps|
 
 		In this equation X(t, X_0) is the trajectory of the system X starting at the point X_0 in
 		phase space at time t. eps is the (infinitesimal) difference vector and lambda is called
@@ -256,32 +267,40 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1, debug
 		  divided by m and by the step size tau of the original time series.
 
 	References:
-		[1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto, 
-		    “Liapunov exponents from time series,” Physical Review A, 
-		    vol. 34, no. 6, pp. 4971–4979, 1986.
+		.. [le-1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto, 
+		   “Liapunov exponents from time series,” Physical Review A, 
+		   vol. 34, no. 6, pp. 4971–4979, 1986.
 
 	Reference code:
-		[a] Manfred Füllsack, "Lyapunov exponent",
-		    url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
-		[b] Steve SIU, Lyapunov Exponents Toolbox (LET),
-		    url: http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m
-		[c] TODO: TISEAN?
+		.. [le-a] Manfred Füllsack, "Lyapunov exponent",
+		   url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
+		.. [le-b] Steve SIU, Lyapunov Exponents Toolbox (LET),
+		   url: http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m
+		.. [le-c] TODO: TISEAN?
 
 	Args:
-		data (iterable): list/array of (scalar) data points
+		data (iterable): 
+			list/array of (scalar) data points
 
 	Kwargs:
-		emb_dim (int): embedding dimension
-		matrix_dim (int): matrix dimension (emb_dim - 1 must be divisible by matrix_dim - 1)
-		min_nb (int): minimal number of neighbors (default: min(2 * matrix_dim, matrix_dim + 4))
-		tau (float): step size of the data in seconds (normalization scaling factor for exponents)
-		debug_plot (boolean): if True, a histogram matrix of the individual estimates will be shown
-		plot_file (str): if debug_plot is True and plot_file is not None, the plot will be saved
-		                 under the given file name instead of directly showing it through plt.show()
+		emb_dim (int):
+			embedding dimension
+		matrix_dim (int):
+			matrix dimension (emb_dim - 1 must be divisible by matrix_dim - 1)
+		min_nb (int):
+			minimal number of neighbors (default: min(2 * matrix_dim, matrix_dim + 4))
+		tau (float):
+			step size of the data in seconds (normalization scaling factor for exponents)
+		debug_plot (boolean):
+			if True, a histogram matrix of the individual estimates will be shown
+		plot_file (str):
+			if debug_plot is True and plot_file is not None, the plot will be saved
+			under the given file name instead of directly showing it through plt.show()
 
 	Returns:
-		float array: array of matrix_dim Lyapunov exponents (positive exponents are indicators
-		             for chaos)
+		float array:
+			array of matrix_dim Lyapunov exponents (positive exponents are indicators
+			for chaos)
 	"""
 	n = len(data)
 	if (emb_dim - 1) % (matrix_dim - 1) != 0:
