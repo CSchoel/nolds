@@ -470,31 +470,37 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev", debug_plot=True, p
 		The result of the algorithm is the negative logarithm of this ratio/probability.
 
 	References:
-		[1] J. S. Richman and J. R. Moorman, “Physiological time-series 
-		    analysis using approximate entropy and sample entropy,” 
-		    American Journal of Physiology-Heart and Circulatory Physiology, 
-		    vol. 278, no. 6, pp. H2039–H2049, 2000.
+		.. [se-1] J. S. Richman and J. R. Moorman, “Physiological time-series 
+		   analysis using approximate entropy and sample entropy,” 
+		   American Journal of Physiology-Heart and Circulatory Physiology, 
+		   vol. 278, no. 6, pp. H2039–H2049, 2000.
 
 	Reference code:
-		[a] "sample_entropy" function in R-package "pracma",
+		.. [se-a] "sample_entropy" function in R-package "pracma",
 		    url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
 
 	Args:
-		data (iterable): the list/array of data points
+		data (iterable):
+			the list/array of data points
 
 	Kwargs:
-		emb_dim (int): the embedding dimension (length of vectors to compare)
-		tolerance (float): distance threshold for two template vectors to be considered 
-		                   equal (default: 0.2 * std(data))
-		dist (string): distance function used to calculate the distance between template vectors, 
-		               can be 'euler' or 'chebychev'
-		debug_plot (boolean): if True, a histogram of the individual distances for m and m+1
-		plot_file (str): if debug_plot is True and plot_file is not None, the plot will be saved
-		                 under the given file name instead of directly showing it through plt.show()
+		emb_dim (int):
+			the embedding dimension (length of vectors to compare)
+		tolerance (float):
+			distance threshold for two template vectors to be considered equal (default: 0.2 * std(data))
+		dist (string):
+			distance function used to calculate the distance between template vectors, 
+			can be 'euler' or 'chebychev'
+		debug_plot (boolean):
+			if True, a histogram of the individual distances for m and m+1
+		plot_file (str):
+			if debug_plot is True and plot_file is not None, the plot will be saved
+		  under the given file name instead of directly showing it through plt.show()
 
 	Returns: 
-		float: the sample entropy of the data (negative logarithm of ratio between similar template 
-	         vectors of length emb_dim + 1 and emb_dim)
+		float:
+			the sample entropy of the data (negative logarithm of ratio between similar template 
+	    vectors of length emb_dim + 1 and emb_dim)
 	"""
 	if tolerance is None:
 		tolerance = 0.2*np.std(data)
@@ -556,12 +562,15 @@ def binary_n(total_N, min_n=50):
 	Non-integer results are rounded down.
 
 	Args:
-		total_N (int): total length
+		total_N (int):
+			total length
 	Kwargs:
-		min_n (int): minimal length after division
+		min_n (int):
+			minimal length after division
 
 	Returns:
-		list of integers: total_N/2, total_N/4, total_N/8, ... until total_N/2^i < min_n
+		list of integers:
+			total_N/2, total_N/4, total_N/8, ... until total_N/2^i < min_n
 	"""
 	max_exp = np.log2(1.0 * total_N / min_n)
 	max_exp = int(np.floor(max_exp))
@@ -575,13 +584,17 @@ def logarithmic_n(min_n, max_n, factor):
 	Non-integer results are rounded down.
 
 	Args:
-		min_n (float): minimum value (must be < max_n)
-		max_n (float): maximum value (must be > min_n)
-		factor (float): factor used to increase min_n (must be > 1)
+		min_n (float):
+			minimum value (must be < max_n)
+		max_n (float):
+			maximum value (must be > min_n)
+		factor (float):
+			factor used to increase min_n (must be > 1)
 
 	Returns:
-		list of integers: min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i < max_n
-		                  without duplicates
+		list of integers:
+			min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i < max_n
+			without duplicates
 	"""
 	assert max_n > min_n
 	assert factor > 1
@@ -602,12 +615,15 @@ def logarithmic_r(min_n, max_n, factor):
 	a factor > 1 until a maximum value max_n is reached.
 
 	Args:
-		min_n (float): minimum value (must be < max_n)
-		max_n (float): maximum value (must be > min_n)
+		min_n (float):
+			minimum value (must be < max_n)
+		max_n (float):
+			maximum value (must be > min_n)
 		factor (float): factor used to increase min_n (must be > 1)
 
 	Returns:
-		list of floats: min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i < max_n
+		list of floats:
+			min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i < max_n
 	"""
 	assert max_n > min_n
 	assert factor > 1
@@ -621,11 +637,14 @@ def rs(data, n):
 	Note: This is just a helper function for hurs_rs and should not be called directly.
 
 	Args:	
-		data (array of float): time series
-		n (float): size of the subseries in which data should be split
+		data (array of float):
+			time series
+		n (float):
+			size of the subseries in which data should be split
 
 	Returns: 
-		float: (R/S)_n
+		float:
+			(R/S)_n
 	"""
 	total_N = len(data)
 	# cut values at the end of data to make the array divisible by n
@@ -683,16 +702,24 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data", re
 	show a plot through plt.show() and close it after the window has been closed by the user.
 
 	Args:
-		xvals (list/array of float): list of x-values
-		yvals (list/array of float): list of y-values
-		poly (list/array of float): polynomial parameters as accepted by np.polyval
+		xvals (list/array of float):
+			list of x-values
+		yvals (list/array of float):
+			list of y-values
+		poly (list/array of float):
+			polynomial parameters as accepted by np.polyval
 	Kwargs:
-		x_label (str): label of the x-axis
-		y_label (str): label of the y-axis 
-		data_label (str): label of the data
-		reg_label(str): label of the regression line
-		fname (str): file name (if not None, the plot will be saved to disc instead of
-		             showing it though plt.show())
+		x_label (str):
+			label of the x-axis
+		y_label (str):
+			label of the y-axis 
+		data_label (str):
+			label of the data
+		reg_label(str):
+			label of the regression line
+		fname (str):
+			file name (if not None, the plot will be saved to disc instead of
+			showing it though plt.show())
 	"""
 	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
 	plt.plot(xvals, yvals, "bo", label=data_label)
@@ -751,36 +778,41 @@ def hurst_rs(data, nvals=None, debug_plot=False, plot_file=None):
 			* logarithmic_n: min_n, min_n * f, min_n * f^2, ...
 
 	References:
-		[1] H. E. Hurst, “The problem of long-term storage in reservoirs,” International 
-		    Association of Scientific Hydrology. Bulletin, vol. 1, no. 3, pp. 13–27, 1956.
-		[2] H. E. Hurst, “A suggested statistical model of some time series which occur in 
-		    nature,” Nature, vol. 180, p. 494, 1957.
-		[3] R. Weron, “Estimating long-range dependence: finite sample properties and confidence 
-		    intervals,” Physica A: Statistical Mechanics and its Applications, vol. 312, no. 1, 
-		    pp. 285–299, 2002.
+		.. [h-1] H. E. Hurst, “The problem of long-term storage in reservoirs,” International 
+		   Association of Scientific Hydrology. Bulletin, vol. 1, no. 3, pp. 13–27, 1956.
+		.. [h-2] H. E. Hurst, “A suggested statistical model of some time series which occur in 
+		   nature,” Nature, vol. 180, p. 494, 1957.
+		.. [h-3] R. Weron, “Estimating long-range dependence: finite sample properties and confidence 
+		   intervals,” Physica A: Statistical Mechanics and its Applications, vol. 312, no. 1, 
+		   pp. 285–299, 2002.
 
 	Reference Code:
-		[a] "hurst" function in R-package "pracma",
-		    url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
-		[b] Rafael Weron, "HURST: MATLAB function to compute the Hurst exponent using R/S 
-		    Analysis", url: https://ideas.repec.org/c/wuu/hscode/m11003.html
-		[c] Bill Davidson, "Hurst exponent",
-		    url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent
-		[d] Tomaso Aste, "Generalized Hurst exponent",
-		    url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
+		.. [h-a] "hurst" function in R-package "pracma",
+		    		 url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
+		.. [h-b] Rafael Weron, "HURST: MATLAB function to compute the Hurst exponent using R/S 
+		    		 Analysis", url: https://ideas.repec.org/c/wuu/hscode/m11003.html
+		.. [h-c] Bill Davidson, "Hurst exponent",
+		    		 url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent
+		.. [h-d] Tomaso Aste, "Generalized Hurst exponent",
+		    		 url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
 
 	Args:
-		data (array of float): time series
+		data (array of float):
+			time series
 	Kwargs:
-		nvals (iterable of int): sizes of subseries to use (default: logarithmic_n(4, 0.1*len(data), 1.2))
-		debug_plot (boolean): if True, a simple plot of the final line-fitting step will be shown
-		plot_file (str): if debug_plot is True and plot_file is not None, the plot will be saved
-		                 under the given file name instead of directly showing it through plt.show()
+		nvals (iterable of int):
+			sizes of subseries to use (default: logarithmic_n(4, 0.1*len(data), 1.2))
+		debug_plot (boolean):
+			if True, a simple plot of the final line-fitting step will be shown
+		plot_file (str):
+			if debug_plot is True and plot_file is not None, the plot will be saved
+		  under the given file name instead of directly showing it through plt.show()
 
 	Returns:
-		float: estimated Hurst exponent K using a rescaled range approach (if K = 0.5 there are
-		       no long-range correlations in the data, if K < 0.5 there are negative long-range
-		       correlations, if K > 0.5 there are positive long-range correlations)
+		float:
+			estimated Hurst exponent K using a rescaled range approach (if K = 0.5 there are
+			no long-range correlations in the data, if K < 0.5 there are negative long-range
+			correlations, if K > 0.5 there are positive long-range correlations)
 	"""
 	total_N = len(data)
 	if nvals is None:
