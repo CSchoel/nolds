@@ -13,12 +13,14 @@ def fbm(n, H=0.75):
 	Author: Christian Thomae
 
 	References:
-		[1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation
+		.. [fbm-1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation
 
 	Args:
-		n (int): length of sequence to generate
+		n (int):
+			length of sequence to generate
 	Kwargs:
-		H (float): hurst parameter
+		H (float):
+			hurst parameter
 	"""
 	assert H > 0 and H < 1
 	def R(t, s):
@@ -39,14 +41,17 @@ def delay_embedding(data, emb_dim, lag=1):
 	Perform a time-delay embedding of a time series
 
 	Args:
-		emb_dim (int): the embedding dimension
+		emb_dim (int):
+			the embedding dimension
 	Kwargs:
-		lag (int): the lag between elements in the embedded vectors
+		lag (int):
+			the lag between elements in the embedded vectors
 
 	Returns:
-		emb_dim x m array: matrix of embedded vectors of the form 
-		                   [data[i], data[i+lag], data[i+2*lag], ... data[i+(emb_dim-1)*lag]]
-		                   for i in 0 to m-1 (m = len(data)-(emb_dim-1)*lag)
+		emb_dim x m array:
+			matrix of embedded vectors of the form
+			[data[i], data[i+lag], data[i+2*lag], ... data[i+(emb_dim-1)*lag]]
+			for i in 0 to m-1 (m = len(data)-(emb_dim-1)*lag)
 	"""
 	if len(data) < (emb_dim-1) * lag + 1:
 		raise ValueError("cannot embed data of length {} with embedding dimension {} and lag {}".format(len(data),emb_dim,lag))
@@ -75,7 +80,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 
 		For each such vector X_i, we find the closest neighbor X_j using the euclidean
 		distance. We know that as we follow the trajectories from X_i and X_j in time in a
-		chaotic system the distances between X_(i+k) and X_(j+k) denoted as d_i(k) will 
+		chaotic system the distances between X_(i+k) and X_(j+k) denoted as d_i(k) will
 		increase according to a power law d_i(k) = c * e^(lambda * k) where lambda is a good
 		approximation of the highest lyapunov exponent, because the exponential expansion
 		along the axis associated with this exponent will quickly dominate the expansion or
@@ -84,8 +89,8 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 		To calculate lambda, we look at the logarithm of the distance trajectory, because
 		log(d_i(k)) = log(c) + lambda * k. This gives a set of lines (one for each index i)
 		whose slope is an approximation of lambda. We therefore extract the mean log
-		trajectory d'(k) by taking the mean of log(d_i(k)) over all orbit vectors X_i. 
-		We then fit a straight line to the plot of d'(k) versus k. The slope of the line 
+		trajectory d'(k) by taking the mean of log(d_i(k)) over all orbit vectors X_i.
+		We then fit a straight line to the plot of d'(k) versus k. The slope of the line
 		gives the desired parameter lambda.
 	
 	Method for choosing min_tsep:
@@ -95,7 +100,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 		the dynamic properties of the system. Therefore it is critical to find a good
 		value for min_tsep. One rather plausible estimate for this value is to set min_tsep
 		to the mean period of the signal, which can be obtained by calculating the mean
-		frequency using the fast fourier transform. This procedure is used by default if 
+		frequency using the fast fourier transform. This procedure is used by default if
 		the user sets min_tsep = None.
 
 	Method for choosing lag:
@@ -106,8 +111,8 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 		if the user sets lag = None.
 
 	References:
-		.. [lr-1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca, “A practical method for 
-		   calculating largest Lyapunov exponents from small data sets,” Physica D: Nonlinear 
+		.. [lr-1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca, “A practical method for
+		   calculating largest Lyapunov exponents from small data sets,” Physica D: Nonlinear
 		   Phenomena, vol. 65, no. 1, pp. 117–134, 1993.
 
 	Reference Code:
@@ -124,8 +129,8 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 			embedding dimension for delay embedding
 		lag (float):
 			lag for delay embedding
-		min_tsep (float): 
-			minimal temporal separation between two "neighbors" (default: 
+		min_tsep (float):
+			minimal temporal separation between two "neighbors" (default:
 			find a suitable value by calculating the mean period of the data)
 		tau (float):
 			step size between data points in the time series in seconds (default:
@@ -133,17 +138,17 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 		min_vectors (int):
 			if lag=None, the search for a suitable lag will be stopped
 			when the number of resulting vectors drops below min_vectors
-		trajectory_len (int): 
+		trajectory_len (int):
 			the time (in number of data points) to follow the distance
 			trajectories between two neighboring points
 		debug_plot (boolean):
 			if True, a simple plot of the final line-fitting step will
 			be shown
-		plot_file (str): 
+		plot_file (str):
 			if debug_plot is True and plot_file is not None, the plot will be saved
 			under the given file name instead of directly showing it through plt.show()
 	Returns:
-		float: 
+		float:
 			an estimate of the largest lyapunov exponent (a positive exponent is
 			a strong indicator for chaos)
 	"""
@@ -230,7 +235,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1, debug
 		* min_nb = min(2 * matrix_dim, matrix_dim + 4)
 
 	Explanation of Lyapunov exponents:
-		The Lyapunov exponent describes the rate of separation of two infinitesimally close 
+		The Lyapunov exponent describes the rate of separation of two infinitesimally close
 		trajectories of a dynamical system in phase space. In a chaotic system, these trajectories
 		diverge exponentially following the equation:
 
@@ -239,7 +244,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1, debug
 		In this equation X(t, X_0) is the trajectory of the system X starting at the point X_0 in
 		phase space at time t. eps is the (infinitesimal) difference vector and lambda is called
 		the Lyapunov exponent. If the system has more than one free variable, the phase space is
-		multidimensional and each dimension has its own Lyapunov exponent. The existence of at 
+		multidimensional and each dimension has its own Lyapunov exponent. The existence of at
 		least one positive Lyapunov exponent is generally seen as a strong indicator for chaos.
 
 	Explanation of the Algorithm:
@@ -248,27 +253,27 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1, debug
 		the dynamics of the system from which the time series was obtained. For this, several
 		steps are required:
 
-		* Embed the time series [x_1, x_2, ..., x_(N-1)] in an orbit of emb_dim dimensions 
+		* Embed the time series [x_1, x_2, ..., x_(N-1)] in an orbit of emb_dim dimensions
 		  (map each point x_i of the time series to a vector [x_i, x_(i+1), x_(i+2), ... x_(i+emb_dim-1)]).
 		* For each vector X_i in this orbit find a radius r_i so that at least min_nb other vectors
-		  lie within (chebychev-)distance r_i around X_i. These vectors will be called 
+		  lie within (chebychev-)distance r_i around X_i. These vectors will be called
 		  "neighbors" of X_i.
 		* Find the Matrix T_i that sends points from the neighborhood of X_i to the neighbor
 		  hood of X_(i+1). To avoid undetermined values in T_i, we construct T_i not with size
 		  (emb_dim x emb_dim) but with size (matrix_dim x matrix_dim), so that we have a larger
-		  "step size" m in the X_i, which are now defined as X'_i = [x_i, x_(i+m), x_(i+2m), 
+		  "step size" m in the X_i, which are now defined as X'_i = [x_i, x_(i+m), x_(i+2m),
 		  ... x_(i+(matrix_dim-1)*m)]. This means that emb_dim-1 must be divisible by matrix_dim-1.
-		  The T_i are then found by a linear least squares fit, assuring that 
+		  The T_i are then found by a linear least squares fit, assuring that
 		  T_i (X_j - X_i) ~= X_(j+m) - X_(i+m) for any X_j in the neighborhood of X_i.
-		* Starting with i = 1 and Q_0 = identity successively decompose the matrix T_i * Q_(i-1) 
+		* Starting with i = 1 and Q_0 = identity successively decompose the matrix T_i * Q_(i-1)
 		  into the matrices Q_i and R_i by a QR-decomposition.
 		* Calculate the Lyapunov exponents from the mean of the logarithm of the diagonal
 		  elements of the matrices R_i. To normalize the Lyapunov exponents, they have to be
 		  divided by m and by the step size tau of the original time series.
 
 	References:
-		.. [le-1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto, 
-		   “Liapunov exponents from time series,” Physical Review A, 
+		.. [le-1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,
+		   “Liapunov exponents from time series,” Physical Review A,
 		   vol. 34, no. 6, pp. 4971–4979, 1986.
 
 	Reference code:
@@ -279,7 +284,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1, debug
 		.. [le-c] TODO: TISEAN?
 
 	Args:
-		data (iterable): 
+		data (iterable):
 			list/array of (scalar) data points
 
 	Kwargs:
@@ -305,7 +310,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1, debug
 	n = len(data)
 	if (emb_dim - 1) % (matrix_dim - 1) != 0:
 		raise ValueError("emb_dim - 1 must be divisible by matrix_dim - 1!")
-	m = (emb_dim - 1) // (matrix_dim - 1) 
+	m = (emb_dim - 1) // (matrix_dim - 1)
 	if min_nb is None:
 		# minimal number of neighbors as suggested by Eckmann et al.
 		min_nb = min(2 * matrix_dim, matrix_dim + 4)
@@ -456,23 +461,23 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev", debug_plot=True, p
 
 	Explanation of the sample entropy:
 		The sample entropy of a time series is defined as the negative natural logarithm
-		of the conditional probability that two sequences similar for emb_dim points remain 
+		of the conditional probability that two sequences similar for emb_dim points remain
 		similar at the next point, excluding self-matches.
 
 		A lower value for the sample entropy therefore corresponds to a higher probability
 		indicating more self-similarity.
 
 	Explanation of the algorithm:
-		The algorithm constructs all subsequences of length emb_dim [s_1, s_2, s_3, ...] and 
+		The algorithm constructs all subsequences of length emb_dim [s_1, s_2, s_3, ...] and
 		then counts each pair (s_i, s_j) with i != j where dist(s_i, s_j) < tolerance. The same process
-		is repeated for all subsequences of length emb_dim + 1. The sum of similar sequence pairs 
+		is repeated for all subsequences of length emb_dim + 1. The sum of similar sequence pairs
 		with length emb_dim + 1 is divided by the sum of similar sequence pairs with length emb_dim.
 		The result of the algorithm is the negative logarithm of this ratio/probability.
 
 	References:
-		.. [se-1] J. S. Richman and J. R. Moorman, “Physiological time-series 
-		   analysis using approximate entropy and sample entropy,” 
-		   American Journal of Physiology-Heart and Circulatory Physiology, 
+		.. [se-1] J. S. Richman and J. R. Moorman, “Physiological time-series
+		   analysis using approximate entropy and sample entropy,”
+		   American Journal of Physiology-Heart and Circulatory Physiology,
 		   vol. 278, no. 6, pp. H2039–H2049, 2000.
 
 	Reference code:
@@ -489,24 +494,24 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev", debug_plot=True, p
 		tolerance (float):
 			distance threshold for two template vectors to be considered equal (default: 0.2 * std(data))
 		dist (string):
-			distance function used to calculate the distance between template vectors, 
+			distance function used to calculate the distance between template vectors,
 			can be 'euler' or 'chebychev'
 		debug_plot (boolean):
 			if True, a histogram of the individual distances for m and m+1
 		plot_file (str):
 			if debug_plot is True and plot_file is not None, the plot will be saved
-		  under the given file name instead of directly showing it through plt.show()
+			under the given file name instead of directly showing it through plt.show()
 
-	Returns: 
+	Returns:
 		float:
-			the sample entropy of the data (negative logarithm of ratio between similar template 
-	    vectors of length emb_dim + 1 and emb_dim)
+			the sample entropy of the data (negative logarithm of ratio between similar template
+			vectors of length emb_dim + 1 and emb_dim)
 	"""
 	if tolerance is None:
 		tolerance = 0.2*np.std(data)
 	n = len(data)
 
-	# build matrix of "template vectors" 
+	# build matrix of "template vectors"
 	# (all consecutive subsequences of length m)
 	# x0 x1 x2 x3 ... xm-1
 	# x1 x2 x3 x4 ... xm
@@ -514,11 +519,11 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev", debug_plot=True, p
 	# ...
 	# x_n-m-1     ... xn-1
 
-	# since we need two of these matrices for m = emb_dim and m = emb_dim +1, 
+	# since we need two of these matrices for m = emb_dim and m = emb_dim +1,
 	# we build one that is large enough => shape (emb_dim+1, n-emb_dim)
 
-	# note that we ignore the last possible template vector with length emb_dim, 
-	# because this vector has no corresponding vector of length m+1 and thus does 
+	# note that we ignore the last possible template vector with length emb_dim,
+	# because this vector has no corresponding vector of length m+1 and thus does
 	# not count towards the conditional probability
 	# (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)
 	tVecs = np.zeros((n - emb_dim, emb_dim + 1))
@@ -619,7 +624,8 @@ def logarithmic_r(min_n, max_n, factor):
 			minimum value (must be < max_n)
 		max_n (float):
 			maximum value (must be > min_n)
-		factor (float): factor used to increase min_n (must be > 1)
+		factor (float):
+			factor used to increase min_n (must be > 1)
 
 	Returns:
 		list of floats:
@@ -642,7 +648,7 @@ def rs(data, n):
 		n (float):
 			size of the subseries in which data should be split
 
-	Returns: 
+	Returns:
 		float:
 			(R/S)_n
 	"""
@@ -712,7 +718,7 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data", re
 		x_label (str):
 			label of the x-axis
 		y_label (str):
-			label of the y-axis 
+			label of the y-axis
 		data_label (str):
 			label of the data
 		reg_label(str):
@@ -748,12 +754,12 @@ def hurst_rs(data, nvals=None, debug_plot=False, plot_file=None):
 		to keep the discharge steady at its mean value.
 
 		To do so, we first substract the mean over all x_i from the individual x_i to obtain
-		the departures x'_i from the mean for each year i. As the excess or deficit in 
+		the departures x'_i from the mean for each year i. As the excess or deficit in
 		discharge always carrys over from year i to year i+1, we need to examine the cumulative
 		sum of x'_i, denoted by y_i. This cumulative sum represents the filling of our
-		hypothetical storage. If the sum is above 0, we are storing excess discharge from 
+		hypothetical storage. If the sum is above 0, we are storing excess discharge from
 		the river, if it is below zero we have compensated a deficit in discharge by releasing
-		water from the storage. The range (maximum - minimum) R of y_i therefore represents 
+		water from the storage. The range (maximum - minimum) R of y_i therefore represents
 		the total capacity required for the storage.
 
 		Hurst showed that this value follows a steady trend for varying N if it is normalized
@@ -767,34 +773,35 @@ def hurst_rs(data, nvals=None, debug_plot=False, plot_file=None):
 	Explanation of the algorithm:
 		The rescaled range (R/S) approach is directly derived from Hurst's definition. The time
 		series of length N is split into non-overlapping subseries of length n. Then, R and S
-		(S = sigma) are calculated for each subseries and the mean is taken over all subseries 
+		(S = sigma) are calculated for each subseries and the mean is taken over all subseries
 		yielding (R/S)_n. This process is repeated for several lengths n. Finally, the exponent
 		K is obtained by fitting a straight line to the plot of log((R/S)_n) vs log(n).
 
 		There seems to be no consensus how to chose the subseries lenghts n. This function
 		therefore leaves the choice to the user. The module provides some utility functions
 		for "typical" values:
+
 			* binary_n: N/2, N/4, N/8, ...
 			* logarithmic_n: min_n, min_n * f, min_n * f^2, ...
 
 	References:
-		.. [h-1] H. E. Hurst, “The problem of long-term storage in reservoirs,” International 
+		.. [h-1] H. E. Hurst, “The problem of long-term storage in reservoirs,” International
 		   Association of Scientific Hydrology. Bulletin, vol. 1, no. 3, pp. 13–27, 1956.
-		.. [h-2] H. E. Hurst, “A suggested statistical model of some time series which occur in 
+		.. [h-2] H. E. Hurst, “A suggested statistical model of some time series which occur in
 		   nature,” Nature, vol. 180, p. 494, 1957.
-		.. [h-3] R. Weron, “Estimating long-range dependence: finite sample properties and confidence 
-		   intervals,” Physica A: Statistical Mechanics and its Applications, vol. 312, no. 1, 
+		.. [h-3] R. Weron, “Estimating long-range dependence: finite sample properties and confidence
+		   intervals,” Physica A: Statistical Mechanics and its Applications, vol. 312, no. 1,
 		   pp. 285–299, 2002.
 
 	Reference Code:
 		.. [h-a] "hurst" function in R-package "pracma",
-		    		 url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
-		.. [h-b] Rafael Weron, "HURST: MATLAB function to compute the Hurst exponent using R/S 
-		    		 Analysis", url: https://ideas.repec.org/c/wuu/hscode/m11003.html
+						 url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
+		.. [h-b] Rafael Weron, "HURST: MATLAB function to compute the Hurst exponent using R/S
+						 Analysis", url: https://ideas.repec.org/c/wuu/hscode/m11003.html
 		.. [h-c] Bill Davidson, "Hurst exponent",
-		    		 url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent
+						 url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent
 		.. [h-d] Tomaso Aste, "Generalized Hurst exponent",
-		    		 url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
+						 url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
 
 	Args:
 		data (array of float):
@@ -806,7 +813,7 @@ def hurst_rs(data, nvals=None, debug_plot=False, plot_file=None):
 			if True, a simple plot of the final line-fitting step will be shown
 		plot_file (str):
 			if debug_plot is True and plot_file is not None, the plot will be saved
-		  under the given file name instead of directly showing it through plt.show()
+			under the given file name instead of directly showing it through plt.show()
 
 	Returns:
 		float:
@@ -852,8 +859,8 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euler, debug_plot=False, pl
 		then D is called the correlation dimension of the system.
 
 		In a d-dimensional system, the maximum value for D is d. This value is obtained
-		for systems that expand uniformly in each dimension with time. The lowest 
-		possible value is 0 for a system with constant C(r) (i.e. a system that visits 
+		for systems that expand uniformly in each dimension with time. The lowest
+		possible value is 0 for a system with constant C(r) (i.e. a system that visits
 		just one point in the phase space). Generally if D is lower than d and the
 		system has an attractor, this attractor is called "strange" and D is a measure
 		of this "strangeness".
@@ -870,32 +877,38 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euler, debug_plot=False, pl
 		"systematic errors due to corrections to scaling".
 
 	References:
-		[1] P. Grassberger and I. Procaccia, “Characterization of strange attractors,” 
-		    Physical review letters, vol. 50, no. 5, p. 346, 1983.
-		[2] P. Grassberger and I. Procaccia, “Measuring the strangeness of strange 
-		    attractors,” Physica D: Nonlinear Phenomena, vol. 9, no. 1, pp. 189–208, 1983.
-		[3] http://www.scholarpedia.org/article/Grassberger-Procaccia_algorithm
+		.. [cd-1] P. Grassberger and I. Procaccia, “Characterization of strange attractors,”
+							Physical review letters, vol. 50, no. 5, p. 346, 1983.
+		.. [cd-2] P. Grassberger and I. Procaccia, “Measuring the strangeness of strange
+							attractors,” Physica D: Nonlinear Phenomena, vol. 9, no. 1, pp. 189–208, 1983.
+		.. [cd-3] http://www.scholarpedia.org/article/Grassberger-Procaccia_algorithm
 
 	Reference Code:
-		[a] "corrDim" function in R package "fractal",
-		    url: https://cran.r-project.org/web/packages/fractal/fractal.pdf
-		[b] Peng Yuehua, "Correlation dimension",
-		    url: http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension
+		.. [cd-a] "corrDim" function in R package "fractal",
+							url: https://cran.r-project.org/web/packages/fractal/fractal.pdf
+		.. [cd-b] Peng Yuehua, "Correlation dimension",
+							url: http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension
 
 	Args:
-		data (array of float): time series of data points
-		emb_dim (int): embedding dimension
+		data (array of float):
+			time series of data points
+		emb_dim (int):
+			embedding dimension
 	Kwargs:
-		rvals (iterable of float): list of values for to use for r 
-		                           (default: logarithmic_r(0.1 * std, 0.5 * std, 1.03))
-		dist (function (2d-array, 1d-array) -> 1d-array): row-wise difference function
-		debug_plot (boolean): if True, a simple plot of the final line-fitting step will
-		                      be shown
-		plot_file (str): if debug_plot is True and plot_file is not None, the plot will be saved
-		                 under the given file name instead of directly showing it through plt.show() 
+		rvals (iterable of float):
+			list of values for to use for r
+			(default: logarithmic_r(0.1 * std, 0.5 * std, 1.03))
+		dist (function (2d-array, 1d-array) -> 1d-array):
+			row-wise difference function
+		debug_plot (boolean):
+			if True, a simple plot of the final line-fitting step will be shown
+		plot_file (str):
+			if debug_plot is True and plot_file is not None, the plot will be saved
+			under the given file name instead of directly showing it through plt.show()
 
 	Returns:
-		correlation dimension as slope of the line fitted to log(r) vs log(C(r))
+		float:
+			correlation dimension as slope of the line fitted to log(r) vs log(C(r))
 	"""
 	# TODO what are good values for r?
 	# TODO do this for multiple values of emb_dim?
@@ -933,7 +946,7 @@ def dfa(data, nvals= None, overlap=True, order=1, debug_plot=False, plot_file=No
 		* min(nvals) < 4 does not make much sense as fitting a polynomial (even if it
 		  is only of order 1) to 3 or less data points is very prone.
 		* max(nvals) > len(data) / 10 does not make much sense as we will then have
-		  less than 10 windows to calculate the average fluctuation 
+		  less than 10 windows to calculate the average fluctuation
 		* use overlap=True to obtain more windows and therefore better statistics
 		  (at an increased computational cost)
 
@@ -953,7 +966,7 @@ def dfa(data, nvals= None, overlap=True, order=1, debug_plot=False, plot_file=No
 		behaves indeed very similar to the Hurst exponent.
 
 		Like the Hurst exponent, H can be obtained from a time series by calculating
-		std(X,n) for different n and fitting a straight line to the plot of log(std(X,n)) 
+		std(X,n) for different n and fitting a straight line to the plot of log(std(X,n))
 		versus log(n).
 
 		To calculate a single std(X,n), the time series is split into windows of
@@ -964,19 +977,19 @@ def dfa(data, nvals= None, overlap=True, order=1, debug_plot=False, plot_file=No
 		The value std(X,n) is then obtained by calculating std(W_(n,i)) for each i
 		and averaging the obtained values over i.
 
-		The aforementioned definition of self-affinity, however, assumes that the 
-		process is  non-stationary (i.e. that the standard deviation changes over 
-		time) and it is highly influenced by local and global trends of the time 
+		The aforementioned definition of self-affinity, however, assumes that the
+		process is  non-stationary (i.e. that the standard deviation changes over
+		time) and it is highly influenced by local and global trends of the time
 		series.
 
-		To overcome these problems, an estimate alpha of H is calculated by using a 
-		"walk" or "signal profile" instead of the raw time series. This walk is 
-		obtained by substracting the mean and then taking the cumulative sum of the 
-		original time series. The local trends are removed for each window separately 
-		by fitting a polynomial p_(n,i) to the window W_(n,i) and then calculating 
+		To overcome these problems, an estimate alpha of H is calculated by using a
+		"walk" or "signal profile" instead of the raw time series. This walk is
+		obtained by substracting the mean and then taking the cumulative sum of the
+		original time series. The local trends are removed for each window separately
+		by fitting a polynomial p_(n,i) to the window W_(n,i) and then calculating
 		W'_(n,i) = W_(n,i) - p_(n,i) (element-wise substraction).
 
-		We then calculate std(X,n) as before only using the "detrended" window 
+		We then calculate std(X,n) as before only using the "detrended" window
 		W'_(n,i) instead of W_(n,i). Instead of H we obtain the parameter alpha
 		from the line fitting.
 
@@ -989,38 +1002,44 @@ def dfa(data, nvals= None, overlap=True, order=1, debug_plot=False, plot_file=No
 		as fractional Brownian motion with H = alpha - 1.
 
 	References:
-		[1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons, H. E. Stanley, and 
-		    A. L. Goldberger, “Mosaic organization of DNA nucleotides,” Physical 
-		    Review E, vol. 49, no. 2, 1994.
-		[2] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen, V. V. Nikulin, 
-		    H. D. Mansvelder, and K. Linkenkaer-Hansen, “Detrended fluctuation 
-		    analysis: A scale-free view on neuronal oscillations,” Frontiers in 
-		    Physiology, vol. 30, 2012.
+		.. [dfa-1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons, H. E. Stanley, and
+							 A. L. Goldberger, “Mosaic organization of DNA nucleotides,” Physical
+							 Review E, vol. 49, no. 2, 1994.
+		.. [dfa-2] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen, V. V. Nikulin,
+							 H. D. Mansvelder, and K. Linkenkaer-Hansen, “Detrended fluctuation
+							 analysis: A scale-free view on neuronal oscillations,” Frontiers in
+							 Physiology, vol. 30, 2012.
 
 	Reference code:
-		[a] Peter Jurica, "Introduction to MDFA in Python",
-	      url: http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html
-	  [b] JE Mietus, "dfa",
-	      url: https://www.physionet.org/physiotools/dfa/dfa-1.htm
-	  [c] "DFA" function in R package "fractal"
+		.. [dfa-a] Peter Jurica, "Introduction to MDFA in Python",
+		   url: http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html
+		.. [dfa-b] JE Mietus, "dfa",
+		   url: https://www.physionet.org/physiotools/dfa/dfa-1.htm
+		.. [dfa-c] "DFA" function in R package "fractal"
 
 	Args:
-		data (array of float): time series
+		data (array of float):
+			time series
 	Kwargs:
-		nvals (iterable of int): subseries sizes at which to calculate fluctuation
-		                         (default: logarithmic_n(4, 0.1*len(data), 1.2))
-		overlap (boolean): if True, the windows W_(n,i) will have a 50% overlap, 
-		                   otherwise non-overlapping windows will be used
-		order (int): (polynomial) order of trend to remove
-		debug_plot (boolean): if True, a simple plot of the final line-fitting step will
-		                      be shown
-		plot_file (str): if debug_plot is True and plot_file is not None, the plot will be saved
-		                 under the given file name instead of directly showing it through plt.show() 
+		nvals (iterable of int):
+			subseries sizes at which to calculate fluctuation
+			(default: logarithmic_n(4, 0.1*len(data), 1.2))
+		overlap (boolean):
+			if True, the windows W_(n,i) will have a 50% overlap,
+			otherwise non-overlapping windows will be used
+		order (int):
+			(polynomial) order of trend to remove
+		debug_plot (boolean):
+			if True, a simple plot of the final line-fitting step will be shown
+		plot_file (str):
+			if debug_plot is True and plot_file is not None, the plot will be saved
+			under the given file name instead of directly showing it through plt.show()
 	Returns:
-		float: the estimate alpha for the Hurst parameter (alpha < 1: stationary
-		       process similar to fractional Gaussian noise with H = alpha, 
-		       alpha > 1: non-stationary process similar to fractional brownian
-		       motion with H = alpha - 1)
+		float:
+			the estimate alpha for the Hurst parameter (alpha < 1: stationary
+			process similar to fractional Gaussian noise with H = alpha,
+			alpha > 1: non-stationary process similar to fractional brownian
+			motion with H = alpha - 1)
 	"""
 	total_N = len(data)
 	if nvals is None:
