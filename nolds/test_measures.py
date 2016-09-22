@@ -136,17 +136,4 @@ def test_dfa():
 
 if __name__ == "__main__":
 	unittest.main()
-	#test_hurst()
-	#test_lyap()
-	#test_corr()
-	#test_dfa()
-	#test_delay_embed()
-	# r = 3.9
-	# logistic = lambda x : r * x * (1 - x)
-	# x = [0.1]
-	# for i in range(100):
-	# 	x.append(logistic(x[-1]))
-	# plt.plot(x)
-	# plt.show()
-	#profiling()
 
