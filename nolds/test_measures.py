@@ -70,6 +70,9 @@ class TestNoldsUtility(unittest.TestCase):
 		self.assertSequenceEqual(x, [4, 6.04, 9.1204])
 
 class TestNoldsLyap(unittest.TestCase):
+	"""
+	Tests for lyap_e and lyap_r
+	"""
 	def test_lyap_logistic(self):
 		rvals = [2.5, 3.4, 3.7, 4.0]
 		sign = [-1, -1, 1, 1]
@@ -91,7 +94,39 @@ class TestNoldsLyap(unittest.TestCase):
 		le = nolds.lyap_e(data, emb_dim=7, matrix_dim=3)
 		self.assertGreater(np.max(le), 0)
 
+class TestNoldsHurst(unittest.TestCase):
+	"""
+	Tests for hurst_rs
+	"""
+	def test_hurst_basic(self):
+		# strong negative correlation between successive elements
+		seq_neg = []
+		x = np.random.random()
+		for i in range(10000):
+			x = -x + np.random.random() - 0.5
+			seq_neg.append(x)
+		h_neg = nolds.hurst_rs(seq_neg)
+		# expected h is around 0
+		self.assertLess(h_neg, 0.3)
+
+		# no correlation, just random noise
+		x = np.random.randn(10000)
+		h_rand = nolds.hurst_rs(x)
+		# expected h is around 0.5
+		self.assertLess(h_rand, 0.7)
+		self.assertGreater(h_rand, 0.3)
+
+		# cumulative sum has strong positive correlation between
+		# elements
+		walk = np.cumsum(x)
+		h_walk = nolds.hurst_rs(walk)
+		# expected h is around 1.0
+		self.assertGreater(h_walk, 0.7)
+
 class TestNoldsDFA(unittest.TestCase):
+	def test_dfa_base(self):
+		# TODO implement
+		pass
 	def test_dfa_fbm(self):
 		hs = [0.3, 0.5, 0.7]
 		for h in hs:
@@ -101,38 +136,22 @@ class TestNoldsDFA(unittest.TestCase):
 			#self.assertAlmostEqual(he, h + 1, delta=0.1)
 			# TODO why is this not working?
 
-def test_lyap2():
-	#test_lyap()
-	data = [1,2,4,5,6,6,1,5,1,2,4,5,6,6,1,5,1,2,4,5,6,6,1,5]
-	data = np.random.random((100,)) * 10
-	data = np.concatenate([np.arange(100)] * 3)
-	# TODO random numbers should give positive exponents, what is happening here?
-	l = nolds.lyap_e(np.array(data), emb_dim=7, matrix_dim=3)
-	print(l)
+class TestNoldsCorrDim(unittest.TestCase):
+	"""
+	Tests for corr_dim
+	"""
+	def test_corr_dim(self):
+		n = 1000
+		data = np.arange(n)
+		print(nolds.corr_dim(data, 4))
 
-def test_hurst():
-	# TODO why does this not work for the brownian motion?
-	n = 10000
-	data = np.arange(n) # should give result 1
-	#data = np.cumsum(np.random.randn(n)) # brownian motion, should give result 0.5
-	#data = np.random.randn(n) # should give result 0
-	data = np.sin(np.arange(n,dtype=float) / (n-1) * np.pi * 100)
-	print(nolds.hurst_rs(data, debug_plot=True))
-
-def test_corr():
-	n = 1000
-	data = np.arange(n)
-	print(nolds.corr_dim(data, 4))
-
-def test_dfa():
-	import matplotlib.pyplot as plt # local import to avoid dependency for non-debug use
-	n = 10000
-	data = np.arange(n)
-	data = np.random.randn(n)
-	data = np.cumsum(data)
-	plt.plot(data)
-	plt.show()
-	print(nolds.dfa(data))
+class TestNoldsSampEn(unittest.TestCase):
+	"""
+	Tests for sampen
+	"""
+	def test_sampen_base(self):
+		# TODO implement
+		pass
 
 if __name__ == "__main__":
 	unittest.main()
