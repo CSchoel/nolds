@@ -3,6 +3,7 @@ import numpy as np
 import warnings
 
 # TODO: use RANSAC instead of simple polyfit?
+# TODO: is description of 0.5 for brownian motion really correct for hurst_rs?
 # FIXME: dfa fails for very small input sequences
 
 # TODO more detailed description of fbm
