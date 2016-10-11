@@ -125,6 +125,9 @@ class TestNoldsHurst(unittest.TestCase):
 		self.assertGreater(h_walk, 0.7)
 
 class TestNoldsDFA(unittest.TestCase):
+	"""
+	Tests for dfa
+	"""
 	def test_dfa_base(self):
 		# strong negative correlation between successive elements
 		seq_neg = []
