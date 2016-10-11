@@ -456,7 +456,7 @@ def plot_dists(dists, tolerance, m, title=None, fname=None):
 		plt.savefig(fname)
 	plt.close()
 
-def sampen(data, emb_dim=2, tolerance=None, dist="chebychev", debug_plot=True, plot_file=True):
+def sampen(data, emb_dim=2, tolerance=None, dist="chebychev", debug_plot=False, plot_file=None):
 	"""
 	Computes the sample entropy of the given data.
 
