@@ -175,8 +175,9 @@ class TestNoldsSampEn(unittest.TestCase):
 	Tests for sampen
 	"""
 	def test_sampen_base(self):
-		# TODO implement
-		pass
+		data = [0,1,5,4,1,0,1,5,3]
+		se = nolds.sampen(data)
+		self.assertAlmostEqual(se, np.log(2), delta=0.01)
 
 if __name__ == "__main__":
 	unittest.main()
