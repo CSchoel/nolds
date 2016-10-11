@@ -126,8 +126,29 @@ class TestNoldsHurst(unittest.TestCase):
 
 class TestNoldsDFA(unittest.TestCase):
 	def test_dfa_base(self):
-		# TODO implement
-		pass
+		# strong negative correlation between successive elements
+		seq_neg = []
+		x = np.random.random()
+		for i in range(10000):
+			x = -x + np.random.random() - 0.5
+			seq_neg.append(x)
+		h_neg = nolds.dfa(seq_neg)
+		# expected h is around 0
+		self.assertLess(h_neg, 0.3)
+
+		# no correlation, just random noise
+		x = np.random.randn(10000)
+		h_rand = nolds.dfa(x)
+		# expected h is around 0.5
+		self.assertLess(h_rand, 0.7)
+		self.assertGreater(h_rand, 0.3)
+
+		# cumulative sum has strong positive correlation between
+		# elements
+		walk = np.cumsum(x)
+		h_walk = nolds.dfa(walk)
+		# expected h is around 1.0
+		self.assertGreater(h_walk, 0.7)
 	def test_dfa_fbm(self):
 		hs = [0.3, 0.5, 0.7]
 		for h in hs:
