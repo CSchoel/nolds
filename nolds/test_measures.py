@@ -163,7 +163,12 @@ class TestNoldsCorrDim(unittest.TestCase):
 	def test_corr_dim(self):
 		n = 1000
 		data = np.arange(n)
-		print(nolds.corr_dim(data, 4))
+		cd = nolds.corr_dim(data, 4)
+		self.assertAlmostEquals(cd, 1, delta=0.05)
+		data = np.random.random(n)
+		cd = nolds.corr_dim(data, 4)
+		self.assertAlmostEquals(cd, 0.5, delta=0.1)
+		# TODO test example for cd > 1
 
 class TestNoldsSampEn(unittest.TestCase):
 	"""
