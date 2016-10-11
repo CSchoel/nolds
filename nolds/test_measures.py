@@ -6,11 +6,12 @@ class TestNoldsHelperFunctions(unittest.TestCase):
 	"""
 	Tests for internal helper functions that are not part of the public API
 	"""
-	def assert_array_equals(self, expected, actual):
-		print(actual)
-		print("==")
-		print(expected)
-		print()
+	def assert_array_equals(self, expected, actual, print_arrays=False):
+		if print_arrays:
+			print(actual)
+			print("==")
+			print(expected)
+			print()
 		self.assertTrue(np.alltrue(actual == expected))
 	def test_delay_embed_lag2(self):
 		data = np.arange(10, dtype="float32")
