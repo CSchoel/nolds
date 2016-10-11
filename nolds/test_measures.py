@@ -152,11 +152,9 @@ class TestNoldsDFA(unittest.TestCase):
 	def test_dfa_fbm(self):
 		hs = [0.3, 0.5, 0.7]
 		for h in hs:
-			data = nolds.fbm(1000, H=0.3)
+			data = nolds.fbm(1000, H=h)
 			he = nolds.dfa(data)
-			print(he, h+1)
-			#self.assertAlmostEqual(he, h + 1, delta=0.1)
-			# TODO why is this not working?
+			self.assertAlmostEqual(he, h + 1, delta=0.15)
 
 class TestNoldsCorrDim(unittest.TestCase):
 	"""
