@@ -55,71 +55,79 @@ def delay_embedding(data, emb_dim, lag=1):
 			for i in 0 to m-1 (m = len(data)-(emb_dim-1)*lag)
 	"""
 	if len(data) < (emb_dim-1) * lag + 1:
-		raise ValueError("cannot embed data of length {} with embedding dimension {} and lag {}".format(len(data),emb_dim,lag))
+		msg =   "cannot embed data of length {} with embedding dimension {} "
+		      + "and lag {}"
+		raise ValueError(msg.format(len(data),emb_dim,lag))
 	m = len(data) - (emb_dim-1)*lag
 	indices = np.repeat([np.arange(emb_dim)*lag], m, axis=0)
 	indices += np.arange(m).reshape((m,1))
 	return data[indices]
 
-def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, trajectory_len=20, debug_plot=False, plot_file=None):
+def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, 
+	         trajectory_len=20, debug_plot=False, plot_file=None):
 	"""
-	Estimates the largest lyapunov exponent using the algorithm of Rosenstein et al.
-	[lr-1]_.
+	Estimates the largest Lyapunov exponent using the algorithm of Rosenstein 
+	et al. [lr-1]_.
 
 	Explanation of Lyapunov exponents:
 		See lyap_e.
 
 	Explanation of the algorithm:
-		The algorithm of Rosenstein et al. is only able to recover the largest lyapunov
-		exponent, but behaves rather robust to parameter choices.
+		The algorithm of Rosenstein et al. is only able to recover the largest 
+		Lyapunov exponent, but behaves rather robust to parameter choices.
 
-		The idea for the algorithm relates closely to the definition of lyapunov exponents.
-		First, the dynamics of the data are reconstructed using a delay embedding method
-		with a lag, such that each value x_i of the data is mapped to the vector
+		The idea for the algorithm relates closely to the definition of Lyapunov
+		exponents. First, the dynamics of the data are reconstructed using a delay
+		embedding method with a lag, such that each value x_i of the data is mapped
+		to the vector
 
 		X_i = [x_i, x_(i+lag), x_(i+2*lag), ..., x_(i+(emb_dim-1) * lag)]
 
-		For each such vector X_i, we find the closest neighbor X_j using the euclidean
-		distance. We know that as we follow the trajectories from X_i and X_j in time in a
-		chaotic system the distances between X_(i+k) and X_(j+k) denoted as d_i(k) will
-		increase according to a power law d_i(k) = c * e^(lambda * k) where lambda is a good
-		approximation of the highest lyapunov exponent, because the exponential expansion
-		along the axis associated with this exponent will quickly dominate the expansion or
+		For each such vector X_i, we find the closest neighbor X_j using the 
+		euclidean distance. We know that as we follow the trajectories from X_i and
+		X_j in time in a chaotic system the distances between X_(i+k) and X_(j+k)
+		denoted as d_i(k) will increase according to a power law 
+		d_i(k) = c * e^(lambda * k) where lambda is a good approximation of the 
+		highest Lyapunov exponent, because the exponential expansion along the axis
+		associated with this exponent will quickly dominate the expansion or
 		contraction along other axes.
 
-		To calculate lambda, we look at the logarithm of the distance trajectory, because
-		log(d_i(k)) = log(c) + lambda * k. This gives a set of lines (one for each index i)
-		whose slope is an approximation of lambda. We therefore extract the mean log
-		trajectory d'(k) by taking the mean of log(d_i(k)) over all orbit vectors X_i.
-		We then fit a straight line to the plot of d'(k) versus k. The slope of the line
-		gives the desired parameter lambda.
+		To calculate lambda, we look at the logarithm of the distance trajectory,
+		because log(d_i(k)) = log(c) + lambda * k. This gives a set of lines 
+		(one for each index i) whose slope is an approximation of lambda. We
+		therefore extract the mean log trajectory d'(k) by taking the mean of 
+		log(d_i(k)) over all orbit vectors X_i. We then fit a straight line to 
+		the plot of d'(k) versus k. The slope of the line gives the desired
+		parameter lambda.
 	
 	Method for choosing min_tsep:
-		Usually we want to find neighbors between points that are close in phase space but
-		not too close in time, because we want to avoid spurious correlations between
-		the obtained trajectories that originate from temporal dependencies rather than
-		the dynamic properties of the system. Therefore it is critical to find a good
-		value for min_tsep. One rather plausible estimate for this value is to set min_tsep
-		to the mean period of the signal, which can be obtained by calculating the mean
-		frequency using the fast fourier transform. This procedure is used by default if
-		the user sets min_tsep = None.
+		Usually we want to find neighbors between points that are close in phase 
+		space but not too close in time, because we want to avoid spurious
+		correlations between the obtained trajectories that originate from temporal
+		dependencies rather than the dynamic properties of the system. Therefore it
+		is critical to find a good value for min_tsep. One rather plausible
+		estimate for this value is to set min_tsep to the mean period of the
+		signal, which can be obtained by calculating the mean frequency using the
+		fast fourier transform. This procedure is used by default if the user sets
+		min_tsep = None.
 
 	Method for choosing lag:
-		Another parameter that can be hard to choose by instinct alone is the lag between
-		individual values in a vector of the embedded orbit. Here, Rosenstein et al.
-		suggest to set the lag to the distance where the autocorrelation function drops
-		below 1 - 1/e times its original (maximal) value. This procedure is used by default
-		if the user sets lag = None.
+		Another parameter that can be hard to choose by instinct alone is the lag
+		between individual values in a vector of the embedded orbit. Here,
+		Rosenstein et al. suggest to set the lag to the distance where the
+		autocorrelation function drops below 1 - 1/e times its original (maximal)
+		value. This procedure is used by default if the user sets lag = None.
 
 	References:
-		.. [lr-1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca, “A practical method for
-		   calculating largest Lyapunov exponents from small data sets,” Physica D: Nonlinear
-		   Phenomena, vol. 65, no. 1, pp. 117–134, 1993.
+		.. [lr-1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca, “A practical
+		   method for calculating largest Lyapunov exponents from small data sets,”
+		   Physica D: Nonlinear Phenomena, vol. 65, no. 1, pp. 117–134, 1993.
 
 	Reference Code:
 		.. [lr-a] mirwais, "Largest Lyapunov Exponent with Rosenstein's Algorithm",
 		   url: http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm
-		.. [lr-b] Shapour Mohammadi, "LYAPROSEN: MATLAB function to calculate Lyapunov exponent",
+		.. [lr-b] Shapour Mohammadi, "LYAPROSEN: MATLAB function to calculate
+		   Lyapunov exponent",
 		   url: https://ideas.repec.org/c/boc/bocode/t741502.html
 
 	Args:
@@ -147,10 +155,11 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 			be shown
 		plot_file (str):
 			if debug_plot is True and plot_file is not None, the plot will be saved
-			under the given file name instead of directly showing it through plt.show()
+			under the given file name instead of directly showing it through
+			plt.show()
 	Returns:
 		float:
-			an estimate of the largest lyapunov exponent (a positive exponent is
+			an estimate of the largest Lyapunov exponent (a positive exponent is
 			a strong indicator for chaos)
 	"""
 	# convert data to float to avoid overflow errors in rowwise_euler
@@ -165,38 +174,44 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20, tra
 		min_tsep = int(np.ceil(1.0/mf))
 		if min_tsep > max_tsep_factor * n:
 			min_tsep = int(max_tsep_factor * n)
-			warnings.warn("signal has very low mean frequency, setting min_tsep = %d" % min_tsep, RuntimeWarning)
-		# calculate the lag as point where the autocorrelation drops to (1 - 1/e) times its
-		# maximum value
-		# note: the Wiener–Khinchin theorem states that the spectral decomposition of the
-		# autocorrelation function of a process is the power spectrum of that process
+			msg = "signal has very low mean frequency, setting min_tsep = {:d}"
+			warnings.warn(msg.format(min_tsep), RuntimeWarning)
+		# calculate the lag as point where the autocorrelation drops to (1 - 1/e)
+		# times its maximum value
+		# note: the Wiener–Khinchin theorem states that the spectral decomposition
+		# of the autocorrelation function of a process is the power spectrum of
+		# that process
 		# => we can use fft to calculate the autocorrelation
 		acorr = np.fft.irfft(f * np.conj(f))
 		acorr = np.roll(acorr, n-1)
 		eps = acorr[n-1] * (1 - 1.0 / np.e)
 		lag = 1
 		for i in range(n):
-			if acorr[n-1+i] < eps or acorr[n-1-i] < eps or 1.0 * n / emb_dim * i < min_vectors:
+			if     acorr[n-1+i] < eps 
+			    or acorr[n-1-i] < eps 
+			    or 1.0 * n / emb_dim * i < min_vectors:
 				lag = i
 				break
 		if 1.0 * n / emb_dim * lag < min_vectors:
-			warnings.warn("autocorrelation declined too slowly to find suitable lag", RuntimeWarning)
+			msg = "autocorrelation declined too slowly to find suitable lag"
+			warnings.warn(msg, RuntimeWarning)
 	# delay embedding
 	orbit = delay_embedding(data, emb_dim, lag)
 	m = len(orbit)
 	# construct matrix with pairwise distances between vectors in orbit
 	dists = np.array([rowwise_euler(orbit, orbit[i]) for i in range(m)])
-	# we do not want to consider vectors as neighbor that are less than min_tsep time steps
-	# together => mask the distances min_tsep to the right and left of each index by setting
-	# them to infinity (will never be considered as nearest neighbors)
+	# we do not want to consider vectors as neighbor that are less than min_tsep
+	# time steps together => mask the distances min_tsep to the right and left of
+	# each index by setting them to infinity (will never be considered as nearest
+	# neighbors)
 	for i in range(m):
 		dists[i,max(0,i-min_tsep):i+min_tsep+1] = float("inf")
-	# find nearest neighbors (exclude last columns, because these vectors cannot be followed
-	# in time for trajectory_len steps)
+	# find nearest neighbors (exclude last columns, because these vectors cannot
+	# be followed in time for trajectory_len steps)
 	ntraj = m-trajectory_len+1
 	nb_idx = np.argmin(dists[:ntraj,:ntraj], axis=1)
-	# build divergence trajectory by averaging distances along the trajectory over all neighbor
-	# pairs
+	# build divergence trajectory by averaging distances along the trajectory
+	# over all neighbor pairs
 	div_traj = np.zeros(trajectory_len, dtype=float)
 	for k in range(trajectory_len):
 		# calculate mean trajectory distance at step k
