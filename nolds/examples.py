@@ -1,4 +1,6 @@
 from . import measures as nolds
+import numpy as np
+
 
 def plot_lyap():
   # local import to avoid dependency for non-debug use
