@@ -1,0 +1,1266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nolds.measures &mdash; Nolds 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Nolds 0.2.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for nolds.measures</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="c1"># TODO: use RANSAC instead of simple polyfit?</span>
+<span class="c1"># TODO: is description of 0.5 for brownian motion really correct for hurst_rs?</span>
+<span class="c1"># FIXME: dfa fails for very small input sequences</span>
+
+
+<div class="viewcode-block" id="fbm"><a class="viewcode-back" href="../../nolds.html#nolds.fbm">[docs]</a><span class="k">def</span> <span class="nf">fbm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Generates fractional brownian motions of desired length.</span>
+
+<span class="sd">  Author:</span>
+<span class="sd">    Christian Thomae</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [fbm-1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    n (int):</span>
+<span class="sd">      length of sequence to generate</span>
+<span class="sd">  Kwargs:</span>
+<span class="sd">    H (float):</span>
+<span class="sd">      hurst parameter</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># TODO more detailed description of fbm</span>
+  <span class="k">assert</span> <span class="n">H</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">H</span> <span class="o">&lt;</span> <span class="mi">1</span>
+
+  <span class="k">def</span> <span class="nf">R</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="n">twoH</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">H</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="n">twoH</span> <span class="o">+</span> <span class="n">t</span><span class="o">**</span><span class="n">twoH</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span><span class="o">**</span><span class="n">twoH</span><span class="p">)</span>
+  <span class="c1"># form the matrix tau</span>
+  <span class="n">gamma</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">])</span>  <span class="c1"># apply R to every element in matrix</span>
+  <span class="n">w</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
+  <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+  <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">L</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">P</span><span class="p">))</span>
+  <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+
+<span class="c1"># TODO maybe we can use this function also in other algorithms than lyap_r?</span>
+
+
+<span class="k">def</span> <span class="nf">delay_embedding</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Perform a time-delay embedding of a time series</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    emb_dim (int):</span>
+<span class="sd">      the embedding dimension</span>
+<span class="sd">  Kwargs:</span>
+<span class="sd">    lag (int):</span>
+<span class="sd">      the lag between elements in the embedded vectors</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    emb_dim x m array:</span>
+<span class="sd">      matrix of embedded vectors of the form</span>
+<span class="sd">      [data[i], data[i+lag], data[i+2*lag], ... data[i+(emb_dim-1)*lag]]</span>
+<span class="sd">      for i in 0 to m-1 (m = len(data)-(emb_dim-1)*lag)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">emb_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">lag</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;cannot embed data of length {} with embedding dimension {} &quot;</span> \
+        <span class="o">+</span> <span class="s2">&quot;and lag {}&quot;</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">lag</span><span class="p">))</span>
+  <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">emb_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">lag</span>
+  <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">emb_dim</span><span class="p">)</span> <span class="o">*</span> <span class="n">lag</span><span class="p">],</span> <span class="n">m</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+  <span class="n">indices</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="lyap_r"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_r">[docs]</a><span class="k">def</span> <span class="nf">lyap_r</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_tsep</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_vectors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+           <span class="n">trajectory_len</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Estimates the largest Lyapunov exponent using the algorithm of Rosenstein</span>
+<span class="sd">  et al. [lr-1]_.</span>
+
+<span class="sd">  Explanation of Lyapunov exponents:</span>
+<span class="sd">    See lyap_e.</span>
+
+<span class="sd">  Explanation of the algorithm:</span>
+<span class="sd">    The algorithm of Rosenstein et al. is only able to recover the largest</span>
+<span class="sd">    Lyapunov exponent, but behaves rather robust to parameter choices.</span>
+
+<span class="sd">    The idea for the algorithm relates closely to the definition of Lyapunov</span>
+<span class="sd">    exponents. First, the dynamics of the data are reconstructed using a delay</span>
+<span class="sd">    embedding method with a lag, such that each value x_i of the data is mapped</span>
+<span class="sd">    to the vector</span>
+
+<span class="sd">    X_i = [x_i, x_(i+lag), x_(i+2*lag), ..., x_(i+(emb_dim-1) * lag)]</span>
+
+<span class="sd">    For each such vector X_i, we find the closest neighbor X_j using the</span>
+<span class="sd">    euclidean distance. We know that as we follow the trajectories from X_i and</span>
+<span class="sd">    X_j in time in a chaotic system the distances between X_(i+k) and X_(j+k)</span>
+<span class="sd">    denoted as d_i(k) will increase according to a power law</span>
+<span class="sd">    d_i(k) = c * e^(lambda * k) where lambda is a good approximation of the</span>
+<span class="sd">    highest Lyapunov exponent, because the exponential expansion along the axis</span>
+<span class="sd">    associated with this exponent will quickly dominate the expansion or</span>
+<span class="sd">    contraction along other axes.</span>
+
+<span class="sd">    To calculate lambda, we look at the logarithm of the distance trajectory,</span>
+<span class="sd">    because log(d_i(k)) = log(c) + lambda * k. This gives a set of lines</span>
+<span class="sd">    (one for each index i) whose slope is an approximation of lambda. We</span>
+<span class="sd">    therefore extract the mean log trajectory d&#39;(k) by taking the mean of</span>
+<span class="sd">    log(d_i(k)) over all orbit vectors X_i. We then fit a straight line to</span>
+<span class="sd">    the plot of d&#39;(k) versus k. The slope of the line gives the desired</span>
+<span class="sd">    parameter lambda.</span>
+
+<span class="sd">  Method for choosing min_tsep:</span>
+<span class="sd">    Usually we want to find neighbors between points that are close in phase</span>
+<span class="sd">    space but not too close in time, because we want to avoid spurious</span>
+<span class="sd">    correlations between the obtained trajectories that originate from temporal</span>
+<span class="sd">    dependencies rather than the dynamic properties of the system. Therefore it</span>
+<span class="sd">    is critical to find a good value for min_tsep. One rather plausible</span>
+<span class="sd">    estimate for this value is to set min_tsep to the mean period of the</span>
+<span class="sd">    signal, which can be obtained by calculating the mean frequency using the</span>
+<span class="sd">    fast fourier transform. This procedure is used by default if the user sets</span>
+<span class="sd">    min_tsep = None.</span>
+
+<span class="sd">  Method for choosing lag:</span>
+<span class="sd">    Another parameter that can be hard to choose by instinct alone is the lag</span>
+<span class="sd">    between individual values in a vector of the embedded orbit. Here,</span>
+<span class="sd">    Rosenstein et al. suggest to set the lag to the distance where the</span>
+<span class="sd">    autocorrelation function drops below 1 - 1/e times its original (maximal)</span>
+<span class="sd">    value. This procedure is used by default if the user sets lag = None.</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [lr-1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca,</span>
+<span class="sd">       “A practical method for calculating largest Lyapunov exponents from</span>
+<span class="sd">       small data sets,” Physica D: Nonlinear Phenomena, vol. 65, no. 1,</span>
+<span class="sd">       pp. 117–134, 1993.</span>
+
+<span class="sd">  Reference Code:</span>
+<span class="sd">    .. [lr-a] mirwais, &quot;Largest Lyapunov Exponent with Rosenstein&#39;s Algorithm&quot;,</span>
+<span class="sd">       url: http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm</span>
+<span class="sd">    .. [lr-b] Shapour Mohammadi, &quot;LYAPROSEN: MATLAB function to calculate</span>
+<span class="sd">       Lyapunov exponent&quot;,</span>
+<span class="sd">       url: https://ideas.repec.org/c/boc/bocode/t741502.html</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    data (iterable of float):</span>
+<span class="sd">      (one-dimensional) time series</span>
+<span class="sd">  Kwargs:</span>
+<span class="sd">    emb_dim (int):</span>
+<span class="sd">      embedding dimension for delay embedding</span>
+<span class="sd">    lag (float):</span>
+<span class="sd">      lag for delay embedding</span>
+<span class="sd">    min_tsep (float):</span>
+<span class="sd">      minimal temporal separation between two &quot;neighbors&quot; (default:</span>
+<span class="sd">      find a suitable value by calculating the mean period of the data)</span>
+<span class="sd">    tau (float):</span>
+<span class="sd">      step size between data points in the time series in seconds (default:</span>
+<span class="sd">      find a suitable value using the autocorrelation function)</span>
+<span class="sd">    min_vectors (int):</span>
+<span class="sd">      if lag=None, the search for a suitable lag will be stopped</span>
+<span class="sd">      when the number of resulting vectors drops below min_vectors</span>
+<span class="sd">    trajectory_len (int):</span>
+<span class="sd">      the time (in number of data points) to follow the distance</span>
+<span class="sd">      trajectories between two neighboring points</span>
+<span class="sd">    debug_plot (boolean):</span>
+<span class="sd">      if True, a simple plot of the final line-fitting step will</span>
+<span class="sd">      be shown</span>
+<span class="sd">    plot_file (str):</span>
+<span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
+<span class="sd">      under the given file name instead of directly showing it through</span>
+<span class="sd">      `plt.show()`</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    float:</span>
+<span class="sd">      an estimate of the largest Lyapunov exponent (a positive exponent is</span>
+<span class="sd">      a strong indicator for chaos)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># convert data to float to avoid overflow errors in rowwise_euler</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="n">max_tsep_factor</span> <span class="o">=</span> <span class="mf">0.25</span>
+  <span class="k">if</span> <span class="n">lag</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">min_tsep</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="c1"># calculate min_tsep as mean period (= 1 / mean frequency)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">mf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfftfreq</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">mf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mf</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+    <span class="n">min_tsep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">mf</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">min_tsep</span> <span class="o">&gt;</span> <span class="n">max_tsep_factor</span> <span class="o">*</span> <span class="n">n</span><span class="p">:</span>
+      <span class="n">min_tsep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_tsep_factor</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;signal has very low mean frequency, setting min_tsep = {:d}&quot;</span>
+      <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_tsep</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+    <span class="c1"># calculate the lag as point where the autocorrelation drops to (1 - 1/e)</span>
+    <span class="c1"># times its maximum value</span>
+    <span class="c1"># note: the Wiener–Khinchin theorem states that the spectral</span>
+    <span class="c1"># decomposition of the autocorrelation function of a process is the power</span>
+    <span class="c1"># spectrum of that process</span>
+    <span class="c1"># =&gt; we can use fft to calculate the autocorrelation</span>
+    <span class="n">acorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">irfft</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+    <span class="n">acorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">acorr</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">acorr</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">lag</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">acorr</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span> \
+          <span class="ow">or</span> <span class="n">acorr</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span> \
+          <span class="ow">or</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="n">emb_dim</span> <span class="o">*</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">min_vectors</span><span class="p">:</span>
+        <span class="n">lag</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="n">emb_dim</span> <span class="o">*</span> <span class="n">lag</span> <span class="o">&lt;</span> <span class="n">min_vectors</span><span class="p">:</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;autocorrelation declined too slowly to find suitable lag&quot;</span>
+      <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+  <span class="c1"># delay embedding</span>
+  <span class="n">orbit</span> <span class="o">=</span> <span class="n">delay_embedding</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">lag</span><span class="p">)</span>
+  <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbit</span><span class="p">)</span>
+  <span class="c1"># construct matrix with pairwise distances between vectors in orbit</span>
+  <span class="n">dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rowwise_euler</span><span class="p">(</span><span class="n">orbit</span><span class="p">,</span> <span class="n">orbit</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)])</span>
+  <span class="c1"># we do not want to consider vectors as neighbor that are less than min_tsep</span>
+  <span class="c1"># time steps together =&gt; mask the distances min_tsep to the right and left of</span>
+  <span class="c1"># each index by setting them to infinity (will never be considered as nearest</span>
+  <span class="c1"># neighbors)</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">dists</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="n">min_tsep</span><span class="p">):</span><span class="n">i</span> <span class="o">+</span> <span class="n">min_tsep</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+  <span class="c1"># find nearest neighbors (exclude last columns, because these vectors cannot</span>
+  <span class="c1"># be followed in time for trajectory_len steps)</span>
+  <span class="n">ntraj</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">trajectory_len</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="n">nb_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">dists</span><span class="p">[:</span><span class="n">ntraj</span><span class="p">,</span> <span class="p">:</span><span class="n">ntraj</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="c1"># build divergence trajectory by averaging distances along the trajectory</span>
+  <span class="c1"># over all neighbor pairs</span>
+  <span class="n">div_traj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">trajectory_len</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trajectory_len</span><span class="p">):</span>
+    <span class="c1"># calculate mean trajectory distance at step k</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ntraj</span><span class="p">)</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">nb_idx</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span>
+    <span class="n">div_traj_k</span> <span class="o">=</span> <span class="n">dists</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="c1"># filter entries where distance is zero (would lead to -inf after log)</span>
+    <span class="n">nonzero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">div_traj_k</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nonzero</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="c1"># if all entries where zero, we have to use -inf</span>
+      <span class="n">div_traj</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">div_traj</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">div_traj_k</span><span class="p">[</span><span class="n">nonzero</span><span class="p">]))</span>
+  <span class="c1"># filter -inf entries from mean trajectory</span>
+  <span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">trajectory_len</span><span class="p">)</span>
+  <span class="n">finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">div_traj</span><span class="p">))</span>
+  <span class="n">ks</span> <span class="o">=</span> <span class="n">ks</span><span class="p">[</span><span class="n">finite</span><span class="p">]</span>
+  <span class="n">div_traj</span> <span class="o">=</span> <span class="n">div_traj</span><span class="p">[</span><span class="n">finite</span><span class="p">]</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ks</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="c1"># if all points or all but one point in the trajectory is -inf, we cannot</span>
+    <span class="c1"># fit a line through the remaining points =&gt; return -inf as exponent</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="c1"># normal line fitting</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
+    <span class="n">plot_reg</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;log(d(k))&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">tau</span></div>
+
+
+<div class="viewcode-block" id="lyap_e"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_e">[docs]</a><span class="k">def</span> <span class="nf">lyap_e</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">matrix_dim</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">min_nb</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_tsep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+           <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Estimates the Lyapunov exponents for the given data using the algorithm of</span>
+<span class="sd">  Eckmann et al. [le-1]_.</span>
+
+<span class="sd">  Recommendations for parameter settings by Eckmann et al.:</span>
+<span class="sd">    * long recording time improves accuracy, small tau does not</span>
+<span class="sd">    * use large values for emb_dim</span>
+<span class="sd">    * matrix_dim should be &#39;somewhat larger than the expected number of</span>
+<span class="sd">      positive Lyapunov exponents&#39;</span>
+<span class="sd">    * min_nb = min(2 * matrix_dim, matrix_dim + 4)</span>
+
+<span class="sd">  Explanation of Lyapunov exponents:</span>
+<span class="sd">    The Lyapunov exponent describes the rate of separation of two</span>
+<span class="sd">    infinitesimally close trajectories of a dynamical system in phase space.</span>
+<span class="sd">    In a chaotic system, these trajectories diverge exponentially following</span>
+<span class="sd">    the equation:</span>
+
+<span class="sd">    \|X(t, X_0) - X(t, X_0 + eps)| = e^(lambda * t) * \|eps|</span>
+
+<span class="sd">    In this equation X(t, X_0) is the trajectory of the system X starting at</span>
+<span class="sd">    the point X_0 in phase space at time t. eps is the (infinitesimal)</span>
+<span class="sd">    difference vector and lambda is called the Lyapunov exponent. If the</span>
+<span class="sd">    system has more than one free variable, the phase space is</span>
+<span class="sd">    multidimensional and each dimension has its own Lyapunov exponent. The</span>
+<span class="sd">    existence of at least one positive Lyapunov exponent is generally seen as</span>
+<span class="sd">    a strong indicator for chaos.</span>
+
+<span class="sd">  Explanation of the Algorithm:</span>
+<span class="sd">    To calculate the Lyapunov exponents analytically, the Jacobian of the</span>
+<span class="sd">    system is required. The algorithm of Eckmann et al. therefore tries to</span>
+<span class="sd">    estimate this Jacobian by reconstructing the dynamics of the system from</span>
+<span class="sd">    which the time series was obtained. For this, several steps are required:</span>
+
+<span class="sd">    * Embed the time series [x_1, x_2, ..., x_(N-1)] in an orbit of emb_dim</span>
+<span class="sd">      dimensions (map each point x_i of the time series to a vector</span>
+<span class="sd">      [x_i, x_(i+1), x_(i+2), ... x_(i+emb_dim-1)]).</span>
+<span class="sd">    * For each vector X_i in this orbit find a radius r_i so that at least</span>
+<span class="sd">      min_nb other vectors lie within (chebychev-)distance r_i around X_i.</span>
+<span class="sd">      These vectors will be called &quot;neighbors&quot; of X_i.</span>
+<span class="sd">    * Find the Matrix T_i that sends points from the neighborhood of X_i to</span>
+<span class="sd">      the neighborhood of X_(i+1). To avoid undetermined values in T_i, we</span>
+<span class="sd">      construct T_i not with size (emb_dim x emb_dim) but with size</span>
+<span class="sd">      (matrix_dim x matrix_dim), so that we have a larger &quot;step size&quot; m in the</span>
+<span class="sd">      X_i, which are now defined as X&#39;_i = [x_i, x_(i+m), x_(i+2m),</span>
+<span class="sd">      ... x_(i+(matrix_dim-1)*m)]. This means that emb_dim-1 must be divisible</span>
+<span class="sd">      by matrix_dim-1. The T_i are then found by a linear least squares fit,</span>
+<span class="sd">      assuring that T_i (X_j - X_i) ~= X_(j+m) - X_(i+m) for any X_j in the</span>
+<span class="sd">      neighborhood of X_i.</span>
+<span class="sd">    * Starting with i = 1 and Q_0 = identity successively decompose the matrix</span>
+<span class="sd">      T_i * Q_(i-1) into the matrices Q_i and R_i by a QR-decomposition.</span>
+<span class="sd">    * Calculate the Lyapunov exponents from the mean of the logarithm of the</span>
+<span class="sd">      diagonal elements of the matrices R_i. To normalize the Lyapunov</span>
+<span class="sd">      exponents, they have to be divided by m and by the step size tau of the</span>
+<span class="sd">      original time series.</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [le-1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,</span>
+<span class="sd">       “Liapunov exponents from time series,” Physical Review A,</span>
+<span class="sd">       vol. 34, no. 6, pp. 4971–4979, 1986.</span>
+
+<span class="sd">  Reference code:</span>
+<span class="sd">    .. [le-a] Manfred Füllsack, &quot;Lyapunov exponent&quot;,</span>
+<span class="sd">       url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</span>
+<span class="sd">    .. [le-b] Steve SIU, Lyapunov Exponents Toolbox (LET),</span>
+<span class="sd">       url: http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m</span>
+<span class="sd">    .. [le-c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,</span>
+<span class="sd">       url: http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/index.html</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    data (iterable):</span>
+<span class="sd">      list/array of (scalar) data points</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    emb_dim (int):</span>
+<span class="sd">      embedding dimension</span>
+<span class="sd">    matrix_dim (int):</span>
+<span class="sd">      matrix dimension (emb_dim - 1 must be divisible by matrix_dim - 1)</span>
+<span class="sd">    min_nb (int):</span>
+<span class="sd">      minimal number of neighbors</span>
+<span class="sd">      (default: min(2 * matrix_dim, matrix_dim + 4))</span>
+<span class="sd">    tau (float):</span>
+<span class="sd">      step size of the data in seconds</span>
+<span class="sd">      (normalization scaling factor for exponents)</span>
+<span class="sd">    debug_plot (boolean):</span>
+<span class="sd">      if True, a histogram matrix of the individual estimates will be shown</span>
+<span class="sd">    plot_file (str):</span>
+<span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
+<span class="sd">      under the given file name instead of directly showing it through</span>
+<span class="sd">      `plt.show()`</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    float array:</span>
+<span class="sd">      array of matrix_dim Lyapunov exponents (positive exponents are indicators</span>
+<span class="sd">      for chaos)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">emb_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">matrix_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;emb_dim - 1 must be divisible by matrix_dim - 1!&quot;</span><span class="p">)</span>
+  <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">emb_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="p">(</span><span class="n">matrix_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">min_nb</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="c1"># minimal number of neighbors as suggested by Eckmann et al.</span>
+    <span class="n">min_nb</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">matrix_dim</span><span class="p">,</span> <span class="n">matrix_dim</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
+
+  <span class="c1"># construct orbit as matrix (e = emb_dim)</span>
+  <span class="c1"># x0 x1 x2 ... xe-1</span>
+  <span class="c1"># x1 x2 x3 ... xe</span>
+  <span class="c1"># x2 x3 x4 ... xe+1</span>
+  <span class="c1"># ...</span>
+
+  <span class="c1"># note: we need to be able to step m points further for the beta vector</span>
+  <span class="c1">#       =&gt; maximum start index is n - emb_dim - m</span>
+  <span class="n">orbit_l</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">emb_dim</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">emb_dim</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">m</span><span class="p">)]</span>
+  <span class="n">orbit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">orbit_l</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+  <span class="n">old_Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">matrix_dim</span><span class="p">)</span>
+  <span class="n">lexp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">matrix_dim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+  <span class="n">lexp_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">lexp</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+  <span class="n">debug_data</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="c1"># TODO reduce number of points to visit?</span>
+  <span class="c1"># TODO performance test!</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">orbit</span><span class="p">)):</span>
+    <span class="c1"># find neighbors for each vector in the orbit using the chebychev distance</span>
+    <span class="n">diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">orbit</span> <span class="o">-</span> <span class="n">orbit</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># ensure that we do not count the difference of the vector to itself</span>
+    <span class="n">diffs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+    <span class="c1"># mask all neighbors that are too close in time to the vector itself</span>
+    <span class="n">diffs</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="n">min_tsep</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">diffs</span><span class="p">),</span> <span class="n">i</span> <span class="o">+</span> <span class="n">min_tsep</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">diffs</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">min_nb</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># index of the min_nb-nearest neighbor</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">diffs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>  <span class="c1"># corresponding distance</span>
+    <span class="c1"># there may be more than min_nb vectors at distance r (if multiple vectors</span>
+    <span class="c1"># have a distance of exactly r)</span>
+    <span class="c1"># =&gt; update index accordingly</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diffs</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># find the matrix T_i that satisifies</span>
+    <span class="c1"># T_i (orbit&#39;[j] - orbit&#39;[i]) = (orbit&#39;[j+m] - orbit&#39;[i+m])</span>
+    <span class="c1"># for all neighbors j where orbit&#39;[i] = [x[i], x[i+m],</span>
+    <span class="c1"># ... x[i + (matrix_dim-1)*m]]</span>
+
+    <span class="c1"># note that T_i has the following form:</span>
+    <span class="c1"># 0  1  0  ... 0</span>
+    <span class="c1"># 0  0  1  ... 0</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># a0 a1 a2 ... a(matrix_dim-1)</span>
+
+    <span class="c1"># This is because for all rows except the last one the aforementioned</span>
+    <span class="c1"># equation has a clear solution since orbit&#39;[j+m] - orbit&#39;[i+m] =</span>
+    <span class="c1"># [x[j+m]-x[i+m], x[j+2*m]-x[i+2*m], ... x[j+d_M*m]-x[i+d_M*m]]</span>
+    <span class="c1"># and</span>
+    <span class="c1"># orbit&#39;[j] - orbit&#39;[i] =</span>
+    <span class="c1"># [x[j]-x[i], x[j+m]-x[i+m], ... x[j+(d_M-1)*m]-x[i+(d_M-1)*m]]</span>
+    <span class="c1"># therefore x[j+k*m] - x[i+k*m] is already contained in</span>
+    <span class="c1"># orbit&#39;[j] - orbit&#39;[x] for all k from 1 to matrix_dim-1. Only for</span>
+    <span class="c1"># k = matrix_dim there is an actual problem to solve.</span>
+
+    <span class="c1"># We can therefore find a = [a0, a1, a2, ... a(matrix_dim-1)] by</span>
+    <span class="c1"># formulating a linear least squares problem (mat_X * a = vec_beta)</span>
+    <span class="c1"># as follows.</span>
+
+    <span class="c1"># build matrix X for linear least squares (d_M = matrix_dim)</span>
+    <span class="c1"># x_j1 - x_i   x_j1+m - x_i+m   ...   x_j1+(d_M-1)m - x_i+(d_M-1)m</span>
+    <span class="c1"># x_j2 - x_i   x_j2+m - x_i+m   ...   x_j2+(d_M-1)m - x_i+(d_M-1)m</span>
+    <span class="c1"># ...</span>
+
+    <span class="c1"># note: emb_dim = (d_M - 1) * m + 1</span>
+    <span class="n">mat_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">j</span> <span class="o">+</span> <span class="n">emb_dim</span><span class="p">:</span><span class="n">m</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">])</span>
+    <span class="n">mat_X</span> <span class="o">-=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">emb_dim</span><span class="p">:</span><span class="n">m</span><span class="p">]</span>
+
+    <span class="c1"># build vector beta for linear least squares</span>
+    <span class="c1"># x_j1+(d_M)m - x_i+(d_M)m</span>
+    <span class="c1"># x_j2+(d_M)m - x_i+(d_M)m</span>
+    <span class="c1"># ...</span>
+    <span class="n">vec_beta</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">indices</span> <span class="o">+</span> <span class="n">matrix_dim</span> <span class="o">*</span> <span class="n">m</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">matrix_dim</span> <span class="o">*</span> <span class="n">m</span><span class="p">]</span>
+
+    <span class="c1"># perform linear least squares</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">mat_X</span><span class="p">,</span> <span class="n">vec_beta</span><span class="p">)</span>
+    <span class="c1"># build matrix T</span>
+    <span class="c1"># 0  1  0  ... 0</span>
+    <span class="c1"># 0  0  1  ... 0</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># 0  0  0  ... 1</span>
+    <span class="c1"># a1 a2 a3 ... a_(d_M)</span>
+    <span class="n">mat_T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">matrix_dim</span><span class="p">,</span> <span class="n">matrix_dim</span><span class="p">))</span>
+    <span class="n">mat_T</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">matrix_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">mat_T</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+
+    <span class="c1"># QR-decomposition of T * old_Q</span>
+    <span class="n">mat_Q</span><span class="p">,</span> <span class="n">mat_R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mat_T</span><span class="p">,</span> <span class="n">old_Q</span><span class="p">))</span>
+    <span class="c1"># force diagonal of R to be positive</span>
+    <span class="c1"># (if QR = A then also QLL&#39;R = A with L&#39; = L^-1)</span>
+    <span class="n">sign_diag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">mat_R</span><span class="p">))</span>
+    <span class="n">sign_diag</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sign_diag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">sign_diag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sign_diag</span><span class="p">)</span>
+    <span class="n">mat_Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mat_Q</span><span class="p">,</span> <span class="n">sign_diag</span><span class="p">)</span>
+    <span class="n">mat_R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sign_diag</span><span class="p">,</span> <span class="n">mat_R</span><span class="p">)</span>
+
+    <span class="n">old_Q</span> <span class="o">=</span> <span class="n">mat_Q</span>
+    <span class="c1"># successively build sum for Lyapunov exponents</span>
+    <span class="n">diag_R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">mat_R</span><span class="p">)</span>
+    <span class="c1"># filter zeros in mat_R (would lead to -infs)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diag_R</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">lexp_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">diag_R</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+    <span class="n">lexp_i</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">diag_R</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+    <span class="n">lexp_i</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diag_R</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
+      <span class="n">debug_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lexp_i</span> <span class="o">/</span> <span class="n">tau</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span>
+    <span class="n">lexp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">lexp_i</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="n">lexp_counts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="c1"># end of loop over orbit vectors</span>
+  <span class="c1"># it may happen that all R-matrices contained zeros =&gt; exponent really has</span>
+  <span class="c1"># to be -inf</span>
+  <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
+    <span class="n">plot_histogram_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">debug_data</span><span class="p">),</span> <span class="s2">&quot;layp_e&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
+  <span class="c1"># normalize exponents over number of individual mat_Rs</span>
+  <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lexp_counts</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">lexp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">/=</span> <span class="n">lexp_counts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+  <span class="n">lexp</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lexp_counts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+  <span class="c1"># normalize with respect to tau</span>
+  <span class="n">lexp</span> <span class="o">/=</span> <span class="n">tau</span>
+  <span class="c1"># take m into account</span>
+  <span class="n">lexp</span> <span class="o">/=</span> <span class="n">m</span>
+  <span class="k">return</span> <span class="n">lexp</span></div>
+
+
+<span class="k">def</span> <span class="nf">plot_dists</span><span class="p">(</span><span class="n">dists</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="c1"># local import to avoid dependency for non-debug use</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+  <span class="n">nstd</span> <span class="o">=</span> <span class="mi">3</span>
+  <span class="n">nbins</span> <span class="o">=</span> <span class="mi">50</span>
+  <span class="n">dists_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">dists</span><span class="p">)</span>
+  <span class="n">ymax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dists_full</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.05</span>
+  <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dists_full</span><span class="p">)</span>
+  <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dists_full</span><span class="p">)</span>
+  <span class="n">rng</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">std</span> <span class="o">*</span> <span class="n">nstd</span><span class="p">)</span>
+  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">bins</span> <span class="ow">in</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">dat</span> <span class="ow">in</span> <span class="n">dists</span><span class="p">]:</span>
+    <span class="n">bw</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">h</span><span class="p">,</span> <span class="n">bw</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;m={:d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="n">i</span><span class="p">),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">fname</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="sampen"><a class="viewcode-back" href="../../nolds.html#nolds.sampen">[docs]</a><span class="k">def</span> <span class="nf">sampen</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s2">&quot;chebychev&quot;</span><span class="p">,</span>
+           <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Computes the sample entropy of the given data.</span>
+
+<span class="sd">  Explanation of the sample entropy:</span>
+<span class="sd">    The sample entropy of a time series is defined as the negative natural</span>
+<span class="sd">    logarithm of the conditional probability that two sequences similar for</span>
+<span class="sd">    emb_dim points remain similar at the next point, excluding self-matches.</span>
+
+<span class="sd">    A lower value for the sample entropy therefore corresponds to a higher</span>
+<span class="sd">    probability indicating more self-similarity.</span>
+
+<span class="sd">  Explanation of the algorithm:</span>
+<span class="sd">    The algorithm constructs all subsequences of length emb_dim</span>
+<span class="sd">    [s_1, s_2, s_3, ...] and then counts each pair (s_i, s_j) with i != j</span>
+<span class="sd">    where dist(s_i, s_j) &lt; tolerance. The same process is repeated for all</span>
+<span class="sd">    subsequences of length emb_dim + 1. The sum of similar sequence pairs</span>
+<span class="sd">    with length emb_dim + 1 is divided by the sum of similar sequence pairs</span>
+<span class="sd">    with length emb_dim. The result of the algorithm is the negative logarithm</span>
+<span class="sd">    of this ratio/probability.</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [se-1] J. S. Richman and J. R. Moorman, “Physiological time-series</span>
+<span class="sd">       analysis using approximate entropy and sample entropy,”</span>
+<span class="sd">       American Journal of Physiology-Heart and Circulatory Physiology,</span>
+<span class="sd">       vol. 278, no. 6, pp. H2039–H2049, 2000.</span>
+
+<span class="sd">  Reference code:</span>
+<span class="sd">    .. [se-a] &quot;sample_entropy&quot; function in R-package &quot;pracma&quot;,</span>
+<span class="sd">        url: https://cran.r-project.org/web/packages/pracma/pracma.pdf</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    data (iterable):</span>
+<span class="sd">      the list/array of data points</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    emb_dim (int):</span>
+<span class="sd">      the embedding dimension (length of vectors to compare)</span>
+<span class="sd">    tolerance (float):</span>
+<span class="sd">      distance threshold for two template vectors to be considered equal</span>
+<span class="sd">      (default: 0.2 * std(data))</span>
+<span class="sd">    dist (string):</span>
+<span class="sd">      distance function used to calculate the distance between template</span>
+<span class="sd">      vectors, can be &#39;euler&#39; or &#39;chebychev&#39;</span>
+<span class="sd">    debug_plot (boolean):</span>
+<span class="sd">      if True, a histogram of the individual distances for m and m+1</span>
+<span class="sd">    plot_file (str):</span>
+<span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
+<span class="sd">      under the given file name instead of directly showing it through</span>
+<span class="sd">      `plt.show()`</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    float:</span>
+<span class="sd">      the sample entropy of the data (negative logarithm of ratio between</span>
+<span class="sd">      similar template vectors of length emb_dim + 1 and emb_dim)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+  <span class="c1"># build matrix of &quot;template vectors&quot;</span>
+  <span class="c1"># (all consecutive subsequences of length m)</span>
+  <span class="c1"># x0 x1 x2 x3 ... xm-1</span>
+  <span class="c1"># x1 x2 x3 x4 ... xm</span>
+  <span class="c1"># x2 x3 x4 x5 ... xm+1</span>
+  <span class="c1"># ...</span>
+  <span class="c1"># x_n-m-1     ... xn-1</span>
+
+  <span class="c1"># since we need two of these matrices for m = emb_dim and m = emb_dim +1,</span>
+  <span class="c1"># we build one that is large enough =&gt; shape (emb_dim+1, n-emb_dim)</span>
+
+  <span class="c1"># note that we ignore the last possible template vector with length emb_dim,</span>
+  <span class="c1"># because this vector has no corresponding vector of length m+1 and thus does</span>
+  <span class="c1"># not count towards the conditional probability</span>
+  <span class="c1"># (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)</span>
+  <span class="n">tVecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">emb_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tVecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="n">tVecs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">tVecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+  <span class="n">plot_data</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">counts</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="n">emb_dim</span><span class="p">,</span> <span class="n">emb_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="n">counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plot_data</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+    <span class="c1"># get the matrix that we need for the current m</span>
+    <span class="n">tVecsM</span> <span class="o">=</span> <span class="n">tVecs</span><span class="p">[:</span><span class="n">n</span> <span class="o">-</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="n">m</span><span class="p">]</span>
+    <span class="c1"># successively calculate distances between each pair of template vectors</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tVecsM</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+      <span class="n">diff</span> <span class="o">=</span> <span class="n">tVecsM</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">tVecsM</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+      <span class="k">if</span> <span class="n">dist</span> <span class="o">==</span> <span class="s2">&quot;chebychev&quot;</span><span class="p">:</span>
+        <span class="n">dsts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="n">dist</span> <span class="o">==</span> <span class="s2">&quot;euler&quot;</span><span class="p">:</span>
+        <span class="n">dsts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="s2">&quot;unknown distance function: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">dist</span>
+      <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
+        <span class="n">plot_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">dsts</span><span class="p">)</span>
+      <span class="c1"># count how many distances are smaller than the tolerance</span>
+      <span class="n">counts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dsts</span> <span class="o">&lt;</span> <span class="n">tolerance</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">counts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="c1"># log would be infinite =&gt; cannot determine saen</span>
+    <span class="n">saen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">saen</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">counts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">counts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
+    <span class="n">plot_dists</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;sampEn = {:.3f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">saen</span><span class="p">),</span>
+               <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">saen</span></div>
+
+
+<div class="viewcode-block" id="binary_n"><a class="viewcode-back" href="../../nolds.html#nolds.binary_n">[docs]</a><span class="k">def</span> <span class="nf">binary_n</span><span class="p">(</span><span class="n">total_N</span><span class="p">,</span> <span class="n">min_n</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Creates a list of values by successively halving the total length total_N</span>
+<span class="sd">  until the resulting value is less than min_n.</span>
+
+<span class="sd">  Non-integer results are rounded down.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    total_N (int):</span>
+<span class="sd">      total length</span>
+<span class="sd">  Kwargs:</span>
+<span class="sd">    min_n (int):</span>
+<span class="sd">      minimal length after division</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    list of integers:</span>
+<span class="sd">      total_N/2, total_N/4, total_N/8, ... until total_N/2^i &lt; min_n</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">max_exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">total_N</span> <span class="o">/</span> <span class="n">min_n</span><span class="p">)</span>
+  <span class="n">max_exp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">max_exp</span><span class="p">))</span>
+  <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">total_N</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">i</span><span class="p">)))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="logarithmic_n"><a class="viewcode-back" href="../../nolds.html#nolds.logarithmic_n">[docs]</a><span class="k">def</span> <span class="nf">logarithmic_n</span><span class="p">(</span><span class="n">min_n</span><span class="p">,</span> <span class="n">max_n</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Creates a list of values by successively multiplying a minimum value min_n by</span>
+<span class="sd">  a factor &gt; 1 until a maximum value max_n is reached.</span>
+
+<span class="sd">  Non-integer results are rounded down.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    min_n (float):</span>
+<span class="sd">      minimum value (must be &lt; max_n)</span>
+<span class="sd">    max_n (float):</span>
+<span class="sd">      maximum value (must be &gt; min_n)</span>
+<span class="sd">    factor (float):</span>
+<span class="sd">      factor used to increase min_n (must be &gt; 1)</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    list of integers:</span>
+<span class="sd">      min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i &lt; max_n</span>
+<span class="sd">      without duplicates</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">assert</span> <span class="n">max_n</span> <span class="o">&gt;</span> <span class="n">min_n</span>
+  <span class="k">assert</span> <span class="n">factor</span> <span class="o">&gt;</span> <span class="mi">1</span>
+  <span class="c1"># stop condition: min * f^x = max</span>
+  <span class="c1"># =&gt; f^x = max/min</span>
+  <span class="c1"># =&gt; x = log(max/min) / log(f)</span>
+  <span class="n">max_i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">max_n</span> <span class="o">/</span> <span class="n">min_n</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">factor</span><span class="p">)))</span>
+  <span class="n">ns</span> <span class="o">=</span> <span class="p">[</span><span class="n">min_n</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">min_n</span> <span class="o">*</span> <span class="p">(</span><span class="n">factor</span> <span class="o">**</span> <span class="n">i</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">ns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+      <span class="n">ns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">ns</span></div>
+
+
+<div class="viewcode-block" id="logarithmic_r"><a class="viewcode-back" href="../../nolds.html#nolds.logarithmic_r">[docs]</a><span class="k">def</span> <span class="nf">logarithmic_r</span><span class="p">(</span><span class="n">min_n</span><span class="p">,</span> <span class="n">max_n</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Creates a list of values by successively multiplying a minimum value min_n by</span>
+<span class="sd">  a factor &gt; 1 until a maximum value max_n is reached.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    min_n (float):</span>
+<span class="sd">      minimum value (must be &lt; max_n)</span>
+<span class="sd">    max_n (float):</span>
+<span class="sd">      maximum value (must be &gt; min_n)</span>
+<span class="sd">    factor (float):</span>
+<span class="sd">      factor used to increase min_n (must be &gt; 1)</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    list of floats:</span>
+<span class="sd">      min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i &lt; max_n</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">assert</span> <span class="n">max_n</span> <span class="o">&gt;</span> <span class="n">min_n</span>
+  <span class="k">assert</span> <span class="n">factor</span> <span class="o">&gt;</span> <span class="mi">1</span>
+  <span class="n">max_i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">max_n</span> <span class="o">/</span> <span class="n">min_n</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">factor</span><span class="p">)))</span>
+  <span class="k">return</span> <span class="p">[</span><span class="n">min_n</span> <span class="o">*</span> <span class="p">(</span><span class="n">factor</span> <span class="o">**</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span></div>
+
+
+<span class="k">def</span> <span class="nf">rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Calculates an individual R/S value in the rescaled range approach for</span>
+<span class="sd">  a given n.</span>
+
+<span class="sd">  Note: This is just a helper function for hurs_rs and should not be called</span>
+<span class="sd">  directly.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    data (array of float):</span>
+<span class="sd">      time series</span>
+<span class="sd">    n (float):</span>
+<span class="sd">      size of the subseries in which data should be split</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    float:</span>
+<span class="sd">      (R/S)_n</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">total_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="c1"># cut values at the end of data to make the array divisible by n</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="n">total_N</span> <span class="o">-</span> <span class="p">(</span><span class="n">total_N</span> <span class="o">%</span> <span class="n">n</span><span class="p">)]</span>
+  <span class="c1"># split remaining data into subsequences of length n</span>
+  <span class="n">seqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">total_N</span> <span class="o">//</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+  <span class="c1"># calculate means of subsequences</span>
+  <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">seqs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="c1"># normalize subsequences by substracting mean</span>
+  <span class="n">y</span> <span class="o">=</span> <span class="n">seqs</span> <span class="o">-</span> <span class="n">means</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">total_N</span> <span class="o">//</span> <span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+  <span class="c1"># build cumulative sum of subsequences</span>
+  <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="c1"># find ranges</span>
+  <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="c1"># find standard deviation</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">seqs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="c1"># some ranges may be zero and have to be excluded from the analysis</span>
+  <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">r</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+  <span class="c1"># it may happen that all ranges are zero (if all values in data are equal)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="c1"># return mean of r/s along subsequence index</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="n">s</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">plot_histogram_matrix</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="c1"># local import to avoid dependency for non-debug use</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+  <span class="n">nhists</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="n">nbins</span> <span class="o">=</span> <span class="mi">25</span>
+  <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+  <span class="n">nrows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nhists</span><span class="p">)))</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">nrows</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">nrows</span> <span class="o">*</span> <span class="mi">4</span><span class="p">))</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nhists</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">nrows</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">absmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])))</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">absmax</span><span class="p">,</span> <span class="n">absmax</span><span class="p">)</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
+    <span class="n">bin_width</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">h</span><span class="p">,</span> <span class="n">bin_width</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;{:s}[{:d}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+  <span class="k">if</span> <span class="n">fname</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">plot_reg</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">poly</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">,</span>
+             <span class="n">reg_label</span><span class="o">=</span><span class="s2">&quot;regression line&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Helper function to plot trend lines for line-fitting approaches. This</span>
+<span class="sd">  function will show a plot through `plt.show()` and close it after the window</span>
+<span class="sd">  has been closed by the user.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    xvals (list/array of float):</span>
+<span class="sd">      list of x-values</span>
+<span class="sd">    yvals (list/array of float):</span>
+<span class="sd">      list of y-values</span>
+<span class="sd">    poly (list/array of float):</span>
+<span class="sd">      polynomial parameters as accepted by `np.polyval`</span>
+<span class="sd">  Kwargs:</span>
+<span class="sd">    x_label (str):</span>
+<span class="sd">      label of the x-axis</span>
+<span class="sd">    y_label (str):</span>
+<span class="sd">      label of the y-axis</span>
+<span class="sd">    data_label (str):</span>
+<span class="sd">      label of the data</span>
+<span class="sd">    reg_label(str):</span>
+<span class="sd">      label of the regression line</span>
+<span class="sd">    fname (str):</span>
+<span class="sd">      file name (if not None, the plot will be saved to disc instead of</span>
+<span class="sd">      showing it though `plt.show()`)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># local import to avoid dependency for non-debug use</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="s2">&quot;bo&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">data_label</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">poly</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">xvals</span><span class="p">),</span> <span class="s2">&quot;r-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">reg_label</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">x_label</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">y_label</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">fname</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="hurst_rs"><a class="viewcode-back" href="../../nolds.html#nolds.hurst_rs">[docs]</a><span class="k">def</span> <span class="nf">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Calculates the Hurst exponent by a standard rescaled range (R/S) approach.</span>
+
+<span class="sd">  Explanation of Hurst exponent:</span>
+<span class="sd">    The Hurst exponent is a measure for the &quot;long-term memory&quot; of a</span>
+<span class="sd">    time series, meaning the long statistical dependencies in the data that do</span>
+<span class="sd">    not originate from cycles.</span>
+
+<span class="sd">    It originates from H.E. Hursts observations of the problem of long-term</span>
+<span class="sd">    storage in water reservoirs. If x_i is the discharge of a river in year i</span>
+<span class="sd">    and we observe this discharge for N years, we can calculate the storage</span>
+<span class="sd">    capacity that would be required to keep the discharge steady at its mean</span>
+<span class="sd">    value.</span>
+
+<span class="sd">    To do so, we first substract the mean over all x_i from the individual</span>
+<span class="sd">    x_i to obtain the departures x&#39;_i from the mean for each year i. As the</span>
+<span class="sd">    excess or deficit in discharge always carrys over from year i to year i+1,</span>
+<span class="sd">    we need to examine the cumulative sum of x&#39;_i, denoted by y_i. This</span>
+<span class="sd">    cumulative sum represents the filling of our hypothetical storage. If the</span>
+<span class="sd">    sum is above 0, we are storing excess discharge from the river, if it is</span>
+<span class="sd">    below zero we have compensated a deficit in discharge by releasing</span>
+<span class="sd">    water from the storage. The range (maximum - minimum) R of y_i therefore</span>
+<span class="sd">    represents the total capacity required for the storage.</span>
+
+<span class="sd">    Hurst showed that this value follows a steady trend for varying N if it</span>
+<span class="sd">    is normalized by the standard deviation sigma over the x_i. Namely he</span>
+<span class="sd">    obtained the following formula:</span>
+
+<span class="sd">    R/sigma = (N/2)^K</span>
+
+<span class="sd">    In this equation, K is called the Hurst exponent. Its value is 0.5 for a</span>
+<span class="sd">    purely brownian motion, but becomes greater for time series that exhibit</span>
+<span class="sd">    a bias in one direction.</span>
+
+<span class="sd">  Explanation of the algorithm:</span>
+<span class="sd">    The rescaled range (R/S) approach is directly derived from Hurst&#39;s</span>
+<span class="sd">    definition. The time series of length N is split into non-overlapping</span>
+<span class="sd">    subseries of length n. Then, R and S (S = sigma) are calculated for each</span>
+<span class="sd">    subseries and the mean is taken over all subseries yielding (R/S)_n. This</span>
+<span class="sd">    process is repeated for several lengths n. Finally, the exponent K is</span>
+<span class="sd">    obtained by fitting a straight line to the plot of log((R/S)_n) vs log(n).</span>
+
+<span class="sd">    There seems to be no consensus how to chose the subseries lenghts n.</span>
+<span class="sd">    This function therefore leaves the choice to the user. The module provides</span>
+<span class="sd">    some utility functions for &quot;typical&quot; values:</span>
+
+<span class="sd">      * binary_n: N/2, N/4, N/8, ...</span>
+<span class="sd">      * logarithmic_n: min_n, min_n * f, min_n * f^2, ...</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [h-1] H. E. Hurst, “The problem of long-term storage in reservoirs,”</span>
+<span class="sd">       International Association of Scientific Hydrology. Bulletin, vol. 1,</span>
+<span class="sd">       no. 3, pp. 13–27, 1956.</span>
+<span class="sd">    .. [h-2] H. E. Hurst, “A suggested statistical model of some time series</span>
+<span class="sd">       which occur in nature,” Nature, vol. 180, p. 494, 1957.</span>
+<span class="sd">    .. [h-3] R. Weron, “Estimating long-range dependence: finite sample</span>
+<span class="sd">       properties and confidence intervals,” Physica A: Statistical Mechanics</span>
+<span class="sd">       and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</span>
+
+<span class="sd">  Reference Code:</span>
+<span class="sd">    .. [h-a] &quot;hurst&quot; function in R-package &quot;pracma&quot;,</span>
+<span class="sd">             url: https://cran.r-project.org/web/packages/pracma/pracma.pdf</span>
+<span class="sd">    .. [h-b] Rafael Weron, &quot;HURST: MATLAB function to compute the Hurst</span>
+<span class="sd">             exponent using R/S Analysis&quot;,</span>
+<span class="sd">             url: https://ideas.repec.org/c/wuu/hscode/m11003.html</span>
+<span class="sd">    .. [h-c] Bill Davidson, &quot;Hurst exponent&quot;,</span>
+<span class="sd">             url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent</span>
+<span class="sd">    .. [h-d] Tomaso Aste, &quot;Generalized Hurst exponent&quot;,</span>
+<span class="sd">             url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    data (array of float):</span>
+<span class="sd">      time series</span>
+<span class="sd">  Kwargs:</span>
+<span class="sd">    nvals (iterable of int):</span>
+<span class="sd">      sizes of subseries to use</span>
+<span class="sd">      (default: `logarithmic_n(4, 0.1*len(data), 1.2)`)</span>
+<span class="sd">    debug_plot (boolean):</span>
+<span class="sd">      if True, a simple plot of the final line-fitting step will be shown</span>
+<span class="sd">    plot_file (str):</span>
+<span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
+<span class="sd">      under the given file name instead of directly showing it through</span>
+<span class="sd">      `plt.show()`</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    float:</span>
+<span class="sd">      estimated Hurst exponent K using a rescaled range approach (if K = 0.5</span>
+<span class="sd">      there are no long-range correlations in the data, if K &lt; 0.5 there are</span>
+<span class="sd">      negative long-range correlations, if K &gt; 0.5 there are positive</span>
+<span class="sd">      long-range correlations)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">total_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">nvals</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">nvals</span> <span class="o">=</span> <span class="n">logarithmic_n</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">total_N</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>
+  <span class="c1"># get individual values for (R/S)_n</span>
+  <span class="n">rsvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nvals</span><span class="p">])</span>
+  <span class="c1"># filter NaNs (zeros should not be possible, because if R is 0 then</span>
+  <span class="c1"># S is also zero)</span>
+  <span class="n">rsvals</span> <span class="o">=</span> <span class="n">rsvals</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">rsvals</span><span class="p">))]</span>
+  <span class="c1"># it may happen that no rsvals are left (if all values of data are the same)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rsvals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="c1"># fit a line to the logarithm of the obtained (R/S)_n</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rsvals</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
+    <span class="n">plot_reg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rsvals</span><span class="p">),</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;log(n)&quot;</span><span class="p">,</span> <span class="s2">&quot;log((R/S)_n)&quot;</span><span class="p">,</span>
+             <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
+  <span class="c1"># return line slope</span>
+  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<span class="k">def</span> <span class="nf">rowwise_chebychev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">rowwise_euler</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="corr_dim"><a class="viewcode-back" href="../../nolds.html#nolds.corr_dim">[docs]</a><span class="k">def</span> <span class="nf">corr_dim</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">rvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="n">rowwise_euler</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+             <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Calculates the correlation dimension with the Grassberger-Procaccia algorithm</span>
+
+<span class="sd">  Explanation of correlation dimension:</span>
+<span class="sd">    The correlation dimension is a characteristic measure that can be used</span>
+<span class="sd">    to describe the geometry of chaotic attractors. It is defined using the</span>
+<span class="sd">    correlation sum C(r) which is the fraction of pairs of points X_i in the</span>
+<span class="sd">    phase space whose distance is smaller than r.</span>
+
+<span class="sd">    If the relation between C(r) and r can be described by the power law</span>
+
+<span class="sd">    C(r) ~ r^D</span>
+
+<span class="sd">    then D is called the correlation dimension of the system.</span>
+
+<span class="sd">    In a d-dimensional system, the maximum value for D is d. This value is</span>
+<span class="sd">    obtained for systems that expand uniformly in each dimension with time.</span>
+<span class="sd">    The lowest possible value is 0 for a system with constant C(r) (i.e. a</span>
+<span class="sd">    system that visits just one point in the phase space). Generally if D is</span>
+<span class="sd">    lower than d and the system has an attractor, this attractor is called</span>
+<span class="sd">    &quot;strange&quot; and D is a measure of this &quot;strangeness&quot;.</span>
+
+<span class="sd">  Explanation of the algorithm:</span>
+<span class="sd">    The Grassberger-Procaccia algorithm calculates C(r) for a range of</span>
+<span class="sd">    different r and then fits a straight line into the plot of log(C(r))</span>
+<span class="sd">    versus log(r).</span>
+
+<span class="sd">    This version of the algorithm is created for one-dimensional (scalar) time</span>
+<span class="sd">    series. Therefore, before calculating C(r), a delay embedding of the time</span>
+<span class="sd">    series is performed to yield emb_dim dimensional vectors</span>
+<span class="sd">    Y_i = [X_i, X_(i+1), X_(i+2), ... X_(i+embd_dim-1)]. Choosing a higher</span>
+<span class="sd">    value for emb_dim allows to reconstruct higher dimensional dynamics and</span>
+<span class="sd">    avoids &quot;systematic errors due to corrections to scaling&quot;.</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [cd-1] P. Grassberger and I. Procaccia, “Characterization of strange</span>
+<span class="sd">              attractors,” Physical review letters, vol. 50, no. 5, p. 346,</span>
+<span class="sd">              1983.</span>
+<span class="sd">    .. [cd-2] P. Grassberger and I. Procaccia, “Measuring the strangeness of</span>
+<span class="sd">              strange attractors,” Physica D: Nonlinear Phenomena, vol. 9,</span>
+<span class="sd">              no. 1, pp. 189–208, 1983.</span>
+<span class="sd">    .. [cd-3] P. Grassberger, “Grassberger-Procaccia algorithm,”</span>
+<span class="sd">              Scholarpedia, vol. 2, no. 5, p. 3043.</span>
+<span class="sd">              urL: http://www.scholarpedia.org/article/Grassberger-Procaccia_algorithm</span>
+
+<span class="sd">  Reference Code:</span>
+<span class="sd">    .. [cd-a] &quot;corrDim&quot; function in R package &quot;fractal&quot;,</span>
+<span class="sd">              url: https://cran.r-project.org/web/packages/fractal/fractal.pdf</span>
+<span class="sd">    .. [cd-b] Peng Yuehua, &quot;Correlation dimension&quot;,</span>
+<span class="sd">              url: http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    data (array of float):</span>
+<span class="sd">      time series of data points</span>
+<span class="sd">    emb_dim (int):</span>
+<span class="sd">      embedding dimension</span>
+<span class="sd">  Kwargs:</span>
+<span class="sd">    rvals (iterable of float):</span>
+<span class="sd">      list of values for to use for r</span>
+<span class="sd">      (default: logarithmic_r(0.1 * std, 0.5 * std, 1.03))</span>
+<span class="sd">    dist (function (2d-array, 1d-array) -&gt; 1d-array):</span>
+<span class="sd">      row-wise difference function</span>
+<span class="sd">    debug_plot (boolean):</span>
+<span class="sd">      if True, a simple plot of the final line-fitting step will be shown</span>
+<span class="sd">    plot_file (str):</span>
+<span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
+<span class="sd">      under the given file name instead of directly showing it through</span>
+<span class="sd">      `plt.show()`</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    float:</span>
+<span class="sd">      correlation dimension as slope of the line fitted to log(r) vs log(C(r))</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># TODO what are good values for r?</span>
+  <span class="c1"># TODO do this for multiple values of emb_dim?</span>
+  <span class="k">if</span> <span class="n">rvals</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">rvals</span> <span class="o">=</span> <span class="n">logarithmic_r</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">sd</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">sd</span><span class="p">,</span> <span class="mf">1.03</span><span class="p">)</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="n">orbit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">emb_dim</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">emb_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+  <span class="n">dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dist</span><span class="p">(</span><span class="n">orbit</span><span class="p">,</span> <span class="n">orbit</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">orbit</span><span class="p">))])</span>
+  <span class="n">csums</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rvals</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dists</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">)</span>
+    <span class="n">csums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="n">csums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">csums</span><span class="p">)</span>
+  <span class="c1"># filter zeros from csums</span>
+  <span class="n">nonzero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">csums</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">rvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rvals</span><span class="p">)[</span><span class="n">nonzero</span><span class="p">]</span>
+  <span class="n">csums</span> <span class="o">=</span> <span class="n">csums</span><span class="p">[</span><span class="n">nonzero</span><span class="p">]</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">csums</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="c1"># all sums are zero =&gt; we cannot fit a line</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">csums</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
+    <span class="n">plot_reg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">csums</span><span class="p">),</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;log(r)&quot;</span><span class="p">,</span> <span class="s2">&quot;log(C(r))&quot;</span><span class="p">,</span>
+             <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="dfa"><a class="viewcode-back" href="../../nolds.html#nolds.dfa">[docs]</a><span class="k">def</span> <span class="nf">dfa</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Performs a detrended fluctuation analysis (DFA) on the given data</span>
+
+<span class="sd">  Recommendations for parameter settings by Hardstone et al.:</span>
+<span class="sd">    * nvals should be equally spaced on a logarithmic scale so that each window</span>
+<span class="sd">      scale hase the same weight</span>
+<span class="sd">    * min(nvals) &lt; 4 does not make much sense as fitting a polynomial (even if</span>
+<span class="sd">      it is only of order 1) to 3 or less data points is very prone.</span>
+<span class="sd">    * max(nvals) &gt; len(data) / 10 does not make much sense as we will then have</span>
+<span class="sd">      less than 10 windows to calculate the average fluctuation</span>
+<span class="sd">    * use overlap=True to obtain more windows and therefore better statistics</span>
+<span class="sd">      (at an increased computational cost)</span>
+
+<span class="sd">  Explanation of DFA:</span>
+<span class="sd">    Detrended fluctuation analysis, much like the Hurst exponent, is used to</span>
+<span class="sd">    find long-term statistical dependencies in time series.</span>
+
+<span class="sd">    The idea behind DFA originates from the definition of self-affine</span>
+<span class="sd">    processes. A process X is said to be self-affine if the standard deviation</span>
+<span class="sd">    of the values within a window of length n changes with the window length</span>
+<span class="sd">    factor L in a power law:</span>
+
+<span class="sd">    std(X,L * n) = L^H * std(X, n)</span>
+
+<span class="sd">    where std(X, k) is the standard deviation of the process X calculated over</span>
+<span class="sd">    windows of size k. In this equation, H is called the Hurst parameter, which</span>
+<span class="sd">    behaves indeed very similar to the Hurst exponent.</span>
+
+<span class="sd">    Like the Hurst exponent, H can be obtained from a time series by</span>
+<span class="sd">    calculating std(X,n) for different n and fitting a straight line to the</span>
+<span class="sd">    plot of log(std(X,n)) versus log(n).</span>
+
+<span class="sd">    To calculate a single std(X,n), the time series is split into windows of</span>
+<span class="sd">    equal length n, so that the ith window of this size has the form</span>
+
+<span class="sd">    W_(n,i) = [x_i, x_(i+1), x_(i+2), ... x_(i+n-1)]</span>
+
+<span class="sd">    The value std(X,n) is then obtained by calculating std(W_(n,i)) for each i</span>
+<span class="sd">    and averaging the obtained values over i.</span>
+
+<span class="sd">    The aforementioned definition of self-affinity, however, assumes that the</span>
+<span class="sd">    process is  non-stationary (i.e. that the standard deviation changes over</span>
+<span class="sd">    time) and it is highly influenced by local and global trends of the time</span>
+<span class="sd">    series.</span>
+
+<span class="sd">    To overcome these problems, an estimate alpha of H is calculated by using a</span>
+<span class="sd">    &quot;walk&quot; or &quot;signal profile&quot; instead of the raw time series. This walk is</span>
+<span class="sd">    obtained by substracting the mean and then taking the cumulative sum of the</span>
+<span class="sd">    original time series. The local trends are removed for each window</span>
+<span class="sd">    separately by fitting a polynomial p_(n,i) to the window W_(n,i) and then</span>
+<span class="sd">    calculating W&#39;_(n,i) = W_(n,i) - p_(n,i) (element-wise substraction).</span>
+
+<span class="sd">    We then calculate std(X,n) as before only using the &quot;detrended&quot; window</span>
+<span class="sd">    W&#39;_(n,i) instead of W_(n,i). Instead of H we obtain the parameter alpha</span>
+<span class="sd">    from the line fitting.</span>
+
+<span class="sd">    For alpha &lt; 1 the underlying process is stationary and can be modelled as</span>
+<span class="sd">    fractional Gaussian noise with H = alpha. This means for alpha = 0.5 we</span>
+<span class="sd">    have no correlation or &quot;memory&quot;, for 0.5 &lt; alpha &lt; 1 we have a memory with</span>
+<span class="sd">    positive correlation and for alpha &lt; 0.5 the correlation is negative.</span>
+
+<span class="sd">    For alpha &gt; 1 the underlying process is non-stationary and can be modeled</span>
+<span class="sd">    as fractional Brownian motion with H = alpha - 1.</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [dfa-1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,</span>
+<span class="sd">               H. E. Stanley, and A. L. Goldberger, “Mosaic organization of</span>
+<span class="sd">               DNA nucleotides,” Physical Review E, vol. 49, no. 2, 1994.</span>
+<span class="sd">    .. [dfa-2] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,</span>
+<span class="sd">               V. V. Nikulin, H. D. Mansvelder, and K. Linkenkaer-Hansen,</span>
+<span class="sd">               “Detrended fluctuation analysis: A scale-free view on neuronal</span>
+<span class="sd">               oscillations,” Frontiers in Physiology, vol. 30, 2012.</span>
+
+<span class="sd">  Reference code:</span>
+<span class="sd">    .. [dfa-a] Peter Jurica, &quot;Introduction to MDFA in Python&quot;,</span>
+<span class="sd">       url: http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html</span>
+<span class="sd">    .. [dfa-b] JE Mietus, &quot;dfa&quot;,</span>
+<span class="sd">       url: https://www.physionet.org/physiotools/dfa/dfa-1.htm</span>
+<span class="sd">    .. [dfa-c] &quot;DFA&quot; function in R package &quot;fractal&quot;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    data (array of float):</span>
+<span class="sd">      time series</span>
+<span class="sd">  Kwargs:</span>
+<span class="sd">    nvals (iterable of int):</span>
+<span class="sd">      subseries sizes at which to calculate fluctuation</span>
+<span class="sd">      (default: logarithmic_n(4, 0.1*len(data), 1.2))</span>
+<span class="sd">    overlap (boolean):</span>
+<span class="sd">      if True, the windows W_(n,i) will have a 50% overlap,</span>
+<span class="sd">      otherwise non-overlapping windows will be used</span>
+<span class="sd">    order (int):</span>
+<span class="sd">      (polynomial) order of trend to remove</span>
+<span class="sd">    debug_plot (boolean):</span>
+<span class="sd">      if True, a simple plot of the final line-fitting step will be shown</span>
+<span class="sd">    plot_file (str):</span>
+<span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
+<span class="sd">      under the given file name instead of directly showing it through</span>
+<span class="sd">      `plt.show()`</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    float:</span>
+<span class="sd">      the estimate alpha for the Hurst parameter (alpha &lt; 1: stationary</span>
+<span class="sd">      process similar to fractional Gaussian noise with H = alpha,</span>
+<span class="sd">      alpha &gt; 1: non-stationary process similar to fractional Brownian</span>
+<span class="sd">      motion with H = alpha - 1)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">total_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">nvals</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">nvals</span> <span class="o">=</span> <span class="n">logarithmic_n</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">total_N</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>
+  <span class="c1"># create the signal profile</span>
+  <span class="c1"># (cumulative sum of deviations from the mean =&gt; &quot;walk&quot;)</span>
+  <span class="n">walk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+  <span class="n">fluctuations</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nvals</span><span class="p">:</span>
+    <span class="c1"># subdivide data into chunks of size n</span>
+    <span class="k">if</span> <span class="n">overlap</span><span class="p">:</span>
+      <span class="c1"># step size n/2 instead of n</span>
+      <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">walk</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span> <span class="o">-</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)])</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># non-overlapping windows =&gt; we can simply do a reshape</span>
+      <span class="n">d</span> <span class="o">=</span> <span class="n">walk</span><span class="p">[:</span><span class="n">total_N</span> <span class="o">-</span> <span class="p">(</span><span class="n">total_N</span> <span class="o">%</span> <span class="n">n</span><span class="p">)]</span>
+      <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">total_N</span> <span class="o">//</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+    <span class="c1"># calculate local trends as polynomes</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">tpoly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">))])</span>
+    <span class="n">trend</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">tpoly</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">))])</span>
+    <span class="c1"># calculate standard deviation (&quot;fluctuation&quot;) of walks in d around trend</span>
+    <span class="n">flucs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">d</span> <span class="o">-</span> <span class="n">trend</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+    <span class="c1"># calculate mean fluctuation over all subsequences</span>
+    <span class="n">f_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">flucs</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">flucs</span><span class="p">)</span>
+    <span class="n">fluctuations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f_n</span><span class="p">)</span>
+  <span class="n">fluctuations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fluctuations</span><span class="p">)</span>
+  <span class="c1"># filter zeros from fluctuations</span>
+  <span class="n">nonzero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fluctuations</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">nvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nvals</span><span class="p">)[</span><span class="n">nonzero</span><span class="p">]</span>
+  <span class="n">fluctuations</span> <span class="o">=</span> <span class="n">fluctuations</span><span class="p">[</span><span class="n">nonzero</span><span class="p">]</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fluctuations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="c1"># all fluctuations are zero =&gt; we cannot fit a line</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">fluctuations</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
+    <span class="n">plot_reg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">fluctuations</span><span class="p">),</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;log(n)&quot;</span><span class="p">,</span> <span class="s2">&quot;std(X,n)&quot;</span><span class="p">,</span>
+             <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Christopher Schölzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
