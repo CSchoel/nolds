@@ -282,7 +282,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1, debug
 		   url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
 		.. [le-b] Steve SIU, Lyapunov Exponents Toolbox (LET),
 		   url: http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m
-		.. [le-c] TODO: TISEAN?
+		.. [le-c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,
+		   url: http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/index.html
 
 	Args:
 		data (iterable):
