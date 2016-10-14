@@ -1,0 +1,13 @@
+Test:
+python setup.py install
+cd ..
+python
+>>> import nolds.examples as ex
+>>> ex.plot_lyap
+
+Upload zip file:
+python setup.py sdist upload -r pypi
+
+Allow source download:
+git tag X.X.X
+git push origin master --tags
