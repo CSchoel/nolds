@@ -5,10 +5,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [0.2.0] - 2016-10-14
 ### Added
 - exportable documentation with Sphinx
 - this change log
-- unittests
+- unit tests (`python -m unittest nolds.test_measures`)
+- example code can be run with `python -m nolds.examples all`
+
+### Changed
+- code formatted according to PEP8 (but with 2 spaces indent instead of 4)
+
+### Fixed
+- wrong default plotting parameters for function `sampen`
+
 
 ## [0.1.1] - 2016-08-03
 ### Added

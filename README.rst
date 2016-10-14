@@ -42,11 +42,15 @@ Nolds is available through PyPI and can be installed using pip:
 
 ``pip install nolds``
 
+You can test your installation by running some sample code with:
+
+``python -m nolds.examples all``
+
 Documentation
 -------------
 
 Nolds is designed as a learning resource for the measures mentioned above.
 Therefore the corresponding functions feature extensive documentation that not only explains the interface but also the algorithm used and points the user to additional reference code and papers.
-It currently only exists in the form of docstrings, but will probably be made available in an exported format in the future.
+The documentation can be found in the code, but it is also available as `HTML-Version<https://cschoel.github.io/nolds/>`_.
 
 All relevant code can be found in the file ``nolds/measures.py``.
