@@ -51,6 +51,6 @@ Documentation
 
 Nolds is designed as a learning resource for the measures mentioned above.
 Therefore the corresponding functions feature extensive documentation that not only explains the interface but also the algorithm used and points the user to additional reference code and papers.
-The documentation can be found in the code, but it is also available as `HTML-Version<https://cschoel.github.io/nolds/>`_.
+The documentation can be found in the code, but it is also available as `HTML-Version <https://cschoel.github.io/nolds/>`_.
 
 All relevant code can be found in the file ``nolds/measures.py``.
