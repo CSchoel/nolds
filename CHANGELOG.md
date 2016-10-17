@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.1] - 2016-10-17
+### Fixed
+- Description on PyPI was broken due to formatting error in README.rst
+
 ## [0.2.0] - 2016-10-14
 ### Added
 - exportable documentation with Sphinx
