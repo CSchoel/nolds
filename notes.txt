@@ -1,3 +1,8 @@
+Files to alter when version is changed:
+CHANGELOG.md
+setup.py
+doc/source/conf.py
+
 Test:
 python setup.py install
 cd ..
