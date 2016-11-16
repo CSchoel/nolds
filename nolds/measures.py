@@ -6,6 +6,39 @@ import warnings
 # TODO: is description of 0.5 for brownian motion really correct for hurst_rs?
 # FIXME: dfa fails for very small input sequences
 
+FIT_POLY = 0
+FIT_RANSAC = 1
+fitting_mode = FIT_POLY
+
+
+def set_fitting_mode(mode):
+  global fitting_mode
+  fitting_mode = mode
+  if mode == FIT_RANSAC:
+    try:
+      import sklearn.linear_model as sklin
+    except ImportError:
+      warnings.warn(
+        "fitting mode FIT_RANSAC requires the package sklearn",
+        RuntimeWarning)
+      mode = FIT_POLY
+
+
+# TODO check if this works
+# TODO higher order polynomials with RANSAC?
+# TODO use this wherever a line fit is needed
+def lineFit(x, y):
+  if fitting_mode == FIT_POLY:
+    return np.polyfit(x, y, 1)
+  elif fitting_mode == FIT_RANSAC:
+    import sklearn.linear_model as sklin
+    model = sklin.RANSACRegressor(sklin.LinearRegression())
+    xdat = np.array(x).reshape(-1, 1)
+    model.fit(xdat, y)
+    coef = model.estimator_.coef_[0]
+    ic = model.estimator_.intercept_
+    return np.array([coef, ic])
+
 
 def fbm(n, H=0.75):
   """
