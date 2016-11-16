@@ -1,17 +1,23 @@
+Guide:
+https://packaging.python.org/distributing/
+
 Files to alter when version is changed:
 CHANGELOG.md
 setup.py
 doc/source/conf.py
 
+Build Wheel:
+python setup.py bdist_wheel --universal
+
 Test:
-python setup.py install
+pip install dist/nolds-X.X.X-py2.py3-none-any.whl
 cd ..
 python
 >>> import nolds.examples as ex
 >>> ex.plot_lyap
 
 Upload zip file:
-python setup.py sdist upload -r pypi
+twine upload dist/nolds-X.X.X*
 
 Allow source download:
 git tag X.X.X
