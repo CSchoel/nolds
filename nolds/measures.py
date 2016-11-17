@@ -2,7 +2,6 @@
 import numpy as np
 import warnings
 
-# TODO: use RANSAC instead of simple polyfit?
 # TODO: is description of 0.5 for brownian motion really correct for hurst_rs?
 # FIXME: dfa fails for very small input sequences
 
@@ -12,6 +11,14 @@ fitting_mode = FIT_POLY
 
 
 def set_fitting_mode(mode):
+  """
+  Allows to switch the polynomial fitting mode used in all measures.
+
+  Args:
+    mode(int):
+      nolds.FIT_POLY for normal polynomial fitting using numpy's polyfit or
+      nolds.FIT_RANSAC for more robust fitting using sklearn's RANSACRegressor
+  """
   global fitting_mode
   fitting_mode = mode
   if mode == FIT_RANSAC:
@@ -19,25 +26,28 @@ def set_fitting_mode(mode):
       import sklearn.linear_model as sklin
     except ImportError:
       warnings.warn(
-        "fitting mode FIT_RANSAC requires the package sklearn",
+        "fitting mode FIT_RANSAC requires the package sklearn, using"
+        + "FIT_POLY instead",
         RuntimeWarning)
       mode = FIT_POLY
 
 
-# TODO check if this works
-# TODO higher order polynomials with RANSAC?
-# TODO use this wherever a line fit is needed
-def lineFit(x, y):
+def poly_fit(x, y, degree):
   if fitting_mode == FIT_POLY:
-    return np.polyfit(x, y, 1)
+    return np.polyfit(x, y, degree)
   elif fitting_mode == FIT_RANSAC:
     import sklearn.linear_model as sklin
+    import sklearn.preprocessing as skpre
     model = sklin.RANSACRegressor(sklin.LinearRegression())
-    xdat = np.array(x).reshape(-1, 1)
-    model.fit(xdat, y)
-    coef = model.estimator_.coef_[0]
-    ic = model.estimator_.intercept_
-    return np.array([coef, ic])
+    xdat = np.array(x)
+    if len(xdat.shape) == 1:
+      # interpret 1d-array as list of len(x) samples instead of
+      # one sample of length len(x)
+      xdat = xdat.reshape(-1, 1)
+    polydat = skpre.PolynomialFeatures(degree).fit_transform(xdat)
+    model.fit(polydat, y)
+    coef = model.estimator_.coef_
+    return coef
 
 
 def fbm(n, H=0.75):
@@ -274,7 +284,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     poly = [-np.inf, 0]
   else:
     # normal line fitting
-    poly = np.polyfit(ks, div_traj, 1)
+    poly = poly_fit(ks, div_traj, 1)
   if debug_plot:
     plot_reg(ks, div_traj, poly, "k", "log(d(k))", fname=plot_file)
   return poly[0] / tau
@@ -945,7 +955,7 @@ def hurst_rs(data, nvals=None, debug_plot=False, plot_file=None):
     poly = [np.nan, np.nan]
   else:
     # fit a line to the logarithm of the obtained (R/S)_n
-    poly = np.polyfit(np.log(nvals), np.log(rsvals), 1)
+    poly = poly_fit(np.log(nvals), np.log(rsvals), 1)
   if debug_plot:
     plot_reg(np.log(nvals), np.log(rsvals), poly, "log(n)", "log((R/S)_n)",
              fname=plot_file)
@@ -1057,7 +1067,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euler, debug_plot=False,
     # all sums are zero => we cannot fit a line
     poly = [np.nan, np.nan]
   else:
-    poly = np.polyfit(np.log(rvals), np.log(csums), 1)
+    poly = poly_fit(np.log(rvals), np.log(csums), 1)
   if debug_plot:
     plot_reg(np.log(rvals), np.log(csums), poly, "log(r)", "log(C(r))",
              fname=plot_file)
@@ -1189,7 +1199,7 @@ def dfa(data, nvals=None, overlap=True, order=1,
       d = d.reshape((total_N // n, n))
     # calculate local trends as polynomes
     x = np.arange(n)
-    tpoly = np.array([np.polyfit(x, d[i], order) for i in range(len(d))])
+    tpoly = np.array([poly_fit(x, d[i], order) for i in range(len(d))])
     trend = np.array([np.polyval(tpoly[i], x) for i in range(len(d))])
     # calculate standard deviation ("fluctuation") of walks in d around trend
     flucs = np.sqrt(np.sum((d - trend) ** 2, axis=1) / n)
@@ -1205,7 +1215,7 @@ def dfa(data, nvals=None, overlap=True, order=1,
     # all fluctuations are zero => we cannot fit a line
     poly = [np.nan, np.nan]
   else:
-    poly = np.polyfit(np.log(nvals), np.log(fluctuations), 1)
+    poly = poly_fit(np.log(nvals), np.log(fluctuations), 1)
   if debug_plot:
     plot_reg(np.log(nvals), np.log(fluctuations), poly, "log(n)", "std(X,n)",
              fname=plot_file)
