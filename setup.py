@@ -47,6 +47,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4'
     ],
+    test_suite='nolds.test_measures',
     install_requires=['numpy'],
     cmdclass={
         'clean': CleanCommand
