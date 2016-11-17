@@ -1,5 +1,25 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup
+from setuptools import setup, Command
+import glob
+import shutil
+
+
+class CleanCommand(Command):
+    """Custom clean command to tidy up the project root."""
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        shutil.rmtree("build")
+        shutil.rmtree("dist")
+        shutil.rmtree("nolds.egg-info")
+
+
 version = '0.2.1'
 setup(
     name='nolds',
@@ -18,4 +38,7 @@ setup(
         'correlation dimension'],
     classifiers=[],
     install_requires=['numpy'],
+    cmdclass={
+        'clean': CleanCommand
+    }
 )
