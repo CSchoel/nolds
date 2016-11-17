@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Allows to use RANSAC as line fitting algorithm
+- Uses classifiers in setup.py
+
+### Changed
+- Made support of both Python 3 and Python 2 official using the `future` package (Previous versions also worked on Python 2 but did not state this and may have small performance issues.)
+
+### Fixed
+- deprecation warning about `assertAlmostEquals` in test cases
 
 ## [0.2.1] - 2016-10-17
 ### Fixed
