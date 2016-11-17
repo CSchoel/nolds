@@ -52,12 +52,12 @@ setup(
     ],
     test_suite='nolds.test_measures',
     install_requires=[
-        'numpy >=1.5',
-        'future >=0.8',
-        'setuptools >=20.0'
+        'numpy',
+        'future',
+        'setuptools'
     ],
     extras_require={
-        'RANSAC': 'sklearn >=0.17'
+        'RANSAC': 'sklearn'
     },
     cmdclass={
         'clean': CleanCommand
