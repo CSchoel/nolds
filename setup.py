@@ -36,7 +36,17 @@ setup(
         'lyapunov', 'hurst', 'hurst exponent', 'rescaled range', 'DFA',
         'detrended fluctuation analysis', 'sample entropy',
         'correlation dimension'],
-    classifiers=[],
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Education',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4'
+    ],
     install_requires=['numpy'],
     cmdclass={
         'clean': CleanCommand
