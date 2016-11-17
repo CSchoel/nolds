@@ -48,7 +48,7 @@ setup(
         'Programming Language :: Python :: 3.4'
     ],
     test_suite='nolds.test_measures',
-    install_requires=['numpy'],
+    install_requires=['numpy >=1.5', 'future >=0.8'],
     extras_require={
         'RANSAC': 'sklearn >=0.17'
     },
