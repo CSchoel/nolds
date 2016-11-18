@@ -32,9 +32,12 @@ Example
 
 Requirements
 ------------
-Nolds is build for Python 3 and requires the package numpy_.
+Nolds supports Python 2 (>= 2.7) and 3 (>= 3.4) from one code source. It requires the package numpy_.
+
+If you want to use the RANSAC algorithm for line fitting, you will also need the package sklearn_.
 
 .. _numpy: http://numpy.scipy.org/
+.. _sklearn: http://scikit-learn.org/stable/
 
 Installation
 ------------
