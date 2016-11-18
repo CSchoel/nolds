@@ -41,7 +41,7 @@ def poly_fit(x, y, degree):
   elif fitting_mode == FIT_RANSAC:
     import sklearn.linear_model as sklin
     import sklearn.preprocessing as skpre
-    model = sklin.RANSACRegressor(sklin.LinearRegression())
+    model = sklin.RANSACRegressor(sklin.LinearRegression(fit_intercept=False))
     xdat = np.array(x)
     if len(xdat.shape) == 1:
       # interpret 1d-array as list of len(x) samples instead of
