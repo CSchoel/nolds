@@ -48,8 +48,21 @@ def poly_fit(x, y, degree):
       # one sample of length len(x)
       xdat = xdat.reshape(-1, 1)
     polydat = skpre.PolynomialFeatures(degree).fit_transform(xdat)
-    model.fit(polydat, y)
-    coef = model.estimator_.coef_
+    # evil hack to circumvent model.fit failing if no inliers are found
+    # in one iteration: repeat model.fit up to 10 times
+    success = False
+    for _ in range(10):
+      try:
+        model.fit(polydat, y)
+        success = True
+        break
+      except ValueError:
+        pass
+    # fall back to polyfit if all 10 iterations failed
+    if not success:
+      coef = np.polyfit(x, y, degree)
+    else:
+      coef = model.estimator_.coef_
     return coef
 
 
