@@ -68,6 +68,8 @@ def poly_fit(x, y, degree):
     else:
       coef = model.estimator_.coef_[::-1]
     return coef
+  else:
+    raise ValueError("invalid fitting mode ({})".format(fitting_mode))
 
 
 def fbm(n, H=0.75):
