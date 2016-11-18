@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds module &mdash; Nolds 0.2.0 documentation</title>
+    <title>nolds module &mdash; Nolds 0.3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.2.0 documentation" href="index.html" />
+    <link rel="top" title="Nolds 0.3.0 documentation" href="index.html" />
     <link rel="prev" title="Welcome to Nolds’ documentation!" href="index.html" />
    
   
@@ -47,7 +47,7 @@
 <h3>Lyapunov exponent (Rosenstein et al.)<a class="headerlink" href="#lyapunov-exponent-rosenstein-et-al" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.lyap_r">
-<code class="descclassname">nolds.</code><code class="descname">lyap_r</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>lag=None</em>, <em>min_tsep=None</em>, <em>tau=1</em>, <em>min_vectors=20</em>, <em>trajectory_len=20</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">lyap_r</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>lag=None</em>, <em>min_tsep=None</em>, <em>tau=1</em>, <em>min_vectors=20</em>, <em>trajectory_len=20</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
 et al. <a class="reference internal" href="#lr-1" id="id1">[lr-1]</a>.</p>
 <dl class="docutils">
@@ -145,6 +145,10 @@ when the number of resulting vectors drops below min_vectors</dd>
 <dt>trajectory_len (int):</dt>
 <dd>the time (in number of data points) to follow the distance
 trajectories between two neighboring points</dd>
+<dt>fit (str):</dt>
+<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
+least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will
 be shown</dd>
@@ -376,7 +380,7 @@ similar template vectors of length emb_dim + 1 and emb_dim)</dd>
 <h3>Hurst exponent<a class="headerlink" href="#hurst-exponent" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.hurst_rs">
-<code class="descclassname">nolds.</code><code class="descname">hurst_rs</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#hurst_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.hurst_rs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">hurst_rs</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#hurst_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.hurst_rs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Hurst exponent by a standard rescaled range (R/S) approach.</p>
 <dl class="docutils">
 <dt>Explanation of Hurst exponent:</dt>
@@ -489,6 +493,10 @@ url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/f
 <dt>nvals (iterable of int):</dt>
 <dd>sizes of subseries to use
 (default: <cite>logarithmic_n(4, 0.1*len(data), 1.2)</cite>)</dd>
+<dt>fit (str):</dt>
+<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
+least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will be shown</dd>
 <dt>plot_file (str):</dt>
@@ -514,7 +522,7 @@ long-range correlations)</dd>
 <h3>Correlation dimension<a class="headerlink" href="#correlation-dimension" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.corr_dim">
-<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euler at 0x0000000005C3BB70&gt;</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euler at 0x0000000005C9FBF8&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the correlation dimension with the Grassberger-Procaccia algorithm</p>
 <dl class="docutils">
 <dt>Explanation of correlation dimension:</dt>
@@ -600,6 +608,10 @@ url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/f
 (default: logarithmic_r(0.1 * std, 0.5 * std, 1.03))</dd>
 <dt>dist (function (2d-array, 1d-array) -&gt; 1d-array):</dt>
 <dd>row-wise difference function</dd>
+<dt>fit (str):</dt>
+<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
+least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will be shown</dd>
 <dt>plot_file (str):</dt>
@@ -622,7 +634,7 @@ under the given file name instead of directly showing it through
 <h3>Detrended fluctuation analysis<a class="headerlink" href="#detrended-fluctuation-analysis" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.dfa">
-<code class="descclassname">nolds.</code><code class="descname">dfa</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>overlap=True</em>, <em>order=1</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#dfa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.dfa" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">dfa</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>overlap=True</em>, <em>order=1</em>, <em>fit_trend='poly'</em>, <em>fit_exp='RANSAC'</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#dfa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.dfa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a detrended fluctuation analysis (DFA) on the given data</p>
 <dl class="docutils">
 <dt>Recommendations for parameter settings by Hardstone et al.:</dt>
@@ -733,6 +745,15 @@ url: <a class="reference external" href="https://www.physionet.org/physiotools/d
 otherwise non-overlapping windows will be used</dd>
 <dt>order (int):</dt>
 <dd>(polynomial) order of trend to remove</dd>
+<dt>fit_trend (str):</dt>
+<dd>the fitting method to use for fitting the trends, either &#8216;poly&#8217;
+for normal least squares polynomial fitting or &#8216;RANSAC&#8217; for
+RANSAC-fitting which is more robust to outliers but also tends to
+lead to unstable results</dd>
+<dt>fit_exp (str):</dt>
+<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
+least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will be shown</dd>
 <dt>plot_file (str):</dt>

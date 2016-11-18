@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds.measures &mdash; Nolds 0.2.0 documentation</title>
+    <title>nolds.measures &mdash; Nolds 0.3.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.2.0 documentation" href="../../index.html" />
+    <link rel="top" title="Nolds 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -40,12 +40,61 @@
             
   <h1>Source code for nolds.measures</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span>
+                        <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="c1"># TODO: use RANSAC instead of simple polyfit?</span>
 <span class="c1"># TODO: is description of 0.5 for brownian motion really correct for hurst_rs?</span>
 <span class="c1"># FIXME: dfa fails for very small input sequences</span>
+
+
+<span class="k">def</span> <span class="nf">poly_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">):</span>
+  <span class="c1"># check if we can use RANSAC</span>
+  <span class="k">if</span> <span class="n">fit</span> <span class="o">==</span> <span class="s2">&quot;RANSAC&quot;</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="kn">import</span> <span class="nn">sklearn.linear_model</span> <span class="kn">as</span> <span class="nn">sklin</span>
+      <span class="kn">import</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">as</span> <span class="nn">skpre</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+      <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;fitting mode &#39;RANSAC&#39; requires the package sklearn, using&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;&#39;poly&#39; instead&quot;</span><span class="p">,</span>
+        <span class="ne">RuntimeWarning</span><span class="p">)</span>
+      <span class="n">fittig_mode</span> <span class="o">=</span> <span class="s2">&quot;poly&quot;</span>
+
+  <span class="k">if</span> <span class="n">fit</span> <span class="o">==</span> <span class="s2">&quot;poly&quot;</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">fit</span> <span class="o">==</span> <span class="s2">&quot;RANSAC&quot;</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">sklin</span><span class="o">.</span><span class="n">RANSACRegressor</span><span class="p">(</span><span class="n">sklin</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+    <span class="n">xdat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xdat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="c1"># interpret 1d-array as list of len(x) samples instead of</span>
+      <span class="c1"># one sample of length len(x)</span>
+      <span class="n">xdat</span> <span class="o">=</span> <span class="n">xdat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">polydat</span> <span class="o">=</span> <span class="n">skpre</span><span class="o">.</span><span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">xdat</span><span class="p">)</span>
+    <span class="c1"># evil hack to circumvent model.fit failing if no inliers are found</span>
+    <span class="c1"># in one iteration: repeat model.fit up to 10 times</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">polydat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">break</span>
+      <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="c1"># fall back to polyfit if all 10 iterations failed</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+      <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;RANSAC did not reach consensus, &quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;using numpy&#39;s polyfit&quot;</span><span class="p">,</span>
+        <span class="ne">RuntimeWarning</span><span class="p">)</span>
+      <span class="n">coef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">coef</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">estimator_</span><span class="o">.</span><span class="n">coef_</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">coef</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid fitting mode ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fit</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="fbm"><a class="viewcode-back" href="../../nolds.html#nolds.fbm">[docs]</a><span class="k">def</span> <span class="nf">fbm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
@@ -110,7 +159,8 @@
 
 
 <div class="viewcode-block" id="lyap_r"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_r">[docs]</a><span class="k">def</span> <span class="nf">lyap_r</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_tsep</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_vectors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-           <span class="n">trajectory_len</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+           <span class="n">trajectory_len</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+           <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Estimates the largest Lyapunov exponent using the algorithm of Rosenstein</span>
 <span class="sd">  et al. [lr-1]_.</span>
@@ -197,6 +247,10 @@
 <span class="sd">    trajectory_len (int):</span>
 <span class="sd">      the time (in number of data points) to follow the distance</span>
 <span class="sd">      trajectories between two neighboring points</span>
+<span class="sd">    fit (str):</span>
+<span class="sd">      the fitting method to use for the line fit, either &#39;poly&#39; for normal</span>
+<span class="sd">      least squares polynomial fitting or &#39;RANSAC&#39; for RANSAC-fitting which</span>
+<span class="sd">      is more robust to outliers</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a simple plot of the final line-fitting step will</span>
 <span class="sd">      be shown</span>
@@ -282,7 +336,7 @@
     <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="c1"># normal line fitting</span>
-    <span class="n">poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">poly_fit</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="n">fit</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
     <span class="n">plot_reg</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;log(d(k))&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">tau</span></div>
@@ -848,7 +902,8 @@
   <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="hurst_rs"><a class="viewcode-back" href="../../nolds.html#nolds.hurst_rs">[docs]</a><span class="k">def</span> <span class="nf">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="hurst_rs"><a class="viewcode-back" href="../../nolds.html#nolds.hurst_rs">[docs]</a><span class="k">def</span> <span class="nf">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+             <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Calculates the Hurst exponent by a standard rescaled range (R/S) approach.</span>
 
@@ -926,6 +981,10 @@
 <span class="sd">    nvals (iterable of int):</span>
 <span class="sd">      sizes of subseries to use</span>
 <span class="sd">      (default: `logarithmic_n(4, 0.1*len(data), 1.2)`)</span>
+<span class="sd">    fit (str):</span>
+<span class="sd">      the fitting method to use for the line fit, either &#39;poly&#39; for normal</span>
+<span class="sd">      least squares polynomial fitting or &#39;RANSAC&#39; for RANSAC-fitting which</span>
+<span class="sd">      is more robust to outliers</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a simple plot of the final line-fitting step will be shown</span>
 <span class="sd">    plot_file (str):</span>
@@ -953,7 +1012,8 @@
     <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="c1"># fit a line to the logarithm of the obtained (R/S)_n</span>
-    <span class="n">poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rsvals</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">poly_fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rsvals</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">fit</span><span class="o">=</span><span class="n">fit</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
     <span class="n">plot_reg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rsvals</span><span class="p">),</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;log(n)&quot;</span><span class="p">,</span> <span class="s2">&quot;log((R/S)_n)&quot;</span><span class="p">,</span>
              <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
@@ -969,8 +1029,8 @@
   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="corr_dim"><a class="viewcode-back" href="../../nolds.html#nolds.corr_dim">[docs]</a><span class="k">def</span> <span class="nf">corr_dim</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">rvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="n">rowwise_euler</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-             <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="corr_dim"><a class="viewcode-back" href="../../nolds.html#nolds.corr_dim">[docs]</a><span class="k">def</span> <span class="nf">corr_dim</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">rvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="n">rowwise_euler</span><span class="p">,</span>
+             <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Calculates the correlation dimension with the Grassberger-Procaccia algorithm</span>
 
@@ -1033,6 +1093,10 @@
 <span class="sd">      (default: logarithmic_r(0.1 * std, 0.5 * std, 1.03))</span>
 <span class="sd">    dist (function (2d-array, 1d-array) -&gt; 1d-array):</span>
 <span class="sd">      row-wise difference function</span>
+<span class="sd">    fit (str):</span>
+<span class="sd">      the fitting method to use for the line fit, either &#39;poly&#39; for normal</span>
+<span class="sd">      least squares polynomial fitting or &#39;RANSAC&#39; for RANSAC-fitting which</span>
+<span class="sd">      is more robust to outliers</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a simple plot of the final line-fitting step will be shown</span>
 <span class="sd">    plot_file (str):</span>
@@ -1065,15 +1129,15 @@
     <span class="c1"># all sums are zero =&gt; we cannot fit a line</span>
     <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
   <span class="k">else</span><span class="p">:</span>
-    <span class="n">poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">csums</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">poly_fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">csums</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
     <span class="n">plot_reg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">csums</span><span class="p">),</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;log(r)&quot;</span><span class="p">,</span> <span class="s2">&quot;log(C(r))&quot;</span><span class="p">,</span>
              <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="dfa"><a class="viewcode-back" href="../../nolds.html#nolds.dfa">[docs]</a><span class="k">def</span> <span class="nf">dfa</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="dfa"><a class="viewcode-back" href="../../nolds.html#nolds.dfa">[docs]</a><span class="k">def</span> <span class="nf">dfa</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fit_trend</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span>
+        <span class="n">fit_exp</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Performs a detrended fluctuation analysis (DFA) on the given data</span>
 
@@ -1166,6 +1230,15 @@
 <span class="sd">      otherwise non-overlapping windows will be used</span>
 <span class="sd">    order (int):</span>
 <span class="sd">      (polynomial) order of trend to remove</span>
+<span class="sd">    fit_trend (str):</span>
+<span class="sd">      the fitting method to use for fitting the trends, either &#39;poly&#39;</span>
+<span class="sd">      for normal least squares polynomial fitting or &#39;RANSAC&#39; for</span>
+<span class="sd">      RANSAC-fitting which is more robust to outliers but also tends to</span>
+<span class="sd">      lead to unstable results</span>
+<span class="sd">    fit_exp (str):</span>
+<span class="sd">      the fitting method to use for the line fit, either &#39;poly&#39; for normal</span>
+<span class="sd">      least squares polynomial fitting or &#39;RANSAC&#39; for RANSAC-fitting which</span>
+<span class="sd">      is more robust to outliers</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a simple plot of the final line-fitting step will be shown</span>
 <span class="sd">    plot_file (str):</span>
@@ -1197,7 +1270,9 @@
       <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">total_N</span> <span class="o">//</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
     <span class="c1"># calculate local trends as polynomes</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-    <span class="n">tpoly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">))])</span>
+    <span class="n">tpoly</span> <span class="o">=</span> <span class="p">[</span><span class="n">poly_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">order</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="n">fit_trend</span><span class="p">)</span>
+             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">))]</span>
+    <span class="n">tpoly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tpoly</span><span class="p">)</span>
     <span class="n">trend</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">tpoly</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">))])</span>
     <span class="c1"># calculate standard deviation (&quot;fluctuation&quot;) of walks in d around trend</span>
     <span class="n">flucs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">d</span> <span class="o">-</span> <span class="n">trend</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
@@ -1213,7 +1288,8 @@
     <span class="c1"># all fluctuations are zero =&gt; we cannot fit a line</span>
     <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
   <span class="k">else</span><span class="p">:</span>
-    <span class="n">poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">fluctuations</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">poly_fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">fluctuations</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">fit</span><span class="o">=</span><span class="n">fit_exp</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
     <span class="n">plot_reg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">fluctuations</span><span class="p">),</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;log(n)&quot;</span><span class="p">,</span> <span class="s2">&quot;std(X,n)&quot;</span><span class="p">,</span>
              <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
