@@ -8,39 +8,23 @@ import warnings
 # TODO: is description of 0.5 for brownian motion really correct for hurst_rs?
 # FIXME: dfa fails for very small input sequences
 
-FIT_POLY = 0
-FIT_RANSAC = 1
-fitting_mode = FIT_POLY
 
-
-def set_fitting_mode(mode):
-  """
-  Allows to switch the polynomial fitting mode used in all measures.
-
-  Args:
-    mode(int):
-      nolds.FIT_POLY for normal polynomial fitting using numpy's polyfit or
-      nolds.FIT_RANSAC for more robust fitting using sklearn's RANSACRegressor
-  """
-  global fitting_mode
-  fitting_mode = mode
-  if mode == FIT_RANSAC:
+def poly_fit(x, y, degree, fit="RANSAC"):
+  # check if we can use RANSAC
+  if fit == "RANSAC":
     try:
       import sklearn.linear_model as sklin
+      import sklearn.preprocessing as skpre
     except ImportError:
       warnings.warn(
-        "fitting mode FIT_RANSAC requires the package sklearn, using"
-        + "FIT_POLY instead",
+        "fitting mode 'RANSAC' requires the package sklearn, using"
+        + "'poly' instead",
         RuntimeWarning)
-      mode = FIT_POLY
+      fittig_mode = "poly"
 
-
-def poly_fit(x, y, degree):
-  if fitting_mode == FIT_POLY:
+  if fit == "poly":
     return np.polyfit(x, y, degree)
-  elif fitting_mode == FIT_RANSAC:
-    import sklearn.linear_model as sklin
-    import sklearn.preprocessing as skpre
+  elif fit == "RANSAC":
     model = sklin.RANSACRegressor(sklin.LinearRegression(fit_intercept=False))
     xdat = np.array(x)
     if len(xdat.shape) == 1:
@@ -69,7 +53,7 @@ def poly_fit(x, y, degree):
       coef = model.estimator_.coef_[::-1]
     return coef
   else:
-    raise ValueError("invalid fitting mode ({})".format(fitting_mode))
+    raise ValueError("invalid fitting mode ({})".format(fit))
 
 
 def fbm(n, H=0.75):
@@ -134,7 +118,8 @@ def delay_embedding(data, emb_dim, lag=1):
 
 
 def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
-           trajectory_len=20, debug_plot=False, plot_file=None):
+           trajectory_len=20, fit="RANSAC", debug_plot=False,
+           plot_file=None):
   """
   Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
   et al. [lr-1]_.
@@ -221,6 +206,10 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     trajectory_len (int):
       the time (in number of data points) to follow the distance
       trajectories between two neighboring points
+    fit (str):
+      the fitting method to use for the line fit, either 'poly' for normal
+      least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+      is more robust to outliers
     debug_plot (boolean):
       if True, a simple plot of the final line-fitting step will
       be shown
@@ -306,7 +295,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     poly = [-np.inf, 0]
   else:
     # normal line fitting
-    poly = poly_fit(ks, div_traj, 1)
+    poly = poly_fit(ks, div_traj, 1, fit=fit)
   if debug_plot:
     plot_reg(ks, div_traj, poly, "k", "log(d(k))", fname=plot_file)
   return poly[0] / tau
@@ -872,7 +861,8 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
   plt.close()
 
 
-def hurst_rs(data, nvals=None, debug_plot=False, plot_file=None):
+def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
+             plot_file=None):
   """
   Calculates the Hurst exponent by a standard rescaled range (R/S) approach.
 
@@ -950,6 +940,10 @@ def hurst_rs(data, nvals=None, debug_plot=False, plot_file=None):
     nvals (iterable of int):
       sizes of subseries to use
       (default: `logarithmic_n(4, 0.1*len(data), 1.2)`)
+    fit (str):
+      the fitting method to use for the line fit, either 'poly' for normal
+      least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+      is more robust to outliers
     debug_plot (boolean):
       if True, a simple plot of the final line-fitting step will be shown
     plot_file (str):
@@ -977,7 +971,8 @@ def hurst_rs(data, nvals=None, debug_plot=False, plot_file=None):
     poly = [np.nan, np.nan]
   else:
     # fit a line to the logarithm of the obtained (R/S)_n
-    poly = poly_fit(np.log(nvals), np.log(rsvals), 1)
+    poly = poly_fit(np.log(nvals), np.log(rsvals), 1,
+                    fit=fit)
   if debug_plot:
     plot_reg(np.log(nvals), np.log(rsvals), poly, "log(n)", "log((R/S)_n)",
              fname=plot_file)
@@ -993,8 +988,8 @@ def rowwise_euler(x, y):
   return np.sqrt(np.sum((x - y)**2, axis=1))
 
 
-def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euler, debug_plot=False,
-             plot_file=None):
+def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euler,
+             fit="RANSAC", debug_plot=False, plot_file=None):
   """
   Calculates the correlation dimension with the Grassberger-Procaccia algorithm
 
@@ -1057,6 +1052,10 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euler, debug_plot=False,
       (default: logarithmic_r(0.1 * std, 0.5 * std, 1.03))
     dist (function (2d-array, 1d-array) -> 1d-array):
       row-wise difference function
+    fit (str):
+      the fitting method to use for the line fit, either 'poly' for normal
+      least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+      is more robust to outliers
     debug_plot (boolean):
       if True, a simple plot of the final line-fitting step will be shown
     plot_file (str):
@@ -1096,8 +1095,8 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euler, debug_plot=False,
   return poly[0]
 
 
-def dfa(data, nvals=None, overlap=True, order=1,
-        debug_plot=False, plot_file=None):
+def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
+        fit_exp="RANSAC", debug_plot=False, plot_file=None):
   """
   Performs a detrended fluctuation analysis (DFA) on the given data
 
@@ -1190,6 +1189,15 @@ def dfa(data, nvals=None, overlap=True, order=1,
       otherwise non-overlapping windows will be used
     order (int):
       (polynomial) order of trend to remove
+    fit_trend (str):
+      the fitting method to use for fitting the trends, either 'poly'
+      for normal least squares polynomial fitting or 'RANSAC' for
+      RANSAC-fitting which is more robust to outliers but also tends to
+      lead to unstable results
+    fit_exp (str):
+      the fitting method to use for the line fit, either 'poly' for normal
+      least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+      is more robust to outliers
     debug_plot (boolean):
       if True, a simple plot of the final line-fitting step will be shown
     plot_file (str):
@@ -1221,7 +1229,9 @@ def dfa(data, nvals=None, overlap=True, order=1,
       d = d.reshape((total_N // n, n))
     # calculate local trends as polynomes
     x = np.arange(n)
-    tpoly = np.array([poly_fit(x, d[i], order) for i in range(len(d))])
+    tpoly = [poly_fit(x, d[i], order, fit=fit_trend)
+             for i in range(len(d))]
+    tpoly = np.array(tpoly)
     trend = np.array([np.polyval(tpoly[i], x) for i in range(len(d))])
     # calculate standard deviation ("fluctuation") of walks in d around trend
     flucs = np.sqrt(np.sum((d - trend) ** 2, axis=1) / n)
@@ -1237,7 +1247,8 @@ def dfa(data, nvals=None, overlap=True, order=1,
     # all fluctuations are zero => we cannot fit a line
     poly = [np.nan, np.nan]
   else:
-    poly = poly_fit(np.log(nvals), np.log(fluctuations), 1)
+    poly = poly_fit(np.log(nvals), np.log(fluctuations), 1,
+                    fit=fit_exp)
   if debug_plot:
     plot_reg(np.log(nvals), np.log(fluctuations), poly, "log(n)", "std(X,n)",
              fname=plot_file)
