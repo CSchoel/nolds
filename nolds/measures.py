@@ -66,7 +66,7 @@ def poly_fit(x, y, degree):
         RuntimeWarning)
       coef = np.polyfit(x, y, degree)
     else:
-      coef = model.estimator_.coef_
+      coef = model.estimator_.coef_[::-1]
     return coef
 
 
