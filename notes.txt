@@ -14,7 +14,8 @@ pip install dist/nolds-X.X.X-py2.py3-none-any.whl
 cd ..
 python
 >>> import nolds.examples as ex
->>> ex.plot_lyap
+>>> ex.plot_lyap()
+
 
 Upload zip file:
 twine upload dist/nolds-X.X.X*
