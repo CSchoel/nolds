@@ -16,6 +16,10 @@ python
 >>> import nolds.examples as ex
 >>> ex.plot_lyap()
 
+Problem when using py -2 -m pip instead of pip:
+- Somehow in this scenario pip thinks, the package is already installed
+- but will also be unable to uninstall it
+=> Use pip directly!
 
 Upload zip file:
 twine upload dist/nolds-X.X.X*
