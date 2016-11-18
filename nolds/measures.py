@@ -60,6 +60,10 @@ def poly_fit(x, y, degree):
         pass
     # fall back to polyfit if all 10 iterations failed
     if not success:
+      warnings.warn(
+        "RANSAC did not reach consensus, "
+        + "using numpy's polyfit",
+        RuntimeWarning)
       coef = np.polyfit(x, y, degree)
     else:
       coef = model.estimator_.coef_
