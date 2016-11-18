@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.3.0] - 2016-11-18
 ### Added
 - Allows to use RANSAC as line fitting algorithm
-- Uses classifiers in setup.py
+- Uses classifiers in `setup.py`
+- Adds requirements for the packages `future` and `setuptools`
+- Adds custom clean command to `setup.py`
 
 ### Changed
 - Made support of both Python 3 and Python 2 official using the `future` package (Previous versions also supported Python 2 but did not state this and may have small performance issues.)
