@@ -23,7 +23,7 @@ class CleanCommand(Command):
         shutil.rmtree("nolds.egg-info")
 
 
-version = '0.3.0'
+version = '0.3.1'
 setup(
     name='nolds',
     packages=['nolds'],
@@ -57,7 +57,7 @@ setup(
         'setuptools'
     ],
     extras_require={
-        'RANSAC': 'sklearn'
+        'RANSAC': ['sklearn']
     },
     cmdclass={
         'clean': CleanCommand

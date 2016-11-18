@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1]
+### Fixed
+- typo in `setup.py` regarding `extras_require`
+
 ## [0.3.0] - 2016-11-18
 ### Added
 - Allows to use RANSAC as line fitting algorithm
