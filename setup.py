@@ -23,7 +23,7 @@ class CleanCommand(Command):
         shutil.rmtree("nolds.egg-info")
 
 
-version = '0.2.1'
+version = '0.3.0'
 setup(
     name='nolds',
     packages=['nolds'],
