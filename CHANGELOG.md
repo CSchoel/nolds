@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Uses classifiers in setup.py
 
 ### Changed
-- Made support of both Python 3 and Python 2 official using the `future` package (Previous versions also worked on Python 2 but did not state this and may have small performance issues.)
+- Made support of both Python 3 and Python 2 official using the `future` package (Previous versions also supported Python 2 but did not state this and may have small performance issues.)
 
 ### Fixed
 - deprecation warning about `assertAlmostEquals` in test cases
