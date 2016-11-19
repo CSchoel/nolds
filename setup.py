@@ -24,7 +24,7 @@ class CleanCommand(Command):
 
 with open("README.rst", "r", encoding="utf-8") as f:
     readme = f.read()
-version = '0.3.1'
+version = '0.3.2'
 setup(
     name='nolds',
     packages=['nolds'],

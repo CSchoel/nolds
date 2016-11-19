@@ -6,7 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [0.3.1]
+## [0.3.2] - 2016-11-19
+### Added
+- `LICENSE.txt` is now part of the distribution
+- specifies platform (any) and license (MIT) in `setup.py`
+- loads `long_description` from `README.rst`
+
+## [0.3.1] - 2016-11-18
 ### Fixed
 - typo in `setup.py` regarding `extras_require`
 
