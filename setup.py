@@ -29,6 +29,8 @@ setup(
     name='nolds',
     packages=['nolds'],
     version=version,
+    platforms="any",
+    license="MIT",
     description='Nonlinear measures for dynamical systems '
                 + '(based on one-dimensional time series)',
     long_description=readme,
