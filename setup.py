@@ -22,7 +22,8 @@ class CleanCommand(Command):
         shutil.rmtree("dist")
         shutil.rmtree("nolds.egg-info")
 
-
+with open("README.rst", "r", encoding="utf-8") as f:
+    readme = f.read()
 version = '0.3.1'
 setup(
     name='nolds',
@@ -30,6 +31,7 @@ setup(
     version=version,
     description='Nonlinear measures for dynamical systems '
                 + '(based on one-dimensional time series)',
+    long_description=readme,
     author='Christopher Schölzel',
     author_email='christopher.schoelzel@gmx.net',
     url='https://github.com/CSchoel/nolds',
