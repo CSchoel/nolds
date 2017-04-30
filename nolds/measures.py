@@ -253,6 +253,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
         lag = i
         break
     if 1.0 * n / emb_dim * lag < min_vectors:
+      # FIXME shouldn't we reset lag here?
       msg = "autocorrelation declined too slowly to find suitable lag"
       warnings.warn(msg, RuntimeWarning)
   # delay embedding
