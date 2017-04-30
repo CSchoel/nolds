@@ -8,8 +8,8 @@ import warnings
 # TODO: is description of 0.5 for brownian motion really correct for hurst_rs?
 # FIXME: dfa fails for very small input sequences
 
-deprecation_msg_euler = 
-  "'euler' distance is now appropriately called 'euclidean', mentions"
+deprecation_msg_euler = \
+  "'euler' distance is now appropriately called 'euclidean', mentions" \
   + "of 'euler distance' will be removed in future versions"
 
 def poly_fit(x, y, degree, fit="RANSAC"):
