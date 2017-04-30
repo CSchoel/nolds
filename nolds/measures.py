@@ -651,7 +651,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev",
       if dist == "chebychev":
         dsts = np.max(np.abs(diff), axis=1)
       elif dist == "euler":
-        dsts = np.norm(diff, axis=1)
+        dsts = np.linalg.norm(diff, axis=1)
       else:
         raise "unknown distance function: %s" % dist
       if debug_plot:
