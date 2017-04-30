@@ -8,6 +8,9 @@ import warnings
 # TODO: is description of 0.5 for brownian motion really correct for hurst_rs?
 # FIXME: dfa fails for very small input sequences
 
+deprecation_msg_euler = 
+  "'euler' distance is now appropriately called 'euclidean', mentions"
+  + "of 'euler distance' will be removed in future versions"
 
 def poly_fit(x, y, degree, fit="RANSAC"):
   # check if we can use RANSAC
@@ -222,7 +225,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
       an estimate of the largest Lyapunov exponent (a positive exponent is
       a strong indicator for chaos)
   """
-  # convert data to float to avoid overflow errors in rowwise_euler
+  # convert data to float to avoid overflow errors in rowwise_euclidean
   data = data.astype("float32")
   n = len(data)
   max_tsep_factor = 0.25
@@ -260,7 +263,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
   orbit = delay_embedding(data, emb_dim, lag)
   m = len(orbit)
   # construct matrix with pairwise distances between vectors in orbit
-  dists = np.array([rowwise_euler(orbit, orbit[i]) for i in range(m)])
+  dists = np.array([rowwise_euclidean(orbit, orbit[i]) for i in range(m)])
   # we do not want to consider vectors as neighbor that are less than min_tsep
   # time steps together => mask the distances min_tsep to the right and left of
   # each index by setting them to infinity (will never be considered as nearest
@@ -603,7 +606,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev",
       (default: 0.2 * std(data))
     dist (string):
       distance function used to calculate the distance between template
-      vectors, can be 'euler' or 'chebychev'
+      vectors, can be 'euclidean' or 'chebychev'
     debug_plot (boolean):
       if True, a histogram of the individual distances for m and m+1
     plot_file (str):
@@ -650,8 +653,11 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev",
       diff = tVecsM[i + 1:] - tVecsM[i]
       if dist == "chebychev":
         dsts = np.max(np.abs(diff), axis=1)
+      elif dist == "euclidean":
+        dsts = np.linalg.norm(diff, axis=1)
       elif dist == "euler":
         dsts = np.linalg.norm(diff, axis=1)
+        warnings.warn(deprecation_msg_euler, DeprecationWarning)
       else:
         raise "unknown distance function: %s" % dist
       if debug_plot:
@@ -985,11 +991,14 @@ def rowwise_chebychev(x, y):
   return np.max(np.abs(x - y), axis=1)
 
 
-def rowwise_euler(x, y):
+def rowwise_euclidean(x, y):
   return np.sqrt(np.sum((x - y)**2, axis=1))
 
+def rowwise_euler(x,y):
+  warnings.warn(deprecation_msg_euler, DeprecationWarning)
+  return rowwise_euclidean(x,y)
 
-def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euler,
+def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
              fit="RANSAC", debug_plot=False, plot_file=None):
   """
   Calculates the correlation dimension with the Grassberger-Procaccia algorithm
