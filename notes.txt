@@ -22,6 +22,7 @@ Problem when using py -2 -m pip instead of pip:
 => Use pip directly!
 
 Upload zip file:
+twine upload -r pypitest dist/nolds-X.X.X*
 twine upload dist/nolds-X.X.X*
 
 Allow source download:
