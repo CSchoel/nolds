@@ -12,6 +12,25 @@ deprecation_msg_euler = \
   "'euler' distance is now appropriately called 'euclidean', mentions" \
   + "of 'euler distance' will be removed in future versions. Sorry, Euclid."
 
+deprecation_msg_chebychev = "Stupid german author cannot write russian" + \
+  " names correctly. Please use 'rowwise_chebyshev' instead of" + \
+  " 'rowwise_chebychev'. The old function name will be removed in future" + \
+  " versions. Sorry, Mr. Chebyshev.'"
+
+deprecation_msg_sampen_dist = "Using strings as values for 'dist' is" + \
+  " deprecated. The parameter now takes a distance function such as" + \
+  " chebyshev. Support for function names will be removed in future versions."
+
+
+def rowwise_chebyshev(x, y):
+  return np.max(np.abs(x - y), axis=1)
+
+rowwise_chebychev = object()
+
+def rowwise_euclidean(x, y):
+  return np.sqrt(np.sum((x - y)**2, axis=1))
+
+rowwise_euler = object()
 
 def poly_fit(x, y, degree, fit="RANSAC"):
   # check if we can use RANSAC
@@ -345,7 +364,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
       dimensions (map each point x_i of the time series to a vector
       [x_i, x_(i+1), x_(i+2), ... x_(i+emb_dim-1)]).
     * For each vector X_i in this orbit find a radius r_i so that at least
-      min_nb other vectors lie within (chebychev-)distance r_i around X_i.
+      min_nb other vectors lie within (chebyshev-)distance r_i around X_i.
       These vectors will be called "neighbors" of X_i.
     * Find the Matrix T_i that sends points from the neighborhood of X_i to
       the neighborhood of X_(i+1). To avoid undetermined values in T_i, we
@@ -563,7 +582,7 @@ def plot_dists(dists, tolerance, m, title=None, fname=None):
   plt.close()
 
 
-def sampen(data, emb_dim=2, tolerance=None, dist="chebychev",
+def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
            debug_plot=False, plot_file=None):
   """
   Computes the sample entropy of the given data.
@@ -605,9 +624,10 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev",
     tolerance (float):
       distance threshold for two template vectors to be considered equal
       (default: 0.2 * std(data))
-    dist (string):
+    dist (function (2d-array, 1d-array) -> 1d-array):
       distance function used to calculate the distance between template
-      vectors, can be 'euclidean' or 'chebychev'
+      vectors. Sampen is defined using `rowwise_chebyshev`. You should only use
+      something else, if you are sure that you need it.
     debug_plot (boolean):
       if True, a histogram of the individual distances for m and m+1
     plot_file (str):
@@ -620,6 +640,18 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev",
       the sample entropy of the data (negative logarithm of ratio between
       similar template vectors of length emb_dim + 1 and emb_dim)
   """
+  if dist == "chebychev":
+    warnings.warn(deprecation_msg_sampen_dist, DeprecationWarning)
+    warnings.warn(deprecation_msg_chebychev, DeprecationWarning)
+    dist = rowwise_chebyshev
+  elif dist == "euler":
+    warnings.warn(deprecation_msg_sampen_dist, DeprecationWarning)
+    warnings.warn(deprecation_msg_euler, DeprecationWarning)
+    dist = rowwise_euclidean
+  elif dist is rowwise_chebychev:
+    warnings.warn(deprecation_msg_chebychev, DeprecationWarning)
+    dist = rowwise_chebyshev
+    
   if tolerance is None:
     tolerance = 0.2 * np.std(data)
   n = len(data)
@@ -651,16 +683,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist="chebychev",
     tVecsM = tVecs[:n - m + 1, :m]
     # successively calculate distances between each pair of template vectors
     for i in range(len(tVecsM) - 1):
-      diff = tVecsM[i + 1:] - tVecsM[i]
-      if dist == "chebychev":
-        dsts = np.max(np.abs(diff), axis=1)
-      elif dist == "euclidean":
-        dsts = np.linalg.norm(diff, axis=1)
-      elif dist == "euler":
-        dsts = np.linalg.norm(diff, axis=1)
-        warnings.warn(deprecation_msg_euler, DeprecationWarning)
-      else:
-        raise "unknown distance function: %s" % dist
+      dsts = dist(tVecsM[i + 1:], tVecsM[i])
       if debug_plot:
         plot_data[-1].extend(dsts)
       # count how many distances are smaller than the tolerance
@@ -987,18 +1010,6 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   # return line slope
   return poly[0]
 
-
-def rowwise_chebychev(x, y):
-  return np.max(np.abs(x - y), axis=1)
-
-
-def rowwise_euclidean(x, y):
-  return np.sqrt(np.sum((x - y)**2, axis=1))
-
-def rowwise_euler(x,y):
-  warnings.warn(deprecation_msg_euler, DeprecationWarning)
-  return rowwise_euclidean(x,y)
-
 def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
              fit="RANSAC", debug_plot=False, plot_file=None):
   """
@@ -1078,6 +1089,10 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     float:
       correlation dimension as slope of the line fitted to log(r) vs log(C(r))
   """
+  if dist is rowwise_chebychev:
+    warnings.warn(deprecation_msg_chebychev, DeprecationWarning)
+    dist = rowwise_chebyshev
+
   # TODO what are good values for r?
   # TODO do this for multiple values of emb_dim?
   if rvals is None:
