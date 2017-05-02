@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- more test cases for `sampen`
+- `debug_data` parameter for most measures that allows to retrieve the data used for debug plots for logging and creation of custom plots
+
+### Changed
+- `sampen` now takes functions for the `dist` parameter and not strings
+- using something else than `rowwise_chebychev` for `dist` in `sampen` is now officially discouraged
+
+### Fixed
+- naming confusion: "Euler" distance should be "Euclidean" distance
+- typo in the name "Chebyshev"
+
+### Notes
+- all changes mentioned above are backwards-compatible, but this compatibility will be dropped in the next version (since these are really stupid errors that I want to sweep under the rug :wink:)
+
 ## [0.3.2] - 2016-11-19
 ### Added
 - `LICENSE.txt` is now part of the distribution
