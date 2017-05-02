@@ -10,7 +10,8 @@ import warnings
 
 deprecation_msg_euler = \
   "'euler' distance is now appropriately called 'euclidean', mentions" \
-  + "of 'euler distance' will be removed in future versions"
+  + "of 'euler distance' will be removed in future versions. Sorry, Euclid."
+
 
 def poly_fit(x, y, degree, fit="RANSAC"):
   # check if we can use RANSAC
