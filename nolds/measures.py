@@ -447,8 +447,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
   # TODO reduce number of points to visit?
   # TODO performance test!
   for i in range(len(orbit)):
-    # find neighbors for each vector in the orbit using the chebychev distance
-    diffs = np.max(np.abs(orbit - orbit[i]), axis=1)
+    # find neighbors for each vector in the orbit using the chebyshev distance
+    diffs = rowwise_chebyshev(orbit, orbit[i])
     # ensure that we do not count the difference of the vector to itself
     diffs[i] = float('inf')
     # mask all neighbors that are too close in time to the vector itself
