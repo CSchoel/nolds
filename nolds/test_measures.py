@@ -207,8 +207,21 @@ class TestNoldsSampEn(unittest.TestCase):
   """
   def test_sampen_base(self):
     data = [0, 1, 5, 4, 1, 0, 1, 5, 3]
+    # matches for m=2: 01-01, 15-15
+    # matches for m=3: 015-015
     se = nolds.sampen(data)
-    self.assertAlmostEqual(se, np.log(2), delta=0.01)
-
+    self.assertAlmostEqual(se, -np.log(1.0/2), delta=0.01)
+    data = [1, 2, 1, 2.4, 1, 4]
+    # matches for m=1: 1-1,1-1,2-2.4,1-1
+    # matches for m=2: [1,2]-[1,2.4], [2,1]-[2.4,1]
+    se = nolds.sampen(data, emb_dim=1, tolerance=0.5)
+    self.assertAlmostEqual(se, -np.log(2.0/4), delta=0.01)
+    data = [0, 20, 1, 2, 3, 4, 40, 60, 1.4, 2.4, 3.4, 80, 100, 1.4, 2.4, 3.4,
+            4, 120, 140, 180]
+    # maches for m=3: [1,2,3]-[1.4,2.4,3.4],[1,2,3]-[1.4,2.4,3.4],
+    #                 [2,3,4]-[2.4,3.4,4], [1.4,2.4,3.4]-[1.4,2.4,3.4]
+    # matches for m=4: [1,2,3,4]-[1.4,2.4,3.4,4]
+    se = nolds.sampen(data, emb_dim=3, tolerance=0.5)
+    self.assertAlmostEqual(se, -np.log(1.0/4), delta=0.01)
 if __name__ == "__main__":
   unittest.main()
