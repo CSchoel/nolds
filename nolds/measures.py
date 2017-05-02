@@ -141,7 +141,7 @@ def delay_embedding(data, emb_dim, lag=1):
 
 
 def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
-           trajectory_len=20, fit="RANSAC", debug_plot=False,
+           trajectory_len=20, fit="RANSAC", debug_plot=False, debug_data=False,
            plot_file=None):
   """
   Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
@@ -236,6 +236,8 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     debug_plot (boolean):
       if True, a simple plot of the final line-fitting step will
       be shown
+    debug_data (boolean):
+      if True, debugging data will be returned alongside the result
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
@@ -244,6 +246,12 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     float:
       an estimate of the largest Lyapunov exponent (a positive exponent is
       a strong indicator for chaos)
+    (1d-vector, 1d-vector, list):
+      only present if debug_data is True: debug data of the form
+      `(ks, div_traj, poly)` where `ks` are the x-values of the line fit, 
+      `div_traj` are the y-values and `poly` are the line coefficients
+      (`[slope, intercept]`).
+
   """
   # convert data to float to avoid overflow errors in rowwise_euclidean
   data = data.astype("float32")
@@ -322,11 +330,15 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     poly = poly_fit(ks, div_traj, 1, fit=fit)
   if debug_plot:
     plot_reg(ks, div_traj, poly, "k", "log(d(k))", fname=plot_file)
-  return poly[0] / tau
+  le = poly[0] / tau
+  if debug_data:
+    return (le, (ks, div_traj, poly))
+  else:
+    return le
 
 
 def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
-           debug_plot=False, plot_file=None):
+           debug_plot=False, debug_data=False, plot_file=None):
   """
   Estimates the Lyapunov exponents for the given data using the algorithm of
   Eckmann et al. [le-1]_.
@@ -412,6 +424,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
       (normalization scaling factor for exponents)
     debug_plot (boolean):
       if True, a histogram matrix of the individual estimates will be shown
+    debug_data (boolean):
+      if True, debugging data will be returned alongside the result
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
@@ -421,6 +435,10 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     float array:
       array of matrix_dim Lyapunov exponents (positive exponents are indicators
       for chaos)
+    2d-array of floats:
+      only present if debug_data is True: all estimates for the matrix_dim
+      Lyapunov exponents from the x iterations of R_i. The shape of this debug
+      data is (x, matrix_dim).
   """
   n = len(data)
   if (emb_dim - 1) % (matrix_dim - 1) != 0:
@@ -443,7 +461,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
   old_Q = np.identity(matrix_dim)
   lexp = np.zeros(matrix_dim, dtype="float32")
   lexp_counts = np.zeros(lexp.shape)
-  debug_data = []
+  debug_values = []
   # TODO reduce number of points to visit?
   # TODO performance test!
   for i in range(len(orbit)):
@@ -531,15 +549,15 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     lexp_i = np.zeros(diag_R.shape, dtype="float32")
     lexp_i[idx] = np.log(diag_R[idx])
     lexp_i[np.where(diag_R == 0)] = np.inf
-    if debug_plot:
-      debug_data.append(lexp_i / tau / m)
+    if debug_plot or debug_data:
+      debug_values.append(lexp_i / tau / m)
     lexp[idx] += lexp_i[idx]
     lexp_counts[idx] += 1
   # end of loop over orbit vectors
   # it may happen that all R-matrices contained zeros => exponent really has
   # to be -inf
   if debug_plot:
-    plot_histogram_matrix(np.array(debug_data), "layp_e", fname=plot_file)
+    plot_histogram_matrix(np.array(debug_values), "layp_e", fname=plot_file)
   # normalize exponents over number of individual mat_Rs
   idx = np.where(lexp_counts > 0)
   lexp[idx] /= lexp_counts[idx]
@@ -548,6 +566,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
   lexp /= tau
   # take m into account
   lexp /= m
+  if debug_data:
+    return (lexp, np.array(debug_values))
   return lexp
 
 
