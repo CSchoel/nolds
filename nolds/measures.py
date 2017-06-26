@@ -1049,7 +1049,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     return poly[0]
 
 def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
-             fit="RANSAC", debug_plot=False, debug_data=True, plot_file=None):
+             fit="RANSAC", debug_plot=False, debug_data=False, plot_file=None):
   """
   Calculates the correlation dimension with the Grassberger-Procaccia algorithm
 
