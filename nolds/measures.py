@@ -603,7 +603,7 @@ def plot_dists(dists, tolerance, m, title=None, fname=None):
 
 
 def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
-           debug_plot=False, plot_file=None):
+           debug_plot=False, debug_data=False, plot_file=None):
   """
   Computes the sample entropy of the given data.
 
@@ -650,6 +650,8 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       something else, if you are sure that you need it.
     debug_plot (boolean):
       if True, a histogram of the individual distances for m and m+1
+    debug_data (boolean):
+      if True, debugging data will be returned alongside the result
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
@@ -659,6 +661,9 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
     float:
       the sample entropy of the data (negative logarithm of ratio between
       similar template vectors of length emb_dim + 1 and emb_dim)
+    [float list, float list]:
+      Lists of lists of the form `[dists_m, dists_m1]` containing the distances
+      between template vectors for m (dists_m) and for m + 1 (dists_m1).
   """
   if dist == "chebychev":
     warnings.warn(deprecation_msg_sampen_dist, DeprecationWarning)
@@ -716,7 +721,10 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
   if debug_plot:
     plot_dists(plot_data, tolerance, m, title="sampEn = {:.3f}".format(saen),
                fname=plot_file)
-  return saen
+  if debug_data:
+    return (saen, plot_data)
+  else:
+    return saen
 
 
 def binary_n(total_N, min_n=50):
@@ -913,7 +921,7 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
 
 
 def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
-             plot_file=None):
+             debug_data=False, plot_file=None):
   """
   Calculates the Hurst exponent by a standard rescaled range (R/S) approach.
 
@@ -997,6 +1005,8 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
       is more robust to outliers
     debug_plot (boolean):
       if True, a simple plot of the final line-fitting step will be shown
+    debug_data (boolean):
+      if True, debugging data will be returned alongside the result
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
@@ -1008,6 +1018,11 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
       there are no long-range correlations in the data, if K < 0.5 there are
       negative long-range correlations, if K > 0.5 there are positive
       long-range correlations)
+    (1d-vector, 1d-vector, list):
+      only present if debug_data is True: debug data of the form
+      `(nvals, rsvals, poly)` where `nvals` are the values used for log(n), 
+      `rsvals` are the corresponding log((R/S)_n) and `poly` are the line 
+      coefficients (`[slope, intercept]`)
   """
   total_N = len(data)
   if nvals is None:
@@ -1028,10 +1043,13 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     plot_reg(np.log(nvals), np.log(rsvals), poly, "log(n)", "log((R/S)_n)",
              fname=plot_file)
   # return line slope
-  return poly[0]
+  if debug_data:
+    return (poly[0], (np.log(nvals), np.log(rsvals), poly))
+  else:
+    return poly[0]
 
 def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
-             fit="RANSAC", debug_plot=False, plot_file=None):
+             fit="RANSAC", debug_plot=False, debug_data=True, plot_file=None):
   """
   Calculates the correlation dimension with the Grassberger-Procaccia algorithm
 
@@ -1100,6 +1118,8 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
       is more robust to outliers
     debug_plot (boolean):
       if True, a simple plot of the final line-fitting step will be shown
+    debug_data (boolean):
+      if True, debugging data will be returned alongside the result
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
@@ -1108,6 +1128,11 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
   Returns:
     float:
       correlation dimension as slope of the line fitted to log(r) vs log(C(r))
+    (1d-vector, 1d-vector, list):
+      only present if debug_data is True: debug data of the form
+      `(rvals, csums, poly)` where `rvals` are the values used for log(r), 
+      `csums` are the corresponding log(C(r)) and `poly` are the line 
+      coefficients (`[slope, intercept]`)
   """
   if dist is rowwise_chebychev:
     warnings.warn(deprecation_msg_chebychev, DeprecationWarning)
@@ -1138,11 +1163,13 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
   if debug_plot:
     plot_reg(np.log(rvals), np.log(csums), poly, "log(r)", "log(C(r))",
              fname=plot_file)
-  return poly[0]
-
+  if debug_data:
+    return (poly[0], (np.log(rvals), np.log(csums), poly))
+  else:
+    return poly[0]
 
 def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
-        fit_exp="RANSAC", debug_plot=False, plot_file=None):
+        fit_exp="RANSAC", debug_plot=False, debug_data=False, plot_file=None):
   """
   Performs a detrended fluctuation analysis (DFA) on the given data
 
@@ -1246,6 +1273,8 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
       is more robust to outliers
     debug_plot (boolean):
       if True, a simple plot of the final line-fitting step will be shown
+    debug_data (boolean):
+      if True, debugging data will be returned alongside the result
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
@@ -1256,6 +1285,11 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
       process similar to fractional Gaussian noise with H = alpha,
       alpha > 1: non-stationary process similar to fractional Brownian
       motion with H = alpha - 1)
+    (1d-vector, 1d-vector, list):
+      only present if debug_data is True: debug data of the form
+      `(nvals, fluctuations, poly)` where `nvals` are the values used for
+      log(n), `fluctuations` are the corresponding log(std(X,n)) and `poly`
+      are the line coefficients (`[slope, intercept]`)
   """
   total_N = len(data)
   if nvals is None:
@@ -1298,4 +1332,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
   if debug_plot:
     plot_reg(np.log(nvals), np.log(fluctuations), poly, "log(n)", "std(X,n)",
              fname=plot_file)
-  return poly[0]
+  if debug_data:
+    return (poly[0], (np.log(nvals), np.log(fluctuations), poly))
+  else:
+    return poly[0]
