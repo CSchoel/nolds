@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds.measures &mdash; Nolds 0.3.0 documentation</title>
+    <title>nolds.measures &mdash; Nolds 0.3.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.3.0 documentation" href="../../index.html" />
+    <link rel="top" title="Nolds 0.3.3 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -49,6 +49,29 @@
 <span class="c1"># TODO: is description of 0.5 for brownian motion really correct for hurst_rs?</span>
 <span class="c1"># FIXME: dfa fails for very small input sequences</span>
 
+<span class="n">deprecation_msg_euler</span> <span class="o">=</span> \
+  <span class="s2">&quot;&#39;euler&#39; distance is now appropriately called &#39;euclidean&#39;, mentions&quot;</span> \
+  <span class="o">+</span> <span class="s2">&quot;of &#39;euler distance&#39; will be removed in future versions. Sorry, Euclid.&quot;</span>
+
+<span class="n">deprecation_msg_chebychev</span> <span class="o">=</span> <span class="s2">&quot;Stupid german author cannot write russian&quot;</span> <span class="o">+</span> \
+  <span class="s2">&quot; names correctly. Please use &#39;rowwise_chebyshev&#39; instead of&quot;</span> <span class="o">+</span> \
+  <span class="s2">&quot; &#39;rowwise_chebychev&#39;. The old function name will be removed in future&quot;</span> <span class="o">+</span> \
+  <span class="s2">&quot; versions. Sorry, Mr. Chebyshev.&#39;&quot;</span>
+
+<span class="n">deprecation_msg_sampen_dist</span> <span class="o">=</span> <span class="s2">&quot;Using strings as values for &#39;dist&#39; is&quot;</span> <span class="o">+</span> \
+  <span class="s2">&quot; deprecated. The parameter now takes a distance function such as&quot;</span> <span class="o">+</span> \
+  <span class="s2">&quot; chebyshev. Support for function names will be removed in future versions.&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">rowwise_chebyshev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">rowwise_chebychev</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">rowwise_euclidean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="n">rowwise_euler</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">poly_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">):</span>
   <span class="c1"># check if we can use RANSAC</span>
@@ -159,7 +182,7 @@
 
 
 <div class="viewcode-block" id="lyap_r"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_r">[docs]</a><span class="k">def</span> <span class="nf">lyap_r</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_tsep</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_vectors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-           <span class="n">trajectory_len</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+           <span class="n">trajectory_len</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
            <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Estimates the largest Lyapunov exponent using the algorithm of Rosenstein</span>
@@ -254,6 +277,8 @@
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a simple plot of the final line-fitting step will</span>
 <span class="sd">      be shown</span>
+<span class="sd">    debug_data (boolean):</span>
+<span class="sd">      if True, debugging data will be returned alongside the result</span>
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
@@ -262,8 +287,14 @@
 <span class="sd">    float:</span>
 <span class="sd">      an estimate of the largest Lyapunov exponent (a positive exponent is</span>
 <span class="sd">      a strong indicator for chaos)</span>
+<span class="sd">    (1d-vector, 1d-vector, list):</span>
+<span class="sd">      only present if debug_data is True: debug data of the form</span>
+<span class="sd">      `(ks, div_traj, poly)` where `ks` are the x-values of the line fit, </span>
+<span class="sd">      `div_traj` are the y-values and `poly` are the line coefficients</span>
+<span class="sd">      (`[slope, intercept]`).</span>
+
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="c1"># convert data to float to avoid overflow errors in rowwise_euler</span>
+  <span class="c1"># convert data to float to avoid overflow errors in rowwise_euclidean</span>
   <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
   <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="n">max_tsep_factor</span> <span class="o">=</span> <span class="mf">0.25</span>
@@ -294,13 +325,14 @@
         <span class="n">lag</span> <span class="o">=</span> <span class="n">i</span>
         <span class="k">break</span>
     <span class="k">if</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="n">emb_dim</span> <span class="o">*</span> <span class="n">lag</span> <span class="o">&lt;</span> <span class="n">min_vectors</span><span class="p">:</span>
+      <span class="c1"># FIXME shouldn&#39;t we reset lag here?</span>
       <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;autocorrelation declined too slowly to find suitable lag&quot;</span>
       <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
   <span class="c1"># delay embedding</span>
   <span class="n">orbit</span> <span class="o">=</span> <span class="n">delay_embedding</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">lag</span><span class="p">)</span>
   <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbit</span><span class="p">)</span>
   <span class="c1"># construct matrix with pairwise distances between vectors in orbit</span>
-  <span class="n">dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rowwise_euler</span><span class="p">(</span><span class="n">orbit</span><span class="p">,</span> <span class="n">orbit</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)])</span>
+  <span class="n">dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rowwise_euclidean</span><span class="p">(</span><span class="n">orbit</span><span class="p">,</span> <span class="n">orbit</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)])</span>
   <span class="c1"># we do not want to consider vectors as neighbor that are less than min_tsep</span>
   <span class="c1"># time steps together =&gt; mask the distances min_tsep to the right and left of</span>
   <span class="c1"># each index by setting them to infinity (will never be considered as nearest</span>
@@ -339,11 +371,15 @@
     <span class="n">poly</span> <span class="o">=</span> <span class="n">poly_fit</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="n">fit</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
     <span class="n">plot_reg</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;log(d(k))&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">tau</span></div>
+  <span class="n">le</span> <span class="o">=</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">tau</span>
+  <span class="k">if</span> <span class="n">debug_data</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">le</span><span class="p">,</span> <span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="n">poly</span><span class="p">))</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">le</span></div>
 
 
 <div class="viewcode-block" id="lyap_e"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_e">[docs]</a><span class="k">def</span> <span class="nf">lyap_e</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">matrix_dim</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">min_nb</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_tsep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-           <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+           <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Estimates the Lyapunov exponents for the given data using the algorithm of</span>
 <span class="sd">  Eckmann et al. [le-1]_.</span>
@@ -381,7 +417,7 @@
 <span class="sd">      dimensions (map each point x_i of the time series to a vector</span>
 <span class="sd">      [x_i, x_(i+1), x_(i+2), ... x_(i+emb_dim-1)]).</span>
 <span class="sd">    * For each vector X_i in this orbit find a radius r_i so that at least</span>
-<span class="sd">      min_nb other vectors lie within (chebychev-)distance r_i around X_i.</span>
+<span class="sd">      min_nb other vectors lie within (chebyshev-)distance r_i around X_i.</span>
 <span class="sd">      These vectors will be called &quot;neighbors&quot; of X_i.</span>
 <span class="sd">    * Find the Matrix T_i that sends points from the neighborhood of X_i to</span>
 <span class="sd">      the neighborhood of X_(i+1). To avoid undetermined values in T_i, we</span>
@@ -429,6 +465,8 @@
 <span class="sd">      (normalization scaling factor for exponents)</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a histogram matrix of the individual estimates will be shown</span>
+<span class="sd">    debug_data (boolean):</span>
+<span class="sd">      if True, debugging data will be returned alongside the result</span>
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
@@ -438,6 +476,10 @@
 <span class="sd">    float array:</span>
 <span class="sd">      array of matrix_dim Lyapunov exponents (positive exponents are indicators</span>
 <span class="sd">      for chaos)</span>
+<span class="sd">    2d-array of floats:</span>
+<span class="sd">      only present if debug_data is True: all estimates for the matrix_dim</span>
+<span class="sd">      Lyapunov exponents from the x iterations of R_i. The shape of this debug</span>
+<span class="sd">      data is (x, matrix_dim).</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">emb_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">matrix_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -460,12 +502,12 @@
   <span class="n">old_Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">matrix_dim</span><span class="p">)</span>
   <span class="n">lexp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">matrix_dim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
   <span class="n">lexp_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">lexp</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-  <span class="n">debug_data</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">debug_values</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="c1"># TODO reduce number of points to visit?</span>
   <span class="c1"># TODO performance test!</span>
   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">orbit</span><span class="p">)):</span>
-    <span class="c1"># find neighbors for each vector in the orbit using the chebychev distance</span>
-    <span class="n">diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">orbit</span> <span class="o">-</span> <span class="n">orbit</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># find neighbors for each vector in the orbit using the chebyshev distance</span>
+    <span class="n">diffs</span> <span class="o">=</span> <span class="n">rowwise_chebyshev</span><span class="p">(</span><span class="n">orbit</span><span class="p">,</span> <span class="n">orbit</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="c1"># ensure that we do not count the difference of the vector to itself</span>
     <span class="n">diffs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
     <span class="c1"># mask all neighbors that are too close in time to the vector itself</span>
@@ -548,15 +590,15 @@
     <span class="n">lexp_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">diag_R</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
     <span class="n">lexp_i</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">diag_R</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
     <span class="n">lexp_i</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diag_R</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
-    <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
-      <span class="n">debug_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lexp_i</span> <span class="o">/</span> <span class="n">tau</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">debug_plot</span> <span class="ow">or</span> <span class="n">debug_data</span><span class="p">:</span>
+      <span class="n">debug_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lexp_i</span> <span class="o">/</span> <span class="n">tau</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span>
     <span class="n">lexp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">lexp_i</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
     <span class="n">lexp_counts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
   <span class="c1"># end of loop over orbit vectors</span>
   <span class="c1"># it may happen that all R-matrices contained zeros =&gt; exponent really has</span>
   <span class="c1"># to be -inf</span>
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
-    <span class="n">plot_histogram_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">debug_data</span><span class="p">),</span> <span class="s2">&quot;layp_e&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
+    <span class="n">plot_histogram_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">debug_values</span><span class="p">),</span> <span class="s2">&quot;layp_e&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
   <span class="c1"># normalize exponents over number of individual mat_Rs</span>
   <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lexp_counts</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
   <span class="n">lexp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">/=</span> <span class="n">lexp_counts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
@@ -565,6 +607,8 @@
   <span class="n">lexp</span> <span class="o">/=</span> <span class="n">tau</span>
   <span class="c1"># take m into account</span>
   <span class="n">lexp</span> <span class="o">/=</span> <span class="n">m</span>
+  <span class="k">if</span> <span class="n">debug_data</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">lexp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">debug_values</span><span class="p">))</span>
   <span class="k">return</span> <span class="n">lexp</span></div>
 
 
@@ -599,8 +643,8 @@
   <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="sampen"><a class="viewcode-back" href="../../nolds.html#nolds.sampen">[docs]</a><span class="k">def</span> <span class="nf">sampen</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s2">&quot;chebychev&quot;</span><span class="p">,</span>
-           <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="sampen"><a class="viewcode-back" href="../../nolds.html#nolds.sampen">[docs]</a><span class="k">def</span> <span class="nf">sampen</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="n">rowwise_chebyshev</span><span class="p">,</span>
+           <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Computes the sample entropy of the given data.</span>
 
@@ -641,11 +685,14 @@
 <span class="sd">    tolerance (float):</span>
 <span class="sd">      distance threshold for two template vectors to be considered equal</span>
 <span class="sd">      (default: 0.2 * std(data))</span>
-<span class="sd">    dist (string):</span>
+<span class="sd">    dist (function (2d-array, 1d-array) -&gt; 1d-array):</span>
 <span class="sd">      distance function used to calculate the distance between template</span>
-<span class="sd">      vectors, can be &#39;euler&#39; or &#39;chebychev&#39;</span>
+<span class="sd">      vectors. Sampen is defined using `rowwise_chebyshev`. You should only use</span>
+<span class="sd">      something else, if you are sure that you need it.</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a histogram of the individual distances for m and m+1</span>
+<span class="sd">    debug_data (boolean):</span>
+<span class="sd">      if True, debugging data will be returned alongside the result</span>
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
@@ -655,7 +702,22 @@
 <span class="sd">    float:</span>
 <span class="sd">      the sample entropy of the data (negative logarithm of ratio between</span>
 <span class="sd">      similar template vectors of length emb_dim + 1 and emb_dim)</span>
+<span class="sd">    [float list, float list]:</span>
+<span class="sd">      Lists of lists of the form `[dists_m, dists_m1]` containing the distances</span>
+<span class="sd">      between template vectors for m (dists_m) and for m + 1 (dists_m1).</span>
 <span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">dist</span> <span class="o">==</span> <span class="s2">&quot;chebychev&quot;</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">deprecation_msg_sampen_dist</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">deprecation_msg_chebychev</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">rowwise_chebyshev</span>
+  <span class="k">elif</span> <span class="n">dist</span> <span class="o">==</span> <span class="s2">&quot;euler&quot;</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">deprecation_msg_sampen_dist</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">deprecation_msg_euler</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">rowwise_euclidean</span>
+  <span class="k">elif</span> <span class="n">dist</span> <span class="ow">is</span> <span class="n">rowwise_chebychev</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">deprecation_msg_chebychev</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">rowwise_chebyshev</span>
+    
   <span class="k">if</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
     <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -687,13 +749,7 @@
     <span class="n">tVecsM</span> <span class="o">=</span> <span class="n">tVecs</span><span class="p">[:</span><span class="n">n</span> <span class="o">-</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="n">m</span><span class="p">]</span>
     <span class="c1"># successively calculate distances between each pair of template vectors</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tVecsM</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-      <span class="n">diff</span> <span class="o">=</span> <span class="n">tVecsM</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">tVecsM</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-      <span class="k">if</span> <span class="n">dist</span> <span class="o">==</span> <span class="s2">&quot;chebychev&quot;</span><span class="p">:</span>
-        <span class="n">dsts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diff</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-      <span class="k">elif</span> <span class="n">dist</span> <span class="o">==</span> <span class="s2">&quot;euler&quot;</span><span class="p">:</span>
-        <span class="n">dsts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-      <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="s2">&quot;unknown distance function: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">dist</span>
+      <span class="n">dsts</span> <span class="o">=</span> <span class="n">dist</span><span class="p">(</span><span class="n">tVecsM</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">tVecsM</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
       <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
         <span class="n">plot_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">dsts</span><span class="p">)</span>
       <span class="c1"># count how many distances are smaller than the tolerance</span>
@@ -706,7 +762,10 @@
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
     <span class="n">plot_dists</span><span class="p">(</span><span class="n">plot_data</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;sampEn = {:.3f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">saen</span><span class="p">),</span>
                <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">saen</span></div>
+  <span class="k">if</span> <span class="n">debug_data</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">saen</span><span class="p">,</span> <span class="n">plot_data</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">saen</span></div>
 
 
 <div class="viewcode-block" id="binary_n"><a class="viewcode-back" href="../../nolds.html#nolds.binary_n">[docs]</a><span class="k">def</span> <span class="nf">binary_n</span><span class="p">(</span><span class="n">total_N</span><span class="p">,</span> <span class="n">min_n</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
@@ -903,7 +962,7 @@
 
 
 <div class="viewcode-block" id="hurst_rs"><a class="viewcode-back" href="../../nolds.html#nolds.hurst_rs">[docs]</a><span class="k">def</span> <span class="nf">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-             <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+             <span class="n">debug_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Calculates the Hurst exponent by a standard rescaled range (R/S) approach.</span>
 
@@ -987,6 +1046,8 @@
 <span class="sd">      is more robust to outliers</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a simple plot of the final line-fitting step will be shown</span>
+<span class="sd">    debug_data (boolean):</span>
+<span class="sd">      if True, debugging data will be returned alongside the result</span>
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
@@ -998,6 +1059,11 @@
 <span class="sd">      there are no long-range correlations in the data, if K &lt; 0.5 there are</span>
 <span class="sd">      negative long-range correlations, if K &gt; 0.5 there are positive</span>
 <span class="sd">      long-range correlations)</span>
+<span class="sd">    (1d-vector, 1d-vector, list):</span>
+<span class="sd">      only present if debug_data is True: debug data of the form</span>
+<span class="sd">      `(nvals, rsvals, poly)` where `nvals` are the values used for log(n), </span>
+<span class="sd">      `rsvals` are the corresponding log((R/S)_n) and `poly` are the line </span>
+<span class="sd">      coefficients (`[slope, intercept]`)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">total_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">nvals</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -1018,19 +1084,13 @@
     <span class="n">plot_reg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rsvals</span><span class="p">),</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;log(n)&quot;</span><span class="p">,</span> <span class="s2">&quot;log((R/S)_n)&quot;</span><span class="p">,</span>
              <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
   <span class="c1"># return line slope</span>
-  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+  <span class="k">if</span> <span class="n">debug_data</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rsvals</span><span class="p">),</span> <span class="n">poly</span><span class="p">))</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-
-<span class="k">def</span> <span class="nf">rowwise_chebychev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">rowwise_euler</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-
-
-<div class="viewcode-block" id="corr_dim"><a class="viewcode-back" href="../../nolds.html#nolds.corr_dim">[docs]</a><span class="k">def</span> <span class="nf">corr_dim</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">rvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="n">rowwise_euler</span><span class="p">,</span>
-             <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="corr_dim"><a class="viewcode-back" href="../../nolds.html#nolds.corr_dim">[docs]</a><span class="k">def</span> <span class="nf">corr_dim</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">rvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="n">rowwise_euclidean</span><span class="p">,</span>
+             <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Calculates the correlation dimension with the Grassberger-Procaccia algorithm</span>
 
@@ -1099,6 +1159,8 @@
 <span class="sd">      is more robust to outliers</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a simple plot of the final line-fitting step will be shown</span>
+<span class="sd">    debug_data (boolean):</span>
+<span class="sd">      if True, debugging data will be returned alongside the result</span>
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
@@ -1107,7 +1169,16 @@
 <span class="sd">  Returns:</span>
 <span class="sd">    float:</span>
 <span class="sd">      correlation dimension as slope of the line fitted to log(r) vs log(C(r))</span>
+<span class="sd">    (1d-vector, 1d-vector, list):</span>
+<span class="sd">      only present if debug_data is True: debug data of the form</span>
+<span class="sd">      `(rvals, csums, poly)` where `rvals` are the values used for log(r), </span>
+<span class="sd">      `csums` are the corresponding log(C(r)) and `poly` are the line </span>
+<span class="sd">      coefficients (`[slope, intercept]`)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">dist</span> <span class="ow">is</span> <span class="n">rowwise_chebychev</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">deprecation_msg_chebychev</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">rowwise_chebyshev</span>
+
   <span class="c1"># TODO what are good values for r?</span>
   <span class="c1"># TODO do this for multiple values of emb_dim?</span>
   <span class="k">if</span> <span class="n">rvals</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -1133,11 +1204,13 @@
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
     <span class="n">plot_reg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">csums</span><span class="p">),</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;log(r)&quot;</span><span class="p">,</span> <span class="s2">&quot;log(C(r))&quot;</span><span class="p">,</span>
              <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
-
+  <span class="k">if</span> <span class="n">debug_data</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">csums</span><span class="p">),</span> <span class="n">poly</span><span class="p">))</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="dfa"><a class="viewcode-back" href="../../nolds.html#nolds.dfa">[docs]</a><span class="k">def</span> <span class="nf">dfa</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fit_trend</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span>
-        <span class="n">fit_exp</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">fit_exp</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Performs a detrended fluctuation analysis (DFA) on the given data</span>
 
@@ -1241,6 +1314,8 @@
 <span class="sd">      is more robust to outliers</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a simple plot of the final line-fitting step will be shown</span>
+<span class="sd">    debug_data (boolean):</span>
+<span class="sd">      if True, debugging data will be returned alongside the result</span>
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
@@ -1251,6 +1326,11 @@
 <span class="sd">      process similar to fractional Gaussian noise with H = alpha,</span>
 <span class="sd">      alpha &gt; 1: non-stationary process similar to fractional Brownian</span>
 <span class="sd">      motion with H = alpha - 1)</span>
+<span class="sd">    (1d-vector, 1d-vector, list):</span>
+<span class="sd">      only present if debug_data is True: debug data of the form</span>
+<span class="sd">      `(nvals, fluctuations, poly)` where `nvals` are the values used for</span>
+<span class="sd">      log(n), `fluctuations` are the corresponding log(std(X,n)) and `poly`</span>
+<span class="sd">      are the line coefficients (`[slope, intercept]`)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">total_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">nvals</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -1293,7 +1373,10 @@
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
     <span class="n">plot_reg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">fluctuations</span><span class="p">),</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;log(n)&quot;</span><span class="p">,</span> <span class="s2">&quot;std(X,n)&quot;</span><span class="p">,</span>
              <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+  <span class="k">if</span> <span class="n">debug_data</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">fluctuations</span><span class="p">),</span> <span class="n">poly</span><span class="p">))</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 </pre></div>
 
           </div>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds module &mdash; Nolds 0.3.0 documentation</title>
+    <title>nolds module &mdash; Nolds 0.3.3 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.3.0 documentation" href="index.html" />
+    <link rel="top" title="Nolds 0.3.3 documentation" href="index.html" />
     <link rel="prev" title="Welcome to Nolds’ documentation!" href="index.html" />
    
   
@@ -47,7 +47,7 @@
 <h3>Lyapunov exponent (Rosenstein et al.)<a class="headerlink" href="#lyapunov-exponent-rosenstein-et-al" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.lyap_r">
-<code class="descclassname">nolds.</code><code class="descname">lyap_r</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>lag=None</em>, <em>min_tsep=None</em>, <em>tau=1</em>, <em>min_vectors=20</em>, <em>trajectory_len=20</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">lyap_r</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>lag=None</em>, <em>min_tsep=None</em>, <em>tau=1</em>, <em>min_vectors=20</em>, <em>trajectory_len=20</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
 et al. <a class="reference internal" href="#lr-1" id="id1">[lr-1]</a>.</p>
 <dl class="docutils">
@@ -152,6 +152,8 @@ is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will
 be shown</dd>
+<dt>debug_data (boolean):</dt>
+<dd>if True, debugging data will be returned alongside the result</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
@@ -163,6 +165,11 @@ under the given file name instead of directly showing it through
 <dt>float:</dt>
 <dd>an estimate of the largest Lyapunov exponent (a positive exponent is
 a strong indicator for chaos)</dd>
+<dt>(1d-vector, 1d-vector, list):</dt>
+<dd>only present if debug_data is True: debug data of the form
+<cite>(ks, div_traj, poly)</cite> where <cite>ks</cite> are the x-values of the line fit, 
+<cite>div_traj</cite> are the y-values and <cite>poly</cite> are the line coefficients
+(<cite>[slope, intercept]</cite>).</dd>
 </dl>
 </dd>
 </dl>
@@ -173,7 +180,7 @@ a strong indicator for chaos)</dd>
 <h3>Lyapunov exponent (Eckmann et al.)<a class="headerlink" href="#lyapunov-exponent-eckmann-et-al" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.lyap_e">
-<code class="descclassname">nolds.</code><code class="descname">lyap_e</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>matrix_dim=4</em>, <em>min_nb=None</em>, <em>min_tsep=0</em>, <em>tau=1</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_e"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_e" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">lyap_e</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>matrix_dim=4</em>, <em>min_nb=None</em>, <em>min_tsep=0</em>, <em>tau=1</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_e"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_e" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the Lyapunov exponents for the given data using the algorithm of
 Eckmann et al. <a class="reference internal" href="#le-1" id="id2">[le-1]</a>.</p>
 <dl class="docutils">
@@ -210,7 +217,7 @@ which the time series was obtained. For this, several steps are required:</p>
 dimensions (map each point x_i of the time series to a vector
 [x_i, x_(i+1), x_(i+2), ... x_(i+emb_dim-1)]).</li>
 <li>For each vector X_i in this orbit find a radius r_i so that at least
-min_nb other vectors lie within (chebychev-)distance r_i around X_i.
+min_nb other vectors lie within (chebyshev-)distance r_i around X_i.
 These vectors will be called &#8220;neighbors&#8221; of X_i.</li>
 <li>Find the Matrix T_i that sends points from the neighborhood of X_i to
 the neighborhood of X_(i+1). To avoid undetermined values in T_i, we
@@ -282,6 +289,8 @@ url: <a class="reference external" href="http://www.mpipks-dresden.mpg.de/~tisea
 (normalization scaling factor for exponents)</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a histogram matrix of the individual estimates will be shown</dd>
+<dt>debug_data (boolean):</dt>
+<dd>if True, debugging data will be returned alongside the result</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
@@ -293,6 +302,10 @@ under the given file name instead of directly showing it through
 <dt>float array:</dt>
 <dd>array of matrix_dim Lyapunov exponents (positive exponents are indicators
 for chaos)</dd>
+<dt>2d-array of floats:</dt>
+<dd>only present if debug_data is True: all estimates for the matrix_dim
+Lyapunov exponents from the x iterations of R_i. The shape of this debug
+data is (x, matrix_dim).</dd>
 </dl>
 </dd>
 </dl>
@@ -303,7 +316,7 @@ for chaos)</dd>
 <h3>Sample entropy<a class="headerlink" href="#sample-entropy" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.sampen">
-<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist='chebychev'</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist=&lt;function rowwise_chebyshev at 0x0000000004C85158&gt;</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the sample entropy of the given data.</p>
 <dl class="docutils">
 <dt>Explanation of the sample entropy:</dt>
@@ -354,11 +367,14 @@ url: <a class="reference external" href="https://cran.r-project.org/web/packages
 <dt>tolerance (float):</dt>
 <dd>distance threshold for two template vectors to be considered equal
 (default: 0.2 * std(data))</dd>
-<dt>dist (string):</dt>
+<dt>dist (function (2d-array, 1d-array) -&gt; 1d-array):</dt>
 <dd>distance function used to calculate the distance between template
-vectors, can be &#8216;euler&#8217; or &#8216;chebychev&#8217;</dd>
+vectors. Sampen is defined using <cite>rowwise_chebyshev</cite>. You should only use
+something else, if you are sure that you need it.</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a histogram of the individual distances for m and m+1</dd>
+<dt>debug_data (boolean):</dt>
+<dd>if True, debugging data will be returned alongside the result</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
@@ -370,6 +386,9 @@ under the given file name instead of directly showing it through
 <dt>float:</dt>
 <dd>the sample entropy of the data (negative logarithm of ratio between
 similar template vectors of length emb_dim + 1 and emb_dim)</dd>
+<dt>[float list, float list]:</dt>
+<dd>Lists of lists of the form <cite>[dists_m, dists_m1]</cite> containing the distances
+between template vectors for m (dists_m) and for m + 1 (dists_m1).</dd>
 </dl>
 </dd>
 </dl>
@@ -380,7 +399,7 @@ similar template vectors of length emb_dim + 1 and emb_dim)</dd>
 <h3>Hurst exponent<a class="headerlink" href="#hurst-exponent" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.hurst_rs">
-<code class="descclassname">nolds.</code><code class="descname">hurst_rs</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#hurst_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.hurst_rs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">hurst_rs</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#hurst_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.hurst_rs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Hurst exponent by a standard rescaled range (R/S) approach.</p>
 <dl class="docutils">
 <dt>Explanation of Hurst exponent:</dt>
@@ -499,6 +518,8 @@ least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting whic
 is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will be shown</dd>
+<dt>debug_data (boolean):</dt>
+<dd>if True, debugging data will be returned alongside the result</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
@@ -512,6 +533,11 @@ under the given file name instead of directly showing it through
 there are no long-range correlations in the data, if K &lt; 0.5 there are
 negative long-range correlations, if K &gt; 0.5 there are positive
 long-range correlations)</dd>
+<dt>(1d-vector, 1d-vector, list):</dt>
+<dd>only present if debug_data is True: debug data of the form
+<cite>(nvals, rsvals, poly)</cite> where <cite>nvals</cite> are the values used for log(n), 
+<cite>rsvals</cite> are the corresponding log((R/S)_n) and <cite>poly</cite> are the line 
+coefficients (<cite>[slope, intercept]</cite>)</dd>
 </dl>
 </dd>
 </dl>
@@ -522,7 +548,7 @@ long-range correlations)</dd>
 <h3>Correlation dimension<a class="headerlink" href="#correlation-dimension" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.corr_dim">
-<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euler at 0x0000000005C9FBF8&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euclidean at 0x0000000004C856A8&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the correlation dimension with the Grassberger-Procaccia algorithm</p>
 <dl class="docutils">
 <dt>Explanation of correlation dimension:</dt>
@@ -614,6 +640,8 @@ least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting whic
 is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will be shown</dd>
+<dt>debug_data (boolean):</dt>
+<dd>if True, debugging data will be returned alongside the result</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
@@ -624,6 +652,11 @@ under the given file name instead of directly showing it through
 <dd><dl class="first last docutils">
 <dt>float:</dt>
 <dd>correlation dimension as slope of the line fitted to log(r) vs log(C(r))</dd>
+<dt>(1d-vector, 1d-vector, list):</dt>
+<dd>only present if debug_data is True: debug data of the form
+<cite>(rvals, csums, poly)</cite> where <cite>rvals</cite> are the values used for log(r), 
+<cite>csums</cite> are the corresponding log(C(r)) and <cite>poly</cite> are the line 
+coefficients (<cite>[slope, intercept]</cite>)</dd>
 </dl>
 </dd>
 </dl>
@@ -634,7 +667,7 @@ under the given file name instead of directly showing it through
 <h3>Detrended fluctuation analysis<a class="headerlink" href="#detrended-fluctuation-analysis" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.dfa">
-<code class="descclassname">nolds.</code><code class="descname">dfa</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>overlap=True</em>, <em>order=1</em>, <em>fit_trend='poly'</em>, <em>fit_exp='RANSAC'</em>, <em>debug_plot=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#dfa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.dfa" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">dfa</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>overlap=True</em>, <em>order=1</em>, <em>fit_trend='poly'</em>, <em>fit_exp='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#dfa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.dfa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a detrended fluctuation analysis (DFA) on the given data</p>
 <dl class="docutils">
 <dt>Recommendations for parameter settings by Hardstone et al.:</dt>
@@ -756,6 +789,8 @@ least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting whic
 is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will be shown</dd>
+<dt>debug_data (boolean):</dt>
+<dd>if True, debugging data will be returned alongside the result</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
@@ -769,6 +804,11 @@ under the given file name instead of directly showing it through
 process similar to fractional Gaussian noise with H = alpha,
 alpha &gt; 1: non-stationary process similar to fractional Brownian
 motion with H = alpha - 1)</dd>
+<dt>(1d-vector, 1d-vector, list):</dt>
+<dd>only present if debug_data is True: debug data of the form
+<cite>(nvals, fluctuations, poly)</cite> where <cite>nvals</cite> are the values used for
+log(n), <cite>fluctuations</cite> are the corresponding log(std(X,n)) and <cite>poly</cite>
+are the line coefficients (<cite>[slope, intercept]</cite>)</dd>
 </dl>
 </dd>
 </dl>
