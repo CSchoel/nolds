@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+### Changed
+### Fixed
+
+## [0.3.3] - 2017-06-26
+
+### Added
 - more test cases for `sampen`
 - `debug_data` parameter for most measures that allows to retrieve the data used for debug plots for logging and creation of custom plots
 
