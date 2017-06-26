@@ -28,3 +28,7 @@ twine upload dist/nolds-X.X.X*
 Allow source download:
 git tag X.X.X
 git push origin master --tags
+
+Update documentation:
+cd doc
+make html
