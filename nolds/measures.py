@@ -301,6 +301,10 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
       msg = "autocorrelation declined too slowly to find suitable lag" \
         + ", setting lag to {}"
       warnings.warn(msg.format(lag), RuntimeWarning)
+    if nb_vectors(lag) <= min_tsep:
+      msg = "cannot find any neighbors: lag ({:d})" \
+        + " or min_tsep ({:d}) are too high"
+      raise ValueError(msg.format(lag, min_tsep)) 
   # delay embedding
   orbit = delay_embedding(data, emb_dim, lag)
   m = len(orbit)
