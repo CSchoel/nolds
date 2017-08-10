@@ -140,9 +140,9 @@ def delay_embedding(data, emb_dim, lag=1):
   return data[indices]
 
 
-def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
+def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
            trajectory_len=20, fit="RANSAC", debug_plot=False, debug_data=False,
-           plot_file=None, fit_offset=0):
+           plot_file=None, fit_offset=0, min_vectors=None):
   """
   Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
   et al. [lr-1]_.
@@ -223,9 +223,9 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     tau (float):
       step size between data points in the time series in seconds (default:
       find a suitable value using the autocorrelation function)
-    min_vectors (int):
-      if lag=None, the search for a suitable lag will be stopped
-      when the number of resulting vectors drops below min_vectors
+    min_neighbors (int):
+      if lag=None, the search for a suitable lag will be stopped when the
+      number of potential neighbors for a vector drops below min_neighbors
     trajectory_len (int):
       the time (in number of data points) to follow the distance
       trajectories between two neighboring points
@@ -243,7 +243,9 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
       under the given file name instead of directly showing it through
       `plt.show()`
     fit_offset (int):
-        neglect the first fit_offset steps when fitting
+      neglect the first fit_offset steps when fitting
+    min_vectors (int):
+      deprecated, use `min_neighbors` instead
 
   Returns:
     float:
@@ -260,7 +262,10 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
   data = data.astype("float32")
   n = len(data)
   max_tsep_factor = 0.25
-  min_neighbors = 20
+  if min_vectors is not None:
+    min_neighbors = min_vectors
+    msg = "min_vectors is deprecated, use min_neighbors instead"
+    warnings.warn(msg, DeprecationWarning)
   if lag is None or min_tsep is None:
     # calculate min_tsep as mean period (= 1 / mean frequency)
     f = np.fft.rfft(data, n * 2 - 1)
@@ -283,17 +288,17 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     lag = 1
     # small helper function to calculate resulting number of vectors for a
     # given lag value
-    def nb_vectors(lag_value):
-      return max(0, n - (emb_dim - 1) * lag_value)
+    def nb_neighbors(lag_value):
+      return max(0, n - (emb_dim - 1) * lag_value - min_tsep)
     # find lag
     for i in range(1,n):
       if acorr[n - 1 + i] < eps \
           or acorr[n - 1 - i] < eps \
-          or nb_vectors(i) < min_vectors:
+          or nb_neighbors(i) < min_neighbors:
         lag = i
         break
-    if nb_vectors(lag) < min_vectors:
-      # we increased the lag so much that we get to many vectors
+    if nb_neighbors(lag) < min_neighbors:
+      # we increased the lag so much that we get too few vectors
       # => decrease lag to a value where we still have neighbors
       #     n - (emb_dim-1) * lag <= min_tsep 
       # <=> lag >= (n - min_tsep) / (emb_dim - 1)
@@ -301,10 +306,6 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
       msg = "autocorrelation declined too slowly to find suitable lag" \
         + ", setting lag to {}"
       warnings.warn(msg.format(lag), RuntimeWarning)
-    if nb_vectors(lag) <= min_tsep:
-      msg = "cannot find any neighbors: lag ({:d})" \
-        + " or min_tsep ({:d}) are too high"
-      raise ValueError(msg.format(lag, min_tsep)) 
   # delay embedding
   orbit = delay_embedding(data, emb_dim, lag)
   m = len(orbit)
