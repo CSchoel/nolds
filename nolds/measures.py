@@ -260,6 +260,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
   data = data.astype("float32")
   n = len(data)
   max_tsep_factor = 0.25
+  min_neighbors = 20
   if lag is None or min_tsep is None:
     # calculate min_tsep as mean period (= 1 / mean frequency)
     f = np.fft.rfft(data, n * 2 - 1)
@@ -292,9 +293,14 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
         lag = i
         break
     if nb_vectors(lag) < min_vectors:
-      # FIXME shouldn't we reset lag here?
-      msg = "autocorrelation declined too slowly to find suitable lag"
-      warnings.warn(msg, RuntimeWarning)
+      # we increased the lag so much that we get to many vectors
+      # => decrease lag to a value where we still have neighbors
+      #     n - (emb_dim-1) * lag <= min_tsep 
+      # <=> lag >= (n - min_tsep) / (emb_dim - 1)
+      lag = int(max(1, (n - min_tsep) / (emb_dim-1) - min_neighbors))
+      msg = "autocorrelation declined too slowly to find suitable lag" \
+        + ", setting lag to {}"
+      warnings.warn(msg.format(lag), RuntimeWarning)
   # delay embedding
   orbit = delay_embedding(data, emb_dim, lag)
   m = len(orbit)
