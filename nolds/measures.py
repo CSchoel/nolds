@@ -280,13 +280,18 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     acorr = np.roll(acorr, n - 1)
     eps = acorr[n - 1] * (1 - 1.0 / np.e)
     lag = 1
+    # small helper function to calculate resulting number of vectors for a
+    # given lag value
+    def nb_vectors(lag_value):
+      return max(0, n - (emb_dim - 1) * lag_value)
+    # find lag
     for i in range(1,n):
       if acorr[n - 1 + i] < eps \
           or acorr[n - 1 - i] < eps \
-          or 1.0 * n / emb_dim * i < min_vectors:
+          or nb_vectors(i) < min_vectors:
         lag = i
         break
-    if 1.0 * n / emb_dim * lag < min_vectors:
+    if nb_vectors(lag) < min_vectors:
       # FIXME shouldn't we reset lag here?
       msg = "autocorrelation declined too slowly to find suitable lag"
       warnings.warn(msg, RuntimeWarning)
