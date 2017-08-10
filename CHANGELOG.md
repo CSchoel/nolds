@@ -7,8 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+
 ### Changed
+
 ### Fixed
+
+## [0.3.4] - 2017-08-10
+
+### Added
+- `lyap_r` now has a new parameter `fit_offset` that allows to ignore the first steps of the plot in the fitting process.
+
+### Changed
+- The parameter `min_vectors` is now called `min_neighbors` in `lyap_r` and refers to the number of vectors that are candidates for the closest neighbor.
+
+### Fixed
+- The algorithm for choosing the `lag` would always choose 0 in `lyap_r`.
+- There was an error in the calculation of the number of vectors used for `min_vectors` in `lyap_r`.
 
 ## [0.3.3] - 2017-06-26
 
