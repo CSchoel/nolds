@@ -142,7 +142,7 @@ def delay_embedding(data, emb_dim, lag=1):
 
 def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
            trajectory_len=20, fit="RANSAC", debug_plot=False, debug_data=False,
-           plot_file=None):
+           plot_file=None, fit_offset=0):
   """
   Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
   et al. [lr-1]_.
@@ -242,6 +242,9 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
       `plt.show()`
+    fit_offset (int):
+        neglect the first fit_offset steps when fitting
+
   Returns:
     float:
       an estimate of the largest Lyapunov exponent (a positive exponent is
@@ -277,7 +280,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     acorr = np.roll(acorr, n - 1)
     eps = acorr[n - 1] * (1 - 1.0 / np.e)
     lag = 1
-    for i in range(n):
+    for i in range(1,n):
       if acorr[n - 1 + i] < eps \
           or acorr[n - 1 - i] < eps \
           or 1.0 * n / emb_dim * i < min_vectors:
@@ -327,9 +330,9 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_vectors=20,
     poly = [-np.inf, 0]
   else:
     # normal line fitting
-    poly = poly_fit(ks, div_traj, 1, fit=fit)
+    poly = poly_fit(ks[fit_offset:], div_traj[fit_offset:], 1, fit=fit)
   if debug_plot:
-    plot_reg(ks, div_traj, poly, "k", "log(d(k))", fname=plot_file)
+    plot_reg(ks[fit_offset:], div_traj[fit_offset:], poly, "k", "log(d(k))", fname=plot_file)
   le = poly[0] / tau
   if debug_data:
     return (le, (ks, div_traj, poly))
