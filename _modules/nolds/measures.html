@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds.measures &mdash; Nolds 0.3.3 documentation</title>
+    <title>nolds.measures &mdash; Nolds 0.3.4 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.3.3 documentation" href="../../index.html" />
+    <link rel="top" title="Nolds 0.3.4 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -181,9 +181,9 @@
   <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="lyap_r"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_r">[docs]</a><span class="k">def</span> <span class="nf">lyap_r</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_tsep</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_vectors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+<div class="viewcode-block" id="lyap_r"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_r">[docs]</a><span class="k">def</span> <span class="nf">lyap_r</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_tsep</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_neighbors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
            <span class="n">trajectory_len</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-           <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+           <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fit_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_vectors</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Estimates the largest Lyapunov exponent using the algorithm of Rosenstein</span>
 <span class="sd">  et al. [lr-1]_.</span>
@@ -264,9 +264,9 @@
 <span class="sd">    tau (float):</span>
 <span class="sd">      step size between data points in the time series in seconds (default:</span>
 <span class="sd">      find a suitable value using the autocorrelation function)</span>
-<span class="sd">    min_vectors (int):</span>
-<span class="sd">      if lag=None, the search for a suitable lag will be stopped</span>
-<span class="sd">      when the number of resulting vectors drops below min_vectors</span>
+<span class="sd">    min_neighbors (int):</span>
+<span class="sd">      if lag=None, the search for a suitable lag will be stopped when the</span>
+<span class="sd">      number of potential neighbors for a vector drops below min_neighbors</span>
 <span class="sd">    trajectory_len (int):</span>
 <span class="sd">      the time (in number of data points) to follow the distance</span>
 <span class="sd">      trajectories between two neighboring points</span>
@@ -283,6 +283,11 @@
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
 <span class="sd">      `plt.show()`</span>
+<span class="sd">    fit_offset (int):</span>
+<span class="sd">      neglect the first fit_offset steps when fitting</span>
+<span class="sd">    min_vectors (int):</span>
+<span class="sd">      deprecated, use `min_neighbors` instead</span>
+
 <span class="sd">  Returns:</span>
 <span class="sd">    float:</span>
 <span class="sd">      an estimate of the largest Lyapunov exponent (a positive exponent is</span>
@@ -298,6 +303,10 @@
   <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
   <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="n">max_tsep_factor</span> <span class="o">=</span> <span class="mf">0.25</span>
+  <span class="k">if</span> <span class="n">min_vectors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">min_neighbors</span> <span class="o">=</span> <span class="n">min_vectors</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;min_vectors is deprecated, use min_neighbors instead&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">lag</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">min_tsep</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
     <span class="c1"># calculate min_tsep as mean period (= 1 / mean frequency)</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
@@ -318,16 +327,26 @@
     <span class="n">acorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">acorr</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">eps</span> <span class="o">=</span> <span class="n">acorr</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">)</span>
     <span class="n">lag</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="c1"># small helper function to calculate resulting number of vectors for a</span>
+    <span class="c1"># given lag value</span>
+    <span class="k">def</span> <span class="nf">nb_neighbors</span><span class="p">(</span><span class="n">lag_value</span><span class="p">):</span>
+      <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="p">(</span><span class="n">emb_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">lag_value</span> <span class="o">-</span> <span class="n">min_tsep</span><span class="p">)</span>
+    <span class="c1"># find lag</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
       <span class="k">if</span> <span class="n">acorr</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span> \
           <span class="ow">or</span> <span class="n">acorr</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span> \
-          <span class="ow">or</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="n">emb_dim</span> <span class="o">*</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">min_vectors</span><span class="p">:</span>
+          <span class="ow">or</span> <span class="n">nb_neighbors</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_neighbors</span><span class="p">:</span>
         <span class="n">lag</span> <span class="o">=</span> <span class="n">i</span>
         <span class="k">break</span>
-    <span class="k">if</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="n">emb_dim</span> <span class="o">*</span> <span class="n">lag</span> <span class="o">&lt;</span> <span class="n">min_vectors</span><span class="p">:</span>
-      <span class="c1"># FIXME shouldn&#39;t we reset lag here?</span>
-      <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;autocorrelation declined too slowly to find suitable lag&quot;</span>
-      <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nb_neighbors</span><span class="p">(</span><span class="n">lag</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_neighbors</span><span class="p">:</span>
+      <span class="c1"># we increased the lag so much that we get too few vectors</span>
+      <span class="c1"># =&gt; decrease lag to a value where we still have neighbors</span>
+      <span class="c1">#     n - (emb_dim-1) * lag &lt;= min_tsep </span>
+      <span class="c1"># &lt;=&gt; lag &gt;= (n - min_tsep) / (emb_dim - 1)</span>
+      <span class="n">lag</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">min_tsep</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">emb_dim</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">min_neighbors</span><span class="p">))</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;autocorrelation declined too slowly to find suitable lag&quot;</span> \
+        <span class="o">+</span> <span class="s2">&quot;, setting lag to {}&quot;</span>
+      <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lag</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
   <span class="c1"># delay embedding</span>
   <span class="n">orbit</span> <span class="o">=</span> <span class="n">delay_embedding</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">,</span> <span class="n">lag</span><span class="p">)</span>
   <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbit</span><span class="p">)</span>
@@ -368,9 +387,9 @@
     <span class="n">poly</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="c1"># normal line fitting</span>
-    <span class="n">poly</span> <span class="o">=</span> <span class="n">poly_fit</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="n">fit</span><span class="p">)</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">poly_fit</span><span class="p">(</span><span class="n">ks</span><span class="p">[</span><span class="n">fit_offset</span><span class="p">:],</span> <span class="n">div_traj</span><span class="p">[</span><span class="n">fit_offset</span><span class="p">:],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="n">fit</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">debug_plot</span><span class="p">:</span>
-    <span class="n">plot_reg</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;log(d(k))&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
+    <span class="n">plot_reg</span><span class="p">(</span><span class="n">ks</span><span class="p">[</span><span class="n">fit_offset</span><span class="p">:],</span> <span class="n">div_traj</span><span class="p">[</span><span class="n">fit_offset</span><span class="p">:],</span> <span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;log(d(k))&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">plot_file</span><span class="p">)</span>
   <span class="n">le</span> <span class="o">=</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">tau</span>
   <span class="k">if</span> <span class="n">debug_data</span><span class="p">:</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">le</span><span class="p">,</span> <span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">div_traj</span><span class="p">,</span> <span class="n">poly</span><span class="p">))</span>

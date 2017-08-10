@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds module &mdash; Nolds 0.3.3 documentation</title>
+    <title>nolds module &mdash; Nolds 0.3.4 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.3.3 documentation" href="index.html" />
+    <link rel="top" title="Nolds 0.3.4 documentation" href="index.html" />
     <link rel="prev" title="Welcome to Nolds’ documentation!" href="index.html" />
    
   
@@ -47,7 +47,7 @@
 <h3>Lyapunov exponent (Rosenstein et al.)<a class="headerlink" href="#lyapunov-exponent-rosenstein-et-al" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.lyap_r">
-<code class="descclassname">nolds.</code><code class="descname">lyap_r</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>lag=None</em>, <em>min_tsep=None</em>, <em>tau=1</em>, <em>min_vectors=20</em>, <em>trajectory_len=20</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">lyap_r</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>lag=None</em>, <em>min_tsep=None</em>, <em>tau=1</em>, <em>min_neighbors=20</em>, <em>trajectory_len=20</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em>, <em>fit_offset=0</em>, <em>min_vectors=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
 et al. <a class="reference internal" href="#lr-1" id="id1">[lr-1]</a>.</p>
 <dl class="docutils">
@@ -139,9 +139,9 @@ find a suitable value by calculating the mean period of the data)</dd>
 <dt>tau (float):</dt>
 <dd>step size between data points in the time series in seconds (default:
 find a suitable value using the autocorrelation function)</dd>
-<dt>min_vectors (int):</dt>
-<dd>if lag=None, the search for a suitable lag will be stopped
-when the number of resulting vectors drops below min_vectors</dd>
+<dt>min_neighbors (int):</dt>
+<dd>if lag=None, the search for a suitable lag will be stopped when the
+number of potential neighbors for a vector drops below min_neighbors</dd>
 <dt>trajectory_len (int):</dt>
 <dd>the time (in number of data points) to follow the distance
 trajectories between two neighboring points</dd>
@@ -158,6 +158,10 @@ be shown</dd>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
 <cite>plt.show()</cite></dd>
+<dt>fit_offset (int):</dt>
+<dd>neglect the first fit_offset steps when fitting</dd>
+<dt>min_vectors (int):</dt>
+<dd>deprecated, use <cite>min_neighbors</cite> instead</dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
@@ -316,7 +320,7 @@ data is (x, matrix_dim).</dd>
 <h3>Sample entropy<a class="headerlink" href="#sample-entropy" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.sampen">
-<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist=&lt;function rowwise_chebyshev at 0x0000000004C85158&gt;</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist=&lt;function rowwise_chebyshev at 0x0000000004BBAC80&gt;</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the sample entropy of the given data.</p>
 <dl class="docutils">
 <dt>Explanation of the sample entropy:</dt>
@@ -548,7 +552,7 @@ coefficients (<cite>[slope, intercept]</cite>)</dd>
 <h3>Correlation dimension<a class="headerlink" href="#correlation-dimension" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.corr_dim">
-<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euclidean at 0x0000000004C856A8&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euclidean at 0x0000000004BF5E18&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the correlation dimension with the Grassberger-Procaccia algorithm</p>
 <dl class="docutils">
 <dt>Explanation of correlation dimension:</dt>
