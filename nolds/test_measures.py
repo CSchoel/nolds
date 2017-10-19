@@ -5,6 +5,7 @@ from builtins import *
 import numpy as np
 # import internal module to test helping functions
 from . import measures as nolds
+from . import datasets
 import unittest
 
 
@@ -147,6 +148,26 @@ class TestNoldsHurst(unittest.TestCase):
     h_walk = nolds.hurst_rs(walk)
     # expected h is around 1.0
     self.assertGreater(h_walk, 0.7)
+
+  """
+  Tests for hurst_rs using the same tests as in the R-package pracma
+  """
+  def test_hurst_pracma(self):
+    h72 = nolds.hurst_rs(datasets.brown72, debug_plot=True)
+    self.assertAlmostEqual(h72, 0.72, delta=0.1)
+
+    xgn = np.random.normal(size=1000)
+    hgn = nolds.hurst_rs(xgn)
+    self.assertAlmostEqual(hgn, 0.5, delta=0.2)
+
+    xlm = np.zeros(1024, dtype="float32")
+    xlm[0] = 0.1
+    for i in range(1,xlm.shape[0]):
+      xlm[i] = 4 * xlm[i-1] * (1 - xlm[i-1])
+    hlm = nolds.hurst_rs(xlm, nvals=nolds.logarithmic_n(50, 500, 1.05), debug_plot=True)
+    self.assertAlmostEqual(hlm, 0.43, delta=0.15)
+
+
 
 
 class TestNoldsDFA(unittest.TestCase):
