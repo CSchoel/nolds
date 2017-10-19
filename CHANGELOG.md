@@ -8,9 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+- dataset `brown72` that has a prescribed hurst exponent of 0.72
+- test `test_hurst_pracma` that uses the same testing sequences for `hurst_rs` as the R-package `pracma`
+
 ### Changed
 
+- default choice for the parameter `nvals` in `hurst_rs` now favors higher n values and always uses 16 n values
+
 ### Fixed
+
+- using fitting method `'ransac'` when sklearn was not installed resulted in an exception instead of a warning
 
 ## [0.3.4] - 2017-08-10
 
