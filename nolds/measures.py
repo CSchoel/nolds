@@ -1067,6 +1067,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     plot_reg(np.log(nvals), np.log(rsvals), poly, "log(n)", "log((R/S)_n)",
              fname=plot_file)
   # return line slope
+  # TODO add correction factor for return value based on Weron 2002
   if debug_data:
     return (poly[0], (np.log(nvals), np.log(rsvals), poly))
   else:

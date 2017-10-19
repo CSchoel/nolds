@@ -218,6 +218,7 @@ class TestNoldsCorrDim(unittest.TestCase):
     self.assertAlmostEqual(cd, 1, delta=0.05)
     data = np.random.random(n)
     cd = nolds.corr_dim(data, 4)
+    # TODO this test fails when you do not have sklearn installed
     self.assertAlmostEqual(cd, 0.2, delta=0.1)
     # TODO test example for cd > 1
 
