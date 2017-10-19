@@ -1,1 +1,2 @@
 include LICENSE.txt
+include nolds/datasets/brown72.npy

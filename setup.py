@@ -65,5 +65,6 @@ setup(
     },
     cmdclass={
         'clean': CleanCommand
-    }
+    },
+    include_package_data=True
 )
