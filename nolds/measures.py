@@ -41,9 +41,9 @@ def poly_fit(x, y, degree, fit="RANSAC"):
     except ImportError:
       warnings.warn(
         "fitting mode 'RANSAC' requires the package sklearn, using"
-        + "'poly' instead",
+        + " 'poly' instead",
         RuntimeWarning)
-      fittig_mode = "poly"
+      fit = "poly"
 
   if fit == "poly":
     return np.polyfit(x, y, degree)
