@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - dataset `brown72` that has a prescribed hurst exponent of 0.72
+- generators for the logistic and the tent map in the new `datasets` package
 - test `test_hurst_pracma` that uses the same testing sequences for `hurst_rs` as the R-package `pracma`
 
 ### Changed
