@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - using fitting method `'ransac'` when sklearn was not installed resulted in an exception instead of a warning
+- NaNs in ``hurst_rs`` where filtered from the set of (R/S)_n values, but the filtered values for n would remain in the calculation and fitting
 
 ## [0.3.4] - 2017-08-10
 

@@ -1055,7 +1055,9 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   rsvals = np.array([rs(data, n) for n in nvals])
   # filter NaNs (zeros should not be possible, because if R is 0 then
   # S is also zero)
-  rsvals = rsvals[np.logical_not(np.isnan(rsvals))]
+  not_nan = np.logical_not(np.isnan(rsvals))
+  rsvals = rsvals[not_nan]
+  nvals = nvals[not_nan]
   # it may happen that no rsvals are left (if all values of data are the same)
   if len(rsvals) == 0:
     poly = [np.nan, np.nan]
