@@ -881,7 +881,7 @@ def rs(data, n):
   Calculates an individual R/S value in the rescaled range approach for
   a given n.
 
-  Note: This is just a helper function for hurs_rs and should not be called
+  Note: This is just a helper function for hurst_rs and should not be called
   directly.
 
   Args:
