@@ -4,6 +4,7 @@ from __future__ import (absolute_import, division,
 from builtins import *
 import numpy as np
 import warnings
+import math
 
 # TODO: is description of 0.5 for brownian motion really correct for hurst_rs?
 # FIXME: dfa fails for very small input sequences
@@ -828,6 +829,53 @@ def logarithmic_r(min_n, max_n, factor):
   return [min_n * (factor ** i) for i in range(max_i + 1)]
 
 
+def expected_rs(n):
+  """
+  Calculates the expected (R/S)_n for white noise for a given n.
+
+  This is used as a correction factor in the function hurst_rs.
+
+  Args:
+    n (int):
+      the value of n for which the expected (R/S)_n should be calculated
+
+  Returns:
+    float:
+      expected (R/S)_n for white noise
+  """
+  front = (n - 0.5) / n
+  i = np.arange(1,n)
+  back = np.sum(np.sqrt((n - i) / i))
+  if n <= 340:
+    middle = math.gamma((n-1) * 0.5) / math.sqrt(math.pi) / math.gamma(n * 0.5)
+  else:
+    middle = 1.0 / math.sqrt(n * math.pi * 0.5)
+  return front * middle * back
+
+def expected_h(nvals, fit="RANSAC"):
+  """
+  Uses expected_rs to calculate the expected value for the Hurst exponent h
+  based on the values of n used for the calculation.
+
+  Args:
+    nvals (array of int):
+      the values of n used to calculate the individual (R/S)_n
+
+  KWargs:
+    fit (str):
+      the fitting method to use for the line fit, either 'poly' for normal
+      least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+      is more robust to outliers
+
+  Returns:
+    float:
+      expected h for white noise
+  """
+  rsvals = [expected_rs(n) for n in nvals]
+  poly = poly_fit(np.log(nvals), np.log(rsvals), 1, fit=fit)
+  return poly[0]
+
+
 def rs(data, n):
   """
   Calculates an individual R/S value in the rescaled range approach for
@@ -942,7 +990,7 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
 
 
 def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
-             debug_data=False, plot_file=None):
+             debug_data=False, plot_file=None, corrected=True):
   """
   Calculates the Hurst exponent by a standard rescaled range (R/S) approach.
 
@@ -1032,6 +1080,9 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
       `plt.show()`
+    corrected (boolean):
+      if True, a correction factor will be applied to the output according to
+      the expected value for the individual (R/S)_n (see [h-3])
 
   Returns:
     float:
@@ -1061,19 +1112,25 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   # it may happen that no rsvals are left (if all values of data are the same)
   if len(rsvals) == 0:
     poly = [np.nan, np.nan]
+    if debug_plot:
+      warnings.warn("Cannot display debug plot, all (R/S)_n are NaN")
   else:
     # fit a line to the logarithm of the obtained (R/S)_n
-    poly = poly_fit(np.log(nvals), np.log(rsvals), 1,
-                    fit=fit)
-  if debug_plot:
-    plot_reg(np.log(nvals), np.log(rsvals), poly, "log(n)", "log((R/S)_n)",
-             fname=plot_file)
-  # return line slope
-  # TODO add correction factor for return value based on Weron 2002
+    xvals = np.log(nvals)
+    yvals = np.log(rsvals)
+    if corrected:
+      yvals -= np.log([expected_rs(n) for n in nvals])
+    poly = poly_fit(xvals, yvals, 1, fit=fit)
+    if debug_plot:
+      plot_reg(xvals, yvals, poly, "log(n)", "log((R/S)_n)",
+               fname=plot_file)
+  # account for correction if necessary
+  h = poly[0] + 0.5 if corrected else poly[0]
+  # return line slope (+ correction) as hurst exponent
   if debug_data:
-    return (poly[0], (np.log(nvals), np.log(rsvals), poly))
+    return (h, (np.log(nvals), np.log(rsvals), poly))
   else:
-    return poly[0]
+    return h
 
 def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
              fit="RANSAC", debug_plot=False, debug_data=False, plot_file=None):
