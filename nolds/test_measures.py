@@ -160,11 +160,8 @@ class TestNoldsHurst(unittest.TestCase):
     hgn = nolds.hurst_rs(xgn)
     self.assertAlmostEqual(hgn, 0.5, delta=0.2)
 
-    xlm = np.zeros(1024, dtype="float32")
-    xlm[0] = 0.1
-    for i in range(1,xlm.shape[0]):
-      xlm[i] = 4 * xlm[i-1] * (1 - xlm[i-1])
-    hlm = nolds.hurst_rs(xlm, nvals=nolds.logarithmic_n(50, 500, 1.05), debug_plot=True)
+    xlm = np.array(list(datasets.logistic_map(0.1,1024)))
+    hlm = nolds.hurst_rs(xlm, fit="poly", nvals=nolds.logarithmic_n(50, 300, 1.05), debug_plot=True)
     self.assertAlmostEqual(hlm, 0.43, delta=0.15)
 
 
