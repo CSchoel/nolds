@@ -5,7 +5,7 @@ from builtins import *
 import numpy as np
 import pkg_resources
 
-def brown72():
+def load_brown72():
   """
   Loads the dataset brown72 with a prescribed Hurst exponent of 0.72
 
@@ -149,5 +149,5 @@ def logistic_map(x, steps, r=4):
     x = r * x * (1 - x)
     yield x
 
-brown72 = brown72()
+brown72 = load_brown72()
 
