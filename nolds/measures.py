@@ -1067,7 +1067,8 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   Kwargs:
     nvals (iterable of int):
       sizes of subseries to use
-      (default: `logarithmic_n(max(4, int(0.01* total_N)), 0.1*len(data), 1.1)`)
+      (default: 3 to 16 logarithmically spaced values, using only values
+      greater than 50 if possible)
     fit (str):
       the fitting method to use for the line fit, either 'poly' for normal
       least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
@@ -1102,6 +1103,8 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     # spaced datapoints leaning towards larger n (since smaller n often give
     # misleading values, at least for white noise)
     nvals = logarithmic_n(max(4, int(0.01* total_N)), 0.1 * total_N, 1.15)
+    # only take n that are larger than 50 (but always take the largest three)
+    nvals = [x for x in nvals[:-3] if x > 50] + nvals[-3:]
   # get individual values for (R/S)_n
   rsvals = np.array([rs(data, n) for n in nvals])
   # filter NaNs (zeros should not be possible, because if R is 0 then
