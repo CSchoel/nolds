@@ -37,7 +37,7 @@ def plot_lyap(maptype="logistic"):
     # Derivative of logistic map: f(x) = r * x * (1 - x) = r * x - r * x²
     # => f'(x) = r - 2 * r * x
     lambdas = [
-      np.mean(np.log(abs(r - 2 * r * x)))
+      np.mean(np.log(abs(r - 2 * r * x[np.where(x != 0.5)])))
       for x,r in zip(full_data, param_range)
     ]
   elif maptype == "tent":
@@ -51,7 +51,8 @@ def plot_lyap(maptype="logistic"):
     # since the values are multiplied by mu in each step, two trajectories
     # starting in x and x + delta will have a distance of delta * mu^n after n
     # steps. Therefore the lyapunov exponent should be log(mu).
-    lambdas = np.log(param_range)
+    lambdas = np.log(param_range, where=param_range > 0)
+    lambdas[np.where(param_range <= 0)] = np.nan
   else:
     raise Error("maptype %s not recognized" % maptype)
 
