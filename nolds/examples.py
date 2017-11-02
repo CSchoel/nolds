@@ -7,6 +7,30 @@ from . import datasets
 import numpy as np
 
 
+def weron_2002_figure2(n = 10000):
+  # local import to avoid dependency for non-debug use
+  import matplotlib.pyplot as plt
+  data = []
+  for e in range(8,17):
+    l = 2**e
+    nvals = 2**np.arange(6,e)
+    rsn = np.mean([
+      nolds.hurst_rs(np.random.normal(size=l), fit="poly")
+      for _ in range(n)
+    ])
+    rs50 = np.mean([
+      nolds.hurst_rs(np.random.normal(size=l), fit="poly", nvals=nvals)
+      for _ in range(n)
+    ])
+    rs50_raw = np.mean([
+      nolds.hurst_rs(np.random.normal(size=l), fit="poly", nvals=nvals, corrected=False)
+      for _ in range(n)
+    ])
+    data.append((rsn, rs50, rs50_raw))
+  lines = plt.plot(np.arange(8,17), data)
+  plt.legend(lines, ("rsn", "rs50", "rs50_raw"))
+  plt.show()
+
 def plot_hurst_hist():
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
