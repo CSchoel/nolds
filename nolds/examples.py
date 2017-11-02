@@ -7,6 +7,13 @@ from . import datasets
 import numpy as np
 
 
+def plot_hurst_hist():
+  # local import to avoid dependency for non-debug use
+  import matplotlib.pyplot as plt
+  hs = [nolds.hurst_rs(np.random.normal(size=1000), corrected=True) for _ in range(100)]
+  plt.hist(hs, bins=20)
+  plt.show()
+
 def plot_lyap(maptype="logistic"):
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
