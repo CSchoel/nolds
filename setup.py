@@ -61,7 +61,8 @@ setup(
         'setuptools'
     ],
     extras_require={
-        'RANSAC': ['sklearn']
+        'RANSAC': ['sklearn'],
+        'qrandom': ['quantumrandom']
     },
     cmdclass={
         'clean': CleanCommand
