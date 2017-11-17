@@ -1067,8 +1067,16 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   Kwargs:
     nvals (iterable of int):
       sizes of subseries to use
-      (default: 3 to 16 logarithmically spaced values, using only values
-      greater than 50 if possible)
+      (default: 3 to 16 logarithmically spaced values between one and ten
+      percent of the length of the time series, using only values greater than
+      50, but at least the three largest values)
+
+      Generally, the choice for n is a trade-off between the length and the
+      number of the subsequences that are used for the calculation of the
+      (R/S)_n. Very low values of n lead to high variance in the `r` and `s`
+      while very high values may leave too few subsequences that the mean along
+      them is still meaningful. Logarithmic spacing makes sense, because it 
+      translates to even spacing in the log-log-plot.
     fit (str):
       the fitting method to use for the line fit, either 'poly' for normal
       least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
