@@ -6,10 +6,21 @@ from . import measures as nolds
 from . import datasets
 import numpy as np
 
+# TODO more/better description for examples
 
 def weron_2002_figure2(n = 10000):
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
+  # note: these values are calculated by measurements in inkscape of the plot
+  # from the paper
+  reported = [6.708, 13.103, 20.240, 21.924, 22.256, 24.112, 24.054, 26.299, 
+              26.897]
+  reported_raw = [160.599, 141.663, 128.454, 115.617, 103.651, 95.481, 86.810,
+                  81.799, 76.270]
+  def height_to_h(height):
+    return 0.49 + height / 29.894 * 0.01
+  reported = height_to_h(np.array(reported))
+  reported_raw = height_to_h(np.array(reported_raw))
   data = []
   for e in range(8,17):
     l = 2**e
@@ -28,7 +39,9 @@ def weron_2002_figure2(n = 10000):
     ])
     data.append((rsn, rs50, rs50_raw))
   lines = plt.plot(np.arange(8,17), data)
-  plt.legend(lines, ("rsn", "rs50", "rs50_raw"))
+  r = plt.plot(np.arange(8,17), reported)
+  rr = plt.plot(np.arange(8,17), reported_raw)
+  plt.legend(r + rr + lines, ("weron", "weron_raw", "rsn", "rs50", "rs50_raw"))
   plt.show()
 
 def plot_hurst_hist():
