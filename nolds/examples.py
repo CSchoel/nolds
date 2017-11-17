@@ -34,7 +34,7 @@ def weron_2002_figure2(n = 10000):
 def plot_hurst_hist():
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
-  hs = [nolds.hurst_rs(np.random.normal(size=1000), corrected=True) for _ in range(100)]
+  hs = [nolds.hurst_rs(np.random.random(size=10000), corrected=True) for _ in range(100)]
   plt.hist(hs, bins=20)
   plt.show()
 
