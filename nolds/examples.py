@@ -109,7 +109,7 @@ def profiling():
 
 if __name__ == "__main__":
   # run this with the following command:
-  # python -m nolds.examples all
+  # python -m nolds.examples lyapunov-all
   import sys
   if len(sys.argv) < 2:
     print("please tell me which tests you want to run")
