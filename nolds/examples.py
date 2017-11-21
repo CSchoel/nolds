@@ -6,9 +6,41 @@ from . import measures as nolds
 from . import datasets
 import numpy as np
 
-# TODO more/better description for examples
+# TODO better legends for plots
 
 def weron_2002_figure2(n = 10000):
+  """
+  Recreates figure 2 of [w]_ comparing the reported values by Weron to the
+  values obtained by the functions in this package.
+
+  The experiment consists of n iterations where the hurst exponent of randomly
+  generated gaussian noise is calculated. This is done with differing sequence
+  lengths of 256, 512, 1024, ...., 65536. The average estimated hurst exponent
+  over all iterations is plotted for the following configurations:
+
+  * `weron` is the Anis-Lloyd-corrected Hurst exponent calculated by Weron
+  * `rs50` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
+    the same parameters as used by Weron
+  * `weron_raw` is the uncorrected Hurst exponent calculated by Weron
+  * `rs50_raw` is the uncorrected Hurst exponent calculated by Nolds with the
+    same parameters as used by Weron
+  * `rsn` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
+    the default settings of Nolds
+
+  The values reported by Weron are only measured from the plot in the PDF
+  version of the paper and can therefore have some small inaccuracies.
+
+  This function requires the package `matplotlib`.
+
+  Kwargs:
+    n (int):
+      number of iterations of the experiment (Weron used 10000, but this takes
+      a while)
+
+  .. [w] R. Weron, “Estimating long-range dependence: finite sample
+     properties and confidence intervals,” Physica A: Statistical Mechanics
+     and its Applications, vol. 312, no. 1, pp. 285–299, 2002.
+  """
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
   # note: these values are calculated by measurements in inkscape of the plot
@@ -45,6 +77,12 @@ def weron_2002_figure2(n = 10000):
   plt.show()
 
 def plot_hurst_hist():
+  """
+  Plots a histogram of values obtained for the hurst exponent of uniformly
+  distributed white noise.
+
+  This function requires the package `matplotlib`.
+  """
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
   hs = [nolds.hurst_rs(np.random.random(size=10000), corrected=True) for _ in range(100)]
@@ -52,6 +90,21 @@ def plot_hurst_hist():
   plt.show()
 
 def plot_lyap(maptype="logistic"):
+  """
+  Plots a bifurcation plot of the given map and superimposes the true
+  lyapunov exponent as well as the estimates of the largest lyapunov exponent
+  obtained by `lyap_r` and `lyap_e`. The idea for this plot is taken from [ll]_.
+
+  This function requires the package `matplotlib`.
+
+  .. [ll] Manfred Füllsack, "Lyapunov exponent",
+     url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
+
+  Kwargs:
+    maptype (str):
+      can be either `"logistic"` for the logistic map or `"tent"` for the tent
+      map.
+  """
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
 
@@ -115,6 +168,11 @@ def plot_lyap(maptype="logistic"):
   plt.show()
 
 def profiling():
+  """
+  Runs a profiling test for the function `lyap_e` (mainly used for development)
+
+  This function requires the package `cProfile`.
+  """
   import cProfile
   n = 10000
   data = np.cumsum(np.random.random(n) - 0.5)
