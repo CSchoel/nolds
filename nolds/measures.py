@@ -112,6 +112,24 @@ def fbm(n, H=0.75):
   v = np.random.randn(n)
   return np.dot(sigma, v)
 
+
+def fgn(n, H=0.75):
+  """
+  Generates fractional gaussian noise of desired length.
+
+  References:
+    .. [fgn-1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion
+
+  Args:
+    n (int):
+      length of sequence to generate
+
+  Kwargs:
+    H (float):
+      hurst parameter
+  """
+  return np.diff(fbm(n+1,H=H))
+
 # TODO maybe we can use this function also in other algorithms than lyap_r?
 
 
