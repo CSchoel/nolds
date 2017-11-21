@@ -18,19 +18,19 @@ def weron_2002_figure2(n = 10000):
   lengths of 256, 512, 1024, ...., 65536. The average estimated hurst exponent
   over all iterations is plotted for the following configurations:
 
-  * `weron` is the Anis-Lloyd-corrected Hurst exponent calculated by Weron
-  * `rs50` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
+  * ``weron`` is the Anis-Lloyd-corrected Hurst exponent calculated by Weron
+  * ``rs50`` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
     the same parameters as used by Weron
-  * `weron_raw` is the uncorrected Hurst exponent calculated by Weron
-  * `rs50_raw` is the uncorrected Hurst exponent calculated by Nolds with the
+  * ``weron_raw`` is the uncorrected Hurst exponent calculated by Weron
+  * ``rs50_raw`` is the uncorrected Hurst exponent calculated by Nolds with the
     same parameters as used by Weron
-  * `rsn` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
+  * ``rsn`` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
     the default settings of Nolds
 
   The values reported by Weron are only measured from the plot in the PDF
   version of the paper and can therefore have some small inaccuracies.
 
-  This function requires the package `matplotlib`.
+  This function requires the package ``matplotlib``.
 
   Kwargs:
     n (int):
@@ -56,7 +56,7 @@ def weron_2002_figure2(n = 10000):
   data = []
   for e in range(8,17):
     l = 2**e
-    nvals = 2**np.arange(6,e)
+    nvals = 2**np.arange(6,e+1)
     rsn = np.mean([
       nolds.hurst_rs(np.random.normal(size=l), fit="poly")
       for _ in range(n)
@@ -81,7 +81,7 @@ def plot_hurst_hist():
   Plots a histogram of values obtained for the hurst exponent of uniformly
   distributed white noise.
 
-  This function requires the package `matplotlib`.
+  This function requires the package ``matplotlib``.
   """
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
@@ -93,16 +93,16 @@ def plot_lyap(maptype="logistic"):
   """
   Plots a bifurcation plot of the given map and superimposes the true
   lyapunov exponent as well as the estimates of the largest lyapunov exponent
-  obtained by `lyap_r` and `lyap_e`. The idea for this plot is taken from [ll]_.
+  obtained by ``lyap_r`` and ``lyap_e``. The idea for this plot is taken from [ll]_.
 
-  This function requires the package `matplotlib`.
+  This function requires the package ``matplotlib``.
 
   .. [ll] Manfred Füllsack, "Lyapunov exponent",
      url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
 
   Kwargs:
     maptype (str):
-      can be either `"logistic"` for the logistic map or `"tent"` for the tent
+      can be either ``"logistic"`` for the logistic map or ``"tent"`` for the tent
       map.
   """
   # local import to avoid dependency for non-debug use
@@ -169,9 +169,9 @@ def plot_lyap(maptype="logistic"):
 
 def profiling():
   """
-  Runs a profiling test for the function `lyap_e` (mainly used for development)
+  Runs a profiling test for the function ``lyap_e`` (mainly used for development)
 
-  This function requires the package `cProfile`.
+  This function requires the package ``cProfile``.
   """
   import cProfile
   n = 10000
