@@ -146,17 +146,19 @@ class TestNoldsHurst(unittest.TestCase):
     walk = np.cumsum(x)
     h_walk = nolds.hurst_rs(walk)
     # expected h is around 1.0
-    self.assertGreater(h_walk, 0.7)
+    self.assertGreater(h_walk, 0.9)
 
   """
   Tests for hurst_rs using the same tests as in the R-package pracma
   """
   def test_hurst_pracma(self):
-    h72 = nolds.hurst_rs(datasets.brown72, debug_plot=True)
+    h72 = nolds.hurst_rs(
+      datasets.brown72, fit="poly", corrected=False,
+      nvals=nolds.logarithmic_n(50, 300, 1.05), debug_plot=True)
     self.assertAlmostEqual(h72, 0.72, delta=0.1)
 
-    xgn = np.random.normal(size=1000)
-    hgn = nolds.hurst_rs(xgn)
+    xgn = np.random.normal(size=10000)
+    hgn = nolds.hurst_rs(xgn, fit="poly")
     self.assertAlmostEqual(hgn, 0.5, delta=0.2)
 
     xlm = np.array(list(datasets.logistic_map(0.1,1024)))
