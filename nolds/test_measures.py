@@ -8,6 +8,7 @@ from . import measures as nolds
 from . import datasets
 import unittest
 
+# TODO add more tests using fgn and fbm for hurst_rs and dfa
 
 class TestNoldsHelperFunctions(unittest.TestCase):
   """
@@ -132,12 +133,14 @@ class TestNoldsHurst(unittest.TestCase):
       x = -x + np.random.random() - 0.5
       seq_neg.append(x)
     h_neg = nolds.hurst_rs(seq_neg)
+    #print("h_neg = %.3f" % h_neg)
     # expected h is around 0
     self.assertLess(h_neg, 0.3)
 
     # no correlation, just random noise
     x = np.random.randn(10000)
     h_rand = nolds.hurst_rs(x)
+    #print("h_rand = %.3f" % h_rand)
     # expected h is around 0.5
     self.assertAlmostEqual(h_rand, 0.5, delta=0.1)
 
@@ -145,6 +148,7 @@ class TestNoldsHurst(unittest.TestCase):
     # elements
     walk = np.cumsum(x)
     h_walk = nolds.hurst_rs(walk)
+    #print("h_walk = %.3f" % h_walk)
     # expected h is around 1.0
     self.assertGreater(h_walk, 0.9)
 
@@ -153,17 +157,20 @@ class TestNoldsHurst(unittest.TestCase):
   """
   def test_hurst_pracma(self):
     h72 = nolds.hurst_rs(
-      datasets.brown72, fit="poly", corrected=False,
-      nvals=nolds.logarithmic_n(50, 300, 1.05), debug_plot=True)
-    self.assertAlmostEqual(h72, 0.72, delta=0.1)
+      datasets.brown72, fit="poly", corrected=False, unbiased=False,
+      nvals=2**np.arange(3,11))
+    #print("h72 = %.3f" % h72)
+    self.assertAlmostEqual(h72, 0.72, delta=0.01)
 
     xgn = np.random.normal(size=10000)
     hgn = nolds.hurst_rs(xgn, fit="poly")
-    self.assertAlmostEqual(hgn, 0.5, delta=0.2)
+    #print("hgn = %.3f" % hgn)
+    self.assertAlmostEqual(hgn, 0.5, delta=0.1)
 
-    xlm = np.array(list(datasets.logistic_map(0.1,1024)))
-    hlm = nolds.hurst_rs(xlm, fit="poly", nvals=nolds.logarithmic_n(50, 300, 1.05), debug_plot=True)
-    self.assertAlmostEqual(hlm, 0.43, delta=0.15)
+    xlm = np.fromiter(datasets.logistic_map(0.1,1024),dtype="float32")
+    hlm = nolds.hurst_rs(xlm, fit="poly", nvals=2**np.arange(3,11))
+    #print("hlm = %.3f" % hlm)
+    self.assertAlmostEqual(hlm, 0.43, delta=0.05)
 
 
 
