@@ -139,8 +139,7 @@ class TestNoldsHurst(unittest.TestCase):
     x = np.random.randn(10000)
     h_rand = nolds.hurst_rs(x)
     # expected h is around 0.5
-    self.assertLess(h_rand, 0.7)
-    self.assertGreater(h_rand, 0.3)
+    self.assertAlmostEqual(h_rand, 0.5, delta=0.1)
 
     # cumulative sum has strong positive correlation between
     # elements
