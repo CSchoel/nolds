@@ -97,6 +97,10 @@ def fbm(n, H=0.75):
   Kwargs:
     H (float):
       hurst parameter
+
+  Returns:
+    array of float:
+      simulated fractional brownian motion
   """
   # TODO more detailed description of fbm
   assert H > 0 and H < 1
@@ -127,6 +131,10 @@ def fgn(n, H=0.75):
   Kwargs:
     H (float):
       hurst parameter
+
+  Returns:
+    array of float:
+      simulated fractional gaussian noise
   """
   return np.diff(fbm(n+1,H=H))
 
