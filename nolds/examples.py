@@ -74,6 +74,9 @@ def weron_2002_figure2(n = 10000):
   r = plt.plot(np.arange(8,17), reported)
   rr = plt.plot(np.arange(8,17), reported_raw)
   plt.legend(r + rr + lines, ("weron", "weron_raw", "rsn", "rs50", "rs50_raw"))
+  plt.xticks(np.arange(8,17),2**np.arange(8,17))
+  plt.xlabel("sequence length")
+  plt.ylabel("estimated hurst exponent")
   plt.show()
 
 def plot_hurst_hist():
@@ -87,6 +90,8 @@ def plot_hurst_hist():
   import matplotlib.pyplot as plt
   hs = [nolds.hurst_rs(np.random.random(size=10000), corrected=True) for _ in range(100)]
   plt.hist(hs, bins=20)
+  plt.xlabel("esimated value of hurst exponent")
+  plt.ylabel("number of experiments")
   plt.show()
 
 def plot_lyap(maptype="logistic"):
