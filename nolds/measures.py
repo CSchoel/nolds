@@ -6,7 +6,6 @@ import numpy as np
 import warnings
 import math
 
-# TODO: is description of 0.5 for brownian motion really correct for hurst_rs?
 # FIXME: dfa fails for very small input sequences
 
 deprecation_msg_euler = \
@@ -1021,9 +1020,10 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 
     R/sigma = (N/2)^K
 
-    In this equation, K is called the Hurst exponent. Its value is 0.5 for a
-    purely brownian motion, but becomes greater for time series that exhibit
-    a bias in one direction.
+    In this equation, K is called the Hurst exponent. Its value is 0.5 for
+    white noise, but becomes greater for time series that exhibit some positive
+    dependency on previous values. For negative dependencies it becomes less
+    than 0.5.
 
   Explanation of the algorithm:
     The rescaled range (R/S) approach is directly derived from Hurst's
