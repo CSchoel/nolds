@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Nolds examples &mdash; Nolds 0.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Nolds 0.4.0 documentation" href="index.html" />
+    <link rel="next" title="Nolds Unittests" href="tests.html" />
+    <link rel="prev" title="nolds module" href="nolds.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="nolds-examples">
+<h1>Nolds examples<a class="headerlink" href="#nolds-examples" title="Permalink to this headline">¶</a></h1>
+<p>You can run some examples for the functions in nolds with the command
+<cite>python -m nolds.examples &lt;key&gt;</cite> where <cite>&lt;key&gt;</cite> can be one of the following:</p>
+<ul class="simple">
+<li><cite>lyapunov-logistic</cite> shows a bifurcation plot of the logistic map and compares
+the true lyapunov exponent to the estimates obtained with <cite>lyap_e</cite> and
+<cite>lyap_r</cite>.</li>
+<li><cite>lyapunov-tent</cite> shows the same plot as <cite>lyapunov-logistic</cite>, but for the tent
+map.</li>
+<li><cite>profiling</cite> runs a profiling test with the package <cite>cProfile</cite>.</li>
+<li><cite>hurst-weron2</cite> plots a reconstruction of figure 2 of the weron 2002 paper
+about the hurst exponent.</li>
+<li><cite>hurst-hist</cite> plots a histogram of hurst exponents obtained for random noise.</li>
+</ul>
+<p>These tests are also available as functions inside the module <cite>nolds.examples</cite>.</p>
+<div class="section" id="functions-in-nolds-examples">
+<h2>Functions in <cite>nolds.examples</cite><a class="headerlink" href="#functions-in-nolds-examples" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="nolds.examples.plot_lyap">
+<code class="descclassname">nolds.examples.</code><code class="descname">plot_lyap</code><span class="sig-paren">(</span><em>maptype='logistic'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#plot_lyap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.plot_lyap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a bifurcation plot of the given map and superimposes the true
+lyapunov exponent as well as the estimates of the largest lyapunov exponent
+obtained by <code class="docutils literal"><span class="pre">lyap_r</span></code> and <code class="docutils literal"><span class="pre">lyap_e</span></code>. The idea for this plot is taken from <a class="reference internal" href="#ll" id="id1">[ll]</a>.</p>
+<p>This function requires the package <code class="docutils literal"><span class="pre">matplotlib</span></code>.</p>
+<table class="docutils citation" frame="void" id="ll" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[ll]</a></td><td>Manfred Füllsack, &#8220;Lyapunov exponent&#8221;,
+url: <a class="reference external" href="http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html">http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</a></td></tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>maptype (str):</dt>
+<dd>can be either <code class="docutils literal"><span class="pre">&quot;logistic&quot;</span></code> for the logistic map or <code class="docutils literal"><span class="pre">&quot;tent&quot;</span></code> for the tent
+map.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="nolds.examples.profiling">
+<code class="descclassname">nolds.examples.</code><code class="descname">profiling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#profiling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.profiling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a profiling test for the function <code class="docutils literal"><span class="pre">lyap_e</span></code> (mainly used for development)</p>
+<p>This function requires the package <code class="docutils literal"><span class="pre">cProfile</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nolds.examples.weron_2002_figure2">
+<code class="descclassname">nolds.examples.</code><code class="descname">weron_2002_figure2</code><span class="sig-paren">(</span><em>n=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#weron_2002_figure2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.weron_2002_figure2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recreates figure 2 of <a class="reference internal" href="#w" id="id2">[w]</a> comparing the reported values by Weron to the
+values obtained by the functions in this package.</p>
+<p>The experiment consists of n iterations where the hurst exponent of randomly
+generated gaussian noise is calculated. This is done with differing sequence
+lengths of 256, 512, 1024, ...., 65536. The average estimated hurst exponent
+over all iterations is plotted for the following configurations:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">weron</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Weron</li>
+<li><code class="docutils literal"><span class="pre">rs50</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
+the same parameters as used by Weron</li>
+<li><code class="docutils literal"><span class="pre">weron_raw</span></code> is the uncorrected Hurst exponent calculated by Weron</li>
+<li><code class="docutils literal"><span class="pre">rs50_raw</span></code> is the uncorrected Hurst exponent calculated by Nolds with the
+same parameters as used by Weron</li>
+<li><code class="docutils literal"><span class="pre">rsn</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
+the default settings of Nolds</li>
+</ul>
+<p>The values reported by Weron are only measured from the plot in the PDF
+version of the paper and can therefore have some small inaccuracies.</p>
+<p>This function requires the package <code class="docutils literal"><span class="pre">matplotlib</span></code>.</p>
+<dl class="docutils">
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>n (int):</dt>
+<dd>number of iterations of the experiment (Weron used 10000, but this takes
+a while)</dd>
+</dl>
+</dd>
+</dl>
+<table class="docutils citation" frame="void" id="w" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[w]</a></td><td>R. Weron, “Estimating long-range dependence: finite sample
+properties and confidence intervals,” Physica A: Statistical Mechanics
+and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nolds.examples.plot_hurst_hist">
+<code class="descclassname">nolds.examples.</code><code class="descname">plot_hurst_hist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#plot_hurst_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.plot_hurst_hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a histogram of values obtained for the hurst exponent of uniformly
+distributed white noise.</p>
+<p>This function requires the package <code class="docutils literal"><span class="pre">matplotlib</span></code>.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Nolds examples</a><ul>
+<li><a class="reference internal" href="#functions-in-nolds-examples">Functions in <cite>nolds.examples</cite></a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="nolds.html" title="previous chapter"><code class="docutils literal"><span class="pre">nolds</span></code> module</a></li>
+      <li>Next: <a href="tests.html" title="next chapter">Nolds Unittests</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/examples.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Christopher Schölzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/examples.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

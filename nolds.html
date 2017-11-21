@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds module &mdash; Nolds 0.3.4 documentation</title>
+    <title>nolds module &mdash; Nolds 0.4.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.4',
+        VERSION:     '0.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.3.4 documentation" href="index.html" />
+    <link rel="top" title="Nolds 0.4.0 documentation" href="index.html" />
+    <link rel="next" title="Nolds examples" href="examples.html" />
     <link rel="prev" title="Welcome to Nolds’ documentation!" href="index.html" />
    
   
@@ -40,7 +41,11 @@
             
   <div class="section" id="nolds-module">
 <h1><code class="docutils literal"><span class="pre">nolds</span></code> module<a class="headerlink" href="#nolds-module" title="Permalink to this headline">¶</a></h1>
-<p>Nolds only consists of a single module called <code class="docutils literal"><span class="pre">nolds</span></code> which contains all relevant algorithms and helper functions.</p>
+<p>Nolds only consists of to single module called <code class="docutils literal"><span class="pre">nolds</span></code> which contains all
+relevant algorithms and helper functions.</p>
+<p>Internally these functions are subdivided into different modules such as
+<cite>measures</cite> and <cite>datasets</cite>, but you should not need to import these modules
+directly unless you want access to some internal helper functions.</p>
 <div class="section" id="algorithms">
 <h2>Algorithms<a class="headerlink" href="#algorithms" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="lyapunov-exponent-rosenstein-et-al">
@@ -320,7 +325,7 @@ data is (x, matrix_dim).</dd>
 <h3>Sample entropy<a class="headerlink" href="#sample-entropy" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.sampen">
-<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist=&lt;function rowwise_chebyshev at 0x0000000004BBAC80&gt;</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist=&lt;function rowwise_chebyshev at 0x0000000004C61D08&gt;</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the sample entropy of the given data.</p>
 <dl class="docutils">
 <dt>Explanation of the sample entropy:</dt>
@@ -403,7 +408,7 @@ between template vectors for m (dists_m) and for m + 1 (dists_m1).</dd>
 <h3>Hurst exponent<a class="headerlink" href="#hurst-exponent" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.hurst_rs">
-<code class="descclassname">nolds.</code><code class="descname">hurst_rs</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#hurst_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.hurst_rs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">hurst_rs</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em>, <em>corrected=True</em>, <em>unbiased=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#hurst_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.hurst_rs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Hurst exponent by a standard rescaled range (R/S) approach.</p>
 <dl class="docutils">
 <dt>Explanation of Hurst exponent:</dt>
@@ -428,9 +433,10 @@ represents the total capacity required for the storage.</p>
 is normalized by the standard deviation sigma over the x_i. Namely he
 obtained the following formula:</p>
 <p>R/sigma = (N/2)^K</p>
-<p class="last">In this equation, K is called the Hurst exponent. Its value is 0.5 for a
-purely brownian motion, but becomes greater for time series that exhibit
-a bias in one direction.</p>
+<p class="last">In this equation, K is called the Hurst exponent. Its value is 0.5 for
+white noise, but becomes greater for time series that exhibit some positive
+dependency on previous values. For negative dependencies it becomes less
+than 0.5.</p>
 </dd>
 <dt>Explanation of the algorithm:</dt>
 <dd><p class="first">The rescaled range (R/S) approach is directly derived from Hurst&#8217;s
@@ -514,8 +520,17 @@ url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/f
 <dt>Kwargs:</dt>
 <dd><dl class="first last docutils">
 <dt>nvals (iterable of int):</dt>
-<dd>sizes of subseries to use
-(default: <cite>logarithmic_n(4, 0.1*len(data), 1.2)</cite>)</dd>
+<dd><p class="first">sizes of subseries to use
+(default: 3 to 16 logarithmically spaced values between one and ten
+percent of the length of the time series, using only values greater than
+50, but at least the three largest values)</p>
+<p class="last">Generally, the choice for n is a trade-off between the length and the
+number of the subsequences that are used for the calculation of the
+(R/S)_n. Very low values of n lead to high variance in the <cite>r</cite> and <cite>s</cite>
+while very high values may leave too few subsequences that the mean along
+them is still meaningful. Logarithmic spacing makes sense, because it 
+translates to even spacing in the log-log-plot.</p>
+</dd>
 <dt>fit (str):</dt>
 <dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
 least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
@@ -528,6 +543,14 @@ is more robust to outliers</dd>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
 <cite>plt.show()</cite></dd>
+<dt>corrected (boolean):</dt>
+<dd>if True, a correction factor will be applied to the output according to
+the expected value for the individual (R/S)_n (see [h-3])</dd>
+<dt>unbiased (boolean):</dt>
+<dd>if True, the standard deviation based on the unbiased variance
+(1/(N-1) instead of 1/N) will be used. This should be the default choice,
+since the true mean of the sequences is not known. This parameter should
+only be changed to recreate results of other implementations.</dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
@@ -552,7 +575,7 @@ coefficients (<cite>[slope, intercept]</cite>)</dd>
 <h3>Correlation dimension<a class="headerlink" href="#correlation-dimension" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.corr_dim">
-<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euclidean at 0x0000000004BF5E18&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euclidean at 0x0000000004C8B2F0&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the correlation dimension with the Grassberger-Procaccia algorithm</p>
 <dl class="docutils">
 <dt>Explanation of correlation dimension:</dt>
@@ -823,36 +846,6 @@ are the line coefficients (<cite>[slope, intercept]</cite>)</dd>
 <div class="section" id="helper-functions">
 <h2>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="nolds.fbm">
-<code class="descclassname">nolds.</code><code class="descname">fbm</code><span class="sig-paren">(</span><em>n</em>, <em>H=0.75</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#fbm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.fbm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates fractional brownian motions of desired length.</p>
-<dl class="docutils">
-<dt>Author:</dt>
-<dd>Christian Thomae</dd>
-<dt>References:</dt>
-<dd><table class="first last docutils citation" frame="void" id="fbm-1" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[fbm-1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation">https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation</a></td></tr>
-</tbody>
-</table>
-</dd>
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>n (int):</dt>
-<dd>length of sequence to generate</dd>
-</dl>
-</dd>
-<dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
-<dt>H (float):</dt>
-<dd>hurst parameter</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="nolds.binary_n">
 <code class="descclassname">nolds.</code><code class="descname">binary_n</code><span class="sig-paren">(</span><em>total_N</em>, <em>min_n=50</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#binary_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.binary_n" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a list of values by successively halving the total length total_N
@@ -933,6 +926,312 @@ a factor &gt; 1 until a maximum value max_n is reached.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="datasets">
+<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="benchmark-dataset-for-hurst-exponent">
+<h3>Benchmark dataset for hurst exponent<a class="headerlink" href="#benchmark-dataset-for-hurst-exponent" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="nolds.brown72">
+<code class="descclassname">nolds.</code><code class="descname">brown72</code><em class="property"> = array([ 45.47422,  42.55601,  46.5188 , ...,  42.78297,  44.34307,         40.70655])</em><a class="headerlink" href="#nolds.brown72" title="Permalink to this definition">¶</a></dt>
+<dd><p>The brown72 dataset has a prescribed (uncorrected) Hurst exponent of 0.72.
+It is a synthetic dataset from the book &#8220;Chaos and Order in the Capital
+markets&#8221;<a class="reference internal" href="#b7-a" id="id3">[b7-a]</a>.</p>
+<p>It is included here, because the dataset can be found online <a class="reference internal" href="#b7-b" id="id4">[b7-b]</a> and is
+used by other software packages such as the R-package <cite>pracma</cite> <a class="reference internal" href="#b7-c" id="id5">[b7-c]</a>.
+As such it can be used to compare different implementations.</p>
+<table class="docutils citation" frame="void" id="b7-a" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[b7-a]</a></td><td>Edgar Peters, “Chaos and Order in the Capital Markets: A New
+View of Cycles, Prices, and Market Volatility”, Wiley: Hoboken,
+2nd Edition, 1996.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="b7-b" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[b7-b]</a></td><td>Ian L. Kaplan, &#8220;Estimating the Hurst Exponent&#8221;,
+url: <a class="reference external" href="http://www.bearcave.com/misl/misl_tech/wavelets/hurst/">http://www.bearcave.com/misl/misl_tech/wavelets/hurst/</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="b7-c" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[b7-c]</a></td><td>HwB, &#8220;Pracma: brown72&#8221;,
+url: <a class="reference external" href="https://www.rdocumentation.org/packages/pracma/versions/1.9.9/topics/brown72">https://www.rdocumentation.org/packages/pracma/versions/1.9.9/topics/brown72</a></td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="tent-map">
+<h3>Tent map<a class="headerlink" href="#tent-map" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="nolds.tent_map">
+<code class="descclassname">nolds.</code><code class="descname">tent_map</code><span class="sig-paren">(</span><em>x</em>, <em>steps</em>, <em>mu=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#tent_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.tent_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a time series of the tent map.</p>
+<dl class="docutils">
+<dt>Characteristics and Background:</dt>
+<dd>The name of the tent map is derived from the fact that the plot of x_i vs
+x_i+1 looks like a tent. For mu &gt; 1 one application of the mapping function
+can be viewed as stretching the surface on which the value is located and
+then folding the area that is greater than one back towards the zero. This
+corresponds nicely to the definition of chaos as expansion in one dimension
+which is counteracted by a compression in another dimension.</dd>
+<dt>Calculating the Lyapunov exponent:</dt>
+<dd><p class="first">The lyapunov exponent of the tent map can be easily calculated as due to
+this stretching behavior a small difference delta between two neighboring
+points will indeed grow exponentially by a factor of mu in each iteration.
+We thus can assume that:</p>
+<p>delta_n = delta_0 * mu^n</p>
+<p>We now only have to change the basis to e to obtain the exact formula that
+is used for the definition of the lyapunov exponent:</p>
+<p>delta_n = delta_0 * e^(ln(mu) * n)</p>
+<p>Therefore the lyapunov exponent of the tent map is:</p>
+<p class="last">lambda = ln(mu)</p>
+</dd>
+<dt>References:</dt>
+<dd><table class="first last docutils citation" frame="void" id="tm-1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[tm-1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Tent_map">https://en.wikipedia.org/wiki/Tent_map</a></td></tr>
+</tbody>
+</table>
+</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>x (float):</dt>
+<dd>starting point</dd>
+<dt>steps (int):</dt>
+<dd>number of steps for which the generator should run</dd>
+</dl>
+</dd>
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>mu (int):</dt>
+<dd>parameter mu that controls the behavior of the map</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>generator object:</dt>
+<dd>the generator that creates the time series</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="logistic-map">
+<h3>Logistic map<a class="headerlink" href="#logistic-map" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="nolds.logistic_map">
+<code class="descclassname">nolds.</code><code class="descname">logistic_map</code><span class="sig-paren">(</span><em>x</em>, <em>steps</em>, <em>r=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#logistic_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.logistic_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a time series of the logistic map.</p>
+<dl class="docutils">
+<dt>Characteristics and Background:</dt>
+<dd>The logistic map is among the simplest examples for a time series that can
+exhibit chaotic behavior depending on the parameter r. For r between 2 and 
+3, the series quickly becomes static. At r=3 the first bifurcation point is
+reached after which the series starts to oscillate. Beginning with r = 3.6
+it shows chaotic behavior with a few islands of stability until perfect
+chaos is achieved at r = 4.</dd>
+<dt>Calculating the Lyapunov exponent:</dt>
+<dd><p class="first">To calculate the &#8220;true&#8221; Lyapunov exponent of the logistic map, we first
+have to make a few observations for maps in general that are repeated
+applications of a function to a starting value.</p>
+<p>If we have two starting values that differ by some infinitesimal 
+<span class="math">\(delta_0\)</span> then according to the definition of the lyapunov exponent
+we will have an exponential divergence:</p>
+<div class="math">
+\[|\delta_n| = |\delta_0| e^{\lambda n}\]</div>
+<p>We can now write that:</p>
+<div class="math">
+\[\begin{split}e^{\lambda n} = \lim_{\delta_0 -&gt; 0} |\frac{\delta_n}{\delta_0}|\end{split}\]</div>
+<p>This is the definition of the derivative <span class="math">\(\frac{dx_n}{dx_0}\)</span> of a
+point <span class="math">\(x_n\)</span> in the time series with respect to the starting point
+<span class="math">\(x_0\)</span> (or rather the absolute value of that derivative). Now we can
+use the fact that due to the definition of our map as repetitive
+application of some f we have:</p>
+<div class="math">
+\[f^{n\prime}(x) = f(f(f(...f(x_0)...))) = f'(x_n-1) \cdot f'(x_n-2)
+\cdot ... \cdot f'(x_0)\]</div>
+<p>with</p>
+<div class="math">
+\[e^{\lambda n} = |f^{n\prime}(x)|\]</div>
+<p>we now have</p>
+<div class="math">
+\[\begin{split}e^{\lambda n} &amp;= |f'(x_n-1) \cdot f'(x_n-2) \cdot ... \cdot f'(x_0)| \\
+\Leftrightarrow \\
+\lambda n &amp;= \ln |f'(x_n-1) \cdot f'(x_n-2) \cdot ... \cdot f'(x_0)| \\
+\Leftrightarrow \\
+\lambda &amp;= \frac{1}{n} \ln |f'(x_n-1) \cdot f'(x_n-2) \cdot ... \cdot f'(x_0)| \\
+       &amp;= \frac{1}{n} \sum_{k=0}^{n-1} \ln |f'(x_k)|\end{split}\]</div>
+<p>With this sum we can now calculate the lyapunov exponent for any map.
+For the logistic map we simply have to calculate <span class="math">\(f'(x)\)</span> and as we
+have</p>
+<div class="math">
+\[f(x) = r x (1-x) = rx - rx²\]</div>
+<p>we now get</p>
+<div class="last math">
+\[f'(x) = r - 2 rx\]</div>
+</dd>
+<dt>References:</dt>
+<dd><table class="first docutils citation" frame="void" id="lm-1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[lm-1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Tent_map">https://en.wikipedia.org/wiki/Tent_map</a></td></tr>
+</tbody>
+</table>
+<table class="last docutils citation" frame="void" id="lm-2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[lm-2]</td><td><a class="reference external" href="https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/">https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/</a></td></tr>
+</tbody>
+</table>
+</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>x (float):</dt>
+<dd>starting point</dd>
+<dt>steps (int):</dt>
+<dd>number of steps for which the generator should run</dd>
+</dl>
+</dd>
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>r (int):</dt>
+<dd>parameter r that controls the behavior of the map</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>generator object:</dt>
+<dd>the generator that creates the time series</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="fractional-brownian-motion">
+<h3>Fractional brownian motion<a class="headerlink" href="#fractional-brownian-motion" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="nolds.fbm">
+<code class="descclassname">nolds.</code><code class="descname">fbm</code><span class="sig-paren">(</span><em>n</em>, <em>H=0.75</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#fbm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.fbm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates fractional brownian motions of desired length.</p>
+<dl class="docutils">
+<dt>Author:</dt>
+<dd>Christian Thomae</dd>
+<dt>References:</dt>
+<dd><table class="first last docutils citation" frame="void" id="fbm-1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[fbm-1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation">https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation</a></td></tr>
+</tbody>
+</table>
+</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>n (int):</dt>
+<dd>length of sequence to generate</dd>
+</dl>
+</dd>
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>H (float):</dt>
+<dd>hurst parameter</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>array of float:</dt>
+<dd>simulated fractional brownian motion</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="fractional-gaussian-noise">
+<h3>Fractional gaussian noise<a class="headerlink" href="#fractional-gaussian-noise" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="nolds.fgn">
+<code class="descclassname">nolds.</code><code class="descname">fgn</code><span class="sig-paren">(</span><em>n</em>, <em>H=0.75</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#fgn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.fgn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates fractional gaussian noise of desired length.</p>
+<dl class="docutils">
+<dt>References:</dt>
+<dd><table class="first last docutils citation" frame="void" id="fgn-1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[fgn-1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion">https://en.wikipedia.org/wiki/Fractional_Brownian_motion</a></td></tr>
+</tbody>
+</table>
+</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>n (int):</dt>
+<dd>length of sequence to generate</dd>
+</dl>
+</dd>
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>H (float):</dt>
+<dd>hurst parameter</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>array of float:</dt>
+<dd>simulated fractional gaussian noise</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="quantum-random-numbers">
+<h3>Quantum random numbers<a class="headerlink" href="#quantum-random-numbers" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="nolds.qrandom">
+<code class="descclassname">nolds.</code><code class="descname">qrandom</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#qrandom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.qrandom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an array of n true random numbers obtained from the quantum random
+number generator at qrng.anu.edu.au</p>
+<p>This function requires the package quantumrandom and an internet connection.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>n (int):</dt>
+<dd>length of the random array</dd>
+</dl>
+</dd>
+<dt>Return:</dt>
+<dd><dl class="first last docutils">
+<dt>array of ints:</dt>
+<dd>array of truly random unsigned 16 bit int values</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="nolds.load_qrandom">
+<code class="descclassname">nolds.</code><code class="descname">load_qrandom</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#load_qrandom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.load_qrandom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a set of 10000 random numbers generated by qrandom.</p>
+<p>This dataset can be used when you want to do some limited tests with &#8220;true&#8221;
+random data without an internet connection.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>int array</dt>
+<dd>the dataset</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
 </div>
 
 
@@ -954,6 +1253,15 @@ a factor &gt; 1 until a maximum value max_n is reached.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#helper-functions">Helper functions</a></li>
+<li><a class="reference internal" href="#datasets">Datasets</a><ul>
+<li><a class="reference internal" href="#benchmark-dataset-for-hurst-exponent">Benchmark dataset for hurst exponent</a></li>
+<li><a class="reference internal" href="#tent-map">Tent map</a></li>
+<li><a class="reference internal" href="#logistic-map">Logistic map</a></li>
+<li><a class="reference internal" href="#fractional-brownian-motion">Fractional brownian motion</a></li>
+<li><a class="reference internal" href="#fractional-gaussian-noise">Fractional gaussian noise</a></li>
+<li><a class="reference internal" href="#quantum-random-numbers">Quantum random numbers</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -962,6 +1270,7 @@ a factor &gt; 1 until a maximum value max_n is reached.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Welcome to Nolds&#8217; documentation!</a></li>
+      <li>Next: <a href="examples.html" title="next chapter">Nolds examples</a></li>
   </ul></li>
 </ul>
 </div>

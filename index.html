@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to Nolds’ documentation! &mdash; Nolds 0.3.4 documentation</title>
+    <title>Welcome to Nolds’ documentation! &mdash; Nolds 0.4.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.4',
+        VERSION:     '0.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.3.4 documentation" href="#" />
+    <link rel="top" title="Nolds 0.4.0 documentation" href="#" />
     <link rel="next" title="nolds module" href="nolds.html" />
    
   
@@ -43,6 +43,14 @@
 <p>The acronym Nolds stands for &#8216;NOnLinear measures for Dynamical Systems&#8217;. It is a small numpy-based library that provides an implementation and a learning resource for nonlinear measures for dynamical systems based on one-dimensional time series.</p>
 <p>Nolds is hosted <a class="reference external" href="https://github.com/CSchoel/nolds">on GitHub</a>.
 This documentation describes the latest version. A <a class="reference external" href="https://github.com/CSchoel/nolds/blob/master/CHANGELOG.md">change log</a> of the different versions can be found on GitHub.</p>
+<p>For the impatient, here is a small example how you can calculate the lyapunov exponent of the logistic map with Nolds:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">nolds</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">lm</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">logistic_map</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+<span class="n">l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nolds</span><span class="o">.</span><span class="n">lyap_e</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
 <p>Contents:</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -57,8 +65,22 @@ This documentation describes the latest version. A <a class="reference external"
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="nolds.html#helper-functions">Helper functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nolds.html#datasets">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="nolds.html#benchmark-dataset-for-hurst-exponent">Benchmark dataset for hurst exponent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nolds.html#tent-map">Tent map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nolds.html#logistic-map">Logistic map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nolds.html#fractional-brownian-motion">Fractional brownian motion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nolds.html#fractional-gaussian-noise">Fractional gaussian noise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nolds.html#quantum-random-numbers">Quantum random numbers</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Nolds examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#functions-in-nolds-examples">Functions in <cite>nolds.examples</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Nolds Unittests</a></li>
 </ul>
 </div>
 </div>

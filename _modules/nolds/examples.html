@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nolds.examples &mdash; Nolds 0.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Nolds 0.4.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for nolds.examples</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span>
+                        <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">measures</span> <span class="k">as</span> <span class="n">nolds</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c1"># TODO better legends for plots</span>
+
+<div class="viewcode-block" id="weron_2002_figure2"><a class="viewcode-back" href="../../examples.html#nolds.examples.weron_2002_figure2">[docs]</a><span class="k">def</span> <span class="nf">weron_2002_figure2</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Recreates figure 2 of [w]_ comparing the reported values by Weron to the</span>
+<span class="sd">  values obtained by the functions in this package.</span>
+
+<span class="sd">  The experiment consists of n iterations where the hurst exponent of randomly</span>
+<span class="sd">  generated gaussian noise is calculated. This is done with differing sequence</span>
+<span class="sd">  lengths of 256, 512, 1024, ...., 65536. The average estimated hurst exponent</span>
+<span class="sd">  over all iterations is plotted for the following configurations:</span>
+
+<span class="sd">  * ``weron`` is the Anis-Lloyd-corrected Hurst exponent calculated by Weron</span>
+<span class="sd">  * ``rs50`` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with</span>
+<span class="sd">    the same parameters as used by Weron</span>
+<span class="sd">  * ``weron_raw`` is the uncorrected Hurst exponent calculated by Weron</span>
+<span class="sd">  * ``rs50_raw`` is the uncorrected Hurst exponent calculated by Nolds with the</span>
+<span class="sd">    same parameters as used by Weron</span>
+<span class="sd">  * ``rsn`` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with</span>
+<span class="sd">    the default settings of Nolds</span>
+
+<span class="sd">  The values reported by Weron are only measured from the plot in the PDF</span>
+<span class="sd">  version of the paper and can therefore have some small inaccuracies.</span>
+
+<span class="sd">  This function requires the package ``matplotlib``.</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    n (int):</span>
+<span class="sd">      number of iterations of the experiment (Weron used 10000, but this takes</span>
+<span class="sd">      a while)</span>
+
+<span class="sd">  .. [w] R. Weron, “Estimating long-range dependence: finite sample</span>
+<span class="sd">     properties and confidence intervals,” Physica A: Statistical Mechanics</span>
+<span class="sd">     and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># local import to avoid dependency for non-debug use</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+  <span class="c1"># note: these values are calculated by measurements in inkscape of the plot</span>
+  <span class="c1"># from the paper</span>
+  <span class="n">reported</span> <span class="o">=</span> <span class="p">[</span><span class="mf">6.708</span><span class="p">,</span> <span class="mf">13.103</span><span class="p">,</span> <span class="mf">20.240</span><span class="p">,</span> <span class="mf">21.924</span><span class="p">,</span> <span class="mf">22.256</span><span class="p">,</span> <span class="mf">24.112</span><span class="p">,</span> <span class="mf">24.054</span><span class="p">,</span> <span class="mf">26.299</span><span class="p">,</span> 
+              <span class="mf">26.897</span><span class="p">]</span>
+  <span class="n">reported_raw</span> <span class="o">=</span> <span class="p">[</span><span class="mf">160.599</span><span class="p">,</span> <span class="mf">141.663</span><span class="p">,</span> <span class="mf">128.454</span><span class="p">,</span> <span class="mf">115.617</span><span class="p">,</span> <span class="mf">103.651</span><span class="p">,</span> <span class="mf">95.481</span><span class="p">,</span> <span class="mf">86.810</span><span class="p">,</span>
+                  <span class="mf">81.799</span><span class="p">,</span> <span class="mf">76.270</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">height_to_h</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">0.49</span> <span class="o">+</span> <span class="n">height</span> <span class="o">/</span> <span class="mf">29.894</span> <span class="o">*</span> <span class="mf">0.01</span>
+  <span class="n">reported</span> <span class="o">=</span> <span class="n">height_to_h</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">reported</span><span class="p">))</span>
+  <span class="n">reported_raw</span> <span class="o">=</span> <span class="n">height_to_h</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">reported_raw</span><span class="p">))</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">):</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">e</span>
+    <span class="n">nvals</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">rsn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span>
+      <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">l</span><span class="p">),</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="p">])</span>
+    <span class="n">rs50</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span>
+      <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">l</span><span class="p">),</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="n">nvals</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="p">])</span>
+    <span class="n">rs50_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span>
+      <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">l</span><span class="p">),</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="n">nvals</span><span class="p">,</span> <span class="n">corrected</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="p">])</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">rsn</span><span class="p">,</span> <span class="n">rs50</span><span class="p">,</span> <span class="n">rs50_raw</span><span class="p">))</span>
+  <span class="n">lines</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+  <span class="n">r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">),</span> <span class="n">reported</span><span class="p">)</span>
+  <span class="n">rr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">),</span> <span class="n">reported_raw</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">rr</span> <span class="o">+</span> <span class="n">lines</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;weron&quot;</span><span class="p">,</span> <span class="s2">&quot;weron_raw&quot;</span><span class="p">,</span> <span class="s2">&quot;rsn&quot;</span><span class="p">,</span> <span class="s2">&quot;rs50&quot;</span><span class="p">,</span> <span class="s2">&quot;rs50_raw&quot;</span><span class="p">))</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">),</span><span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">))</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;sequence length&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;estimated hurst exponent&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="plot_hurst_hist"><a class="viewcode-back" href="../../examples.html#nolds.examples.plot_hurst_hist">[docs]</a><span class="k">def</span> <span class="nf">plot_hurst_hist</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Plots a histogram of values obtained for the hurst exponent of uniformly</span>
+<span class="sd">  distributed white noise.</span>
+
+<span class="sd">  This function requires the package ``matplotlib``.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># local import to avoid dependency for non-debug use</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+  <span class="n">hs</span> <span class="o">=</span> <span class="p">[</span><span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10000</span><span class="p">),</span> <span class="n">corrected</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">hs</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;esimated value of hurst exponent&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;number of experiments&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="plot_lyap"><a class="viewcode-back" href="../../examples.html#nolds.examples.plot_lyap">[docs]</a><span class="k">def</span> <span class="nf">plot_lyap</span><span class="p">(</span><span class="n">maptype</span><span class="o">=</span><span class="s2">&quot;logistic&quot;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Plots a bifurcation plot of the given map and superimposes the true</span>
+<span class="sd">  lyapunov exponent as well as the estimates of the largest lyapunov exponent</span>
+<span class="sd">  obtained by ``lyap_r`` and ``lyap_e``. The idea for this plot is taken from [ll]_.</span>
+
+<span class="sd">  This function requires the package ``matplotlib``.</span>
+
+<span class="sd">  .. [ll] Manfred Füllsack, &quot;Lyapunov exponent&quot;,</span>
+<span class="sd">     url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    maptype (str):</span>
+<span class="sd">      can be either ``&quot;logistic&quot;`` for the logistic map or ``&quot;tent&quot;`` for the tent</span>
+<span class="sd">      map.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># local import to avoid dependency for non-debug use</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+  <span class="n">x_start</span> <span class="o">=</span> <span class="mf">0.1</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="mi">140</span>
+  <span class="n">nbifur</span> <span class="o">=</span> <span class="mi">40</span>
+  <span class="k">if</span> <span class="n">maptype</span> <span class="o">==</span> <span class="s2">&quot;logistic&quot;</span><span class="p">:</span>
+    <span class="n">param_name</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+    <span class="n">param_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">full_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">logistic_map</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">param_range</span>
+    <span class="p">])</span>
+    <span class="c1"># It can be proven that the lyapunov exponent of the logistic map</span>
+    <span class="c1"># (or any map that is an iterative application of a function) can be</span>
+    <span class="c1"># calculated as the mean of the logarithm of the absolute of the</span>
+    <span class="c1"># derivative at the individual data points.</span>
+    <span class="c1"># For a proof see for example: </span>
+    <span class="c1"># https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/</span>
+    <span class="c1"># Derivative of logistic map: f(x) = r * x * (1 - x) = r * x - r * x²</span>
+    <span class="c1"># =&gt; f&#39;(x) = r - 2 * r * x</span>
+    <span class="n">lambdas</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="mf">0.5</span><span class="p">)])))</span>
+      <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">full_data</span><span class="p">,</span> <span class="n">param_range</span><span class="p">)</span>
+    <span class="p">]</span>
+  <span class="k">elif</span> <span class="n">maptype</span> <span class="o">==</span> <span class="s2">&quot;tent&quot;</span><span class="p">:</span>
+    <span class="n">param_name</span> <span class="o">=</span> <span class="s2">&quot;$\mu$&quot;</span>
+    <span class="n">param_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">full_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">tent_map</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">mu</span> <span class="ow">in</span> <span class="n">param_range</span>
+    <span class="p">])</span>
+    <span class="c1"># for the tent map the lyapunov exponent is much easier to calculate</span>
+    <span class="c1"># since the values are multiplied by mu in each step, two trajectories</span>
+    <span class="c1"># starting in x and x + delta will have a distance of delta * mu^n after n</span>
+    <span class="c1"># steps. Therefore the lyapunov exponent should be log(mu).</span>
+    <span class="n">lambdas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">param_range</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">param_range</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">lambdas</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">param_range</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span><span class="s2">&quot;maptype </span><span class="si">%s</span><span class="s2"> not recognized&quot;</span> <span class="o">%</span> <span class="n">maptype</span><span class="p">)</span>
+
+  <span class="n">kwargs_e</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;emb_dim&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;matrix_dim&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}</span>
+  <span class="n">kwargs_r</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;emb_dim&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;lag&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;min_tsep&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;trajectory_len&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+  <span class="n">lambdas_e</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">nolds</span><span class="o">.</span><span class="n">lyap_e</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_e</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">full_data</span><span class="p">]</span>
+  <span class="n">lambdas_r</span> <span class="o">=</span> <span class="p">[</span><span class="n">nolds</span><span class="o">.</span><span class="n">lyap_r</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_r</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">full_data</span><span class="p">]</span>
+  <span class="n">bifur_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">param_range</span><span class="p">,</span> <span class="n">nbifur</span><span class="p">)</span>
+  <span class="n">bifur</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">full_data</span><span class="p">[:,</span><span class="o">-</span><span class="n">nbifur</span><span class="p">:],</span> <span class="n">nbifur</span> <span class="o">*</span> <span class="n">param_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+  <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Lyapunov exponent of the </span><span class="si">%s</span><span class="s2"> map&quot;</span> <span class="o">%</span> <span class="n">maptype</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">param_range</span><span class="p">,</span> <span class="n">lambdas</span><span class="p">,</span> <span class="s2">&quot;b-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true lyap. exponent&quot;</span><span class="p">)</span>
+  <span class="n">elab</span> <span class="o">=</span> <span class="s2">&quot;estimation using lyap_e&quot;</span>
+  <span class="n">rlab</span> <span class="o">=</span> <span class="s2">&quot;estimation using lyap_r&quot;</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">param_range</span><span class="p">,</span> <span class="n">lambdas_e</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#00AAAA&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">elab</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">param_range</span><span class="p">,</span> <span class="n">lambdas_r</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#AA00AA&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">rlab</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">param_range</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">param_range</span><span class="p">)),</span> <span class="s2">&quot;g--&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bifur_x</span><span class="p">,</span> <span class="n">bifur</span><span class="p">,</span> <span class="s2">&quot;ro&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;bifurcation plot&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;lyap. exp / </span><span class="si">%s</span><span class="s2">(x, </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">maptype</span><span class="p">,</span> <span class="n">param_name</span><span class="p">))</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="profiling"><a class="viewcode-back" href="../../examples.html#nolds.examples.profiling">[docs]</a><span class="k">def</span> <span class="nf">profiling</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Runs a profiling test for the function ``lyap_e`` (mainly used for development)</span>
+
+<span class="sd">  This function requires the package ``cProfile``.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">cProfile</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+  <span class="n">cProfile</span><span class="o">.</span><span class="n">runctx</span><span class="p">(</span><span class="s1">&#39;lyap_e(data)&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;lyap_e&#39;</span><span class="p">:</span> <span class="n">nolds</span><span class="o">.</span><span class="n">lyap_e</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+  <span class="c1"># run this with the following command:</span>
+  <span class="c1"># python -m nolds.examples lyapunov-logistic</span>
+  <span class="kn">import</span> <span class="nn">sys</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;please tell me which tests you want to run&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;options are:&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;  lyapunov-logistic&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;  lyapunov-tent&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;  profiling&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;  hurst-weron2&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;  hurst-hist&quot;</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;lyapunov-logistic&quot;</span><span class="p">:</span>
+    <span class="n">plot_lyap</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;lyapunov-tent&quot;</span><span class="p">:</span>
+    <span class="n">plot_lyap</span><span class="p">(</span><span class="s2">&quot;tent&quot;</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;profiling&quot;</span><span class="p">:</span>
+    <span class="n">profiling</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hurst-weron2&quot;</span><span class="p">:</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">weron_2002_figure2</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hurst-hist&quot;</span><span class="p">:</span>
+    <span class="n">plot_hurst_hist</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Christopher Schölzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

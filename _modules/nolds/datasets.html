@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nolds.datasets &mdash; Nolds 0.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Nolds 0.4.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for nolds.datasets</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span>
+                        <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+
+<div class="viewcode-block" id="fbm"><a class="viewcode-back" href="../../nolds.html#nolds.fbm">[docs]</a><span class="k">def</span> <span class="nf">fbm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Generates fractional brownian motions of desired length.</span>
+
+<span class="sd">  Author:</span>
+<span class="sd">    Christian Thomae</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [fbm-1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    n (int):</span>
+<span class="sd">      length of sequence to generate</span>
+<span class="sd">  Kwargs:</span>
+<span class="sd">    H (float):</span>
+<span class="sd">      hurst parameter</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    array of float:</span>
+<span class="sd">      simulated fractional brownian motion</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># TODO more detailed description of fbm</span>
+  <span class="k">assert</span> <span class="n">H</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">H</span> <span class="o">&lt;</span> <span class="mi">1</span>
+
+  <span class="k">def</span> <span class="nf">R</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="n">twoH</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">H</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="n">twoH</span> <span class="o">+</span> <span class="n">t</span><span class="o">**</span><span class="n">twoH</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span><span class="o">**</span><span class="n">twoH</span><span class="p">)</span>
+  <span class="c1"># form the matrix tau</span>
+  <span class="n">gamma</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">])</span>  <span class="c1"># apply R to every element in matrix</span>
+  <span class="n">w</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
+  <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+  <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">L</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">P</span><span class="p">))</span>
+  <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fgn"><a class="viewcode-back" href="../../nolds.html#nolds.fgn">[docs]</a><span class="k">def</span> <span class="nf">fgn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Generates fractional gaussian noise of desired length.</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [fgn-1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    n (int):</span>
+<span class="sd">      length of sequence to generate</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    H (float):</span>
+<span class="sd">      hurst parameter</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    array of float:</span>
+<span class="sd">      simulated fractional gaussian noise</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">fbm</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="n">H</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="qrandom"><a class="viewcode-back" href="../../nolds.html#nolds.qrandom">[docs]</a><span class="k">def</span> <span class="nf">qrandom</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Creates an array of n true random numbers obtained from the quantum random</span>
+<span class="sd">  number generator at qrng.anu.edu.au</span>
+
+<span class="sd">  This function requires the package quantumrandom and an internet connection.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    n (int):</span>
+<span class="sd">      length of the random array</span>
+
+<span class="sd">  Return:</span>
+<span class="sd">    array of ints:</span>
+<span class="sd">      array of truly random unsigned 16 bit int values</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">quantumrandom</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span>
+    <span class="n">quantumrandom</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;uint16&#39;</span><span class="p">,</span> <span class="n">array_length</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="mf">1024.0</span><span class="p">)))</span>
+  <span class="p">])[:</span><span class="n">n</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="load_qrandom"><a class="viewcode-back" href="../../nolds.html#nolds.load_qrandom">[docs]</a><span class="k">def</span> <span class="nf">load_qrandom</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Loads a set of 10000 random numbers generated by qrandom.</span>
+
+<span class="sd">  This dataset can be used when you want to do some limited tests with &quot;true&quot;</span>
+<span class="sd">  random data without an internet connection.</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    int array</span>
+<span class="sd">      the dataset</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fname</span> <span class="o">=</span> <span class="s2">&quot;datasets/qrandom.npy&quot;</span>
+  <span class="k">with</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">load_brown72</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Loads the dataset brown72 with a prescribed Hurst exponent of 0.72</span>
+
+<span class="sd">  Source: http://www.bearcave.com/misl/misl_tech/wavelets/hurst/</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    float array:</span>
+<span class="sd">      the dataset</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fname</span> <span class="o">=</span> <span class="s2">&quot;datasets/brown72.npy&quot;</span>
+  <span class="k">with</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<div class="viewcode-block" id="tent_map"><a class="viewcode-back" href="../../nolds.html#nolds.tent_map">[docs]</a><span class="k">def</span> <span class="nf">tent_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Generates a time series of the tent map.</span>
+
+<span class="sd">  Characteristics and Background:</span>
+<span class="sd">    The name of the tent map is derived from the fact that the plot of x_i vs</span>
+<span class="sd">    x_i+1 looks like a tent. For mu &gt; 1 one application of the mapping function</span>
+<span class="sd">    can be viewed as stretching the surface on which the value is located and</span>
+<span class="sd">    then folding the area that is greater than one back towards the zero. This</span>
+<span class="sd">    corresponds nicely to the definition of chaos as expansion in one dimension</span>
+<span class="sd">    which is counteracted by a compression in another dimension.</span>
+
+<span class="sd">  Calculating the Lyapunov exponent:</span>
+<span class="sd">    The lyapunov exponent of the tent map can be easily calculated as due to</span>
+<span class="sd">    this stretching behavior a small difference delta between two neighboring</span>
+<span class="sd">    points will indeed grow exponentially by a factor of mu in each iteration.</span>
+<span class="sd">    We thus can assume that:</span>
+
+<span class="sd">    delta_n = delta_0 * mu^n</span>
+
+<span class="sd">    We now only have to change the basis to e to obtain the exact formula that</span>
+<span class="sd">    is used for the definition of the lyapunov exponent:</span>
+
+<span class="sd">    delta_n = delta_0 * e^(ln(mu) * n)</span>
+
+<span class="sd">    Therefore the lyapunov exponent of the tent map is:</span>
+
+<span class="sd">    lambda = ln(mu)</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [tm-1] https://en.wikipedia.org/wiki/Tent_map</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    x (float):</span>
+<span class="sd">      starting point</span>
+<span class="sd">    steps (int):</span>
+<span class="sd">      number of steps for which the generator should run</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    mu (int):</span>
+<span class="sd">      parameter mu that controls the behavior of the map</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    generator object:</span>
+<span class="sd">      the generator that creates the time series</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">x</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mf">0.5</span> <span class="k">else</span> <span class="n">mu</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">x</span></div>
+
+<span class="c1"># TODO should all math be formatted like this, or should the documentation of</span>
+<span class="c1"># logistic_map revert to a version that is more readable as plain text</span>
+
+<div class="viewcode-block" id="logistic_map"><a class="viewcode-back" href="../../nolds.html#nolds.logistic_map">[docs]</a><span class="k">def</span> <span class="nf">logistic_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+  <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Generates a time series of the logistic map.</span>
+
+<span class="sd">  Characteristics and Background:</span>
+<span class="sd">    The logistic map is among the simplest examples for a time series that can</span>
+<span class="sd">    exhibit chaotic behavior depending on the parameter r. For r between 2 and </span>
+<span class="sd">    3, the series quickly becomes static. At r=3 the first bifurcation point is</span>
+<span class="sd">    reached after which the series starts to oscillate. Beginning with r = 3.6</span>
+<span class="sd">    it shows chaotic behavior with a few islands of stability until perfect</span>
+<span class="sd">    chaos is achieved at r = 4.</span>
+
+<span class="sd">  Calculating the Lyapunov exponent:</span>
+<span class="sd">    To calculate the &quot;true&quot; Lyapunov exponent of the logistic map, we first</span>
+<span class="sd">    have to make a few observations for maps in general that are repeated</span>
+<span class="sd">    applications of a function to a starting value.</span>
+
+<span class="sd">    If we have two starting values that differ by some infinitesimal </span>
+<span class="sd">    :math:`delta_0` then according to the definition of the lyapunov exponent</span>
+<span class="sd">    we will have an exponential divergence:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">      |\delta_n| = |\delta_0| e^{\lambda n}</span>
+
+<span class="sd">    We can now write that:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">      e^{\lambda n} = \lim_{\delta_0 -&gt; 0} |\frac{\delta_n}{\delta_0}|</span>
+
+<span class="sd">    This is the definition of the derivative :math:`\frac{dx_n}{dx_0}` of a</span>
+<span class="sd">    point :math:`x_n` in the time series with respect to the starting point</span>
+<span class="sd">    :math:`x_0` (or rather the absolute value of that derivative). Now we can</span>
+<span class="sd">    use the fact that due to the definition of our map as repetitive</span>
+<span class="sd">    application of some f we have:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">      f^{n\prime}(x) = f(f(f(...f(x_0)...))) = f&#39;(x_n-1) \cdot f&#39;(x_n-2)</span>
+<span class="sd">      \cdot ... \cdot f&#39;(x_0)</span>
+
+<span class="sd">    with</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">      e^{\lambda n} = |f^{n\prime}(x)|</span>
+
+<span class="sd">    we now have</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">      e^{\lambda n} &amp;= |f&#39;(x_n-1) \cdot f&#39;(x_n-2) \cdot ... \cdot f&#39;(x_0)| \\</span>
+<span class="sd">      \Leftrightarrow \\</span>
+<span class="sd">      \lambda n &amp;= \ln |f&#39;(x_n-1) \cdot f&#39;(x_n-2) \cdot ... \cdot f&#39;(x_0)| \\</span>
+<span class="sd">      \Leftrightarrow \\</span>
+<span class="sd">      \lambda &amp;= \frac{1}{n} \ln |f&#39;(x_n-1) \cdot f&#39;(x_n-2) \cdot ... \cdot f&#39;(x_0)| \\</span>
+<span class="sd">             &amp;= \frac{1}{n} \sum_{k=0}^{n-1} \ln |f&#39;(x_k)|</span>
+
+<span class="sd">    With this sum we can now calculate the lyapunov exponent for any map.</span>
+<span class="sd">    For the logistic map we simply have to calculate :math:`f&#39;(x)` and as we</span>
+<span class="sd">    have</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">      f(x) = r x (1-x) = rx - rx²</span>
+
+<span class="sd">    we now get</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">      f&#39;(x) = r - 2 rx</span>
+
+
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [lm-1] https://en.wikipedia.org/wiki/Tent_map</span>
+<span class="sd">    .. [lm-2] https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    x (float):</span>
+<span class="sd">      starting point</span>
+<span class="sd">    steps (int):</span>
+<span class="sd">      number of steps for which the generator should run</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    r (int):</span>
+<span class="sd">      parameter r that controls the behavior of the map</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    generator object:</span>
+<span class="sd">      the generator that creates the time series</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">x</span></div>
+
+<span class="n">brown72</span> <span class="o">=</span> <span class="n">load_brown72</span><span class="p">()</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Christopher Schölzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
