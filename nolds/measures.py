@@ -843,7 +843,7 @@ def expected_h(nvals, fit="RANSAC"):
   return poly[0]
 
 
-def rs(data, n):
+def rs(data, n, unbiased=True):
   """
   Calculates an individual R/S value in the rescaled range approach for
   a given n.
@@ -856,6 +856,13 @@ def rs(data, n):
       time series
     n (float):
       size of the subseries in which data should be split
+
+  Kwargs:
+    unbiased (boolean):
+      if True, the standard deviation based on the unbiased variance
+      (1/(N-1) instead of 1/N) will be used. This should be the default choice,
+      since the true mean of the sequences is not known. This parameter should
+      only be changed to recreate results of other implementations.
 
   Returns:
     float:
@@ -876,7 +883,8 @@ def rs(data, n):
   # find ranges
   r = np.max(y, axis=1) - np.min(y, axis=1)
   # find standard deviation
-  s = np.std(seqs, axis=1, ddof=1)
+  # we should use the unbiased estimator, since we do not know the true mean
+  s = np.std(seqs, axis=1, ddof=1 if unbiased else 0)
   # some ranges may be zero and have to be excluded from the analysis
   idx = np.where(r != 0)
   r = r[idx]
@@ -958,7 +966,7 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
 
 
 def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
-             debug_data=False, plot_file=None, corrected=True):
+             debug_data=False, plot_file=None, corrected=True, unbiased=True):
   """
   Calculates the Hurst exponent by a standard rescaled range (R/S) approach.
 
@@ -1061,6 +1069,11 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     corrected (boolean):
       if True, a correction factor will be applied to the output according to
       the expected value for the individual (R/S)_n (see [h-3])
+    unbiased (boolean):
+      if True, the standard deviation based on the unbiased variance
+      (1/(N-1) instead of 1/N) will be used. This should be the default choice,
+      since the true mean of the sequences is not known. This parameter should
+      only be changed to recreate results of other implementations.
 
   Returns:
     float:
@@ -1083,7 +1096,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     # only take n that are larger than 50 (but always take the largest three)
     nvals = [x for x in nvals[:-3] if x > 50] + nvals[-3:]
   # get individual values for (R/S)_n
-  rsvals = np.array([rs(data, n) for n in nvals])
+  rsvals = np.array([rs(data, n, unbiased=unbiased) for n in nvals])
   # filter NaNs (zeros should not be possible, because if R is 0 then
   # S is also zero)
   not_nan = np.logical_not(np.isnan(rsvals))

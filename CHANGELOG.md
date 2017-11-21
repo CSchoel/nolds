@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - example function `weron_2002_figure2`
 - `fgn` for fractional gaussian noise in the `datasets` module
 - documentation for unittests and examples
+- parameter `unbiased` for `hurst_rs` that allows to choose between the new (fixed) behavior and the old one (using the wrong version of the standard deviation)
 
 ### Changed
 
@@ -26,7 +27,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - using fitting method `'ransac'` when sklearn was not installed resulted in an exception instead of a warning
-- NaNs in ``hurst_rs`` where filtered from the set of (R/S)_n values, but the filtered values for n would remain in the calculation and fitting
+- NaNs in `hurst_rs` where filtered from the set of (R/S)_n values, but the filtered values for n would remain in the calculation and fitting
+- `hurst_rs` used the wrong standard deviation, since we estimate the mean of the samples from the data we need to set the parameter `ddof` to `1`
 
 ## [0.3.4] - 2017-08-10
 
