@@ -862,14 +862,15 @@ def rs(data, n):
       (R/S)_n
   """
   total_N = len(data)
+  m = total_N // n # number of sequences
   # cut values at the end of data to make the array divisible by n
   data = data[:total_N - (total_N % n)]
   # split remaining data into subsequences of length n
-  seqs = np.reshape(data, (total_N // n, n))
+  seqs = np.reshape(data, (m, n))
   # calculate means of subsequences
   means = np.mean(seqs, axis=1)
   # normalize subsequences by substracting mean
-  y = seqs - means.reshape((total_N // n, 1))
+  y = seqs - means.reshape((m, 1))
   # build cumulative sum of subsequences
   y = np.cumsum(y, axis=1)
   # find ranges
