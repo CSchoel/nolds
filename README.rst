@@ -57,3 +57,12 @@ Therefore the corresponding functions feature extensive documentation that not o
 The documentation can be found in the code, but it is also available as `HTML-Version <https://cschoel.github.io/nolds/>`_.
 
 All relevant code can be found in the file ``nolds/measures.py``.
+
+
+Contact information
+-------------------
+
+If you have any questions, suggestions or corrections, you can find my contact
+information on my blog_.
+
+.. _blog: http://arbitrary-but-fixed.net/
