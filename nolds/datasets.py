@@ -163,8 +163,11 @@ def tent_map(x, steps, mu=2):
     x = mu * x if x < 0.5 else mu * (1 - x)
     yield x
 
+# TODO should all math be formatted like this, or should the documentation of
+# logistic_map revert to a version that is more readable as plain text
+
 def logistic_map(x, steps, r=4):
-  """
+  r"""
   Generates a time series of the logistic map.
 
   Characteristics and Background:
@@ -180,44 +183,55 @@ def logistic_map(x, steps, r=4):
     have to make a few observations for maps in general that are repeated
     applications of a function to a starting value.
 
-    If we have two starting values that differ by some infinitesimal delta_0
-    then according to the definition of the lyapunov exponent we will have
-    an exponential divergence:
+    If we have two starting values that differ by some infinitesimal 
+    :math:`delta_0` then according to the definition of the lyapunov exponent
+    we will have an exponential divergence:
 
-    |delta_n| = |delta_0| e^(lambda n)
+    .. math::
+      |\delta_n| = |\delta_0| e^{\lambda n}
 
     We can now write that:
 
-    e^(lambda n) = lim delta_0 -> 0: |delta_n / delta_0|
+    .. math::
+      e^{\lambda n} = \lim_{\delta_0 -> 0} |\frac{\delta_n}{\delta_0}|
 
-    This is the definition of the derivative dx_n/dx_0 of a point x_n in the
-    time series with respect to the starting point x_0 (or rather the absolute
-    value of that derivative). Now we can use the fact that due to the
-    definition of our map as repetitive application of some f we have:
+    This is the definition of the derivative :math:`\frac{dx_n}{dx_0}` of a
+    point :math:`x_n` in the time series with respect to the starting point
+    :math:`x_0` (or rather the absolute value of that derivative). Now we can
+    use the fact that due to the definition of our map as repetitive
+    application of some f we have:
 
-    f^n'(x) = f(f(f(...f(x_0)...))) = f'(x_n-1) * f'(x_n-2) * ... * f'(x_0)
+    .. math::
+      f^{n\prime}(x) = f(f(f(...f(x_0)...))) = f'(x_n-1) \cdot f'(x_n-2)
+      \cdot ... \cdot f'(x_0)
 
     with
 
-    e^(lambda n) = |f^n'(x)|
+    .. math::
+      e^{\lambda n} = |f^{n\prime}(x)|
 
     we now have
 
-    e^(lambda n) = |f'(x_n-1) * f'(x_n-2) * ... * f'(x_0)|
-    <=>
-    lambda n = ln |f'(x_n-1) * f'(x_n-2) * ... * f'(x_0)|
-    <=>
-    lambda = 1/n ln |f'(x_n-1) * f'(x_n-2) * ... * f'(x_0)|
-           = 1/n sum_{k=0}^{n-1} ln |f'(x_k)|
+    .. math::
+
+      e^{\lambda n} &= |f'(x_n-1) \cdot f'(x_n-2) \cdot ... \cdot f'(x_0)| \\
+      \Leftrightarrow \\
+      \lambda n &= \ln |f'(x_n-1) \cdot f'(x_n-2) \cdot ... \cdot f'(x_0)| \\
+      \Leftrightarrow \\
+      \lambda &= \frac{1}{n} \ln |f'(x_n-1) \cdot f'(x_n-2) \cdot ... \cdot f'(x_0)| \\
+             &= \frac{1}{n} \sum_{k=0}^{n-1} \ln |f'(x_k)|
 
     With this sum we can now calculate the lyapunov exponent for any map.
-    For the logistic map we simply have to calculate f'(x) and as we have
+    For the logistic map we simply have to calculate :math:`f'(x)` and as we
+    have
 
-    f(x) = r * x * (1-x) = rx - rx²
+    .. math::
+      f(x) = r x (1-x) = rx - rx²
 
     we now get
 
-    f'(x) = r - 2 rx
+    .. math::
+      f'(x) = r - 2 rx
 
 
 
