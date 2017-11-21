@@ -56,7 +56,7 @@ def weron_2002_figure2(n = 10000):
   data = []
   for e in range(8,17):
     l = 2**e
-    nvals = 2**np.arange(6,e+1)
+    nvals = 2**np.arange(6,e)
     rsn = np.mean([
       nolds.hurst_rs(np.random.normal(size=l), fit="poly")
       for _ in range(n)
