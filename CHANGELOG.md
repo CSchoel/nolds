@@ -8,17 +8,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- package `datasets`
+- module `datasets`
   + dataset `brown72` that has a prescribed hurst exponent of 0.72
   + generators for the logistic and the tent map
   + true random numbers using the package `quantumrandom`
 - test `test_hurst_pracma` that uses the same testing sequences for `hurst_rs` as the R-package `pracma`
 - example function `plot_hurst_hist` that plots a histogram of hurst exponent values for random data
 - example function `weron_2002_figure2`
+- `fgn` for fractional gaussian noise in the `datasets` module
+- documentation for unittests and examples
 
 ### Changed
 
 - default choice for the parameter `nvals` in `hurst_rs` now favors higher n values and always uses 16 n values
+- `fbm` is now moved to the `datasets` module
 
 ### Fixed
 
