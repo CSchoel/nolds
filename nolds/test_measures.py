@@ -115,7 +115,7 @@ class TestNoldsLyap(unittest.TestCase):
       self.assertEqual(s, int(np.sign(lr)), "r = {}".format(r))
 
   def test_lyap_fbm(self):
-    data = nolds.fbm(1000, H=0.3)
+    data = datasets.fbm(1000, H=0.3)
     le = nolds.lyap_e(data, emb_dim=7, matrix_dim=3)
     self.assertGreater(np.max(le), 0)
 
@@ -199,7 +199,7 @@ class TestNoldsDFA(unittest.TestCase):
   def test_dfa_fbm(self):
     hs = [0.3, 0.5, 0.7]
     for h in hs:
-      data = nolds.fbm(1000, H=h)
+      data = datasets.fbm(1000, H=h)
       he = nolds.dfa(data)
       self.assertAlmostEqual(he, h + 1, delta=0.15)
 

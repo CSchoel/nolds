@@ -5,6 +5,64 @@ from builtins import *
 import numpy as np
 import pkg_resources
 
+def fbm(n, H=0.75):
+  """
+  Generates fractional brownian motions of desired length.
+
+  Author:
+    Christian Thomae
+
+  References:
+    .. [fbm-1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation
+
+  Args:
+    n (int):
+      length of sequence to generate
+  Kwargs:
+    H (float):
+      hurst parameter
+
+  Returns:
+    array of float:
+      simulated fractional brownian motion
+  """
+  # TODO more detailed description of fbm
+  assert H > 0 and H < 1
+
+  def R(t, s):
+    twoH = 2 * H
+    return 0.5 * (s**twoH + t**twoH - np.abs(t - s)**twoH)
+  # form the matrix tau
+  gamma = R(*np.mgrid[0:n, 0:n])  # apply R to every element in matrix
+  w, P = np.linalg.eigh(gamma)
+  L = np.diag(w)
+  sigma = np.dot(np.dot(P, np.sqrt(L)), np.linalg.inv(P))
+  v = np.random.randn(n)
+  return np.dot(sigma, v)
+
+
+def fgn(n, H=0.75):
+  """
+  Generates fractional gaussian noise of desired length.
+
+  References:
+    .. [fgn-1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion
+
+  Args:
+    n (int):
+      length of sequence to generate
+
+  Kwargs:
+    H (float):
+      hurst parameter
+
+  Returns:
+    array of float:
+      simulated fractional gaussian noise
+  """
+  return np.diff(fbm(n+1,H=H))
+
+
 def qrandom(n):
   """
   Creates an array of n true random numbers obtained from the quantum random
