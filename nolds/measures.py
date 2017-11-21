@@ -876,7 +876,7 @@ def rs(data, n):
   # find ranges
   r = np.max(y, axis=1) - np.min(y, axis=1)
   # find standard deviation
-  s = np.std(seqs, axis=1)
+  s = np.std(seqs, axis=1, ddof=1)
   # some ranges may be zero and have to be excluded from the analysis
   idx = np.where(r != 0)
   r = r[idx]
