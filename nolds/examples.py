@@ -122,21 +122,24 @@ def profiling():
 
 if __name__ == "__main__":
   # run this with the following command:
-  # python -m nolds.examples lyapunov-all
+  # python -m nolds.examples lyapunov-logistic
   import sys
   if len(sys.argv) < 2:
     print("please tell me which tests you want to run")
     print("options are:")
-    print("  lyapunov-all")
     print("  lyapunov-logistic")
     print("  lyapunov-tent")
     print("  profiling")
-  elif sys.argv[1] == "lyapunov-all" or len(sys.argv) == 1:
-    plot_lyap()
-    plot_lyap("tent")
+    print("  hurst-weron2")
+    print("  hurst-hist")
   elif sys.argv[1] == "lyapunov-logistic":
     plot_lyap()
   elif sys.argv[1] == "lyapunov-tent":
     plot_lyap("tent")
   elif sys.argv[1] == "profiling":
     profiling()
+  elif sys.argv[1] == "hurst-weron2":
+    n = 1000 if len(sys.argv) < 3 else int(sys.argv[2])
+    weron_2002_figure2(n)
+  elif sys.argv[1] == "hurst-hist":
+    plot_hurst_hist()
