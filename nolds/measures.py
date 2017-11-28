@@ -772,6 +772,42 @@ def logarithmic_n(min_n, max_n, factor):
       ns.append(n)
   return ns
 
+def logmid_n(max_n, ratio=1/4.0, nsteps=15):
+  """
+  Creates an array of integers that lie evenly spaced in the "middle" of the
+  logarithmic scale from 0 to log(max_n).
+
+  If max_n is very small and/or nsteps is very large, this may lead to
+  duplicate values which will be removed from the output.
+
+  This function has benefits in hurst_rs, because it cuts away both very small
+  and very large n, which both can cause problems, and still produces a
+  logarithmically spaced sequence.
+
+  Args:
+    max_n (int):
+      largest possible output value (should be the sequence length when used in
+      hurst_rs)
+
+  Kwargs:
+    ratio (float):
+      width of the "middle" of the logarithmic interval relative to log(max_n).
+      For example, for ratio=1/2.0 the logarithm of the resulting values will
+      lie between 0.25 * log(max_n) and 0.75 * log(max_n).
+    nsteps (float):
+      (maximum) number of values to take from the specified range
+
+  Returns:
+    array of int:
+      a logarithmically spaced sequence of at most nsteps values (may be less,
+      because only unique values are returned)
+  """
+  l = np.log(max_n)
+  span = l * ratio
+  start = l * (1 - ratio) * 0.5
+  midrange = start + 1.0*np.arange(nsteps)/nsteps*span
+  nvals = np.round(np.exp(midrange)).astype("int32")
+  return np.unique(nvals)
 
 def logarithmic_r(min_n, max_n, factor):
   """
