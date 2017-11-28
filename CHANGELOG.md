@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+- function `logmid_n` that allows for a better choice of `nvals` parameter in `hurst_rs`
+
+### Changed
+
+- adds more descriptions and instructions for comparing `hurst_rs` with other implementations
+
+### Fixed
+
+## [0.4.0] - 2017-11-21
+
+### Added
+
 - module `datasets`
   + dataset `brown72` that has a prescribed hurst exponent of 0.72
   + generators for the logistic and the tent map
