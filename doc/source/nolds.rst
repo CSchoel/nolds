@@ -40,6 +40,8 @@ Helper functions
 .. autofunction:: nolds.binary_n
 .. autofunction:: nolds.logarithmic_n
 .. autofunction:: nolds.logarithmic_r
+.. autofunction:: nolds.expected_h
+.. autofunction:: nolds.logmid_n
 
 Datasets
 --------
