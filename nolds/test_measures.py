@@ -156,6 +156,8 @@ class TestNoldsHurst(unittest.TestCase):
   Tests for hurst_rs using the same tests as in the R-package pracma
   """
   def test_hurst_pracma(self):
+    # This test reproduces the results presented by Ian L. Kaplan on
+    # bearcave.com
     h72 = nolds.hurst_rs(
       datasets.brown72, fit="poly", corrected=False, unbiased=False,
       nvals=2**np.arange(3,11))
