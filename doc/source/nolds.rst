@@ -48,13 +48,35 @@ Benchmark dataset for hurst exponent
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autodata:: nolds.brown72
 
-   The brown72 dataset has a prescribed (uncorrected) Hurst exponent of 0.72.
+   The brown72 dataset has a prescribed (uncorrected) Hurst exponent of 0.7270.
    It is a synthetic dataset from the book "Chaos and Order in the Capital
    markets"[b7-a]_.
 
    It is included here, because the dataset can be found online [b7-b]_ and is
    used by other software packages such as the R-package `pracma` [b7-c]_.
    As such it can be used to compare different implementations.
+
+   However, it should be noted that the idea that the "true" Hurst exponent of
+   this series is indeed 0.7270 is problematic for several reasons:
+
+   . This value does not take into account the Anis-Lloyd-Peters correction
+     factor.
+   . It was obtained using the biased version of the standard deviation.
+   . It depends (as always for the Hurst exponent) on the choice of the length
+     of the subsequences.
+
+   If you want to reproduce the prescribed value, you can use the following
+   code:
+
+   .. code-block:: python
+
+      nolds.hurst_rs(
+         nolds.brown72,
+         nvals=2**np.arange(3,11),
+         fit="poly", corrected=False, unbiased=False
+      )
+
+   References:
 
    .. [b7-a] Edgar Peters, “Chaos and Order in the Capital Markets: A New
       View of Cycles, Prices, and Market Volatility”, Wiley: Hoboken, 
