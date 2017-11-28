@@ -1030,9 +1030,39 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   Reference Code:
     .. [h-a] "hurst" function in R-package "pracma",
              url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
+
+             Note: Pracma yields several estimates of the Hurst exponent, which
+             are listed below. Unless otherwise stated they use the divisors
+             of the length of the sequence as n. The length is reduced by at
+             most 1% to find the value that has the most divisors.
+
+             * The "Simple R/S" estimate is just log((R/S)_n) / log(n) for 
+               n = N.
+             * The "theoretical Hurst exponent" is the value that would be
+               expected of an uncorrected rescaled range approach for random
+               noise of the size of the input data.
+             * The "empirical Hurst exponent" is the uncorrected Hurst exponent
+               obtained by the rescaled range approach.
+             * The "corrected empirical Hurst exponent" is the Anis-Lloyd-Peters
+               corrected Hurst exponent, but with sqrt(1/2 * pi * n) added to
+               the (R/S)_n before the log.
+             * The "corrected R over S Hurst exponent" uses the R-function "lm"
+               instead of pracmas own "polyfit" and uses n = N, N/2, N/4, ...
+               In contrast to its name it does not use the Anis-Lloyd-Peters
+               correction factor.
+
+             If you want to compare the output of pracma to
+             the output of nolds, the "empirical hurst exponent" is the only
+             measure that exactly corresponds to the Hurst measure implemented
+             in nolds (by choosing corrected=False, fit="poly" and employing
+             the same strategy for choosing n as the divisors of the (reduced)
+             sequence length).
     .. [h-b] Rafael Weron, "HURST: MATLAB function to compute the Hurst
              exponent using R/S Analysis",
              url: https://ideas.repec.org/c/wuu/hscode/m11003.html
+
+             Note: When the same values for nvals are used, nolds yields
+             exactly the same results as this implementation.
     .. [h-c] Bill Davidson, "Hurst exponent",
              url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent
     .. [h-d] Tomaso Aste, "Generalized Hurst exponent",
@@ -1067,8 +1097,9 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
       under the given file name instead of directly showing it through
       `plt.show()`
     corrected (boolean):
-      if True, a correction factor will be applied to the output according to
-      the expected value for the individual (R/S)_n (see [h-3])
+      if True, the Anis-Lloyd-Peters correction factor will be applied to the
+      output according to the expected value for the individual (R/S)_n
+      (see [h-3]_)
     unbiased (boolean):
       if True, the standard deviation based on the unbiased variance
       (1/(N-1) instead of 1/N) will be used. This should be the default choice,
