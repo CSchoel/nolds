@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `fgn` for fractional gaussian noise in the `datasets` module
 - documentation for unittests and examples
 - parameter `unbiased` for `hurst_rs` that allows to choose between the new (fixed) behavior and the old one (using the wrong version of the standard deviation)
+- parameter `corrected` for `hurst_rs` that applies the Anis-Lloyd correction factor to the example by default
 
 ### Changed
 
