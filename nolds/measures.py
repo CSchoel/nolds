@@ -1110,9 +1110,8 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   Kwargs:
     nvals (iterable of int):
       sizes of subseries to use
-      (default: 3 to 16 logarithmically spaced values between one and ten
-      percent of the length of the time series, using only values greater than
-      50, but at least the three largest values)
+      (default: logmid_n(total_N, ratio=1/4.0, nsteps=15) , that is 15
+      logarithmically spaced values in the medium 25% of the logarithmic range)
 
       Generally, the choice for n is a trade-off between the length and the
       number of the subsequences that are used for the calculation of the
@@ -1156,12 +1155,10 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   """
   total_N = len(data)
   if nvals is None:
-    # chooses a default value for nvals that will give 16 logarithmically
-    # spaced datapoints leaning towards larger n (since smaller n often give
-    # misleading values, at least for white noise)
-    nvals = logarithmic_n(max(4, int(0.01* total_N)), 0.1 * total_N, 1.15)
-    # only take n that are larger than 50 (but always take the largest three)
-    nvals = [x for x in nvals[:-3] if x > 50] + nvals[-3:]
+    # chooses a default value for nvals that will give 15 logarithmically
+    # spaced datapoints leaning towards the middle of the logarithmic range
+    # (since both too small and too large n introduce too much variance)
+    nvals = logmid_n(total_N, ratio=1/4.0, nsteps=15)
   # get individual values for (R/S)_n
   rsvals = np.array([rs(data, n, unbiased=unbiased) for n in nvals])
   # filter NaNs (zeros should not be possible, because if R is 0 then
