@@ -61,11 +61,11 @@ Benchmark dataset for hurst exponent
    However, it should be noted that the idea that the "true" Hurst exponent of
    this series is indeed 0.7270 is problematic for several reasons:
 
-   . This value does not take into account the Anis-Lloyd-Peters correction
-     factor.
-   . It was obtained using the biased version of the standard deviation.
-   . It depends (as always for the Hurst exponent) on the choice of the length
-     of the subsequences.
+   1. This value does not take into account the Anis-Lloyd-Peters correction
+      factor.
+   2. It was obtained using the biased version of the standard deviation.
+   3. It depends (as always for the Hurst exponent) on the choice of the length
+      of the subsequences.
 
    If you want to reproduce the prescribed value, you can use the following
    code:
