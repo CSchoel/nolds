@@ -13,7 +13,7 @@ def fbm(n, H=0.75):
     Christian Thomae
 
   References:
-    .. [fbm-1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation
+    .. [fbm_1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation
 
   Args:
     n (int):
@@ -46,7 +46,7 @@ def fgn(n, H=0.75):
   Generates fractional gaussian noise of desired length.
 
   References:
-    .. [fgn-1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion
+    .. [fgn_1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion
 
   Args:
     n (int):
@@ -143,7 +143,7 @@ def tent_map(x, steps, mu=2):
     lambda = ln(mu)
 
   References:
-    .. [tm-1] https://en.wikipedia.org/wiki/Tent_map
+    .. [tm_1] https://en.wikipedia.org/wiki/Tent_map
 
   Args:
     x (float):
@@ -236,8 +236,8 @@ def logistic_map(x, steps, r=4):
 
 
   References:
-    .. [lm-1] https://en.wikipedia.org/wiki/Tent_map
-    .. [lm-2] https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/
+    .. [lm_1] https://en.wikipedia.org/wiki/Tent_map
+    .. [lm_2] https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/
 
   Args:
     x (float):

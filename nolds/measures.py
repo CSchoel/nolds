@@ -115,7 +115,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
            plot_file=None, fit_offset=0, min_vectors=None):
   """
   Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
-  et al. [lr-1]_.
+  et al. [lr_1]_.
 
   Explanation of Lyapunov exponents:
     See lyap_e.
@@ -167,15 +167,15 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     value. This procedure is used by default if the user sets lag = None.
 
   References:
-    .. [lr-1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca,
+    .. [lr_1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca,
        “A practical method for calculating largest Lyapunov exponents from
        small data sets,” Physica D: Nonlinear Phenomena, vol. 65, no. 1,
        pp. 117–134, 1993.
 
   Reference Code:
-    .. [lr-a] mirwais, "Largest Lyapunov Exponent with Rosenstein's Algorithm",
+    .. [lr_a] mirwais, "Largest Lyapunov Exponent with Rosenstein's Algorithm",
        url: http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm
-    .. [lr-b] Shapour Mohammadi, "LYAPROSEN: MATLAB function to calculate
+    .. [lr_b] Shapour Mohammadi, "LYAPROSEN: MATLAB function to calculate
        Lyapunov exponent",
        url: https://ideas.repec.org/c/boc/bocode/t741502.html
 
@@ -330,7 +330,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
            debug_plot=False, debug_data=False, plot_file=None):
   """
   Estimates the Lyapunov exponents for the given data using the algorithm of
-  Eckmann et al. [le-1]_.
+  Eckmann et al. [le_1]_.
 
   Recommendations for parameter settings by Eckmann et al.:
     * long recording time improves accuracy, small tau does not
@@ -384,16 +384,16 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
       original time series.
 
   References:
-    .. [le-1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,
+    .. [le_1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,
        “Liapunov exponents from time series,” Physical Review A,
        vol. 34, no. 6, pp. 4971–4979, 1986.
 
   Reference code:
-    .. [le-a] Manfred Füllsack, "Lyapunov exponent",
+    .. [le_a] Manfred Füllsack, "Lyapunov exponent",
        url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
-    .. [le-b] Steve SIU, Lyapunov Exponents Toolbox (LET),
+    .. [le_b] Steve SIU, Lyapunov Exponents Toolbox (LET),
        url: http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m
-    .. [le-c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,
+    .. [le_c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,
        url: http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/index.html
 
   Args:
@@ -614,13 +614,13 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
     of this ratio/probability.
 
   References:
-    .. [se-1] J. S. Richman and J. R. Moorman, “Physiological time-series
+    .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
        analysis using approximate entropy and sample entropy,”
        American Journal of Physiology-Heart and Circulatory Physiology,
        vol. 278, no. 6, pp. H2039–H2049, 2000.
 
   Reference code:
-    .. [se-a] "sample_entropy" function in R-package "pracma",
+    .. [se_a] "sample_entropy" function in R-package "pracma",
         url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
 
   Args:
@@ -1054,17 +1054,17 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
       * logarithmic_n: min_n, min_n * f, min_n * f^2, ...
 
   References:
-    .. [h-1] H. E. Hurst, “The problem of long-term storage in reservoirs,”
+    .. [h_1] H. E. Hurst, “The problem of long-term storage in reservoirs,”
        International Association of Scientific Hydrology. Bulletin, vol. 1,
        no. 3, pp. 13–27, 1956.
-    .. [h-2] H. E. Hurst, “A suggested statistical model of some time series
+    .. [h_2] H. E. Hurst, “A suggested statistical model of some time series
        which occur in nature,” Nature, vol. 180, p. 494, 1957.
-    .. [h-3] R. Weron, “Estimating long-range dependence: finite sample
+    .. [h_3] R. Weron, “Estimating long-range dependence: finite sample
        properties and confidence intervals,” Physica A: Statistical Mechanics
        and its Applications, vol. 312, no. 1, pp. 285–299, 2002.
 
   Reference Code:
-    .. [h-a] "hurst" function in R-package "pracma",
+    .. [h_a] "hurst" function in R-package "pracma",
              url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
 
              Note: Pracma yields several estimates of the Hurst exponent, which
@@ -1093,15 +1093,15 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
              in nolds (by choosing corrected=False, fit="poly" and employing
              the same strategy for choosing n as the divisors of the (reduced)
              sequence length).
-    .. [h-b] Rafael Weron, "HURST: MATLAB function to compute the Hurst
+    .. [h_b] Rafael Weron, "HURST: MATLAB function to compute the Hurst
              exponent using R/S Analysis",
              url: https://ideas.repec.org/c/wuu/hscode/m11003.html
 
              Note: When the same values for nvals are used, nolds yields
              exactly the same results as this implementation.
-    .. [h-c] Bill Davidson, "Hurst exponent",
+    .. [h_c] Bill Davidson, "Hurst exponent",
              url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent
-    .. [h-d] Tomaso Aste, "Generalized Hurst exponent",
+    .. [h_d] Tomaso Aste, "Generalized Hurst exponent",
              url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
 
   Args:
@@ -1134,7 +1134,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     corrected (boolean):
       if True, the Anis-Lloyd-Peters correction factor will be applied to the
       output according to the expected value for the individual (R/S)_n
-      (see [h-3]_)
+      (see [h_3]_)
     unbiased (boolean):
       if True, the standard deviation based on the unbiased variance
       (1/(N-1) instead of 1/N) will be used. This should be the default choice,
@@ -1226,20 +1226,20 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     avoids "systematic errors due to corrections to scaling".
 
   References:
-    .. [cd-1] P. Grassberger and I. Procaccia, “Characterization of strange
+    .. [cd_1] P. Grassberger and I. Procaccia, “Characterization of strange
               attractors,” Physical review letters, vol. 50, no. 5, p. 346,
               1983.
-    .. [cd-2] P. Grassberger and I. Procaccia, “Measuring the strangeness of
+    .. [cd_2] P. Grassberger and I. Procaccia, “Measuring the strangeness of
               strange attractors,” Physica D: Nonlinear Phenomena, vol. 9,
               no. 1, pp. 189–208, 1983.
-    .. [cd-3] P. Grassberger, “Grassberger-Procaccia algorithm,”
+    .. [cd_3] P. Grassberger, “Grassberger-Procaccia algorithm,”
               Scholarpedia, vol. 2, no. 5, p. 3043.
               urL: http://www.scholarpedia.org/article/Grassberger-Procaccia_algorithm
 
   Reference Code:
-    .. [cd-a] "corrDim" function in R package "fractal",
+    .. [cd_a] "corrDim" function in R package "fractal",
               url: https://cran.r-project.org/web/packages/fractal/fractal.pdf
-    .. [cd-b] Peng Yuehua, "Correlation dimension",
+    .. [cd_b] Peng Yuehua, "Correlation dimension",
               url: http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension
 
   Args:
@@ -1376,20 +1376,20 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     as fractional Brownian motion with H = alpha - 1.
 
   References:
-    .. [dfa-1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,
+    .. [dfa_1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,
                H. E. Stanley, and A. L. Goldberger, “Mosaic organization of
                DNA nucleotides,” Physical Review E, vol. 49, no. 2, 1994.
-    .. [dfa-2] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
+    .. [dfa_2] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
                V. V. Nikulin, H. D. Mansvelder, and K. Linkenkaer-Hansen,
                “Detrended fluctuation analysis: A scale-free view on neuronal
                oscillations,” Frontiers in Physiology, vol. 30, 2012.
 
   Reference code:
-    .. [dfa-a] Peter Jurica, "Introduction to MDFA in Python",
+    .. [dfa_a] Peter Jurica, "Introduction to MDFA in Python",
        url: http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html
-    .. [dfa-b] JE Mietus, "dfa",
+    .. [dfa_b] JE Mietus, "dfa",
        url: https://www.physionet.org/physiotools/dfa/dfa-1.htm
-    .. [dfa-c] "DFA" function in R package "fractal"
+    .. [dfa_c] "DFA" function in R package "fractal"
 
   Args:
     data (array of float):

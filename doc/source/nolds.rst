@@ -52,10 +52,10 @@ Benchmark dataset for hurst exponent
 
    The brown72 dataset has a prescribed (uncorrected) Hurst exponent of 0.7270.
    It is a synthetic dataset from the book "Chaos and Order in the Capital
-   markets"[b7-a]_.
+   markets"[b7_a]_.
 
-   It is included here, because the dataset can be found online [b7-b]_ and is
-   used by other software packages such as the R-package `pracma` [b7-c]_.
+   It is included here, because the dataset can be found online [b7_b]_ and is
+   used by other software packages such as the R-package `pracma` [b7_c]_.
    As such it can be used to compare different implementations.
 
    However, it should be noted that the idea that the "true" Hurst exponent of
@@ -80,12 +80,12 @@ Benchmark dataset for hurst exponent
 
    References:
 
-   .. [b7-a] Edgar Peters, “Chaos and Order in the Capital Markets: A New
+   .. [b7_a] Edgar Peters, “Chaos and Order in the Capital Markets: A New
       View of Cycles, Prices, and Market Volatility”, Wiley: Hoboken, 
       2nd Edition, 1996.
-   .. [b7-b] Ian L. Kaplan, "Estimating the Hurst Exponent", 
+   .. [b7_b] Ian L. Kaplan, "Estimating the Hurst Exponent", 
       url: http://www.bearcave.com/misl/misl_tech/wavelets/hurst/
-   .. [b7-c] HwB, "Pracma: brown72",
+   .. [b7_c] HwB, "Pracma: brown72",
       url: https://www.rdocumentation.org/packages/pracma/versions/1.9.9/topics/brown72
 
 Tent map
