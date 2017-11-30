@@ -32,14 +32,16 @@ def weron_2002_figure2(n = 10000):
 
   This function requires the package ``matplotlib``.
 
-  Kwargs:
-    n (int):
-      number of iterations of the experiment (Weron used 10000, but this takes
-      a while)
+  References:
 
   .. [w] R. Weron, “Estimating long-range dependence: finite sample
      properties and confidence intervals,” Physica A: Statistical Mechanics
      and its Applications, vol. 312, no. 1, pp. 285–299, 2002.
+
+  Kwargs:
+    n (int):
+      number of iterations of the experiment (Weron used 10000, but this takes
+      a while)
   """
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
@@ -101,6 +103,8 @@ def plot_lyap(maptype="logistic"):
   obtained by ``lyap_r`` and ``lyap_e``. The idea for this plot is taken from [ll]_.
 
   This function requires the package ``matplotlib``.
+
+  References:
 
   .. [ll] Manfred Füllsack, "Lyapunov exponent",
      url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
