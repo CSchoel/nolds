@@ -41,6 +41,7 @@ Helper functions
 .. autofunction:: nolds.logarithmic_n
 .. autofunction:: nolds.logarithmic_r
 .. autofunction:: nolds.expected_h
+.. autofunction:: nolds.expected_rs
 .. autofunction:: nolds.logmid_n
 
 Datasets
