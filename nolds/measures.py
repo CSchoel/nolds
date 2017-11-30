@@ -836,7 +836,8 @@ def expected_rs(n):
   """
   Calculates the expected (R/S)_n for white noise for a given n.
 
-  This is used as a correction factor in the function hurst_rs.
+  This is used as a correction factor in the function hurst_rs. It uses the
+  formula of Anis-Lloyd-Peters (see [h_3]_).
 
   Args:
     n (int):
