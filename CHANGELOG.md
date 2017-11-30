@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- test function `hurst_compare_nvals` that compares different choices for the `nvals` parameter for `hurst_rs`
+
+### Changed
+
+- the previously internal helper function `expected_rs` is now available from the main module
+
+### Fixed
+
 ## [0.4.1] - 2017-11-30
 
 ### Added
