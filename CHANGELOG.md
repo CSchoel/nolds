@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.1] - 2017-11-30
+
 ### Added
 
 - function `logmid_n` that allows for a better choice of `nvals` parameter in `hurst_rs`
@@ -13,8 +15,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - adds more descriptions and instructions for comparing `hurst_rs` with other implementations
-
-### Fixed
 
 ## [0.4.0] - 2017-11-21
 
