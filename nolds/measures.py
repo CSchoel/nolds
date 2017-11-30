@@ -1083,15 +1083,17 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
                corrected Hurst exponent, but with sqrt(1/2 * pi * n) added to
                the (R/S)_n before the log.
              * The "corrected R over S Hurst exponent" uses the R-function "lm"
-               instead of pracmas own "polyfit" and uses n = N, N/2, N/4, ...
-               In contrast to its name it does not use the Anis-Lloyd-Peters
-               correction factor.
+               instead of pracmas own "polyfit" and uses n = N/2, N/4, N/8, ...
+               by successively halving the subsequences (which means that some
+               subsequences may be one element longer than others). In contrast
+               to its name it does not use the Anis-Lloyd-Peters correction
+               factor.
 
-             If you want to compare the output of pracma to
-             the output of nolds, the "empirical hurst exponent" is the only
-             measure that exactly corresponds to the Hurst measure implemented
-             in nolds (by choosing corrected=False, fit="poly" and employing
-             the same strategy for choosing n as the divisors of the (reduced)
+             If you want to compare the output of pracma to the output of
+             nolds, the "empirical hurst exponent" is the only measure that
+             exactly corresponds to the Hurst measure implemented in nolds
+             (by choosing corrected=False, fit="poly" and employing the same
+             strategy for choosing n as the divisors of the (reduced)
              sequence length).
     .. [h_b] Rafael Weron, "HURST: MATLAB function to compute the Hurst
              exponent using R/S Analysis",
