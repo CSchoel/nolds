@@ -1099,8 +1099,9 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
              exponent using R/S Analysis",
              url: https://ideas.repec.org/c/wuu/hscode/m11003.html
 
-             Note: When the same values for nvals are used, nolds yields
-             exactly the same results as this implementation.
+             Note: When the same values for nvals are used and fit is set to
+             "poly", nolds yields exactly the same results as this
+             implementation.
     .. [h_c] Bill Davidson, "Hurst exponent",
              url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent
     .. [h_d] Tomaso Aste, "Generalized Hurst exponent",
