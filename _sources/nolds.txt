@@ -40,6 +40,8 @@ Helper functions
 .. autofunction:: nolds.binary_n
 .. autofunction:: nolds.logarithmic_n
 .. autofunction:: nolds.logarithmic_r
+.. autofunction:: nolds.expected_h
+.. autofunction:: nolds.logmid_n
 
 Datasets
 --------
@@ -48,20 +50,42 @@ Benchmark dataset for hurst exponent
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autodata:: nolds.brown72
 
-   The brown72 dataset has a prescribed (uncorrected) Hurst exponent of 0.72.
+   The brown72 dataset has a prescribed (uncorrected) Hurst exponent of 0.7270.
    It is a synthetic dataset from the book "Chaos and Order in the Capital
-   markets"[b7-a]_.
+   markets"[b7_a]_.
 
-   It is included here, because the dataset can be found online [b7-b]_ and is
-   used by other software packages such as the R-package `pracma` [b7-c]_.
+   It is included here, because the dataset can be found online [b7_b]_ and is
+   used by other software packages such as the R-package `pracma` [b7_c]_.
    As such it can be used to compare different implementations.
 
-   .. [b7-a] Edgar Peters, “Chaos and Order in the Capital Markets: A New
+   However, it should be noted that the idea that the "true" Hurst exponent of
+   this series is indeed 0.7270 is problematic for several reasons:
+
+   1. This value does not take into account the Anis-Lloyd-Peters correction
+      factor.
+   2. It was obtained using the biased version of the standard deviation.
+   3. It depends (as always for the Hurst exponent) on the choice of the length
+      of the subsequences.
+
+   If you want to reproduce the prescribed value, you can use the following
+   code:
+
+   .. code-block:: python
+
+      nolds.hurst_rs(
+         nolds.brown72,
+         nvals=2**np.arange(3,11),
+         fit="poly", corrected=False, unbiased=False
+      )
+
+   References:
+
+   .. [b7_a] Edgar Peters, “Chaos and Order in the Capital Markets: A New
       View of Cycles, Prices, and Market Volatility”, Wiley: Hoboken, 
       2nd Edition, 1996.
-   .. [b7-b] Ian L. Kaplan, "Estimating the Hurst Exponent", 
+   .. [b7_b] Ian L. Kaplan, "Estimating the Hurst Exponent", 
       url: http://www.bearcave.com/misl/misl_tech/wavelets/hurst/
-   .. [b7-c] HwB, "Pracma: brown72",
+   .. [b7_c] HwB, "Pracma: brown72",
       url: https://www.rdocumentation.org/packages/pracma/versions/1.9.9/topics/brown72
 
 Tent map

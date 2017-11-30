@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds.measures &mdash; Nolds 0.4.0 documentation</title>
+    <title>nolds.measures &mdash; Nolds 0.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.4.0 documentation" href="../../index.html" />
+    <link rel="top" title="Nolds 0.4.1 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -156,7 +156,7 @@
            <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fit_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_vectors</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Estimates the largest Lyapunov exponent using the algorithm of Rosenstein</span>
-<span class="sd">  et al. [lr-1]_.</span>
+<span class="sd">  et al. [lr_1]_.</span>
 
 <span class="sd">  Explanation of Lyapunov exponents:</span>
 <span class="sd">    See lyap_e.</span>
@@ -208,15 +208,15 @@
 <span class="sd">    value. This procedure is used by default if the user sets lag = None.</span>
 
 <span class="sd">  References:</span>
-<span class="sd">    .. [lr-1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca,</span>
+<span class="sd">    .. [lr_1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca,</span>
 <span class="sd">       “A practical method for calculating largest Lyapunov exponents from</span>
 <span class="sd">       small data sets,” Physica D: Nonlinear Phenomena, vol. 65, no. 1,</span>
 <span class="sd">       pp. 117–134, 1993.</span>
 
 <span class="sd">  Reference Code:</span>
-<span class="sd">    .. [lr-a] mirwais, &quot;Largest Lyapunov Exponent with Rosenstein&#39;s Algorithm&quot;,</span>
+<span class="sd">    .. [lr_a] mirwais, &quot;Largest Lyapunov Exponent with Rosenstein&#39;s Algorithm&quot;,</span>
 <span class="sd">       url: http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm</span>
-<span class="sd">    .. [lr-b] Shapour Mohammadi, &quot;LYAPROSEN: MATLAB function to calculate</span>
+<span class="sd">    .. [lr_b] Shapour Mohammadi, &quot;LYAPROSEN: MATLAB function to calculate</span>
 <span class="sd">       Lyapunov exponent&quot;,</span>
 <span class="sd">       url: https://ideas.repec.org/c/boc/bocode/t741502.html</span>
 
@@ -371,7 +371,7 @@
            <span class="n">debug_plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Estimates the Lyapunov exponents for the given data using the algorithm of</span>
-<span class="sd">  Eckmann et al. [le-1]_.</span>
+<span class="sd">  Eckmann et al. [le_1]_.</span>
 
 <span class="sd">  Recommendations for parameter settings by Eckmann et al.:</span>
 <span class="sd">    * long recording time improves accuracy, small tau does not</span>
@@ -425,16 +425,16 @@
 <span class="sd">      original time series.</span>
 
 <span class="sd">  References:</span>
-<span class="sd">    .. [le-1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,</span>
+<span class="sd">    .. [le_1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,</span>
 <span class="sd">       “Liapunov exponents from time series,” Physical Review A,</span>
 <span class="sd">       vol. 34, no. 6, pp. 4971–4979, 1986.</span>
 
 <span class="sd">  Reference code:</span>
-<span class="sd">    .. [le-a] Manfred Füllsack, &quot;Lyapunov exponent&quot;,</span>
+<span class="sd">    .. [le_a] Manfred Füllsack, &quot;Lyapunov exponent&quot;,</span>
 <span class="sd">       url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</span>
-<span class="sd">    .. [le-b] Steve SIU, Lyapunov Exponents Toolbox (LET),</span>
+<span class="sd">    .. [le_b] Steve SIU, Lyapunov Exponents Toolbox (LET),</span>
 <span class="sd">       url: http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m</span>
-<span class="sd">    .. [le-c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,</span>
+<span class="sd">    .. [le_c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,</span>
 <span class="sd">       url: http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/index.html</span>
 
 <span class="sd">  Args:</span>
@@ -655,13 +655,13 @@
 <span class="sd">    of this ratio/probability.</span>
 
 <span class="sd">  References:</span>
-<span class="sd">    .. [se-1] J. S. Richman and J. R. Moorman, “Physiological time-series</span>
+<span class="sd">    .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series</span>
 <span class="sd">       analysis using approximate entropy and sample entropy,”</span>
 <span class="sd">       American Journal of Physiology-Heart and Circulatory Physiology,</span>
 <span class="sd">       vol. 278, no. 6, pp. H2039–H2049, 2000.</span>
 
 <span class="sd">  Reference code:</span>
-<span class="sd">    .. [se-a] &quot;sample_entropy&quot; function in R-package &quot;pracma&quot;,</span>
+<span class="sd">    .. [se_a] &quot;sample_entropy&quot; function in R-package &quot;pracma&quot;,</span>
 <span class="sd">        url: https://cran.r-project.org/web/packages/pracma/pracma.pdf</span>
 
 <span class="sd">  Args:</span>
@@ -813,6 +813,42 @@
       <span class="n">ns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">ns</span></div>
 
+<div class="viewcode-block" id="logmid_n"><a class="viewcode-back" href="../../nolds.html#nolds.logmid_n">[docs]</a><span class="k">def</span> <span class="nf">logmid_n</span><span class="p">(</span><span class="n">max_n</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">nsteps</span><span class="o">=</span><span class="mi">15</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Creates an array of integers that lie evenly spaced in the &quot;middle&quot; of the</span>
+<span class="sd">  logarithmic scale from 0 to log(max_n).</span>
+
+<span class="sd">  If max_n is very small and/or nsteps is very large, this may lead to</span>
+<span class="sd">  duplicate values which will be removed from the output.</span>
+
+<span class="sd">  This function has benefits in hurst_rs, because it cuts away both very small</span>
+<span class="sd">  and very large n, which both can cause problems, and still produces a</span>
+<span class="sd">  logarithmically spaced sequence.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    max_n (int):</span>
+<span class="sd">      largest possible output value (should be the sequence length when used in</span>
+<span class="sd">      hurst_rs)</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    ratio (float):</span>
+<span class="sd">      width of the &quot;middle&quot; of the logarithmic interval relative to log(max_n).</span>
+<span class="sd">      For example, for ratio=1/2.0 the logarithm of the resulting values will</span>
+<span class="sd">      lie between 0.25 * log(max_n) and 0.75 * log(max_n).</span>
+<span class="sd">    nsteps (float):</span>
+<span class="sd">      (maximum) number of values to take from the specified range</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    array of int:</span>
+<span class="sd">      a logarithmically spaced sequence of at most nsteps values (may be less,</span>
+<span class="sd">      because only unique values are returned)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">max_n</span><span class="p">)</span>
+  <span class="n">span</span> <span class="o">=</span> <span class="n">l</span> <span class="o">*</span> <span class="n">ratio</span>
+  <span class="n">start</span> <span class="o">=</span> <span class="n">l</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ratio</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+  <span class="n">midrange</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="mf">1.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nsteps</span><span class="p">)</span><span class="o">/</span><span class="n">nsteps</span><span class="o">*</span><span class="n">span</span>
+  <span class="n">nvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">midrange</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">nvals</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="logarithmic_r"><a class="viewcode-back" href="../../nolds.html#nolds.logarithmic_r">[docs]</a><span class="k">def</span> <span class="nf">logarithmic_r</span><span class="p">(</span><span class="n">min_n</span><span class="p">,</span> <span class="n">max_n</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
@@ -860,7 +896,7 @@
     <span class="n">middle</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">front</span> <span class="o">*</span> <span class="n">middle</span> <span class="o">*</span> <span class="n">back</span>
 
-<span class="k">def</span> <span class="nf">expected_h</span><span class="p">(</span><span class="n">nvals</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="expected_h"><a class="viewcode-back" href="../../nolds.html#nolds.expected_h">[docs]</a><span class="k">def</span> <span class="nf">expected_h</span><span class="p">(</span><span class="n">nvals</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Uses expected_rs to calculate the expected value for the Hurst exponent h</span>
 <span class="sd">  based on the values of n used for the calculation.</span>
@@ -881,7 +917,7 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">rsvals</span> <span class="o">=</span> <span class="p">[</span><span class="n">expected_rs</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nvals</span><span class="p">]</span>
   <span class="n">poly</span> <span class="o">=</span> <span class="n">poly_fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rsvals</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="n">fit</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <span class="k">def</span> <span class="nf">rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">unbiased</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
@@ -1059,24 +1095,57 @@
 <span class="sd">      * logarithmic_n: min_n, min_n * f, min_n * f^2, ...</span>
 
 <span class="sd">  References:</span>
-<span class="sd">    .. [h-1] H. E. Hurst, “The problem of long-term storage in reservoirs,”</span>
+<span class="sd">    .. [h_1] H. E. Hurst, “The problem of long-term storage in reservoirs,”</span>
 <span class="sd">       International Association of Scientific Hydrology. Bulletin, vol. 1,</span>
 <span class="sd">       no. 3, pp. 13–27, 1956.</span>
-<span class="sd">    .. [h-2] H. E. Hurst, “A suggested statistical model of some time series</span>
+<span class="sd">    .. [h_2] H. E. Hurst, “A suggested statistical model of some time series</span>
 <span class="sd">       which occur in nature,” Nature, vol. 180, p. 494, 1957.</span>
-<span class="sd">    .. [h-3] R. Weron, “Estimating long-range dependence: finite sample</span>
+<span class="sd">    .. [h_3] R. Weron, “Estimating long-range dependence: finite sample</span>
 <span class="sd">       properties and confidence intervals,” Physica A: Statistical Mechanics</span>
 <span class="sd">       and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</span>
 
 <span class="sd">  Reference Code:</span>
-<span class="sd">    .. [h-a] &quot;hurst&quot; function in R-package &quot;pracma&quot;,</span>
+<span class="sd">    .. [h_a] &quot;hurst&quot; function in R-package &quot;pracma&quot;,</span>
 <span class="sd">             url: https://cran.r-project.org/web/packages/pracma/pracma.pdf</span>
-<span class="sd">    .. [h-b] Rafael Weron, &quot;HURST: MATLAB function to compute the Hurst</span>
+
+<span class="sd">             Note: Pracma yields several estimates of the Hurst exponent, which</span>
+<span class="sd">             are listed below. Unless otherwise stated they use the divisors</span>
+<span class="sd">             of the length of the sequence as n. The length is reduced by at</span>
+<span class="sd">             most 1% to find the value that has the most divisors.</span>
+
+<span class="sd">             * The &quot;Simple R/S&quot; estimate is just log((R/S)_n) / log(n) for </span>
+<span class="sd">               n = N.</span>
+<span class="sd">             * The &quot;theoretical Hurst exponent&quot; is the value that would be</span>
+<span class="sd">               expected of an uncorrected rescaled range approach for random</span>
+<span class="sd">               noise of the size of the input data.</span>
+<span class="sd">             * The &quot;empirical Hurst exponent&quot; is the uncorrected Hurst exponent</span>
+<span class="sd">               obtained by the rescaled range approach.</span>
+<span class="sd">             * The &quot;corrected empirical Hurst exponent&quot; is the Anis-Lloyd-Peters</span>
+<span class="sd">               corrected Hurst exponent, but with sqrt(1/2 * pi * n) added to</span>
+<span class="sd">               the (R/S)_n before the log.</span>
+<span class="sd">             * The &quot;corrected R over S Hurst exponent&quot; uses the R-function &quot;lm&quot;</span>
+<span class="sd">               instead of pracmas own &quot;polyfit&quot; and uses n = N/2, N/4, N/8, ...</span>
+<span class="sd">               by successively halving the subsequences (which means that some</span>
+<span class="sd">               subsequences may be one element longer than others). In contrast</span>
+<span class="sd">               to its name it does not use the Anis-Lloyd-Peters correction</span>
+<span class="sd">               factor.</span>
+
+<span class="sd">             If you want to compare the output of pracma to the output of</span>
+<span class="sd">             nolds, the &quot;empirical hurst exponent&quot; is the only measure that</span>
+<span class="sd">             exactly corresponds to the Hurst measure implemented in nolds</span>
+<span class="sd">             (by choosing corrected=False, fit=&quot;poly&quot; and employing the same</span>
+<span class="sd">             strategy for choosing n as the divisors of the (reduced)</span>
+<span class="sd">             sequence length).</span>
+<span class="sd">    .. [h_b] Rafael Weron, &quot;HURST: MATLAB function to compute the Hurst</span>
 <span class="sd">             exponent using R/S Analysis&quot;,</span>
 <span class="sd">             url: https://ideas.repec.org/c/wuu/hscode/m11003.html</span>
-<span class="sd">    .. [h-c] Bill Davidson, &quot;Hurst exponent&quot;,</span>
+
+<span class="sd">             Note: When the same values for nvals are used and fit is set to</span>
+<span class="sd">             &quot;poly&quot;, nolds yields exactly the same results as this</span>
+<span class="sd">             implementation.</span>
+<span class="sd">    .. [h_c] Bill Davidson, &quot;Hurst exponent&quot;,</span>
 <span class="sd">             url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent</span>
-<span class="sd">    .. [h-d] Tomaso Aste, &quot;Generalized Hurst exponent&quot;,</span>
+<span class="sd">    .. [h_d] Tomaso Aste, &quot;Generalized Hurst exponent&quot;,</span>
 <span class="sd">             url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent</span>
 
 <span class="sd">  Args:</span>
@@ -1085,9 +1154,8 @@
 <span class="sd">  Kwargs:</span>
 <span class="sd">    nvals (iterable of int):</span>
 <span class="sd">      sizes of subseries to use</span>
-<span class="sd">      (default: 3 to 16 logarithmically spaced values between one and ten</span>
-<span class="sd">      percent of the length of the time series, using only values greater than</span>
-<span class="sd">      50, but at least the three largest values)</span>
+<span class="sd">      (default: logmid_n(total_N, ratio=1/4.0, nsteps=15) , that is 15</span>
+<span class="sd">      logarithmically spaced values in the medium 25% of the logarithmic range)</span>
 
 <span class="sd">      Generally, the choice for n is a trade-off between the length and the</span>
 <span class="sd">      number of the subsequences that are used for the calculation of the</span>
@@ -1108,8 +1176,9 @@
 <span class="sd">      under the given file name instead of directly showing it through</span>
 <span class="sd">      `plt.show()`</span>
 <span class="sd">    corrected (boolean):</span>
-<span class="sd">      if True, a correction factor will be applied to the output according to</span>
-<span class="sd">      the expected value for the individual (R/S)_n (see [h-3])</span>
+<span class="sd">      if True, the Anis-Lloyd-Peters correction factor will be applied to the</span>
+<span class="sd">      output according to the expected value for the individual (R/S)_n</span>
+<span class="sd">      (see [h_3]_)</span>
 <span class="sd">    unbiased (boolean):</span>
 <span class="sd">      if True, the standard deviation based on the unbiased variance</span>
 <span class="sd">      (1/(N-1) instead of 1/N) will be used. This should be the default choice,</span>
@@ -1130,12 +1199,10 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">total_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">nvals</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-    <span class="c1"># chooses a default value for nvals that will give 16 logarithmically</span>
-    <span class="c1"># spaced datapoints leaning towards larger n (since smaller n often give</span>
-    <span class="c1"># misleading values, at least for white noise)</span>
-    <span class="n">nvals</span> <span class="o">=</span> <span class="n">logarithmic_n</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.01</span><span class="o">*</span> <span class="n">total_N</span><span class="p">)),</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">total_N</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">)</span>
-    <span class="c1"># only take n that are larger than 50 (but always take the largest three)</span>
-    <span class="n">nvals</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">nvals</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">]</span> <span class="o">+</span> <span class="n">nvals</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span>
+    <span class="c1"># chooses a default value for nvals that will give 15 logarithmically</span>
+    <span class="c1"># spaced datapoints leaning towards the middle of the logarithmic range</span>
+    <span class="c1"># (since both too small and too large n introduce too much variance)</span>
+    <span class="n">nvals</span> <span class="o">=</span> <span class="n">logmid_n</span><span class="p">(</span><span class="n">total_N</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">nsteps</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
   <span class="c1"># get individual values for (R/S)_n</span>
   <span class="n">rsvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">unbiased</span><span class="o">=</span><span class="n">unbiased</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nvals</span><span class="p">])</span>
   <span class="c1"># filter NaNs (zeros should not be possible, because if R is 0 then</span>
@@ -1203,20 +1270,20 @@
 <span class="sd">    avoids &quot;systematic errors due to corrections to scaling&quot;.</span>
 
 <span class="sd">  References:</span>
-<span class="sd">    .. [cd-1] P. Grassberger and I. Procaccia, “Characterization of strange</span>
+<span class="sd">    .. [cd_1] P. Grassberger and I. Procaccia, “Characterization of strange</span>
 <span class="sd">              attractors,” Physical review letters, vol. 50, no. 5, p. 346,</span>
 <span class="sd">              1983.</span>
-<span class="sd">    .. [cd-2] P. Grassberger and I. Procaccia, “Measuring the strangeness of</span>
+<span class="sd">    .. [cd_2] P. Grassberger and I. Procaccia, “Measuring the strangeness of</span>
 <span class="sd">              strange attractors,” Physica D: Nonlinear Phenomena, vol. 9,</span>
 <span class="sd">              no. 1, pp. 189–208, 1983.</span>
-<span class="sd">    .. [cd-3] P. Grassberger, “Grassberger-Procaccia algorithm,”</span>
+<span class="sd">    .. [cd_3] P. Grassberger, “Grassberger-Procaccia algorithm,”</span>
 <span class="sd">              Scholarpedia, vol. 2, no. 5, p. 3043.</span>
 <span class="sd">              urL: http://www.scholarpedia.org/article/Grassberger-Procaccia_algorithm</span>
 
 <span class="sd">  Reference Code:</span>
-<span class="sd">    .. [cd-a] &quot;corrDim&quot; function in R package &quot;fractal&quot;,</span>
+<span class="sd">    .. [cd_a] &quot;corrDim&quot; function in R package &quot;fractal&quot;,</span>
 <span class="sd">              url: https://cran.r-project.org/web/packages/fractal/fractal.pdf</span>
-<span class="sd">    .. [cd-b] Peng Yuehua, &quot;Correlation dimension&quot;,</span>
+<span class="sd">    .. [cd_b] Peng Yuehua, &quot;Correlation dimension&quot;,</span>
 <span class="sd">              url: http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension</span>
 
 <span class="sd">  Args:</span>
@@ -1353,20 +1420,20 @@
 <span class="sd">    as fractional Brownian motion with H = alpha - 1.</span>
 
 <span class="sd">  References:</span>
-<span class="sd">    .. [dfa-1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,</span>
+<span class="sd">    .. [dfa_1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,</span>
 <span class="sd">               H. E. Stanley, and A. L. Goldberger, “Mosaic organization of</span>
 <span class="sd">               DNA nucleotides,” Physical Review E, vol. 49, no. 2, 1994.</span>
-<span class="sd">    .. [dfa-2] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,</span>
+<span class="sd">    .. [dfa_2] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,</span>
 <span class="sd">               V. V. Nikulin, H. D. Mansvelder, and K. Linkenkaer-Hansen,</span>
 <span class="sd">               “Detrended fluctuation analysis: A scale-free view on neuronal</span>
 <span class="sd">               oscillations,” Frontiers in Physiology, vol. 30, 2012.</span>
 
 <span class="sd">  Reference code:</span>
-<span class="sd">    .. [dfa-a] Peter Jurica, &quot;Introduction to MDFA in Python&quot;,</span>
+<span class="sd">    .. [dfa_a] Peter Jurica, &quot;Introduction to MDFA in Python&quot;,</span>
 <span class="sd">       url: http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html</span>
-<span class="sd">    .. [dfa-b] JE Mietus, &quot;dfa&quot;,</span>
+<span class="sd">    .. [dfa_b] JE Mietus, &quot;dfa&quot;,</span>
 <span class="sd">       url: https://www.physionet.org/physiotools/dfa/dfa-1.htm</span>
-<span class="sd">    .. [dfa-c] &quot;DFA&quot; function in R package &quot;fractal&quot;</span>
+<span class="sd">    .. [dfa_c] &quot;DFA&quot; function in R package &quot;fractal&quot;</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    data (array of float):</span>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds module &mdash; Nolds 0.4.0 documentation</title>
+    <title>nolds module &mdash; Nolds 0.4.1 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.0',
+        VERSION:     '0.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.4.0 documentation" href="index.html" />
+    <link rel="top" title="Nolds 0.4.1 documentation" href="index.html" />
     <link rel="next" title="Nolds examples" href="examples.html" />
     <link rel="prev" title="Welcome to Nolds’ documentation!" href="index.html" />
    
@@ -54,7 +54,7 @@ directly unless you want access to some internal helper functions.</p>
 <dt id="nolds.lyap_r">
 <code class="descclassname">nolds.</code><code class="descname">lyap_r</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>lag=None</em>, <em>min_tsep=None</em>, <em>tau=1</em>, <em>min_neighbors=20</em>, <em>trajectory_len=20</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em>, <em>fit_offset=0</em>, <em>min_vectors=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
-et al. <a class="reference internal" href="#lr-1" id="id1">[lr-1]</a>.</p>
+et al. <a class="reference internal" href="#lr-1" id="id1">[lr_1]</a>.</p>
 <dl class="docutils">
 <dt>Explanation of Lyapunov exponents:</dt>
 <dd>See lyap_e.</dd>
@@ -102,7 +102,7 @@ value. This procedure is used by default if the user sets lag = None.</dd>
 <dd><table class="first last docutils citation" frame="void" id="lr-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[lr-1]</a></td><td>M. T. Rosenstein, J. J. Collins, and C. J. De Luca,
+<tr><td class="label"><a class="fn-backref" href="#id1">[lr_1]</a></td><td>M. T. Rosenstein, J. J. Collins, and C. J. De Luca,
 “A practical method for calculating largest Lyapunov exponents from
 small data sets,” Physica D: Nonlinear Phenomena, vol. 65, no. 1,
 pp. 117–134, 1993.</td></tr>
@@ -113,14 +113,14 @@ pp. 117–134, 1993.</td></tr>
 <dd><table class="first docutils citation" frame="void" id="lr-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[lr-a]</td><td>mirwais, &#8220;Largest Lyapunov Exponent with Rosenstein&#8217;s Algorithm&#8221;,
+<tr><td class="label">[lr_a]</td><td>mirwais, &#8220;Largest Lyapunov Exponent with Rosenstein&#8217;s Algorithm&#8221;,
 url: <a class="reference external" href="http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm">http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="lr-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[lr-b]</td><td>Shapour Mohammadi, &#8220;LYAPROSEN: MATLAB function to calculate
+<tr><td class="label">[lr_b]</td><td>Shapour Mohammadi, &#8220;LYAPROSEN: MATLAB function to calculate
 Lyapunov exponent&#8221;,
 url: <a class="reference external" href="https://ideas.repec.org/c/boc/bocode/t741502.html">https://ideas.repec.org/c/boc/bocode/t741502.html</a></td></tr>
 </tbody>
@@ -191,7 +191,7 @@ a strong indicator for chaos)</dd>
 <dt id="nolds.lyap_e">
 <code class="descclassname">nolds.</code><code class="descname">lyap_e</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>matrix_dim=4</em>, <em>min_nb=None</em>, <em>min_tsep=0</em>, <em>tau=1</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_e"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_e" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the Lyapunov exponents for the given data using the algorithm of
-Eckmann et al. <a class="reference internal" href="#le-1" id="id2">[le-1]</a>.</p>
+Eckmann et al. <a class="reference internal" href="#le-1" id="id2">[le_1]</a>.</p>
 <dl class="docutils">
 <dt>Recommendations for parameter settings by Eckmann et al.:</dt>
 <dd><ul class="first last simple">
@@ -249,7 +249,7 @@ original time series.</li>
 <dd><table class="first last docutils citation" frame="void" id="le-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[le-1]</a></td><td>J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,
+<tr><td class="label"><a class="fn-backref" href="#id2">[le_1]</a></td><td>J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,
 “Liapunov exponents from time series,” Physical Review A,
 vol. 34, no. 6, pp. 4971–4979, 1986.</td></tr>
 </tbody>
@@ -259,21 +259,21 @@ vol. 34, no. 6, pp. 4971–4979, 1986.</td></tr>
 <dd><table class="first docutils citation" frame="void" id="le-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[le-a]</td><td>Manfred Füllsack, &#8220;Lyapunov exponent&#8221;,
+<tr><td class="label">[le_a]</td><td>Manfred Füllsack, &#8220;Lyapunov exponent&#8221;,
 url: <a class="reference external" href="http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html">http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="le-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[le-b]</td><td>Steve SIU, Lyapunov Exponents Toolbox (LET),
+<tr><td class="label">[le_b]</td><td>Steve SIU, Lyapunov Exponents Toolbox (LET),
 url: <a class="reference external" href="http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m">http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="le-c" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[le-c]</td><td>Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,
+<tr><td class="label">[le_c]</td><td>Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,
 url: <a class="reference external" href="http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/index.html">http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/index.html</a></td></tr>
 </tbody>
 </table>
@@ -325,7 +325,7 @@ data is (x, matrix_dim).</dd>
 <h3>Sample entropy<a class="headerlink" href="#sample-entropy" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.sampen">
-<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist=&lt;function rowwise_chebyshev at 0x0000000004C61D08&gt;</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist=&lt;function rowwise_chebyshev at 0x0000000004BB6F28&gt;</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the sample entropy of the given data.</p>
 <dl class="docutils">
 <dt>Explanation of the sample entropy:</dt>
@@ -347,7 +347,7 @@ of this ratio/probability.</dd>
 <dd><table class="first last docutils citation" frame="void" id="se-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[se-1]</td><td>J. S. Richman and J. R. Moorman, “Physiological time-series
+<tr><td class="label">[se_1]</td><td>J. S. Richman and J. R. Moorman, “Physiological time-series
 analysis using approximate entropy and sample entropy,”
 American Journal of Physiology-Heart and Circulatory Physiology,
 vol. 278, no. 6, pp. H2039–H2049, 2000.</td></tr>
@@ -358,7 +358,7 @@ vol. 278, no. 6, pp. H2039–H2049, 2000.</td></tr>
 <dd><table class="first last docutils citation" frame="void" id="se-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[se-a]</td><td>&#8220;sample_entropy&#8221; function in R-package &#8220;pracma&#8221;,
+<tr><td class="label">[se_a]</td><td>&#8220;sample_entropy&#8221; function in R-package &#8220;pracma&#8221;,
 url: <a class="reference external" href="https://cran.r-project.org/web/packages/pracma/pracma.pdf">https://cran.r-project.org/web/packages/pracma/pracma.pdf</a></td></tr>
 </tbody>
 </table>
@@ -459,7 +459,7 @@ some utility functions for &#8220;typical&#8221; values:</p>
 <dd><table class="first docutils citation" frame="void" id="h-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h-1]</td><td>H. E. Hurst, “The problem of long-term storage in reservoirs,”
+<tr><td class="label">[h_1]</td><td>H. E. Hurst, “The problem of long-term storage in reservoirs,”
 International Association of Scientific Hydrology. Bulletin, vol. 1,
 no. 3, pp. 13–27, 1956.</td></tr>
 </tbody>
@@ -467,14 +467,14 @@ no. 3, pp. 13–27, 1956.</td></tr>
 <table class="docutils citation" frame="void" id="h-2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h-2]</td><td>H. E. Hurst, “A suggested statistical model of some time series
+<tr><td class="label">[h_2]</td><td>H. E. Hurst, “A suggested statistical model of some time series
 which occur in nature,” Nature, vol. 180, p. 494, 1957.</td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="h-3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h-3]</td><td>R. Weron, “Estimating long-range dependence: finite sample
+<tr><td class="label"><a class="fn-backref" href="#id3">[h_3]</a></td><td>R. Weron, “Estimating long-range dependence: finite sample
 properties and confidence intervals,” Physica A: Statistical Mechanics
 and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</td></tr>
 </tbody>
@@ -484,29 +484,62 @@ and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</td></tr>
 <dd><table class="first docutils citation" frame="void" id="h-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h-a]</td><td>&#8220;hurst&#8221; function in R-package &#8220;pracma&#8221;,
-url: <a class="reference external" href="https://cran.r-project.org/web/packages/pracma/pracma.pdf">https://cran.r-project.org/web/packages/pracma/pracma.pdf</a></td></tr>
+<tr><td class="label">[h_a]</td><td><p class="first">&#8220;hurst&#8221; function in R-package &#8220;pracma&#8221;,
+url: <a class="reference external" href="https://cran.r-project.org/web/packages/pracma/pracma.pdf">https://cran.r-project.org/web/packages/pracma/pracma.pdf</a></p>
+<p>Note: Pracma yields several estimates of the Hurst exponent, which
+are listed below. Unless otherwise stated they use the divisors
+of the length of the sequence as n. The length is reduced by at
+most 1% to find the value that has the most divisors.</p>
+<ul class="simple">
+<li>The &#8220;Simple R/S&#8221; estimate is just log((R/S)_n) / log(n) for 
+n = N.</li>
+<li>The &#8220;theoretical Hurst exponent&#8221; is the value that would be
+expected of an uncorrected rescaled range approach for random
+noise of the size of the input data.</li>
+<li>The &#8220;empirical Hurst exponent&#8221; is the uncorrected Hurst exponent
+obtained by the rescaled range approach.</li>
+<li>The &#8220;corrected empirical Hurst exponent&#8221; is the Anis-Lloyd-Peters
+corrected Hurst exponent, but with sqrt(1/2 * pi * n) added to
+the (R/S)_n before the log.</li>
+<li>The &#8220;corrected R over S Hurst exponent&#8221; uses the R-function &#8220;lm&#8221;
+instead of pracmas own &#8220;polyfit&#8221; and uses n = N/2, N/4, N/8, ...
+by successively halving the subsequences (which means that some
+subsequences may be one element longer than others). In contrast
+to its name it does not use the Anis-Lloyd-Peters correction
+factor.</li>
+</ul>
+<p class="last">If you want to compare the output of pracma to the output of
+nolds, the &#8220;empirical hurst exponent&#8221; is the only measure that
+exactly corresponds to the Hurst measure implemented in nolds
+(by choosing corrected=False, fit=&#8221;poly&#8221; and employing the same
+strategy for choosing n as the divisors of the (reduced)
+sequence length).</p>
+</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="h-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h-b]</td><td>Rafael Weron, &#8220;HURST: MATLAB function to compute the Hurst
+<tr><td class="label">[h_b]</td><td><p class="first">Rafael Weron, &#8220;HURST: MATLAB function to compute the Hurst
 exponent using R/S Analysis&#8221;,
-url: <a class="reference external" href="https://ideas.repec.org/c/wuu/hscode/m11003.html">https://ideas.repec.org/c/wuu/hscode/m11003.html</a></td></tr>
+url: <a class="reference external" href="https://ideas.repec.org/c/wuu/hscode/m11003.html">https://ideas.repec.org/c/wuu/hscode/m11003.html</a></p>
+<p class="last">Note: When the same values for nvals are used and fit is set to
+&#8220;poly&#8221;, nolds yields exactly the same results as this
+implementation.</p>
+</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="h-c" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h-c]</td><td>Bill Davidson, &#8220;Hurst exponent&#8221;,
+<tr><td class="label">[h_c]</td><td>Bill Davidson, &#8220;Hurst exponent&#8221;,
 url: <a class="reference external" href="http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent">http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="h-d" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h-d]</td><td>Tomaso Aste, &#8220;Generalized Hurst exponent&#8221;,
+<tr><td class="label">[h_d]</td><td>Tomaso Aste, &#8220;Generalized Hurst exponent&#8221;,
 url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent">http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent</a></td></tr>
 </tbody>
 </table>
@@ -521,9 +554,8 @@ url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/f
 <dd><dl class="first last docutils">
 <dt>nvals (iterable of int):</dt>
 <dd><p class="first">sizes of subseries to use
-(default: 3 to 16 logarithmically spaced values between one and ten
-percent of the length of the time series, using only values greater than
-50, but at least the three largest values)</p>
+(default: logmid_n(total_N, ratio=1/4.0, nsteps=15) , that is 15
+logarithmically spaced values in the medium 25% of the logarithmic range)</p>
 <p class="last">Generally, the choice for n is a trade-off between the length and the
 number of the subsequences that are used for the calculation of the
 (R/S)_n. Very low values of n lead to high variance in the <cite>r</cite> and <cite>s</cite>
@@ -544,8 +576,9 @@ is more robust to outliers</dd>
 under the given file name instead of directly showing it through
 <cite>plt.show()</cite></dd>
 <dt>corrected (boolean):</dt>
-<dd>if True, a correction factor will be applied to the output according to
-the expected value for the individual (R/S)_n (see [h-3])</dd>
+<dd>if True, the Anis-Lloyd-Peters correction factor will be applied to the
+output according to the expected value for the individual (R/S)_n
+(see <a class="reference internal" href="#h-3" id="id3">[h_3]</a>)</dd>
 <dt>unbiased (boolean):</dt>
 <dd>if True, the standard deviation based on the unbiased variance
 (1/(N-1) instead of 1/N) will be used. This should be the default choice,
@@ -575,7 +608,7 @@ coefficients (<cite>[slope, intercept]</cite>)</dd>
 <h3>Correlation dimension<a class="headerlink" href="#correlation-dimension" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.corr_dim">
-<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euclidean at 0x0000000004C8B2F0&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euclidean at 0x0000000004D20510&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the correlation dimension with the Grassberger-Procaccia algorithm</p>
 <dl class="docutils">
 <dt>Explanation of correlation dimension:</dt>
@@ -608,7 +641,7 @@ avoids &#8220;systematic errors due to corrections to scaling&#8221;.</p>
 <dd><table class="first docutils citation" frame="void" id="cd-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[cd-1]</td><td>P. Grassberger and I. Procaccia, “Characterization of strange
+<tr><td class="label">[cd_1]</td><td>P. Grassberger and I. Procaccia, “Characterization of strange
 attractors,” Physical review letters, vol. 50, no. 5, p. 346,
 1983.</td></tr>
 </tbody>
@@ -616,7 +649,7 @@ attractors,” Physical review letters, vol. 50, no. 5, p. 346,
 <table class="docutils citation" frame="void" id="cd-2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[cd-2]</td><td>P. Grassberger and I. Procaccia, “Measuring the strangeness of
+<tr><td class="label">[cd_2]</td><td>P. Grassberger and I. Procaccia, “Measuring the strangeness of
 strange attractors,” Physica D: Nonlinear Phenomena, vol. 9,
 no. 1, pp. 189–208, 1983.</td></tr>
 </tbody>
@@ -624,7 +657,7 @@ no. 1, pp. 189–208, 1983.</td></tr>
 <table class="last docutils citation" frame="void" id="cd-3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[cd-3]</td><td>P. Grassberger, “Grassberger-Procaccia algorithm,”
+<tr><td class="label">[cd_3]</td><td>P. Grassberger, “Grassberger-Procaccia algorithm,”
 Scholarpedia, vol. 2, no. 5, p. 3043.
 urL: <a class="reference external" href="http://www.scholarpedia.org/article/Grassberger-Procaccia_algorithm">http://www.scholarpedia.org/article/Grassberger-Procaccia_algorithm</a></td></tr>
 </tbody>
@@ -634,14 +667,14 @@ urL: <a class="reference external" href="http://www.scholarpedia.org/article/Gra
 <dd><table class="first docutils citation" frame="void" id="cd-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[cd-a]</td><td>&#8220;corrDim&#8221; function in R package &#8220;fractal&#8221;,
+<tr><td class="label">[cd_a]</td><td>&#8220;corrDim&#8221; function in R package &#8220;fractal&#8221;,
 url: <a class="reference external" href="https://cran.r-project.org/web/packages/fractal/fractal.pdf">https://cran.r-project.org/web/packages/fractal/fractal.pdf</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="cd-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[cd-b]</td><td>Peng Yuehua, &#8220;Correlation dimension&#8221;,
+<tr><td class="label">[cd_b]</td><td>Peng Yuehua, &#8220;Correlation dimension&#8221;,
 url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension">http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension</a></td></tr>
 </tbody>
 </table>
@@ -752,7 +785,7 @@ as fractional Brownian motion with H = alpha - 1.</p>
 <dd><table class="first docutils citation" frame="void" id="dfa-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[dfa-1]</td><td>C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,
+<tr><td class="label">[dfa_1]</td><td>C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,
 H. E. Stanley, and A. L. Goldberger, “Mosaic organization of
 DNA nucleotides,” Physical Review E, vol. 49, no. 2, 1994.</td></tr>
 </tbody>
@@ -760,7 +793,7 @@ DNA nucleotides,” Physical Review E, vol. 49, no. 2, 1994.</td></tr>
 <table class="last docutils citation" frame="void" id="dfa-2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[dfa-2]</td><td>R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
+<tr><td class="label">[dfa_2]</td><td>R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
 V. V. Nikulin, H. D. Mansvelder, and K. Linkenkaer-Hansen,
 “Detrended fluctuation analysis: A scale-free view on neuronal
 oscillations,” Frontiers in Physiology, vol. 30, 2012.</td></tr>
@@ -771,21 +804,21 @@ oscillations,” Frontiers in Physiology, vol. 30, 2012.</td></tr>
 <dd><table class="first docutils citation" frame="void" id="dfa-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[dfa-a]</td><td>Peter Jurica, &#8220;Introduction to MDFA in Python&#8221;,
+<tr><td class="label">[dfa_a]</td><td>Peter Jurica, &#8220;Introduction to MDFA in Python&#8221;,
 url: <a class="reference external" href="http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html">http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="dfa-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[dfa-b]</td><td>JE Mietus, &#8220;dfa&#8221;,
+<tr><td class="label">[dfa_b]</td><td>JE Mietus, &#8220;dfa&#8221;,
 url: <a class="reference external" href="https://www.physionet.org/physiotools/dfa/dfa-1.htm">https://www.physionet.org/physiotools/dfa/dfa-1.htm</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="dfa-c" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[dfa-c]</td><td>&#8220;DFA&#8221; function in R package &#8220;fractal&#8221;</td></tr>
+<tr><td class="label">[dfa_c]</td><td>&#8220;DFA&#8221; function in R package &#8220;fractal&#8221;</td></tr>
 </tbody>
 </table>
 </dd>
@@ -925,6 +958,73 @@ a factor &gt; 1 until a maximum value max_n is reached.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="nolds.expected_h">
+<code class="descclassname">nolds.</code><code class="descname">expected_h</code><span class="sig-paren">(</span><em>nvals</em>, <em>fit='RANSAC'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#expected_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.expected_h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses expected_rs to calculate the expected value for the Hurst exponent h
+based on the values of n used for the calculation.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>nvals (array of int):</dt>
+<dd>the values of n used to calculate the individual (R/S)_n</dd>
+</dl>
+</dd>
+<dt>KWargs:</dt>
+<dd><dl class="first last docutils">
+<dt>fit (str):</dt>
+<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
+least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+is more robust to outliers</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>float:</dt>
+<dd>expected h for white noise</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="nolds.logmid_n">
+<code class="descclassname">nolds.</code><code class="descname">logmid_n</code><span class="sig-paren">(</span><em>max_n</em>, <em>ratio=0.25</em>, <em>nsteps=15</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#logmid_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.logmid_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an array of integers that lie evenly spaced in the &#8220;middle&#8221; of the
+logarithmic scale from 0 to log(max_n).</p>
+<p>If max_n is very small and/or nsteps is very large, this may lead to
+duplicate values which will be removed from the output.</p>
+<p>This function has benefits in hurst_rs, because it cuts away both very small
+and very large n, which both can cause problems, and still produces a
+logarithmically spaced sequence.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>max_n (int):</dt>
+<dd>largest possible output value (should be the sequence length when used in
+hurst_rs)</dd>
+</dl>
+</dd>
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>ratio (float):</dt>
+<dd>width of the &#8220;middle&#8221; of the logarithmic interval relative to log(max_n).
+For example, for ratio=1/2.0 the logarithm of the resulting values will
+lie between 0.25 * log(max_n) and 0.75 * log(max_n).</dd>
+<dt>nsteps (float):</dt>
+<dd>(maximum) number of values to take from the specified range</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>array of int:</dt>
+<dd>a logarithmically spaced sequence of at most nsteps values (may be less,
+because only unique values are returned)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="datasets">
 <h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
@@ -933,16 +1033,35 @@ a factor &gt; 1 until a maximum value max_n is reached.</p>
 <dl class="data">
 <dt id="nolds.brown72">
 <code class="descclassname">nolds.</code><code class="descname">brown72</code><em class="property"> = array([ 45.47422,  42.55601,  46.5188 , ...,  42.78297,  44.34307,         40.70655])</em><a class="headerlink" href="#nolds.brown72" title="Permalink to this definition">¶</a></dt>
-<dd><p>The brown72 dataset has a prescribed (uncorrected) Hurst exponent of 0.72.
+<dd><p>The brown72 dataset has a prescribed (uncorrected) Hurst exponent of 0.7270.
 It is a synthetic dataset from the book &#8220;Chaos and Order in the Capital
-markets&#8221;<a class="reference internal" href="#b7-a" id="id3">[b7-a]</a>.</p>
-<p>It is included here, because the dataset can be found online <a class="reference internal" href="#b7-b" id="id4">[b7-b]</a> and is
-used by other software packages such as the R-package <cite>pracma</cite> <a class="reference internal" href="#b7-c" id="id5">[b7-c]</a>.
+markets&#8221;<a class="reference internal" href="#b7-a" id="id4">[b7_a]</a>.</p>
+<p>It is included here, because the dataset can be found online <a class="reference internal" href="#b7-b" id="id5">[b7_b]</a> and is
+used by other software packages such as the R-package <cite>pracma</cite> <a class="reference internal" href="#b7-c" id="id6">[b7_c]</a>.
 As such it can be used to compare different implementations.</p>
+<p>However, it should be noted that the idea that the &#8220;true&#8221; Hurst exponent of
+this series is indeed 0.7270 is problematic for several reasons:</p>
+<ol class="arabic simple">
+<li>This value does not take into account the Anis-Lloyd-Peters correction
+factor.</li>
+<li>It was obtained using the biased version of the standard deviation.</li>
+<li>It depends (as always for the Hurst exponent) on the choice of the length
+of the subsequences.</li>
+</ol>
+<p>If you want to reproduce the prescribed value, you can use the following
+code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span>
+   <span class="n">nolds</span><span class="o">.</span><span class="n">brown72</span><span class="p">,</span>
+   <span class="n">nvals</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span>
+   <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="n">corrected</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">unbiased</span><span class="o">=</span><span class="bp">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>References:</p>
 <table class="docutils citation" frame="void" id="b7-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[b7-a]</a></td><td>Edgar Peters, “Chaos and Order in the Capital Markets: A New
+<tr><td class="label"><a class="fn-backref" href="#id4">[b7_a]</a></td><td>Edgar Peters, “Chaos and Order in the Capital Markets: A New
 View of Cycles, Prices, and Market Volatility”, Wiley: Hoboken,
 2nd Edition, 1996.</td></tr>
 </tbody>
@@ -950,14 +1069,14 @@ View of Cycles, Prices, and Market Volatility”, Wiley: Hoboken,
 <table class="docutils citation" frame="void" id="b7-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[b7-b]</a></td><td>Ian L. Kaplan, &#8220;Estimating the Hurst Exponent&#8221;,
+<tr><td class="label"><a class="fn-backref" href="#id5">[b7_b]</a></td><td>Ian L. Kaplan, &#8220;Estimating the Hurst Exponent&#8221;,
 url: <a class="reference external" href="http://www.bearcave.com/misl/misl_tech/wavelets/hurst/">http://www.bearcave.com/misl/misl_tech/wavelets/hurst/</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="b7-c" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5">[b7-c]</a></td><td>HwB, &#8220;Pracma: brown72&#8221;,
+<tr><td class="label"><a class="fn-backref" href="#id6">[b7_c]</a></td><td>HwB, &#8220;Pracma: brown72&#8221;,
 url: <a class="reference external" href="https://www.rdocumentation.org/packages/pracma/versions/1.9.9/topics/brown72">https://www.rdocumentation.org/packages/pracma/versions/1.9.9/topics/brown72</a></td></tr>
 </tbody>
 </table>
@@ -994,7 +1113,7 @@ is used for the definition of the lyapunov exponent:</p>
 <dd><table class="first last docutils citation" frame="void" id="tm-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[tm-1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Tent_map">https://en.wikipedia.org/wiki/Tent_map</a></td></tr>
+<tr><td class="label">[tm_1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Tent_map">https://en.wikipedia.org/wiki/Tent_map</a></td></tr>
 </tbody>
 </table>
 </dd>
@@ -1080,13 +1199,13 @@ have</p>
 <dd><table class="first docutils citation" frame="void" id="lm-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[lm-1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Tent_map">https://en.wikipedia.org/wiki/Tent_map</a></td></tr>
+<tr><td class="label">[lm_1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Tent_map">https://en.wikipedia.org/wiki/Tent_map</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="lm-2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[lm-2]</td><td><a class="reference external" href="https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/">https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/</a></td></tr>
+<tr><td class="label">[lm_2]</td><td><a class="reference external" href="https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/">https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/</a></td></tr>
 </tbody>
 </table>
 </dd>
@@ -1127,7 +1246,7 @@ have</p>
 <dd><table class="first last docutils citation" frame="void" id="fbm-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[fbm-1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation">https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation</a></td></tr>
+<tr><td class="label">[fbm_1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation">https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation</a></td></tr>
 </tbody>
 </table>
 </dd>
@@ -1164,7 +1283,7 @@ have</p>
 <dd><table class="first last docutils citation" frame="void" id="fgn-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[fgn-1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion">https://en.wikipedia.org/wiki/Fractional_Brownian_motion</a></td></tr>
+<tr><td class="label">[fgn_1]</td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion">https://en.wikipedia.org/wiki/Fractional_Brownian_motion</a></td></tr>
 </tbody>
 </table>
 </dd>

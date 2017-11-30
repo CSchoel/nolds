@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nolds.examples &mdash; Nolds 0.4.0 documentation</title>
+    <title>nolds.examples &mdash; Nolds 0.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.4.0 documentation" href="../../index.html" />
+    <link rel="top" title="Nolds 0.4.1 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -73,14 +73,16 @@
 
 <span class="sd">  This function requires the package ``matplotlib``.</span>
 
-<span class="sd">  Kwargs:</span>
-<span class="sd">    n (int):</span>
-<span class="sd">      number of iterations of the experiment (Weron used 10000, but this takes</span>
-<span class="sd">      a while)</span>
+<span class="sd">  References:</span>
 
 <span class="sd">  .. [w] R. Weron, “Estimating long-range dependence: finite sample</span>
 <span class="sd">     properties and confidence intervals,” Physica A: Statistical Mechanics</span>
 <span class="sd">     and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    n (int):</span>
+<span class="sd">      number of iterations of the experiment (Weron used 10000, but this takes</span>
+<span class="sd">      a while)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># local import to avoid dependency for non-debug use</span>
   <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -142,6 +144,8 @@
 <span class="sd">  obtained by ``lyap_r`` and ``lyap_e``. The idea for this plot is taken from [ll]_.</span>
 
 <span class="sd">  This function requires the package ``matplotlib``.</span>
+
+<span class="sd">  References:</span>
 
 <span class="sd">  .. [ll] Manfred Füllsack, &quot;Lyapunov exponent&quot;,</span>
 <span class="sd">     url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</span>
