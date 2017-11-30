@@ -23,3 +23,4 @@ Functions in `nolds.examples`
 .. autofunction:: nolds.examples.profiling
 .. autofunction:: nolds.examples.weron_2002_figure2
 .. autofunction:: nolds.examples.plot_hurst_hist
+.. autofunction:: nolds.examples.hurst_compare_nvals

@@ -187,6 +187,51 @@ def profiling():
   data = np.cumsum(np.random.random(n) - 0.5)
   cProfile.runctx('lyap_e(data)', {'lyap_e': nolds.lyap_e}, {'data': data})
 
+def hurst_compare_nvals(data, nvals=None):
+  """
+  Creates a plot that compares the results of different choices for nvals
+  for the function hurst_rs.
+
+  Args:
+    data (array of float):
+      the input data from which the hurst exponent should be estimated
+
+  Kwargs:
+    nvals (array of int):
+      a manually selected value for the nvals parameter that should be plotted
+      in comparison to the default choices
+  """
+  import matplotlib.pyplot as plt
+  n_all = np.arange(2,len(data)+1)
+  dd_all = nolds.hurst_rs(data, nvals=n_all, debug_data=True, fit="poly")
+  dd_def = nolds.hurst_rs(data, debug_data=True, fit="poly")
+  n_def = np.round(np.exp(dd_def[1][0])).astype("int32")
+  n_div = n_all[np.where(len(data) % n_all[:-1] == 0)]
+  dd_div = nolds.hurst_rs(data, nvals=n_div, debug_data=True, fit="poly")
+  def corr(nvals):
+    return [np.log(nolds.expected_rs(n)) for n in nvals]
+
+
+  l_all = plt.plot(dd_all[1][0], dd_all[1][1] - corr(n_all), "o")
+  l_def = plt.plot(dd_def[1][0], dd_def[1][1] - corr(n_def), "o")
+  l_div = plt.plot(dd_div[1][0], dd_div[1][1] - corr(n_div), "o")
+  l_cst = []
+  t_cst = []
+
+  if nvals is not None:
+    dd_cst = nolds.hurst_rs(data, nvals=nvals, debug_data=True, fit="poly")
+    l_cst = plt.plot(dd_cst[1][0], dd_cst[1][1] - corr(nvals), "o")
+    l_cst = l_cst
+    t_cst = ["custom"]
+  plt.xlabel("log(n)")
+  plt.ylabel("log((R/S)_n - E[(R/S)_n])")
+  plt.legend(l_all + l_def + l_div + l_cst, ["all", "default", "divisors"] + t_cst)
+  for data, label in zip([dd_all[0], dd_def[0], dd_div[0]], "all", "def", "div"):
+    print("%s: %.3f" % (label, data))
+  if nvals is not None:
+    print("custom: %.3f" % dd_cst[0])
+  plt.show()
+
 if __name__ == "__main__":
   # run this with the following command:
   # python -m nolds.examples lyapunov-logistic
