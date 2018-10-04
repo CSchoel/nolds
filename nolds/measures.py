@@ -100,11 +100,12 @@ def delay_embedding(data, emb_dim, lag=1):
       [data[i], data[i+lag], data[i+2*lag], ... data[i+(emb_dim-1)*lag]]
       for i in 0 to m-1 (m = len(data)-(emb_dim-1)*lag)
   """
-  if len(data) < (emb_dim - 1) * lag + 1:
+  min_len = (emb_dim - 1) * lag + 1
+  if len(data) < min_len:
     msg = "cannot embed data of length {} with embedding dimension {} " \
-        + "and lag {}"
-    raise ValueError(msg.format(len(data), emb_dim, lag))
-  m = len(data) - (emb_dim - 1) * lag
+        + "and lag {}, minimum required length is {}"
+    raise ValueError(msg.format(len(data), emb_dim, lag, min_len))
+  m = len(data) - min_len + 1
   indices = np.repeat([np.arange(emb_dim) * lag], m, axis=0)
   indices += np.arange(m).reshape((m, 1))
   return data[indices]
