@@ -277,6 +277,18 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
       msg = "autocorrelation declined too slowly to find suitable lag" \
         + ", setting lag to {}"
       warnings.warn(msg.format(lag), RuntimeWarning)
+  # minimum length required to find single orbit vector
+  min_len = (emb_dim - 1) * lag + 1
+  # add minimum number of orbit vectors to find valid neighbor
+  # or number of vectors needed to follow trajectory (whichever is higher)
+  min_len += max(min_tsep * 2, trajectory_len)
+  if len(data) < min_len:
+    msg = "for emb_dim = {}, lag = {}, min_tsep = {} and trajectory_len = {}" \
+      + " you need at least {} datapoints in your time series"
+    warnings.warn(
+      msg.format(emb_dim, lag, min_tsep, trajectory_len, min_len),
+      RuntimeWarning
+    )
   # delay embedding
   orbit = delay_embedding(data, emb_dim, lag)
   m = len(orbit)
