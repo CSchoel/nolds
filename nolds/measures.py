@@ -509,7 +509,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     vec_beta = data[indices + matrix_dim * m] - data[i + matrix_dim * m]
 
     # perform linear least squares
-    a, _, _, _ = np.linalg.lstsq(mat_X, vec_beta)
+    a, _, _, _ = np.linalg.lstsq(mat_X, vec_beta, rcond=-1)
     # build matrix T
     # 0  1  0  ... 0
     # 0  0  1  ... 0
