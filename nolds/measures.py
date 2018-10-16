@@ -1206,6 +1206,8 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   else:
     return h
 
+# TODO implement generalized hurst exponent H_q
+
 def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
              fit="RANSAC", debug_plot=False, debug_data=False, plot_file=None):
   """
