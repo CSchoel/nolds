@@ -132,7 +132,7 @@ class TestNoldsLyap(unittest.TestCase):
         "trajectory_len": np.random.randint(2,10)
       }
       min_len = nolds.lyap_r_len(**kwargs)
-      for i in reversed(range(min_len-5,min_len+5)):
+      for i in reversed(range(max(1,min_len-5),min_len+5)):
         data = np.random.random(i)
         if i < min_len:
           ## too few data points => execution should fail
