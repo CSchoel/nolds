@@ -192,8 +192,8 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
       minimal temporal separation between two "neighbors" (default:
       find a suitable value by calculating the mean period of the data)
     tau (float):
-      step size between data points in the time series in seconds (default:
-      find a suitable value using the autocorrelation function)
+      step size between data points in the time series in seconds
+      (normalization scaling factor for exponents)
     min_neighbors (int):
       if lag=None, the search for a suitable lag will be stopped when the
       number of potential neighbors for a vector drops below min_neighbors

@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- note in the description of the parameter `tau` in `lyap_r` was misleading/wrong (probably a copy-pase error)
+
 ## [0.4.1] - 2017-11-30
 
 ### Added
