@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - test function `hurst_compare_nvals` that compares different choices for the `nvals` parameter for `hurst_rs`
 - helper function `lyap_r_len` to calculate minimum data length required for `lyap_r`
+- description of parameter `min_nb` for `lyap_e`
 
 ### Changed
 
