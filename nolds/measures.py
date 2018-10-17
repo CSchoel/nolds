@@ -527,10 +527,9 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
 
   # note: we need to be able to step m points further for the beta vector
   #       => maximum start index is n - emb_dim - m
-  orbit_l = [data[i:i + emb_dim] for i in range(n - emb_dim + 1 - m)]
-  if len(orbit_l) < min_nb:
-    raise ValueError("too few orbit vectors")
-  orbit = np.array(orbit_l, dtype=float)
+  orbit = delay_embedding(data[:-m], emb_dim, lag=1)
+  if len(orbit) < min_nb:
+    raise ValueError("not enough neighbor candidates")
   old_Q = np.identity(matrix_dim)
   lexp = np.zeros(matrix_dim, dtype="float32")
   lexp_counts = np.zeros(lexp.shape)
