@@ -774,9 +774,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
   # because this vector has no corresponding vector of length m+1 and thus does
   # not count towards the conditional probability
   # (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)
-  tVecs = np.zeros((n - emb_dim, emb_dim + 1))
-  for i in range(tVecs.shape[0]):
-    tVecs[i, :] = data[i:i + tVecs.shape[1]]
+  tVecs = delay_embedding(np.asarray(data), emb_dim+1, lag=1)
   plot_data = []
   counts = []
   for m in [emb_dim, emb_dim + 1]:
@@ -1380,7 +1378,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     sd = np.std(data)
     rvals = logarithmic_r(0.1 * sd, 0.5 * sd, 1.03)
   n = len(data)
-  orbit = np.array([data[i:i + emb_dim] for i in range(n - emb_dim + 1)])
+  orbit = delay_embedding(data, emb_dim, lag=1)
   dists = np.array([dist(orbit, orbit[i]) for i in range(len(orbit))])
   csums = []
   for r in rvals:
