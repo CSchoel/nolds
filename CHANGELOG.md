@@ -9,10 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - test function `hurst_compare_nvals` that compares different choices for the `nvals` parameter for `hurst_rs`
+- helper function `lyap_r_len` to calculate minimum data length required for `lyap_r`
 
 ### Changed
 
 - the previously internal helper function `expected_rs` is now available from the main module
+- calculates minimum data length for lyap_r to provide better error messages
+- uses `rcond=-1` in lstseq to keep behavior consistent between numpy versions
 
 ### Fixed
 
