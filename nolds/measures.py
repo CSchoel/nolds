@@ -8,7 +8,7 @@ import math
 
 # TODO: add info about minimum data length to functions other than lyap_r
 
-# FIXME: dfa fails for very small input sequences
+# TODO: use np.asarray on input data where possible
 
 deprecation_msg_euler = \
   "'euler' distance is now appropriately called 'euclidean', mentions" \
@@ -1527,12 +1527,29 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
   """
   total_N = len(data)
   if nvals is None:
-    nvals = logarithmic_n(4, 0.1 * total_N, 1.2)
+    if total_N > 70:
+      nvals = logarithmic_n(4, 0.1 * total_N, 1.2)
+    elif total_N > 10:
+      # TODO warning
+      nvals = [4, 5, 6, 7, 8, 9]
+    else:
+      # TODO warning
+      nvals = [total_N-2, total_N-1]
+      msg = "choosing nvals = {} , DFA with less than ten data points is " \
+          + "extremely unreliable"
+      warnings.warn(msg.format(nvals),RuntimeWarning)
+  if len(nvals) < 2:
+    raise ValueError("at least two nvals are needed")
+  if np.min(nvals) < 2:
+    raise ValueError("nvals must be at least two")
+  if np.max(nvals) >= total_N:
+    raise ValueError("nvals cannot be larger than the input size")
   # create the signal profile
   # (cumulative sum of deviations from the mean => "walk")
   walk = np.cumsum(data - np.mean(data))
   fluctuations = []
   for n in nvals:
+    assert n >= 2
     # subdivide data into chunks of size n
     if overlap:
       # step size n/2 instead of n
