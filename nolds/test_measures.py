@@ -120,40 +120,47 @@ class TestNoldsLyap(unittest.TestCase):
     le = nolds.lyap_e(data, emb_dim=7, matrix_dim=3)
     self.assertGreater(np.max(le), 0)
 
-  def test_lyap_limits(self):
-    # tests if minimal input size is correctly calculated
-    for i in range(100):
+  def test_lyap_r_limits(self):
+    """
+    tests if minimal input size is correctly calculated
+    """
+    for i in range(10):
       kwargs = {
         "emb_dim": np.random.randint(1,10),
         "lag": np.random.randint(1,6),
         "min_tsep": np.random.randint(0,5),
         "trajectory_len": np.random.randint(2,10)
       }
-      n = 20
-      data = np.random.random(n)
-      if nolds.lyap_r_len(**kwargs) > n:
-        self.assertRaises(
-          ValueError,
-          lambda x: nolds.lyap_r(data, fit="poly", **kwargs),
-          "{} data points should be required for kwargs {}".format(
-            nolds.lyap_r_len(**kwargs),
-            kwargs
-          )
-        )
-        #print("nay!")
-      else:
-        msg = "{} data points should be enough for kwargs {}".format(
-          nolds.lyap_r_len(**kwargs),
-          kwargs
-        )
-        try:
-          self.assertTrue(
-            np.isfinite(nolds.lyap_r(data, fit="poly", **kwargs)),
-            msg
-          )
-        except:
-          self.fail(msg)
-        #print("yay!")
+      min_len = nolds.lyap_r_len(**kwargs)
+      for i in reversed(range(min_len-5,min_len+5)):
+        data = np.random.random(i)
+        if i < min_len:
+          ## too few data points => execution should fail
+          try:
+            nolds.lyap_r(data, fit="poly", **kwargs)
+            msg = "{} data points should be required for kwargs {}, but " \
+                + "{} where enough"
+            self.fail(msg.format(
+              min_len,
+              kwargs,
+              i
+            ))
+          except ValueError:
+            pass
+        else:
+          ## enough data points => execution should succeed
+          msg = "{} data points should be enough for kwargs {}, but " \
+              + " {} where too few"
+          try:
+            self.assertTrue(
+              np.all(np.isfinite(nolds.lyap_r(data, fit="poly", **kwargs))),
+              msg.format(min_len, kwargs, i)
+            )
+          except ValueError as e:
+            self.fail(
+              msg.format(min_len, kwargs, i) + ", original error: "+str(e)
+            )
+
 
   def test_lyap_e_limits(self):
     """
