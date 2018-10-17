@@ -7,6 +7,7 @@ import numpy as np
 from . import measures as nolds
 from . import datasets
 import unittest
+import warnings
 
 # TODO add more tests using fgn and fbm for hurst_rs and dfa
 
@@ -137,7 +138,9 @@ class TestNoldsLyap(unittest.TestCase):
         if i < min_len:
           ## too few data points => execution should fail
           try:
-            nolds.lyap_r(data, fit="poly", **kwargs)
+            with warnings.catch_warnings():
+              warnings.simplefilter("ignore", RuntimeWarning)
+              nolds.lyap_r(data, fit="poly", **kwargs)
             msg = "{} data points should be required for kwargs {}, but " \
                 + "{} where enough"
             self.fail(msg.format(
@@ -180,7 +183,9 @@ class TestNoldsLyap(unittest.TestCase):
         if i < min_len:
           ## too few data points => execution should fail
           try:
-            nolds.lyap_e(data, **kwargs)
+            with warnings.catch_warnings():
+              warnings.simplefilter("ignore", RuntimeWarning)
+              nolds.lyap_e(data, **kwargs)
             msg = "{} data points should be required for kwargs {}, but " \
                 + "{} where enough"
             self.fail(msg.format(
