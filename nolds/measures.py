@@ -6,6 +6,8 @@ import numpy as np
 import warnings
 import math
 
+# TODO: add info about minimum data length to functions other than lyap_r
+
 # FIXME: dfa fails for very small input sequences
 
 deprecation_msg_euler = \
@@ -110,6 +112,28 @@ def delay_embedding(data, emb_dim, lag=1):
   indices += np.arange(m).reshape((m, 1))
   return data[indices]
 
+def lyap_r_len(**kwargs):
+  """
+  Helper function that calculates the minimum number of data points required
+  to use lyap_r.
+
+  Note that none of the required parameters may be set to None.
+
+  Kwargs:
+    kwargs(dict): arguments used for lyap_r (required: emb_dim, lag,
+    trajectory_len and min_tsep)
+
+  Returns:
+    minimum number of data points required to call lyap_r with the given
+    parameters
+  """
+  # minimum length required to find single orbit vector
+  min_len = (kwargs['emb_dim'] - 1) * kwargs['lag'] + 1
+  # we need trajectory_len orbit vectors to follow a complete trajectory
+  min_len += kwargs['trajectory_len'] - 1
+  # we need min_tsep * 2 + 1 orbit vectors to find neighbors for each
+  min_len += kwargs['min_tsep'] * 2 + 1
+  return min_len
 
 def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
            trajectory_len=20, fit="RANSAC", debug_plot=False, debug_data=False,
@@ -238,8 +262,10 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     msg = "min_vectors is deprecated, use min_neighbors instead"
     warnings.warn(msg, DeprecationWarning)
   if lag is None or min_tsep is None:
-    # calculate min_tsep as mean period (= 1 / mean frequency)
+    # both the algorithm for lag and min_tsep need the fft
     f = np.fft.rfft(data, n * 2 - 1)
+  if min_tsep is None:
+    # calculate min_tsep as mean period (= 1 / mean frequency)
     mf = np.fft.rfftfreq(n * 2 - 1) * np.abs(f)
     mf = np.mean(mf[1:]) / np.sum(np.abs(f[1:]))
     min_tsep = int(np.ceil(1.0 / mf))
@@ -247,6 +273,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
       min_tsep = int(max_tsep_factor * n)
       msg = "signal has very low mean frequency, setting min_tsep = {:d}"
       warnings.warn(msg.format(min_tsep), RuntimeWarning)
+  if lag is None:
     # calculate the lag as point where the autocorrelation drops to (1 - 1/e)
     # times its maximum value
     # note: the Wiener–Khinchin theorem states that the spectral
@@ -260,28 +287,25 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     # small helper function to calculate resulting number of vectors for a
     # given lag value
     def nb_neighbors(lag_value):
-      return max(0, n - (emb_dim - 1) * lag_value - min_tsep)
+      min_len = lyap_r_len(
+        emb_dim=emb_dim, lag=i, trajectory_len=trajectory_len,
+        min_tsep=min_tsep
+      )
+      return max(0, n - min_len)
     # find lag
     for i in range(1,n):
-      if acorr[n - 1 + i] < eps \
-          or acorr[n - 1 - i] < eps \
-          or nb_neighbors(i) < min_neighbors:
-        lag = i
+      lag = i
+      if acorr[n - 1 + i] < eps or acorr[n - 1 - i] < eps:
         break
-    if nb_neighbors(lag) < min_neighbors:
-      # we increased the lag so much that we get too few vectors
-      # => decrease lag to a value where we still have neighbors
-      #     n - (emb_dim-1) * lag <= min_tsep 
-      # <=> lag >= (n - min_tsep) / (emb_dim - 1)
-      lag = int(max(1, (n - min_tsep) / (emb_dim-1) - min_neighbors))
-      msg = "autocorrelation declined too slowly to find suitable lag" \
-        + ", setting lag to {}"
-      warnings.warn(msg.format(lag), RuntimeWarning)
-  # minimum length required to find single orbit vector
-  min_len = (emb_dim - 1) * lag + 1
-  # add minimum number of orbit vectors to find valid neighbor
-  # or number of vectors needed to follow trajectory (whichever is higher)
-  min_len += max(min_tsep * 2, trajectory_len)
+      if n - nb_neighbors(i) < min_neighbors:
+        msg = "autocorrelation declined too slowly to find suitable lag" \
+          + ", setting lag to {}"
+        warnings.warn(msg.format(lag), RuntimeWarning)
+        break
+  min_len = lyap_r_len(
+    emb_dim=emb_dim, lag=lag, trajectory_len=trajectory_len,
+    min_tsep=min_tsep
+  )
   if len(data) < min_len:
     msg = "for emb_dim = {}, lag = {}, min_tsep = {} and trajectory_len = {}" \
       + " you need at least {} datapoints in your time series"
@@ -300,10 +324,25 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
   # neighbors)
   for i in range(m):
     dists[i, max(0, i - min_tsep):i + min_tsep + 1] = float("inf")
+  # check that we have enough data points to continue
+  ntraj = m - trajectory_len + 1
+  min_traj = min_tsep * 2 + 2 # in each row min_tsep + 1 disances are inf
+  if ntraj <= 0:
+    msg = "Not enough data points. Need {} additional data points to follow " \
+        + "a complete trajectory."
+    raise ValueError(msg.format(-ntraj+1))
+  if ntraj < min_traj:
+    # not enough data points => there are rows where all values are inf
+    assert np.any(np.all(np.isinf(dists[:ntraj, :ntraj]), axis=1))
+    msg = "Not enough data points. At least {} trajectories are required " \
+        + "to find a valid neighbor for each orbit vector with min_tsep={} " \
+        + "but only {} could be created."
+    raise ValueError(msg.format(min_traj, min_tsep, ntraj))
+  assert np.all(np.any(np.isfinite(dists[:ntraj, :ntraj]), axis=1))
   # find nearest neighbors (exclude last columns, because these vectors cannot
   # be followed in time for trajectory_len steps)
-  ntraj = m - trajectory_len + 1
   nb_idx = np.argmin(dists[:ntraj, :ntraj], axis=1)
+  
   # build divergence trajectory by averaging distances along the trajectory
   # over all neighbor pairs
   div_traj = np.zeros(trajectory_len, dtype=float)

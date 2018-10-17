@@ -120,6 +120,41 @@ class TestNoldsLyap(unittest.TestCase):
     le = nolds.lyap_e(data, emb_dim=7, matrix_dim=3)
     self.assertGreater(np.max(le), 0)
 
+  def test_lyap_limits(self):
+    # tests if minimal input size is correctly calculated
+    for i in range(100):
+      kwargs = {
+        "emb_dim": np.random.randint(1,10),
+        "lag": np.random.randint(1,6),
+        "min_tsep": np.random.randint(0,5),
+        "trajectory_len": np.random.randint(2,10)
+      }
+      n = 20
+      data = np.random.random(n)
+      if nolds.lyap_r_len(**kwargs) > n:
+        self.assertRaises(
+          ValueError,
+          lambda x: nolds.lyap_r(data, fit="poly", **kwargs),
+          "{} data points should be required for kwargs {}".format(
+            nolds.lyap_r_len(**kwargs),
+            kwargs
+          )
+        )
+        #print("nay!")
+      else:
+        msg = "{} data points should be enough for kwargs {}".format(
+          nolds.lyap_r_len(**kwargs),
+          kwargs
+        )
+        try:
+          self.assertTrue(
+            np.isfinite(nolds.lyap_r(data, fit="poly", **kwargs)),
+            msg
+          )
+        except:
+          self.fail(msg)
+        #print("yay!")
+
 
 class TestNoldsHurst(unittest.TestCase):
   """
