@@ -341,5 +341,6 @@ class TestNoldsSampEn(unittest.TestCase):
     # matches for m=4: [1,2,3,4]-[1.4,2.4,3.4,4]
     se = nolds.sampen(data, emb_dim=3, tolerance=0.5)
     self.assertAlmostEqual(se, -np.log(1.0/4), delta=0.01)
+
 if __name__ == "__main__":
   unittest.main()
