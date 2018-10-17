@@ -155,6 +155,48 @@ class TestNoldsLyap(unittest.TestCase):
           self.fail(msg)
         #print("yay!")
 
+  def test_lyap_e_limits(self):
+    """
+    tests if minimal input size is correctly calculated
+    """
+    for i in range(10):
+      kwargs = {
+        "matrix_dim": np.random.randint(2,10),
+        "min_tsep": np.random.randint(0,10),
+        "min_nb": np.random.randint(2,15)
+      }
+      kwargs["emb_dim"] = np.random.randint(1,4) \
+                        * (kwargs["matrix_dim"] - 1) + 1
+      min_len = nolds.lyap_e_len(**kwargs)
+      for i in reversed(range(min_len-5,min_len+5)):
+        data = np.random.random(i)
+        if i < min_len:
+          ## too few data points => execution should fail
+          try:
+            nolds.lyap_e(data, **kwargs)
+            msg = "{} data points should be required for kwargs {}, but " \
+                + "{} where enough"
+            self.fail(msg.format(
+              min_len,
+              kwargs,
+              i
+            ))
+          except ValueError:
+            pass
+        else:
+          ## enough data points => execution should succeed
+          msg = "{} data points should be enough for kwargs {}, but " \
+              + " {} where too few"
+          try:
+            self.assertTrue(
+              np.all(np.isfinite(nolds.lyap_e(data, **kwargs))),
+              msg.format(min_len, kwargs, i)
+            )
+          except ValueError as e:
+            self.fail(
+              msg.format(min_len, kwargs, i) + ", original error: "+str(e)
+            )
+
 
 class TestNoldsHurst(unittest.TestCase):
   """

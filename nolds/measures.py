@@ -377,6 +377,31 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
   else:
     return le
 
+def lyap_e_len(**kwargs):
+  """
+  Helper function that calculates the minimum number of data points required
+  to use lyap_e.
+
+  Note that none of the required parameters may be set to None.
+
+  Kwargs:
+    kwargs(dict): arguments used for lyap_e (required: emb_dim, matrix_dim,
+    min_nb and min_tsep)
+
+  Returns:
+    minimum number of data points required to call lyap_e with the given
+    parameters
+  """
+  m = (kwargs['emb_dim'] - 1) // (kwargs['matrix_dim'] - 1)
+  # minimum length required to find single orbit vector
+  min_len = kwargs['emb_dim']
+  # we need to follow each starting point of an orbit vector for m more steps
+  min_len += m
+  # we need min_tsep * 2 + 1 orbit vectors to find neighbors for each
+  min_len += kwargs['min_tsep'] * 2
+  # we need at least min_nb neighbors for each orbit vector
+  min_len += kwargs['min_nb']
+  return min_len
 
 def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
            debug_plot=False, debug_data=False, plot_file=None):
@@ -460,6 +485,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     min_nb (int):
       minimal number of neighbors
       (default: min(2 * matrix_dim, matrix_dim + 4))
+    min_tsep (int):
+      minimal temporal separation between two "neighbors"
     tau (float):
       step size of the data in seconds
       (normalization scaling factor for exponents)
@@ -498,6 +525,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
   # note: we need to be able to step m points further for the beta vector
   #       => maximum start index is n - emb_dim - m
   orbit_l = [data[i:i + emb_dim] for i in range(n - emb_dim + 1 - m)]
+  if len(orbit_l) < min_nb:
+    raise ValueError("too few orbit vectors")
   orbit = np.array(orbit_l, dtype=float)
   old_Q = np.identity(matrix_dim)
   lexp = np.zeros(matrix_dim, dtype="float32")
@@ -511,10 +540,14 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     # ensure that we do not count the difference of the vector to itself
     diffs[i] = float('inf')
     # mask all neighbors that are too close in time to the vector itself
-    diffs[max(0, i - min_tsep):min(len(diffs), i + min_tsep + 1)] = np.inf
+    mask_from = max(0, i - min_tsep)
+    mask_to = min(len(diffs), i + min_tsep + 1)
+    diffs[mask_from:mask_to] = np.inf
     indices = np.argsort(diffs)
     idx = indices[min_nb - 1]  # index of the min_nb-nearest neighbor
     r = diffs[idx]  # corresponding distance
+    if np.isinf(r):
+      raise ValueError("infinite radius")
     # there may be more than min_nb vectors at distance r (if multiple vectors
     # have a distance of exactly r)
     # => update index accordingly
@@ -558,6 +591,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     # x_j1+(d_M)m - x_i+(d_M)m
     # x_j2+(d_M)m - x_i+(d_M)m
     # ...
+    if max(np.max(indices),i) + matrix_dim * m >= len(data):
+      raise ValueError("Too few data points")
     vec_beta = data[indices + matrix_dim * m] - data[i + matrix_dim * m]
 
     # perform linear least squares
