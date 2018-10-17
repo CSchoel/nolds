@@ -38,8 +38,11 @@ def poly_fit(x, y, degree, fit="RANSAC"):
   # check if we can use RANSAC
   if fit == "RANSAC":
     try:
-      import sklearn.linear_model as sklin
-      import sklearn.preprocessing as skpre
+      # ignore ImportWarnings in sklearn
+      with warnings.catch_warnings():
+        warnings.simplefilter("ignore", ImportWarning)
+        import sklearn.linear_model as sklin
+        import sklearn.preprocessing as skpre
     except ImportError:
       warnings.warn(
         "fitting mode 'RANSAC' requires the package sklearn, using"
