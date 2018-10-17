@@ -300,7 +300,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
       lag = i
       if acorr[n - 1 + i] < eps or acorr[n - 1 - i] < eps:
         break
-      if n - nb_neighbors(i) < min_neighbors:
+      if nb_neighbors(i) < min_neighbors:
         msg = "autocorrelation declined too slowly to find suitable lag" \
           + ", setting lag to {}"
         warnings.warn(msg.format(lag), RuntimeWarning)
