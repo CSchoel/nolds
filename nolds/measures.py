@@ -85,8 +85,6 @@ def poly_fit(x, y, degree, fit="RANSAC"):
   else:
     raise ValueError("invalid fitting mode ({})".format(fit))
 
-# TODO maybe we can use this function also in other algorithms than lyap_r?
-
 
 def delay_embedding(data, emb_dim, lag=1):
   """
@@ -1530,10 +1528,8 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     if total_N > 70:
       nvals = logarithmic_n(4, 0.1 * total_N, 1.2)
     elif total_N > 10:
-      # TODO warning
       nvals = [4, 5, 6, 7, 8, 9]
     else:
-      # TODO warning
       nvals = [total_N-2, total_N-1]
       msg = "choosing nvals = {} , DFA with less than ten data points is " \
           + "extremely unreliable"
