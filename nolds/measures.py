@@ -6,8 +6,6 @@ import numpy as np
 import warnings
 import math
 
-# TODO: add info about minimum data length to functions other than lyap_r
-
 # TODO: use np.asarray on input data where possible
 
 deprecation_msg_euler = \
