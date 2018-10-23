@@ -179,7 +179,7 @@ class TestNoldsLyap(unittest.TestCase):
       kwargs["emb_dim"] = np.random.randint(1,4) \
                         * (kwargs["matrix_dim"] - 1) + 1
       min_len = nolds.lyap_e_len(**kwargs)
-      for i in reversed(range(min_len-5,min_len+5)):
+      for i in reversed(range(max(1,min_len-5),min_len+5)):
         data = np.random.random(i)
         if i < min_len:
           ## too few data points => execution should fail
