@@ -6,7 +6,7 @@ import numpy as np
 import warnings
 import math
 
-# TODO: use np.asarray on input data where possible
+# TODO remove deprecated features
 
 deprecation_msg_euler = \
   "'euler' distance is now appropriately called 'euclidean', mentions" \
