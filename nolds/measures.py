@@ -505,6 +505,15 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     # minimal number of neighbors as suggested by Eckmann et al.
     min_nb = min(2 * matrix_dim, matrix_dim + 4)
 
+  min_len = lyap_e_len(
+    emb_dim=emb_dim, matrix_dim=matrix_dim, min_nb=min_nb, min_tsep=min_tsep
+  )
+  if n < min_len:
+    msg = "{} data points are not enough! For emb_dim = {}, matrix_dim = {}, " \
+      + "min_tsep = {} and min_nb = {} you need at least {} data points " \
+      + "in your time series"
+    warnings.warn(msg.format(n, emb_dim, matrix_dim, min_tsep, min_nb, min_len))
+
   # construct orbit as matrix (e = emb_dim)
   # x0 x1 x2 ... xe-1
   # x1 x2 x3 ... xe
@@ -515,7 +524,10 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
   #       => maximum start index is n - emb_dim - m
   orbit = delay_embedding(data[:-m], emb_dim, lag=1)
   if len(orbit) < min_nb:
-    raise ValueError("not enough neighbor candidates")
+    assert len(data) < min_len
+    msg = "Not enough data points. Need at least {} additional data points " \
+        + "to have min_nb = {} neighbor candidates"
+    raise ValueError(msg.format(min_nb-len(orbit), min_nb))
   old_Q = np.identity(matrix_dim)
   lexp = np.zeros(matrix_dim, dtype="float32")
   lexp_counts = np.zeros(lexp.shape)
@@ -535,7 +547,11 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     idx = indices[min_nb - 1]  # index of the min_nb-nearest neighbor
     r = diffs[idx]  # corresponding distance
     if np.isinf(r):
-      raise ValueError("infinite radius")
+      assert len(data) < min_len
+      msg = "Not enough data points. Orbit vector {} has less than min_nb = " \
+          + "{} valid neighbors that are at least min_tsep = {} time steps " \
+          + "away. Input must have at least length {}."
+      raise ValueError(msg.format(i, min_nb, min_tsep, min_len))
     # there may be more than min_nb vectors at distance r (if multiple vectors
     # have a distance of exactly r)
     # => update index accordingly
@@ -580,7 +596,11 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     # x_j2+(d_M)m - x_i+(d_M)m
     # ...
     if max(np.max(indices),i) + matrix_dim * m >= len(data):
-      raise ValueError("Too few data points")
+      assert len(data) < min_len
+      msg = "Not enough data points. Cannot follow orbit vector {} for " \
+          + "{} (matrix_dim * m) time steps. Input must have at least length " \
+          + "{}."
+      raise ValueError(msg.format(i, matrix_dim * m, min_len))
     vec_beta = data[indices + matrix_dim * m] - data[i + matrix_dim * m]
 
     # perform linear least squares
