@@ -149,7 +149,8 @@ class TestNoldsLyap(unittest.TestCase):
               kwargs,
               i
             ))
-          except ValueError:
+          except ValueError as e:
+            #print(e)
             pass
         else:
           ## enough data points => execution should succeed
@@ -194,7 +195,8 @@ class TestNoldsLyap(unittest.TestCase):
               kwargs,
               i
             ))
-          except ValueError:
+          except ValueError as e:
+            #print(e)
             pass
         else:
           ## enough data points => execution should succeed
