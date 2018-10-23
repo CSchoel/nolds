@@ -52,7 +52,7 @@ def poly_fit(x, y, degree, fit="RANSAC"):
     return np.polyfit(x, y, degree)
   elif fit == "RANSAC":
     model = sklin.RANSACRegressor(sklin.LinearRegression(fit_intercept=False))
-    xdat = np.array(x)
+    xdat = np.asarray(x)
     if len(xdat.shape) == 1:
       # interpret 1d-array as list of len(x) samples instead of
       # one sample of length len(x)
@@ -77,6 +77,8 @@ def delay_embedding(data, emb_dim, lag=1):
   Perform a time-delay embedding of a time series
 
   Args:
+    data (array-like):
+      the data that should be embedded
     emb_dim (int):
       the embedding dimension
   Kwargs:
@@ -89,6 +91,7 @@ def delay_embedding(data, emb_dim, lag=1):
       [data[i], data[i+lag], data[i+2*lag], ... data[i+(emb_dim-1)*lag]]
       for i in 0 to m-1 (m = len(data)-(emb_dim-1)*lag)
   """
+  data = np.asarray(data)
   min_len = (emb_dim - 1) * lag + 1
   if len(data) < min_len:
     msg = "cannot embed data of length {} with embedding dimension {} " \
@@ -241,7 +244,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
 
   """
   # convert data to float to avoid overflow errors in rowwise_euclidean
-  data = data.astype("float32")
+  data = np.asarray(data, dtype="float32")
   n = len(data)
   max_tsep_factor = 0.25
   if min_vectors is not None:
@@ -461,8 +464,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
        url: http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/index.html
 
   Args:
-    data (iterable):
-      list/array of (scalar) data points
+    data (array-like of float):
+      (scalar) data points
 
   Kwargs:
     emb_dim (int):
@@ -495,6 +498,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
       Lyapunov exponents from the x iterations of R_i. The shape of this debug
       data is (x, matrix_dim).
   """
+  data = np.asarray(data)
   n = len(data)
   if (emb_dim - 1) % (matrix_dim - 1) != 0:
     raise ValueError("emb_dim - 1 must be divisible by matrix_dim - 1!")
@@ -717,8 +721,8 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
         url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
 
   Args:
-    data (iterable):
-      the list/array of data points
+    data (array-like of float):
+      input data
 
   Kwargs:
     emb_dim (int):
@@ -747,6 +751,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       Lists of lists of the form `[dists_m, dists_m1]` containing the distances
       between template vectors for m (dists_m) and for m + 1 (dists_m1).
   """
+  data = np.asarray(data)
   if dist == "chebychev":
     warnings.warn(deprecation_msg_sampen_dist, DeprecationWarning)
     warnings.warn(deprecation_msg_chebychev, DeprecationWarning)
@@ -953,7 +958,7 @@ def expected_h(nvals, fit="RANSAC"):
   based on the values of n used for the calculation.
 
   Args:
-    nvals (array of int):
+    nvals (iterable of int):
       the values of n used to calculate the individual (R/S)_n
 
   KWargs:
@@ -980,7 +985,7 @@ def rs(data, n, unbiased=True):
   directly.
 
   Args:
-    data (array of float):
+    data (array-like of float):
       time series
     n (float):
       size of the subseries in which data should be split
@@ -996,6 +1001,7 @@ def rs(data, n, unbiased=True):
     float:
       (R/S)_n
   """
+  data = np.asarray(data)
   total_N = len(data)
   m = total_N // n # number of sequences
   # cut values at the end of data to make the array divisible by n
@@ -1200,7 +1206,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
              url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
 
   Args:
-    data (array of float):
+    data (array-like of float):
       time series
   Kwargs:
     nvals (iterable of int):
@@ -1248,6 +1254,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
       `rsvals` are the corresponding log((R/S)_n) and `poly` are the line 
       coefficients (`[slope, intercept]`)
   """
+  data = np.asarray(data)
   total_N = len(data)
   if nvals is None:
     # chooses a default value for nvals that will give 15 logarithmically
@@ -1260,7 +1267,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   # S is also zero)
   not_nan = np.logical_not(np.isnan(rsvals))
   rsvals = rsvals[not_nan]
-  nvals = np.array(nvals)[not_nan]
+  nvals = np.asarray(nvals)[not_nan]
   # it may happen that no rsvals are left (if all values of data are the same)
   if len(rsvals) == 0:
     poly = [np.nan, np.nan]
@@ -1340,7 +1347,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
               url: http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension
 
   Args:
-    data (array of float):
+    data (array-like of float):
       time series of data points
     emb_dim (int):
       embedding dimension
@@ -1372,6 +1379,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
       `csums` are the corresponding log(C(r)) and `poly` are the line 
       coefficients (`[slope, intercept]`)
   """
+  data = np.asarray(data)
   if dist is rowwise_chebychev:
     warnings.warn(deprecation_msg_chebychev, DeprecationWarning)
     dist = rowwise_chebyshev
@@ -1489,7 +1497,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     .. [dfa_c] "DFA" function in R package "fractal"
 
   Args:
-    data (array of float):
+    data (array-like of float):
       time series
   Kwargs:
     nvals (iterable of int):
@@ -1529,6 +1537,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
       log(n), `fluctuations` are the corresponding log(std(X,n)) and `poly`
       are the line coefficients (`[slope, intercept]`)
   """
+  data = np.asarray(data)
   total_N = len(data)
   if nvals is None:
     if total_N > 70:

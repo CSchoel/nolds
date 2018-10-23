@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - test function `hurst_compare_nvals` that compares different choices for the `nvals` parameter for `hurst_rs`
 - helper function `lyap_r_len` to calculate minimum data length required for `lyap_r`
 - description of parameter `min_nb` for `lyap_e`
+- uses `np.asarray` wherever possible. The following functions should now also work with pandas objects:
+  * `lyap_r`
+  * `lyap_e`
+  * `sampen`
+  * `hurst_rs`
+  * `corr_dim`
+  * `dfa `
 
 ### Changed
 
