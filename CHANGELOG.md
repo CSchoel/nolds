@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - calculates minimum data length for lyap_r to provide better error messages
 - uses `rcond=-1` in lstseq to keep behavior consistent between numpy versions
 - mutes `ImportWarning`s from `sklearn` in unit tests
+- disables an ugly hack when using `RANSAC` as fitting method and instead requires `sklearn>=0.19` that fixes the underlying issue
 
 ### Fixed
 

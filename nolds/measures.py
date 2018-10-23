@@ -60,27 +60,15 @@ def poly_fit(x, y, degree, fit="RANSAC"):
       # one sample of length len(x)
       xdat = xdat.reshape(-1, 1)
     polydat = skpre.PolynomialFeatures(degree).fit_transform(xdat)
-    # TODO sklearn has fixed the issue that required this hack
-    # => just require the correct version of sklearn
-    # evil hack to circumvent model.fit failing if no inliers are found
-    # in one iteration: repeat model.fit up to 10 times
-    success = False
-    for _ in range(10):
-      try:
-        model.fit(polydat, y)
-        success = True
-        break
-      except ValueError:
-        pass
-    # fall back to polyfit if all 10 iterations failed
-    if not success:
+    try:
+      model.fit(polydat, y)
+      coef = model.estimator_.coef_[::-1]
+    except ValueError:
       warnings.warn(
         "RANSAC did not reach consensus, "
         + "using numpy's polyfit",
         RuntimeWarning)
       coef = np.polyfit(x, y, degree)
-    else:
-      coef = model.estimator_.coef_[::-1]
     return coef
   else:
     raise ValueError("invalid fitting mode ({})".format(fit))
