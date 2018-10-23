@@ -166,7 +166,6 @@ class TestNoldsLyap(unittest.TestCase):
               msg.format(min_len, kwargs, i) + ", original error: "+str(e)
             )
 
-
   def test_lyap_e_limits(self):
     """
     tests if minimal input size is correctly calculated
