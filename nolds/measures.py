@@ -514,7 +514,10 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     msg = "{} data points are not enough! For emb_dim = {}, matrix_dim = {}, " \
       + "min_tsep = {} and min_nb = {} you need at least {} data points " \
       + "in your time series"
-    warnings.warn(msg.format(n, emb_dim, matrix_dim, min_tsep, min_nb, min_len))
+    warnings.warn(
+      msg.format(n, emb_dim, matrix_dim, min_tsep, min_nb, min_len),
+      RuntimeWarning
+    )
 
   # construct orbit as matrix (e = emb_dim)
   # x0 x1 x2 ... xe-1
