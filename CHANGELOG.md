@@ -7,14 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+### Changed
+### Fixed
+
+## [0.5.1] - 2018-10-24
+
+### Added
 
 - documentation for `lyap_r_len`, `lyap_e_len` and the `hurst-nvals` example
 
 ### Changed
 
+- `hurst_compare_nvals` now also uses `np.asarray`
+
 ### Fixed
 
-## [0.5.0]
+- some formatting problems in the documentation
+
+## [0.5.0] - 2018-10-24
 
 ### Added
 
