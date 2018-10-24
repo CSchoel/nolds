@@ -90,8 +90,9 @@ def lyap_r_len(**kwargs):
   Note that none of the required parameters may be set to None.
 
   Kwargs:
-    kwargs(dict): arguments used for lyap_r (required: emb_dim, lag,
-    trajectory_len and min_tsep)
+    kwargs(dict):
+      arguments used for lyap_r (required: emb_dim, lag, trajectory_len and
+      min_tsep)
 
   Returns:
     minimum number of data points required to call lyap_r with the given
@@ -349,8 +350,9 @@ def lyap_e_len(**kwargs):
   Note that none of the required parameters may be set to None.
 
   Kwargs:
-    kwargs(dict): arguments used for lyap_e (required: emb_dim, matrix_dim,
-    min_nb and min_tsep)
+    kwargs(dict):
+      arguments used for lyap_e (required: emb_dim, matrix_dim, min_nb
+      and min_tsep)
 
   Returns:
     minimum number of data points required to call lyap_e with the given
