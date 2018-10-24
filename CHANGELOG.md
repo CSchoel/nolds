@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - test function `hurst_compare_nvals` that compares different choices for the `nvals` parameter for `hurst_rs`
-- helper function `lyap_r_len` to calculate minimum data length required for `lyap_r`
+- helper functions `lyap_r_len` and `lyap_e_len` to calculate minimum data length required for `lyap_r` and `lyap_e`
+- test cases `test_lyap_r_limits` and `test_lyap_e_limits` to ensure that `lyap_r_len` and `lyap_e_len` are calculated correctly
 - description of parameter `min_nb` for `lyap_e`
-- uses `np.asarray` wherever possible. The following functions should now also work with pandas objects:
+- uses `np.asarray` wherever possible. The following functions should now also work with pandas objects and other "array-like" structures:
   * `lyap_r`
   * `lyap_e`
   * `sampen`
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - uses `rcond=-1` in lstseq to keep behavior consistent between numpy versions
 - mutes `ImportWarning`s from `sklearn` in unit tests
 - disables an ugly hack when using `RANSAC` as fitting method and instead requires `sklearn>=0.19` that fixes the underlying issue
+- makes test case for correlation dimension less strict
 
 ### Fixed
 
