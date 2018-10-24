@@ -54,8 +54,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Nolds'
-copyright = '2016-2018, Christopher Schölzel'
-author = 'Christopher Schölzel'
+copyright = u'2016-2018, Christopher Schölzel'
+author = u'Christopher Schölzel'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -232,7 +232,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'Nolds.tex', 'Nolds Documentation',
-     'Christopher Schölzel', 'manual'),
+     u'Christopher Schölzel', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
