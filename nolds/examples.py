@@ -244,6 +244,7 @@ if __name__ == "__main__":
     print("  profiling")
     print("  hurst-weron2")
     print("  hurst-hist")
+    print("  hurst-nvals")
   elif sys.argv[1] == "lyapunov-logistic":
     plot_lyap()
   elif sys.argv[1] == "lyapunov-tent":
@@ -255,3 +256,5 @@ if __name__ == "__main__":
     weron_2002_figure2(n)
   elif sys.argv[1] == "hurst-hist":
     plot_hurst_hist()
+  elif sys.argv[1] == "hurst-nvals":
+    hurst_compare_nvals(datasets.brown72)
