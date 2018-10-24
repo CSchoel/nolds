@@ -1,38 +1,40 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>nolds module &mdash; Nolds 0.4.1 documentation</title>
-    
+    <title>nolds module &#8212; Nolds 0.5.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.1',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.4.1 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Nolds examples" href="examples.html" />
     <link rel="prev" title="Welcome to Nolds’ documentation!" href="index.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body>
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -52,7 +54,7 @@ directly unless you want access to some internal helper functions.</p>
 <h3>Lyapunov exponent (Rosenstein et al.)<a class="headerlink" href="#lyapunov-exponent-rosenstein-et-al" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.lyap_r">
-<code class="descclassname">nolds.</code><code class="descname">lyap_r</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>lag=None</em>, <em>min_tsep=None</em>, <em>tau=1</em>, <em>min_neighbors=20</em>, <em>trajectory_len=20</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em>, <em>fit_offset=0</em>, <em>min_vectors=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">lyap_r</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=10</em>, <em>lag=None</em>, <em>min_tsep=None</em>, <em>tau=1</em>, <em>min_neighbors=20</em>, <em>trajectory_len=20</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em>, <em>fit_offset=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
 et al. <a class="reference internal" href="#lr-1" id="id1">[lr_1]</a>.</p>
 <dl class="docutils">
@@ -65,7 +67,7 @@ Lyapunov exponent, but behaves rather robust to parameter choices.</p>
 exponents. First, the dynamics of the data are reconstructed using a delay
 embedding method with a lag, such that each value x_i of the data is mapped
 to the vector</p>
-<p>X_i = [x_i, x_(i+lag), x_(i+2*lag), ..., x_(i+(emb_dim-1) * lag)]</p>
+<p>X_i = [x_i, x_(i+lag), x_(i+2*lag), …, x_(i+(emb_dim-1) * lag)]</p>
 <p>For each such vector X_i, we find the closest neighbor X_j using the
 euclidean distance. We know that as we follow the trajectories from X_i and
 X_j in time in a chaotic system the distances between X_(i+k) and X_(j+k)
@@ -77,9 +79,9 @@ contraction along other axes.</p>
 <p class="last">To calculate lambda, we look at the logarithm of the distance trajectory,
 because log(d_i(k)) = log(c) + lambda * k. This gives a set of lines
 (one for each index i) whose slope is an approximation of lambda. We
-therefore extract the mean log trajectory d&#8217;(k) by taking the mean of
+therefore extract the mean log trajectory d’(k) by taking the mean of
 log(d_i(k)) over all orbit vectors X_i. We then fit a straight line to
-the plot of d&#8217;(k) versus k. The slope of the line gives the desired
+the plot of d’(k) versus k. The slope of the line gives the desired
 parameter lambda.</p>
 </dd>
 <dt>Method for choosing min_tsep:</dt>
@@ -113,15 +115,15 @@ pp. 117–134, 1993.</td></tr>
 <dd><table class="first docutils citation" frame="void" id="lr-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[lr_a]</td><td>mirwais, &#8220;Largest Lyapunov Exponent with Rosenstein&#8217;s Algorithm&#8221;,
+<tr><td class="label">[lr_a]</td><td>mirwais, “Largest Lyapunov Exponent with Rosenstein’s Algorithm”,
 url: <a class="reference external" href="http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm">http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="lr-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[lr_b]</td><td>Shapour Mohammadi, &#8220;LYAPROSEN: MATLAB function to calculate
-Lyapunov exponent&#8221;,
+<tr><td class="label">[lr_b]</td><td>Shapour Mohammadi, “LYAPROSEN: MATLAB function to calculate
+Lyapunov exponent”,
 url: <a class="reference external" href="https://ideas.repec.org/c/boc/bocode/t741502.html">https://ideas.repec.org/c/boc/bocode/t741502.html</a></td></tr>
 </tbody>
 </table>
@@ -139,11 +141,11 @@ url: <a class="reference external" href="https://ideas.repec.org/c/boc/bocode/t7
 <dt>lag (float):</dt>
 <dd>lag for delay embedding</dd>
 <dt>min_tsep (float):</dt>
-<dd>minimal temporal separation between two &#8220;neighbors&#8221; (default:
+<dd>minimal temporal separation between two “neighbors” (default:
 find a suitable value by calculating the mean period of the data)</dd>
 <dt>tau (float):</dt>
-<dd>step size between data points in the time series in seconds (default:
-find a suitable value using the autocorrelation function)</dd>
+<dd>step size between data points in the time series in seconds
+(normalization scaling factor for exponents)</dd>
 <dt>min_neighbors (int):</dt>
 <dd>if lag=None, the search for a suitable lag will be stopped when the
 number of potential neighbors for a vector drops below min_neighbors</dd>
@@ -151,8 +153,8 @@ number of potential neighbors for a vector drops below min_neighbors</dd>
 <dd>the time (in number of data points) to follow the distance
 trajectories between two neighboring points</dd>
 <dt>fit (str):</dt>
-<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
-least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+<dd>the fitting method to use for the line fit, either ‘poly’ for normal
+least squares polynomial fitting or ‘RANSAC’ for RANSAC-fitting which
 is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will
@@ -165,8 +167,6 @@ under the given file name instead of directly showing it through
 <cite>plt.show()</cite></dd>
 <dt>fit_offset (int):</dt>
 <dd>neglect the first fit_offset steps when fitting</dd>
-<dt>min_vectors (int):</dt>
-<dd>deprecated, use <cite>min_neighbors</cite> instead</dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
@@ -197,8 +197,8 @@ Eckmann et al. <a class="reference internal" href="#le-1" id="id2">[le_1]</a>.</
 <dd><ul class="first last simple">
 <li>long recording time improves accuracy, small tau does not</li>
 <li>use large values for emb_dim</li>
-<li>matrix_dim should be &#8216;somewhat larger than the expected number of
-positive Lyapunov exponents&#8217;</li>
+<li>matrix_dim should be ‘somewhat larger than the expected number of
+positive Lyapunov exponents’</li>
 <li>min_nb = min(2 * matrix_dim, matrix_dim + 4)</li>
 </ul>
 </dd>
@@ -222,18 +222,18 @@ system is required. The algorithm of Eckmann et al. therefore tries to
 estimate this Jacobian by reconstructing the dynamics of the system from
 which the time series was obtained. For this, several steps are required:</p>
 <ul class="last simple">
-<li>Embed the time series [x_1, x_2, ..., x_(N-1)] in an orbit of emb_dim
+<li>Embed the time series [x_1, x_2, …, x_(N-1)] in an orbit of emb_dim
 dimensions (map each point x_i of the time series to a vector
-[x_i, x_(i+1), x_(i+2), ... x_(i+emb_dim-1)]).</li>
+[x_i, x_(i+1), x_(i+2), … x_(i+emb_dim-1)]).</li>
 <li>For each vector X_i in this orbit find a radius r_i so that at least
 min_nb other vectors lie within (chebyshev-)distance r_i around X_i.
-These vectors will be called &#8220;neighbors&#8221; of X_i.</li>
+These vectors will be called “neighbors” of X_i.</li>
 <li>Find the Matrix T_i that sends points from the neighborhood of X_i to
 the neighborhood of X_(i+1). To avoid undetermined values in T_i, we
 construct T_i not with size (emb_dim x emb_dim) but with size
-(matrix_dim x matrix_dim), so that we have a larger &#8220;step size&#8221; m in the
-X_i, which are now defined as X&#8217;_i = [x_i, x_(i+m), x_(i+2m),
-... x_(i+(matrix_dim-1)*m)]. This means that emb_dim-1 must be divisible
+(matrix_dim x matrix_dim), so that we have a larger “step size” m in the
+X_i, which are now defined as X’_i = [x_i, x_(i+m), x_(i+2m),
+… x_(i+(matrix_dim-1)*m)]. This means that emb_dim-1 must be divisible
 by matrix_dim-1. The T_i are then found by a linear least squares fit,
 assuring that T_i (X_j - X_i) ~= X_(j+m) - X_(i+m) for any X_j in the
 neighborhood of X_i.</li>
@@ -259,7 +259,7 @@ vol. 34, no. 6, pp. 4971–4979, 1986.</td></tr>
 <dd><table class="first docutils citation" frame="void" id="le-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[le_a]</td><td>Manfred Füllsack, &#8220;Lyapunov exponent&#8221;,
+<tr><td class="label">[le_a]</td><td>Manfred Füllsack, “Lyapunov exponent”,
 url: <a class="reference external" href="http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html">http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</a></td></tr>
 </tbody>
 </table>
@@ -280,8 +280,8 @@ url: <a class="reference external" href="http://www.mpipks-dresden.mpg.de/~tisea
 </dd>
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>data (iterable):</dt>
-<dd>list/array of (scalar) data points</dd>
+<dt>data (array-like of float):</dt>
+<dd>(scalar) data points</dd>
 </dl>
 </dd>
 <dt>Kwargs:</dt>
@@ -293,6 +293,8 @@ url: <a class="reference external" href="http://www.mpipks-dresden.mpg.de/~tisea
 <dt>min_nb (int):</dt>
 <dd>minimal number of neighbors
 (default: min(2 * matrix_dim, matrix_dim + 4))</dd>
+<dt>min_tsep (int):</dt>
+<dd>minimal temporal separation between two “neighbors”</dd>
 <dt>tau (float):</dt>
 <dd>step size of the data in seconds
 (normalization scaling factor for exponents)</dd>
@@ -325,7 +327,7 @@ data is (x, matrix_dim).</dd>
 <h3>Sample entropy<a class="headerlink" href="#sample-entropy" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.sampen">
-<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist=&lt;function rowwise_chebyshev at 0x0000000004BB6F28&gt;</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">sampen</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim=2</em>, <em>tolerance=None</em>, <em>dist=&lt;function rowwise_chebyshev&gt;</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the sample entropy of the given data.</p>
 <dl class="docutils">
 <dt>Explanation of the sample entropy:</dt>
@@ -337,7 +339,7 @@ probability indicating more self-similarity.</p>
 </dd>
 <dt>Explanation of the algorithm:</dt>
 <dd>The algorithm constructs all subsequences of length emb_dim
-[s_1, s_2, s_3, ...] and then counts each pair (s_i, s_j) with i != j
+[s_1, s_2, s_3, …] and then counts each pair (s_i, s_j) with i != j
 where dist(s_i, s_j) &lt; tolerance. The same process is repeated for all
 subsequences of length emb_dim + 1. The sum of similar sequence pairs
 with length emb_dim + 1 is divided by the sum of similar sequence pairs
@@ -358,15 +360,15 @@ vol. 278, no. 6, pp. H2039–H2049, 2000.</td></tr>
 <dd><table class="first last docutils citation" frame="void" id="se-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[se_a]</td><td>&#8220;sample_entropy&#8221; function in R-package &#8220;pracma&#8221;,
+<tr><td class="label">[se_a]</td><td>“sample_entropy” function in R-package “pracma”,
 url: <a class="reference external" href="https://cran.r-project.org/web/packages/pracma/pracma.pdf">https://cran.r-project.org/web/packages/pracma/pracma.pdf</a></td></tr>
 </tbody>
 </table>
 </dd>
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>data (iterable):</dt>
-<dd>the list/array of data points</dd>
+<dt>data (array-like of float):</dt>
+<dd>input data</dd>
 </dl>
 </dd>
 <dt>Kwargs:</dt>
@@ -412,7 +414,7 @@ between template vectors for m (dists_m) and for m + 1 (dists_m1).</dd>
 <dd><p>Calculates the Hurst exponent by a standard rescaled range (R/S) approach.</p>
 <dl class="docutils">
 <dt>Explanation of Hurst exponent:</dt>
-<dd><p class="first">The Hurst exponent is a measure for the &#8220;long-term memory&#8221; of a
+<dd><p class="first">The Hurst exponent is a measure for the “long-term memory” of a
 time series, meaning the long statistical dependencies in the data that do
 not originate from cycles.</p>
 <p>It originates from H.E. Hursts observations of the problem of long-term
@@ -421,9 +423,9 @@ and we observe this discharge for N years, we can calculate the storage
 capacity that would be required to keep the discharge steady at its mean
 value.</p>
 <p>To do so, we first substract the mean over all x_i from the individual
-x_i to obtain the departures x&#8217;_i from the mean for each year i. As the
+x_i to obtain the departures x’_i from the mean for each year i. As the
 excess or deficit in discharge always carrys over from year i to year i+1,
-we need to examine the cumulative sum of x&#8217;_i, denoted by y_i. This
+we need to examine the cumulative sum of x’_i, denoted by y_i. This
 cumulative sum represents the filling of our hypothetical storage. If the
 sum is above 0, we are storing excess discharge from the river, if it is
 below zero we have compensated a deficit in discharge by releasing
@@ -439,7 +441,7 @@ dependency on previous values. For negative dependencies it becomes less
 than 0.5.</p>
 </dd>
 <dt>Explanation of the algorithm:</dt>
-<dd><p class="first">The rescaled range (R/S) approach is directly derived from Hurst&#8217;s
+<dd><p class="first">The rescaled range (R/S) approach is directly derived from Hurst’s
 definition. The time series of length N is split into non-overlapping
 subseries of length n. Then, R and S (S = sigma) are calculated for each
 subseries and the mean is taken over all subseries yielding (R/S)_n. This
@@ -447,11 +449,11 @@ process is repeated for several lengths n. Finally, the exponent K is
 obtained by fitting a straight line to the plot of log((R/S)_n) vs log(n).</p>
 <p>There seems to be no consensus how to chose the subseries lenghts n.
 This function therefore leaves the choice to the user. The module provides
-some utility functions for &#8220;typical&#8221; values:</p>
+some utility functions for “typical” values:</p>
 <blockquote class="last">
 <div><ul class="simple">
-<li>binary_n: N/2, N/4, N/8, ...</li>
-<li>logarithmic_n: min_n, min_n * f, min_n * f^2, ...</li>
+<li>binary_n: N/2, N/4, N/8, …</li>
+<li>logarithmic_n: min_n, min_n * f, min_n * f^2, …</li>
 </ul>
 </div></blockquote>
 </dd>
@@ -474,7 +476,7 @@ which occur in nature,” Nature, vol. 180, p. 494, 1957.</td></tr>
 <table class="last docutils citation" frame="void" id="h-3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[h_3]</a></td><td>R. Weron, “Estimating long-range dependence: finite sample
+<tr><td class="label">[h_3]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> R. Weron, “Estimating long-range dependence: finite sample
 properties and confidence intervals,” Physica A: Statistical Mechanics
 and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</td></tr>
 </tbody>
@@ -484,34 +486,34 @@ and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</td></tr>
 <dd><table class="first docutils citation" frame="void" id="h-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h_a]</td><td><p class="first">&#8220;hurst&#8221; function in R-package &#8220;pracma&#8221;,
+<tr><td class="label">[h_a]</td><td><p class="first">“hurst” function in R-package “pracma”,
 url: <a class="reference external" href="https://cran.r-project.org/web/packages/pracma/pracma.pdf">https://cran.r-project.org/web/packages/pracma/pracma.pdf</a></p>
 <p>Note: Pracma yields several estimates of the Hurst exponent, which
 are listed below. Unless otherwise stated they use the divisors
 of the length of the sequence as n. The length is reduced by at
 most 1% to find the value that has the most divisors.</p>
 <ul class="simple">
-<li>The &#8220;Simple R/S&#8221; estimate is just log((R/S)_n) / log(n) for 
+<li>The “Simple R/S” estimate is just log((R/S)_n) / log(n) for 
 n = N.</li>
-<li>The &#8220;theoretical Hurst exponent&#8221; is the value that would be
+<li>The “theoretical Hurst exponent” is the value that would be
 expected of an uncorrected rescaled range approach for random
 noise of the size of the input data.</li>
-<li>The &#8220;empirical Hurst exponent&#8221; is the uncorrected Hurst exponent
+<li>The “empirical Hurst exponent” is the uncorrected Hurst exponent
 obtained by the rescaled range approach.</li>
-<li>The &#8220;corrected empirical Hurst exponent&#8221; is the Anis-Lloyd-Peters
+<li>The “corrected empirical Hurst exponent” is the Anis-Lloyd-Peters
 corrected Hurst exponent, but with sqrt(1/2 * pi * n) added to
 the (R/S)_n before the log.</li>
-<li>The &#8220;corrected R over S Hurst exponent&#8221; uses the R-function &#8220;lm&#8221;
-instead of pracmas own &#8220;polyfit&#8221; and uses n = N/2, N/4, N/8, ...
+<li>The “corrected R over S Hurst exponent” uses the R-function “lm”
+instead of pracmas own “polyfit” and uses n = N/2, N/4, N/8, …
 by successively halving the subsequences (which means that some
 subsequences may be one element longer than others). In contrast
 to its name it does not use the Anis-Lloyd-Peters correction
 factor.</li>
 </ul>
 <p class="last">If you want to compare the output of pracma to the output of
-nolds, the &#8220;empirical hurst exponent&#8221; is the only measure that
+nolds, the “empirical hurst exponent” is the only measure that
 exactly corresponds to the Hurst measure implemented in nolds
-(by choosing corrected=False, fit=&#8221;poly&#8221; and employing the same
+(by choosing corrected=False, fit=”poly” and employing the same
 strategy for choosing n as the divisors of the (reduced)
 sequence length).</p>
 </td></tr>
@@ -520,11 +522,11 @@ sequence length).</p>
 <table class="docutils citation" frame="void" id="h-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h_b]</td><td><p class="first">Rafael Weron, &#8220;HURST: MATLAB function to compute the Hurst
-exponent using R/S Analysis&#8221;,
+<tr><td class="label">[h_b]</td><td><p class="first">Rafael Weron, “HURST: MATLAB function to compute the Hurst
+exponent using R/S Analysis”,
 url: <a class="reference external" href="https://ideas.repec.org/c/wuu/hscode/m11003.html">https://ideas.repec.org/c/wuu/hscode/m11003.html</a></p>
 <p class="last">Note: When the same values for nvals are used and fit is set to
-&#8220;poly&#8221;, nolds yields exactly the same results as this
+“poly”, nolds yields exactly the same results as this
 implementation.</p>
 </td></tr>
 </tbody>
@@ -532,21 +534,21 @@ implementation.</p>
 <table class="docutils citation" frame="void" id="h-c" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h_c]</td><td>Bill Davidson, &#8220;Hurst exponent&#8221;,
+<tr><td class="label">[h_c]</td><td>Bill Davidson, “Hurst exponent”,
 url: <a class="reference external" href="http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent">http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="h-d" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[h_d]</td><td>Tomaso Aste, &#8220;Generalized Hurst exponent&#8221;,
+<tr><td class="label">[h_d]</td><td>Tomaso Aste, “Generalized Hurst exponent”,
 url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent">http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent</a></td></tr>
 </tbody>
 </table>
 </dd>
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>data (array of float):</dt>
+<dt>data (array-like of float):</dt>
 <dd>time series</dd>
 </dl>
 </dd>
@@ -564,8 +566,8 @@ them is still meaningful. Logarithmic spacing makes sense, because it
 translates to even spacing in the log-log-plot.</p>
 </dd>
 <dt>fit (str):</dt>
-<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
-least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+<dd>the fitting method to use for the line fit, either ‘poly’ for normal
+least squares polynomial fitting or ‘RANSAC’ for RANSAC-fitting which
 is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will be shown</dd>
@@ -608,7 +610,7 @@ coefficients (<cite>[slope, intercept]</cite>)</dd>
 <h3>Correlation dimension<a class="headerlink" href="#correlation-dimension" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="nolds.corr_dim">
-<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euclidean at 0x0000000004D20510&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">corr_dim</code><span class="sig-paren">(</span><em>data</em>, <em>emb_dim</em>, <em>rvals=None</em>, <em>dist=&lt;function rowwise_euclidean&gt;</em>, <em>fit='RANSAC'</em>, <em>debug_plot=False</em>, <em>debug_data=False</em>, <em>plot_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the correlation dimension with the Grassberger-Procaccia algorithm</p>
 <dl class="docutils">
 <dt>Explanation of correlation dimension:</dt>
@@ -624,7 +626,7 @@ obtained for systems that expand uniformly in each dimension with time.
 The lowest possible value is 0 for a system with constant C(r) (i.e. a
 system that visits just one point in the phase space). Generally if D is
 lower than d and the system has an attractor, this attractor is called
-&#8220;strange&#8221; and D is a measure of this &#8220;strangeness&#8221;.</p>
+“strange” and D is a measure of this “strangeness”.</p>
 </dd>
 <dt>Explanation of the algorithm:</dt>
 <dd><p class="first">The Grassberger-Procaccia algorithm calculates C(r) for a range of
@@ -633,9 +635,9 @@ versus log(r).</p>
 <p class="last">This version of the algorithm is created for one-dimensional (scalar) time
 series. Therefore, before calculating C(r), a delay embedding of the time
 series is performed to yield emb_dim dimensional vectors
-Y_i = [X_i, X_(i+1), X_(i+2), ... X_(i+embd_dim-1)]. Choosing a higher
+Y_i = [X_i, X_(i+1), X_(i+2), … X_(i+embd_dim-1)]. Choosing a higher
 value for emb_dim allows to reconstruct higher dimensional dynamics and
-avoids &#8220;systematic errors due to corrections to scaling&#8221;.</p>
+avoids “systematic errors due to corrections to scaling”.</p>
 </dd>
 <dt>References:</dt>
 <dd><table class="first docutils citation" frame="void" id="cd-1" rules="none">
@@ -667,21 +669,21 @@ urL: <a class="reference external" href="http://www.scholarpedia.org/article/Gra
 <dd><table class="first docutils citation" frame="void" id="cd-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[cd_a]</td><td>&#8220;corrDim&#8221; function in R package &#8220;fractal&#8221;,
+<tr><td class="label">[cd_a]</td><td>“corrDim” function in R package “fractal”,
 url: <a class="reference external" href="https://cran.r-project.org/web/packages/fractal/fractal.pdf">https://cran.r-project.org/web/packages/fractal/fractal.pdf</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="cd-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[cd_b]</td><td>Peng Yuehua, &#8220;Correlation dimension&#8221;,
+<tr><td class="label">[cd_b]</td><td>Peng Yuehua, “Correlation dimension”,
 url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension">http://de.mathworks.com/matlabcentral/fileexchange/24089-correlation-dimension</a></td></tr>
 </tbody>
 </table>
 </dd>
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>data (array of float):</dt>
+<dt>data (array-like of float):</dt>
 <dd>time series of data points</dd>
 <dt>emb_dim (int):</dt>
 <dd>embedding dimension</dd>
@@ -695,8 +697,8 @@ url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/f
 <dt>dist (function (2d-array, 1d-array) -&gt; 1d-array):</dt>
 <dd>row-wise difference function</dd>
 <dt>fit (str):</dt>
-<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
-least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+<dd>the fitting method to use for the line fit, either ‘poly’ for normal
+least squares polynomial fitting or ‘RANSAC’ for RANSAC-fitting which
 is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will be shown</dd>
@@ -758,7 +760,7 @@ calculating std(X,n) for different n and fitting a straight line to the
 plot of log(std(X,n)) versus log(n).</p>
 <p>To calculate a single std(X,n), the time series is split into windows of
 equal length n, so that the ith window of this size has the form</p>
-<p>W_(n,i) = [x_i, x_(i+1), x_(i+2), ... x_(i+n-1)]</p>
+<p>W_(n,i) = [x_i, x_(i+1), x_(i+2), … x_(i+n-1)]</p>
 <p>The value std(X,n) is then obtained by calculating std(W_(n,i)) for each i
 and averaging the obtained values over i.</p>
 <p>The aforementioned definition of self-affinity, however, assumes that the
@@ -766,17 +768,17 @@ process is  non-stationary (i.e. that the standard deviation changes over
 time) and it is highly influenced by local and global trends of the time
 series.</p>
 <p>To overcome these problems, an estimate alpha of H is calculated by using a
-&#8220;walk&#8221; or &#8220;signal profile&#8221; instead of the raw time series. This walk is
+“walk” or “signal profile” instead of the raw time series. This walk is
 obtained by substracting the mean and then taking the cumulative sum of the
 original time series. The local trends are removed for each window
 separately by fitting a polynomial p_(n,i) to the window W_(n,i) and then
-calculating W&#8217;_(n,i) = W_(n,i) - p_(n,i) (element-wise substraction).</p>
-<p>We then calculate std(X,n) as before only using the &#8220;detrended&#8221; window
-W&#8217;_(n,i) instead of W_(n,i). Instead of H we obtain the parameter alpha
+calculating W’_(n,i) = W_(n,i) - p_(n,i) (element-wise substraction).</p>
+<p>We then calculate std(X,n) as before only using the “detrended” window
+W’_(n,i) instead of W_(n,i). Instead of H we obtain the parameter alpha
 from the line fitting.</p>
 <p>For alpha &lt; 1 the underlying process is stationary and can be modelled as
 fractional Gaussian noise with H = alpha. This means for alpha = 0.5 we
-have no correlation or &#8220;memory&#8221;, for 0.5 &lt; alpha &lt; 1 we have a memory with
+have no correlation or “memory”, for 0.5 &lt; alpha &lt; 1 we have a memory with
 positive correlation and for alpha &lt; 0.5 the correlation is negative.</p>
 <p class="last">For alpha &gt; 1 the underlying process is non-stationary and can be modeled
 as fractional Brownian motion with H = alpha - 1.</p>
@@ -804,27 +806,27 @@ oscillations,” Frontiers in Physiology, vol. 30, 2012.</td></tr>
 <dd><table class="first docutils citation" frame="void" id="dfa-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[dfa_a]</td><td>Peter Jurica, &#8220;Introduction to MDFA in Python&#8221;,
+<tr><td class="label">[dfa_a]</td><td>Peter Jurica, “Introduction to MDFA in Python”,
 url: <a class="reference external" href="http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html">http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="dfa-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[dfa_b]</td><td>JE Mietus, &#8220;dfa&#8221;,
+<tr><td class="label">[dfa_b]</td><td>JE Mietus, “dfa”,
 url: <a class="reference external" href="https://www.physionet.org/physiotools/dfa/dfa-1.htm">https://www.physionet.org/physiotools/dfa/dfa-1.htm</a></td></tr>
 </tbody>
 </table>
 <table class="last docutils citation" frame="void" id="dfa-c" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[dfa_c]</td><td>&#8220;DFA&#8221; function in R package &#8220;fractal&#8221;</td></tr>
+<tr><td class="label">[dfa_c]</td><td>“DFA” function in R package “fractal”</td></tr>
 </tbody>
 </table>
 </dd>
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>data (array of float):</dt>
+<dt>data (array-like of float):</dt>
 <dd>time series</dd>
 </dl>
 </dd>
@@ -839,13 +841,13 @@ otherwise non-overlapping windows will be used</dd>
 <dt>order (int):</dt>
 <dd>(polynomial) order of trend to remove</dd>
 <dt>fit_trend (str):</dt>
-<dd>the fitting method to use for fitting the trends, either &#8216;poly&#8217;
-for normal least squares polynomial fitting or &#8216;RANSAC&#8217; for
+<dd>the fitting method to use for fitting the trends, either ‘poly’
+for normal least squares polynomial fitting or ‘RANSAC’ for
 RANSAC-fitting which is more robust to outliers but also tends to
 lead to unstable results</dd>
 <dt>fit_exp (str):</dt>
-<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
-least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+<dd>the fitting method to use for the line fit, either ‘poly’ for normal
+least squares polynomial fitting or ‘RANSAC’ for RANSAC-fitting which
 is more robust to outliers</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a simple plot of the final line-fitting step will be shown</dd>
@@ -900,7 +902,7 @@ until the resulting value is less than min_n.</p>
 <dt>Returns:</dt>
 <dd><dl class="first last docutils">
 <dt>list of integers:</dt>
-<dd>total_N/2, total_N/4, total_N/8, ... until total_N/2^i &lt; min_n</dd>
+<dd>total_N/2, total_N/4, total_N/8, … until total_N/2^i &lt; min_n</dd>
 </dl>
 </dd>
 </dl>
@@ -926,7 +928,7 @@ a factor &gt; 1 until a maximum value max_n is reached.</p>
 <dt>Returns:</dt>
 <dd><dl class="first last docutils">
 <dt>list of integers:</dt>
-<dd>min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i &lt; max_n
+<dd>min_n, min_n * factor, min_n * factor^2, … min_n * factor^i &lt; max_n
 without duplicates</dd>
 </dl>
 </dd>
@@ -952,7 +954,7 @@ a factor &gt; 1 until a maximum value max_n is reached.</p>
 <dt>Returns:</dt>
 <dd><dl class="first last docutils">
 <dt>list of floats:</dt>
-<dd>min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i &lt; max_n</dd>
+<dd>min_n, min_n * factor, min_n * factor^2, … min_n * factor^i &lt; max_n</dd>
 </dl>
 </dd>
 </dl>
@@ -966,15 +968,15 @@ based on the values of n used for the calculation.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>nvals (array of int):</dt>
+<dt>nvals (iterable of int):</dt>
 <dd>the values of n used to calculate the individual (R/S)_n</dd>
 </dl>
 </dd>
 <dt>KWargs:</dt>
 <dd><dl class="first last docutils">
 <dt>fit (str):</dt>
-<dd>the fitting method to use for the line fit, either &#8216;poly&#8217; for normal
-least squares polynomial fitting or &#8216;RANSAC&#8217; for RANSAC-fitting which
+<dd>the fitting method to use for the line fit, either ‘poly’ for normal
+least squares polynomial fitting or ‘RANSAC’ for RANSAC-fitting which
 is more robust to outliers</dd>
 </dl>
 </dd>
@@ -988,9 +990,31 @@ is more robust to outliers</dd>
 </dd></dl>
 
 <dl class="function">
+<dt id="nolds.expected_rs">
+<code class="descclassname">nolds.</code><code class="descname">expected_rs</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#expected_rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.expected_rs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the expected (R/S)_n for white noise for a given n.</p>
+<p>This is used as a correction factor in the function hurst_rs. It uses the
+formula of Anis-Lloyd-Peters (see <a class="reference internal" href="#h-3" id="id4">[h_3]</a>).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>n (int):</dt>
+<dd>the value of n for which the expected (R/S)_n should be calculated</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>float:</dt>
+<dd>expected (R/S)_n for white noise</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="nolds.logmid_n">
 <code class="descclassname">nolds.</code><code class="descname">logmid_n</code><span class="sig-paren">(</span><em>max_n</em>, <em>ratio=0.25</em>, <em>nsteps=15</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#logmid_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.logmid_n" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an array of integers that lie evenly spaced in the &#8220;middle&#8221; of the
+<dd><p>Creates an array of integers that lie evenly spaced in the “middle” of the
 logarithmic scale from 0 to log(max_n).</p>
 <p>If max_n is very small and/or nsteps is very large, this may lead to
 duplicate values which will be removed from the output.</p>
@@ -1008,7 +1032,7 @@ hurst_rs)</dd>
 <dt>Kwargs:</dt>
 <dd><dl class="first last docutils">
 <dt>ratio (float):</dt>
-<dd>width of the &#8220;middle&#8221; of the logarithmic interval relative to log(max_n).
+<dd>width of the “middle” of the logarithmic interval relative to log(max_n).
 For example, for ratio=1/2.0 the logarithm of the resulting values will
 lie between 0.25 * log(max_n) and 0.75 * log(max_n).</dd>
 <dt>nsteps (float):</dt>
@@ -1032,14 +1056,14 @@ because only unique values are returned)</dd>
 <h3>Benchmark dataset for hurst exponent<a class="headerlink" href="#benchmark-dataset-for-hurst-exponent" title="Permalink to this headline">¶</a></h3>
 <dl class="data">
 <dt id="nolds.brown72">
-<code class="descclassname">nolds.</code><code class="descname">brown72</code><em class="property"> = array([ 45.47422,  42.55601,  46.5188 , ...,  42.78297,  44.34307,         40.70655])</em><a class="headerlink" href="#nolds.brown72" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nolds.</code><code class="descname">brown72</code><em class="property"> = array([45.47422, 42.55601, 46.5188 , ..., 42.78297, 44.34307, 40.70655])</em><a class="headerlink" href="#nolds.brown72" title="Permalink to this definition">¶</a></dt>
 <dd><p>The brown72 dataset has a prescribed (uncorrected) Hurst exponent of 0.7270.
-It is a synthetic dataset from the book &#8220;Chaos and Order in the Capital
-markets&#8221;<a class="reference internal" href="#b7-a" id="id4">[b7_a]</a>.</p>
-<p>It is included here, because the dataset can be found online <a class="reference internal" href="#b7-b" id="id5">[b7_b]</a> and is
-used by other software packages such as the R-package <cite>pracma</cite> <a class="reference internal" href="#b7-c" id="id6">[b7_c]</a>.
+It is a synthetic dataset from the book “Chaos and Order in the Capital
+markets”<a class="reference internal" href="#b7-a" id="id5">[b7_a]</a>.</p>
+<p>It is included here, because the dataset can be found online <a class="reference internal" href="#b7-b" id="id6">[b7_b]</a> and is
+used by other software packages such as the R-package <cite>pracma</cite> <a class="reference internal" href="#b7-c" id="id7">[b7_c]</a>.
 As such it can be used to compare different implementations.</p>
-<p>However, it should be noted that the idea that the &#8220;true&#8221; Hurst exponent of
+<p>However, it should be noted that the idea that the “true” Hurst exponent of
 this series is indeed 0.7270 is problematic for several reasons:</p>
 <ol class="arabic simple">
 <li>This value does not take into account the Anis-Lloyd-Peters correction
@@ -1061,7 +1085,7 @@ code:</p>
 <table class="docutils citation" frame="void" id="b7-a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[b7_a]</a></td><td>Edgar Peters, “Chaos and Order in the Capital Markets: A New
+<tr><td class="label"><a class="fn-backref" href="#id5">[b7_a]</a></td><td>Edgar Peters, “Chaos and Order in the Capital Markets: A New
 View of Cycles, Prices, and Market Volatility”, Wiley: Hoboken,
 2nd Edition, 1996.</td></tr>
 </tbody>
@@ -1069,14 +1093,14 @@ View of Cycles, Prices, and Market Volatility”, Wiley: Hoboken,
 <table class="docutils citation" frame="void" id="b7-b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5">[b7_b]</a></td><td>Ian L. Kaplan, &#8220;Estimating the Hurst Exponent&#8221;,
+<tr><td class="label"><a class="fn-backref" href="#id6">[b7_b]</a></td><td>Ian L. Kaplan, “Estimating the Hurst Exponent”,
 url: <a class="reference external" href="http://www.bearcave.com/misl/misl_tech/wavelets/hurst/">http://www.bearcave.com/misl/misl_tech/wavelets/hurst/</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="b7-c" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id6">[b7_c]</a></td><td>HwB, &#8220;Pracma: brown72&#8221;,
+<tr><td class="label"><a class="fn-backref" href="#id7">[b7_c]</a></td><td>HwB, “Pracma: brown72”,
 url: <a class="reference external" href="https://www.rdocumentation.org/packages/pracma/versions/1.9.9/topics/brown72">https://www.rdocumentation.org/packages/pracma/versions/1.9.9/topics/brown72</a></td></tr>
 </tbody>
 </table>
@@ -1156,7 +1180,7 @@ reached after which the series starts to oscillate. Beginning with r = 3.6
 it shows chaotic behavior with a few islands of stability until perfect
 chaos is achieved at r = 4.</dd>
 <dt>Calculating the Lyapunov exponent:</dt>
-<dd><p class="first">To calculate the &#8220;true&#8221; Lyapunov exponent of the logistic map, we first
+<dd><p class="first">To calculate the “true” Lyapunov exponent of the logistic map, we first
 have to make a few observations for maps in general that are repeated
 applications of a function to a starting value.</p>
 <p>If we have two starting values that differ by some infinitesimal 
@@ -1166,7 +1190,7 @@ we will have an exponential divergence:</p>
 \[|\delta_n| = |\delta_0| e^{\lambda n}\]</div>
 <p>We can now write that:</p>
 <div class="math">
-\[\begin{split}e^{\lambda n} = \lim_{\delta_0 -&gt; 0} |\frac{\delta_n}{\delta_0}|\end{split}\]</div>
+\[e^{\lambda n} = \lim_{\delta_0 -&gt; 0} |\frac{\delta_n}{\delta_0}|\]</div>
 <p>This is the definition of the derivative <span class="math">\(\frac{dx_n}{dx_0}\)</span> of a
 point <span class="math">\(x_n\)</span> in the time series with respect to the starting point
 <span class="math">\(x_0\)</span> (or rather the absolute value of that derivative). Now we can
@@ -1337,7 +1361,7 @@ number generator at qrng.anu.edu.au</p>
 <dt id="nolds.load_qrandom">
 <code class="descclassname">nolds.</code><code class="descname">load_qrandom</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#load_qrandom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.load_qrandom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a set of 10000 random numbers generated by qrandom.</p>
-<p>This dataset can be used when you want to do some limited tests with &#8220;true&#8221;
+<p>This dataset can be used when you want to do some limited tests with “true”
 random data without an internet connection.</p>
 <dl class="docutils">
 <dt>Returns:</dt>
@@ -1388,7 +1412,7 @@ random data without an internet connection.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Nolds&#8217; documentation!</a></li>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Nolds’ documentation!</a></li>
       <li>Next: <a href="examples.html" title="next chapter">Nolds examples</a></li>
   </ul></li>
 </ul>
@@ -1396,21 +1420,18 @@ random data without an internet connection.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/nolds.txt"
+      <li><a href="_sources/nolds.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1418,14 +1439,14 @@ random data without an internet connection.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Christopher Schölzel.
+      &copy;2016-2018, Christopher Schölzel.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/nolds.txt"
+      <a href="_sources/nolds.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

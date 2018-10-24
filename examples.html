@@ -1,38 +1,40 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Nolds examples &mdash; Nolds 0.4.1 documentation</title>
-    
+    <title>Nolds examples &#8212; Nolds 0.5.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.1',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Nolds 0.4.1 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Nolds Unittests" href="tests.html" />
     <link rel="prev" title="nolds module" href="nolds.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body>
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -68,7 +70,7 @@ obtained by <code class="docutils literal"><span class="pre">lyap_r</span></code
 <table class="docutils citation" frame="void" id="ll" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[ll]</a></td><td>Manfred Füllsack, &#8220;Lyapunov exponent&#8221;,
+<tr><td class="label"><a class="fn-backref" href="#id1">[ll]</a></td><td>Manfred Füllsack, “Lyapunov exponent”,
 url: <a class="reference external" href="http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html">http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</a></td></tr>
 </tbody>
 </table>
@@ -97,7 +99,7 @@ map.</dd>
 values obtained by the functions in this package.</p>
 <p>The experiment consists of n iterations where the hurst exponent of randomly
 generated gaussian noise is calculated. This is done with differing sequence
-lengths of 256, 512, 1024, ...., 65536. The average estimated hurst exponent
+lengths of 256, 512, 1024, …., 65536. The average estimated hurst exponent
 over all iterations is plotted for the following configurations:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">weron</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Weron</li>
@@ -140,6 +142,28 @@ distributed white noise.</p>
 <p>This function requires the package <code class="docutils literal"><span class="pre">matplotlib</span></code>.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="nolds.examples.hurst_compare_nvals">
+<code class="descclassname">nolds.examples.</code><code class="descname">hurst_compare_nvals</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#hurst_compare_nvals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.hurst_compare_nvals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a plot that compares the results of different choices for nvals
+for the function hurst_rs.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>data (array of float):</dt>
+<dd>the input data from which the hurst exponent should be estimated</dd>
+</dl>
+</dd>
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>nvals (array of int):</dt>
+<dd>a manually selected value for the nvals parameter that should be plotted
+in comparison to the default choices</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 
@@ -168,21 +192,18 @@ distributed white noise.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/examples.txt"
+      <li><a href="_sources/examples.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -190,14 +211,14 @@ distributed white noise.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016, Christopher Schölzel.
+      &copy;2016-2018, Christopher Schölzel.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/examples.txt"
+      <a href="_sources/examples.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
