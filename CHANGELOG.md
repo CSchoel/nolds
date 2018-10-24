@@ -31,6 +31,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - note in the description of the parameter `tau` in `lyap_r` was misleading/wrong (probably a copy-pase error)
 
+### Removed
+
+-  distance values `"euler"`, `"chebychev"`, `rowwise_euler` and `rowwise_chebychev` for `sampen` and `corr_dim` (was deprecated)
+-  keyword parameter `min_vectors` for `lyap_r` (was deprecated)
+
 ## [0.4.1] - 2017-11-30
 
 ### Added
