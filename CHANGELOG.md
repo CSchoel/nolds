@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+- documentation for `lyap_r_len`, `lyap_e_len` and the `hurst-nvals` example
+
 ### Changed
 
 ### Fixed
