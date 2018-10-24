@@ -193,7 +193,7 @@ def hurst_compare_nvals(data, nvals=None):
   for the function hurst_rs.
 
   Args:
-    data (array of float):
+    data (array-like of float):
       the input data from which the hurst exponent should be estimated
 
   Kwargs:
@@ -202,6 +202,7 @@ def hurst_compare_nvals(data, nvals=None):
       in comparison to the default choices
   """
   import matplotlib.pyplot as plt
+  data = np.asarray(data)
   n_all = np.arange(2,len(data)+1)
   dd_all = nolds.hurst_rs(data, nvals=n_all, debug_data=True, fit="poly")
   dd_def = nolds.hurst_rs(data, debug_data=True, fit="poly")
