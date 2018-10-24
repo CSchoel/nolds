@@ -43,6 +43,8 @@ Helper functions
 .. autofunction:: nolds.expected_h
 .. autofunction:: nolds.expected_rs
 .. autofunction:: nolds.logmid_n
+.. autofunction:: nolds.lyap_r_len
+.. autofunction:: nolds.lyap_e_len
 
 Datasets
 --------

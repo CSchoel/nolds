@@ -124,7 +124,7 @@
   <span class="n">indices</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
   <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">lyap_r_len</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="lyap_r_len"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_r_len">[docs]</a><span class="k">def</span> <span class="nf">lyap_r_len</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Helper function that calculates the minimum number of data points required</span>
 <span class="sd">  to use lyap_r.</span>
@@ -145,7 +145,7 @@
   <span class="n">min_len</span> <span class="o">+=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;trajectory_len&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
   <span class="c1"># we need min_tsep * 2 + 1 orbit vectors to find neighbors for each</span>
   <span class="n">min_len</span> <span class="o">+=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;min_tsep&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
-  <span class="k">return</span> <span class="n">min_len</span>
+  <span class="k">return</span> <span class="n">min_len</span></div>
 
 <div class="viewcode-block" id="lyap_r"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_r">[docs]</a><span class="k">def</span> <span class="nf">lyap_r</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_tsep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_neighbors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
            <span class="n">trajectory_len</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;RANSAC&quot;</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -383,7 +383,7 @@
   <span class="k">else</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">le</span></div>
 
-<span class="k">def</span> <span class="nf">lyap_e_len</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="lyap_e_len"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_e_len">[docs]</a><span class="k">def</span> <span class="nf">lyap_e_len</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Helper function that calculates the minimum number of data points required</span>
 <span class="sd">  to use lyap_e.</span>
@@ -407,7 +407,7 @@
   <span class="n">min_len</span> <span class="o">+=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;min_tsep&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
   <span class="c1"># we need at least min_nb neighbors for each orbit vector</span>
   <span class="n">min_len</span> <span class="o">+=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;min_nb&#39;</span><span class="p">]</span>
-  <span class="k">return</span> <span class="n">min_len</span>
+  <span class="k">return</span> <span class="n">min_len</span></div>
 
 <div class="viewcode-block" id="lyap_e"><a class="viewcode-back" href="../../nolds.html#nolds.lyap_e">[docs]</a><span class="k">def</span> <span class="nf">lyap_e</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">matrix_dim</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">min_nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_tsep</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
            <span class="n">debug_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

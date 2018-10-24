@@ -1049,6 +1049,38 @@ because only unique values are returned)</dd>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="nolds.lyap_r_len">
+<code class="descclassname">nolds.</code><code class="descname">lyap_r_len</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_r_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function that calculates the minimum number of data points required
+to use lyap_r.</p>
+<p>Note that none of the required parameters may be set to None.</p>
+<dl class="docutils">
+<dt>Kwargs:</dt>
+<dd>kwargs(dict): arguments used for lyap_r (required: emb_dim, lag,
+trajectory_len and min_tsep)</dd>
+<dt>Returns:</dt>
+<dd>minimum number of data points required to call lyap_r with the given
+parameters</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="nolds.lyap_e_len">
+<code class="descclassname">nolds.</code><code class="descname">lyap_e_len</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_e_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.lyap_e_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function that calculates the minimum number of data points required
+to use lyap_e.</p>
+<p>Note that none of the required parameters may be set to None.</p>
+<dl class="docutils">
+<dt>Kwargs:</dt>
+<dd>kwargs(dict): arguments used for lyap_e (required: emb_dim, matrix_dim,
+min_nb and min_tsep)</dd>
+<dt>Returns:</dt>
+<dd>minimum number of data points required to call lyap_e with the given
+parameters</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="datasets">
 <h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
