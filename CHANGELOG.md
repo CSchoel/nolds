@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - test function `hurst_compare_nvals` that compares different choices for the `nvals` parameter for `hurst_rs`
+- example for `hurst_compare_nvals` (can be called using `python -m nolds.examples hurst-nvals`)
 - helper functions `lyap_r_len` and `lyap_e_len` to calculate minimum data length required for `lyap_r` and `lyap_e`
 - test cases `test_lyap_r_limits` and `test_lyap_e_limits` to ensure that `lyap_r_len` and `lyap_e_len` are calculated correctly
 - description of parameter `min_nb` for `lyap_e`
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - mutes `ImportWarning`s from `sklearn` in unit tests
 - disables an ugly hack when using `RANSAC` as fitting method and instead requires `sklearn>=0.19` that fixes the underlying issue
 - makes test case for correlation dimension less strict
+- added hint when `nolds.examples` is called with an unknown example name
 
 ### Fixed
 
