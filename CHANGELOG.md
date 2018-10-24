@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   * `hurst_rs`
   * `corr_dim`
   * `dfa `
+- nolds documentation can now also be found on readthedocs.org: http://nolds.readthedocs.io/
 
 ### Changed
 
