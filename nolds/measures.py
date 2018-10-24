@@ -6,31 +6,11 @@ import numpy as np
 import warnings
 import math
 
-# TODO remove deprecated features
-
-deprecation_msg_euler = \
-  "'euler' distance is now appropriately called 'euclidean', mentions" \
-  + "of 'euler distance' will be removed in future versions. Sorry, Euclid."
-
-deprecation_msg_chebychev = "Stupid german author cannot write russian" + \
-  " names correctly. Please use 'rowwise_chebyshev' instead of" + \
-  " 'rowwise_chebychev'. The old function name will be removed in future" + \
-  " versions. Sorry, Mr. Chebyshev.'"
-
-deprecation_msg_sampen_dist = "Using strings as values for 'dist' is" + \
-  " deprecated. The parameter now takes a distance function such as" + \
-  " chebyshev. Support for function names will be removed in future versions."
-
-
 def rowwise_chebyshev(x, y):
   return np.max(np.abs(x - y), axis=1)
 
-rowwise_chebychev = object()
-
 def rowwise_euclidean(x, y):
   return np.sqrt(np.sum((x - y)**2, axis=1))
-
-rowwise_euler = object()
 
 def poly_fit(x, y, degree, fit="RANSAC"):
   # check if we can use RANSAC
@@ -127,7 +107,7 @@ def lyap_r_len(**kwargs):
 
 def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
            trajectory_len=20, fit="RANSAC", debug_plot=False, debug_data=False,
-           plot_file=None, fit_offset=0, min_vectors=None):
+           plot_file=None, fit_offset=0):
   """
   Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
   et al. [lr_1]_.
@@ -229,8 +209,6 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
       `plt.show()`
     fit_offset (int):
       neglect the first fit_offset steps when fitting
-    min_vectors (int):
-      deprecated, use `min_neighbors` instead
 
   Returns:
     float:
@@ -247,10 +225,6 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
   data = np.asarray(data, dtype="float32")
   n = len(data)
   max_tsep_factor = 0.25
-  if min_vectors is not None:
-    min_neighbors = min_vectors
-    msg = "min_vectors is deprecated, use min_neighbors instead"
-    warnings.warn(msg, DeprecationWarning)
   if lag is None or min_tsep is None:
     # both the algorithm for lag and min_tsep need the fft
     f = np.fft.rfft(data, n * 2 - 1)
@@ -755,17 +729,6 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       between template vectors for m (dists_m) and for m + 1 (dists_m1).
   """
   data = np.asarray(data)
-  if dist == "chebychev":
-    warnings.warn(deprecation_msg_sampen_dist, DeprecationWarning)
-    warnings.warn(deprecation_msg_chebychev, DeprecationWarning)
-    dist = rowwise_chebyshev
-  elif dist == "euler":
-    warnings.warn(deprecation_msg_sampen_dist, DeprecationWarning)
-    warnings.warn(deprecation_msg_euler, DeprecationWarning)
-    dist = rowwise_euclidean
-  elif dist is rowwise_chebychev:
-    warnings.warn(deprecation_msg_chebychev, DeprecationWarning)
-    dist = rowwise_chebyshev
     
   if tolerance is None:
     tolerance = 0.2 * np.std(data)
@@ -1383,9 +1346,6 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
       coefficients (`[slope, intercept]`)
   """
   data = np.asarray(data)
-  if dist is rowwise_chebychev:
-    warnings.warn(deprecation_msg_chebychev, DeprecationWarning)
-    dist = rowwise_chebyshev
 
   # TODO what are good values for r?
   # TODO do this for multiple values of emb_dim?
