@@ -5,7 +5,7 @@ Nolds only consists of to single module called ``nolds`` which contains all
 relevant algorithms and helper functions.
 
 Internally these functions are subdivided into different modules such as
-`measures` and `datasets`, but you should not need to import these modules
+``measures`` and ``datasets``, but you should not need to import these modules
 directly unless you want access to some internal helper functions.
 
 
@@ -58,7 +58,7 @@ Benchmark dataset for hurst exponent
    markets"[b7_a]_.
 
    It is included here, because the dataset can be found online [b7_b]_ and is
-   used by other software packages such as the R-package `pracma` [b7_c]_.
+   used by other software packages such as the R-package ``pracma`` [b7_c]_.
    As such it can be used to compare different implementations.
 
    However, it should be noted that the idea that the "true" Hurst exponent of

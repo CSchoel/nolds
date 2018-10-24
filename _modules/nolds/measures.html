@@ -132,8 +132,9 @@
 <span class="sd">  Note that none of the required parameters may be set to None.</span>
 
 <span class="sd">  Kwargs:</span>
-<span class="sd">    kwargs(dict): arguments used for lyap_r (required: emb_dim, lag,</span>
-<span class="sd">    trajectory_len and min_tsep)</span>
+<span class="sd">    kwargs(dict):</span>
+<span class="sd">      arguments used for lyap_r (required: emb_dim, lag, trajectory_len and</span>
+<span class="sd">      min_tsep)</span>
 
 <span class="sd">  Returns:</span>
 <span class="sd">    minimum number of data points required to call lyap_r with the given</span>
@@ -248,7 +249,7 @@
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
-<span class="sd">      `plt.show()`</span>
+<span class="sd">      ``plt.show()``</span>
 <span class="sd">    fit_offset (int):</span>
 <span class="sd">      neglect the first fit_offset steps when fitting</span>
 
@@ -258,9 +259,9 @@
 <span class="sd">      a strong indicator for chaos)</span>
 <span class="sd">    (1d-vector, 1d-vector, list):</span>
 <span class="sd">      only present if debug_data is True: debug data of the form</span>
-<span class="sd">      `(ks, div_traj, poly)` where `ks` are the x-values of the line fit, </span>
-<span class="sd">      `div_traj` are the y-values and `poly` are the line coefficients</span>
-<span class="sd">      (`[slope, intercept]`).</span>
+<span class="sd">      ``(ks, div_traj, poly)`` where ``ks`` are the x-values of the line fit, </span>
+<span class="sd">      ``div_traj`` are the y-values and ``poly`` are the line coefficients</span>
+<span class="sd">      (``[slope, intercept]``).</span>
 
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># convert data to float to avoid overflow errors in rowwise_euclidean</span>
@@ -391,8 +392,9 @@
 <span class="sd">  Note that none of the required parameters may be set to None.</span>
 
 <span class="sd">  Kwargs:</span>
-<span class="sd">    kwargs(dict): arguments used for lyap_e (required: emb_dim, matrix_dim,</span>
-<span class="sd">    min_nb and min_tsep)</span>
+<span class="sd">    kwargs(dict):</span>
+<span class="sd">      arguments used for lyap_e (required: emb_dim, matrix_dim, min_nb</span>
+<span class="sd">      and min_tsep)</span>
 
 <span class="sd">  Returns:</span>
 <span class="sd">    minimum number of data points required to call lyap_e with the given</span>
@@ -503,7 +505,7 @@
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
-<span class="sd">      `plt.show()`</span>
+<span class="sd">      ``plt.show()``</span>
 
 <span class="sd">  Returns:</span>
 <span class="sd">    float array:</span>
@@ -751,7 +753,7 @@
 <span class="sd">      (default: 0.2 * std(data))</span>
 <span class="sd">    dist (function (2d-array, 1d-array) -&gt; 1d-array):</span>
 <span class="sd">      distance function used to calculate the distance between template</span>
-<span class="sd">      vectors. Sampen is defined using `rowwise_chebyshev`. You should only use</span>
+<span class="sd">      vectors. Sampen is defined using ``rowwise_chebyshev``. You should only use</span>
 <span class="sd">      something else, if you are sure that you need it.</span>
 <span class="sd">    debug_plot (boolean):</span>
 <span class="sd">      if True, a histogram of the individual distances for m and m+1</span>
@@ -760,14 +762,14 @@
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
-<span class="sd">      `plt.show()`</span>
+<span class="sd">      ``plt.show()``</span>
 
 <span class="sd">  Returns:</span>
 <span class="sd">    float:</span>
 <span class="sd">      the sample entropy of the data (negative logarithm of ratio between</span>
 <span class="sd">      similar template vectors of length emb_dim + 1 and emb_dim)</span>
 <span class="sd">    [float list, float list]:</span>
-<span class="sd">      Lists of lists of the form `[dists_m, dists_m1]` containing the distances</span>
+<span class="sd">      Lists of lists of the form ``[dists_m, dists_m1]`` containing the distances</span>
 <span class="sd">      between template vectors for m (dists_m) and for m + 1 (dists_m1).</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -1069,7 +1071,7 @@
              <span class="n">reg_label</span><span class="o">=</span><span class="s2">&quot;regression line&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Helper function to plot trend lines for line-fitting approaches. This</span>
-<span class="sd">  function will show a plot through `plt.show()` and close it after the window</span>
+<span class="sd">  function will show a plot through ``plt.show()`` and close it after the window</span>
 <span class="sd">  has been closed by the user.</span>
 
 <span class="sd">  Args:</span>
@@ -1078,7 +1080,7 @@
 <span class="sd">    yvals (list/array of float):</span>
 <span class="sd">      list of y-values</span>
 <span class="sd">    poly (list/array of float):</span>
-<span class="sd">      polynomial parameters as accepted by `np.polyval`</span>
+<span class="sd">      polynomial parameters as accepted by ``np.polyval``</span>
 <span class="sd">  Kwargs:</span>
 <span class="sd">    x_label (str):</span>
 <span class="sd">      label of the x-axis</span>
@@ -1090,7 +1092,7 @@
 <span class="sd">      label of the regression line</span>
 <span class="sd">    fname (str):</span>
 <span class="sd">      file name (if not None, the plot will be saved to disc instead of</span>
-<span class="sd">      showing it though `plt.show()`)</span>
+<span class="sd">      showing it though ``plt.show()``)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># local import to avoid dependency for non-debug use</span>
   <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -1224,7 +1226,7 @@
 
 <span class="sd">      Generally, the choice for n is a trade-off between the length and the</span>
 <span class="sd">      number of the subsequences that are used for the calculation of the</span>
-<span class="sd">      (R/S)_n. Very low values of n lead to high variance in the `r` and `s`</span>
+<span class="sd">      (R/S)_n. Very low values of n lead to high variance in the ``r`` and ``s``</span>
 <span class="sd">      while very high values may leave too few subsequences that the mean along</span>
 <span class="sd">      them is still meaningful. Logarithmic spacing makes sense, because it </span>
 <span class="sd">      translates to even spacing in the log-log-plot.</span>
@@ -1239,7 +1241,7 @@
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
-<span class="sd">      `plt.show()`</span>
+<span class="sd">      ``plt.show()``</span>
 <span class="sd">    corrected (boolean):</span>
 <span class="sd">      if True, the Anis-Lloyd-Peters correction factor will be applied to the</span>
 <span class="sd">      output according to the expected value for the individual (R/S)_n</span>
@@ -1258,9 +1260,9 @@
 <span class="sd">      long-range correlations)</span>
 <span class="sd">    (1d-vector, 1d-vector, list):</span>
 <span class="sd">      only present if debug_data is True: debug data of the form</span>
-<span class="sd">      `(nvals, rsvals, poly)` where `nvals` are the values used for log(n), </span>
-<span class="sd">      `rsvals` are the corresponding log((R/S)_n) and `poly` are the line </span>
-<span class="sd">      coefficients (`[slope, intercept]`)</span>
+<span class="sd">      ``(nvals, rsvals, poly)`` where ``nvals`` are the values used for log(n), </span>
+<span class="sd">      ``rsvals`` are the corresponding log((R/S)_n) and ``poly`` are the line </span>
+<span class="sd">      coefficients (``[slope, intercept]``)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="n">total_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -1376,16 +1378,16 @@
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
-<span class="sd">      `plt.show()`</span>
+<span class="sd">      ``plt.show()``</span>
 
 <span class="sd">  Returns:</span>
 <span class="sd">    float:</span>
 <span class="sd">      correlation dimension as slope of the line fitted to log(r) vs log(C(r))</span>
 <span class="sd">    (1d-vector, 1d-vector, list):</span>
 <span class="sd">      only present if debug_data is True: debug data of the form</span>
-<span class="sd">      `(rvals, csums, poly)` where `rvals` are the values used for log(r), </span>
-<span class="sd">      `csums` are the corresponding log(C(r)) and `poly` are the line </span>
-<span class="sd">      coefficients (`[slope, intercept]`)</span>
+<span class="sd">      ``(rvals, csums, poly)`` where ``rvals`` are the values used for log(r), </span>
+<span class="sd">      ``csums`` are the corresponding log(C(r)) and ``poly`` are the line </span>
+<span class="sd">      coefficients (``[slope, intercept]``)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -1529,7 +1531,7 @@
 <span class="sd">    plot_file (str):</span>
 <span class="sd">      if debug_plot is True and plot_file is not None, the plot will be saved</span>
 <span class="sd">      under the given file name instead of directly showing it through</span>
-<span class="sd">      `plt.show()`</span>
+<span class="sd">      ``plt.show()``</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    float:</span>
 <span class="sd">      the estimate alpha for the Hurst parameter (alpha &lt; 1: stationary</span>
@@ -1538,9 +1540,9 @@
 <span class="sd">      motion with H = alpha - 1)</span>
 <span class="sd">    (1d-vector, 1d-vector, list):</span>
 <span class="sd">      only present if debug_data is True: debug data of the form</span>
-<span class="sd">      `(nvals, fluctuations, poly)` where `nvals` are the values used for</span>
-<span class="sd">      log(n), `fluctuations` are the corresponding log(std(X,n)) and `poly`</span>
-<span class="sd">      are the line coefficients (`[slope, intercept]`)</span>
+<span class="sd">      ``(nvals, fluctuations, poly)`` where ``nvals`` are the values used for</span>
+<span class="sd">      log(n), ``fluctuations`` are the corresponding log(std(X,n)) and ``poly``</span>
+<span class="sd">      are the line coefficients (``[slope, intercept]``)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="n">total_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>

@@ -44,21 +44,23 @@
   <div class="section" id="nolds-examples">
 <h1>Nolds examples<a class="headerlink" href="#nolds-examples" title="Permalink to this headline">¶</a></h1>
 <p>You can run some examples for the functions in nolds with the command
-<cite>python -m nolds.examples &lt;key&gt;</cite> where <cite>&lt;key&gt;</cite> can be one of the following:</p>
+<code class="docutils literal"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">nolds.examples</span> <span class="pre">&lt;key&gt;</span></code> where <code class="docutils literal"><span class="pre">&lt;key&gt;</span></code> can be one of the following:</p>
 <ul class="simple">
-<li><cite>lyapunov-logistic</cite> shows a bifurcation plot of the logistic map and compares
-the true lyapunov exponent to the estimates obtained with <cite>lyap_e</cite> and
-<cite>lyap_r</cite>.</li>
-<li><cite>lyapunov-tent</cite> shows the same plot as <cite>lyapunov-logistic</cite>, but for the tent
+<li><code class="docutils literal"><span class="pre">lyapunov-logistic</span></code> shows a bifurcation plot of the logistic map and compares
+the true lyapunov exponent to the estimates obtained with <code class="docutils literal"><span class="pre">lyap_e</span></code> and
+<code class="docutils literal"><span class="pre">lyap_r</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">lyapunov-tent</span></code> shows the same plot as <code class="docutils literal"><span class="pre">lyapunov-logistic</span></code>, but for the tent
 map.</li>
-<li><cite>profiling</cite> runs a profiling test with the package <cite>cProfile</cite>.</li>
-<li><cite>hurst-weron2</cite> plots a reconstruction of figure 2 of the weron 2002 paper
+<li><code class="docutils literal"><span class="pre">profiling</span></code> runs a profiling test with the package <code class="docutils literal"><span class="pre">cProfile</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">hurst-weron2</span></code> plots a reconstruction of figure 2 of the weron 2002 paper
 about the hurst exponent.</li>
-<li><cite>hurst-hist</cite> plots a histogram of hurst exponents obtained for random noise.</li>
+<li><code class="docutils literal"><span class="pre">hurst-hist</span></code> plots a histogram of hurst exponents obtained for random noise.</li>
+<li><code class="docutils literal"><span class="pre">hurst-nvals</span></code> creates a plot that compares the results of different choices for nvals
+for the function <code class="docutils literal"><span class="pre">hurst_rs</span></code>.</li>
 </ul>
-<p>These tests are also available as functions inside the module <cite>nolds.examples</cite>.</p>
+<p>These tests are also available as functions inside the module <code class="docutils literal"><span class="pre">nolds.examples</span></code>.</p>
 <div class="section" id="functions-in-nolds-examples">
-<h2>Functions in <cite>nolds.examples</cite><a class="headerlink" href="#functions-in-nolds-examples" title="Permalink to this headline">¶</a></h2>
+<h2>Functions in <code class="docutils literal"><span class="pre">nolds.examples</span></code><a class="headerlink" href="#functions-in-nolds-examples" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="nolds.examples.plot_lyap">
 <code class="descclassname">nolds.examples.</code><code class="descname">plot_lyap</code><span class="sig-paren">(</span><em>maptype='logistic'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#plot_lyap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.plot_lyap" title="Permalink to this definition">¶</a></dt>
@@ -150,7 +152,7 @@ for the function hurst_rs.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>data (array of float):</dt>
+<dt>data (array-like of float):</dt>
 <dd>the input data from which the hurst exponent should be estimated</dd>
 </dl>
 </dd>
@@ -176,7 +178,7 @@ in comparison to the default choices</dd>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Nolds examples</a><ul>
-<li><a class="reference internal" href="#functions-in-nolds-examples">Functions in <cite>nolds.examples</cite></a></li>
+<li><a class="reference internal" href="#functions-in-nolds-examples">Functions in <code class="docutils literal"><span class="pre">nolds.examples</span></code></a></li>
 </ul>
 </li>
 </ul>

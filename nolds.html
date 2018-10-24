@@ -46,7 +46,7 @@
 <p>Nolds only consists of to single module called <code class="docutils literal"><span class="pre">nolds</span></code> which contains all
 relevant algorithms and helper functions.</p>
 <p>Internally these functions are subdivided into different modules such as
-<cite>measures</cite> and <cite>datasets</cite>, but you should not need to import these modules
+<code class="docutils literal"><span class="pre">measures</span></code> and <code class="docutils literal"><span class="pre">datasets</span></code>, but you should not need to import these modules
 directly unless you want access to some internal helper functions.</p>
 <div class="section" id="algorithms">
 <h2>Algorithms<a class="headerlink" href="#algorithms" title="Permalink to this headline">¶</a></h2>
@@ -164,7 +164,7 @@ be shown</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
-<cite>plt.show()</cite></dd>
+<code class="docutils literal"><span class="pre">plt.show()</span></code></dd>
 <dt>fit_offset (int):</dt>
 <dd>neglect the first fit_offset steps when fitting</dd>
 </dl>
@@ -176,9 +176,9 @@ under the given file name instead of directly showing it through
 a strong indicator for chaos)</dd>
 <dt>(1d-vector, 1d-vector, list):</dt>
 <dd>only present if debug_data is True: debug data of the form
-<cite>(ks, div_traj, poly)</cite> where <cite>ks</cite> are the x-values of the line fit, 
-<cite>div_traj</cite> are the y-values and <cite>poly</cite> are the line coefficients
-(<cite>[slope, intercept]</cite>).</dd>
+<code class="docutils literal"><span class="pre">(ks,</span> <span class="pre">div_traj,</span> <span class="pre">poly)</span></code> where <code class="docutils literal"><span class="pre">ks</span></code> are the x-values of the line fit, 
+<code class="docutils literal"><span class="pre">div_traj</span></code> are the y-values and <code class="docutils literal"><span class="pre">poly</span></code> are the line coefficients
+(<code class="docutils literal"><span class="pre">[slope,</span> <span class="pre">intercept]</span></code>).</dd>
 </dl>
 </dd>
 </dl>
@@ -305,7 +305,7 @@ url: <a class="reference external" href="http://www.mpipks-dresden.mpg.de/~tisea
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
-<cite>plt.show()</cite></dd>
+<code class="docutils literal"><span class="pre">plt.show()</span></code></dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
@@ -380,7 +380,7 @@ url: <a class="reference external" href="https://cran.r-project.org/web/packages
 (default: 0.2 * std(data))</dd>
 <dt>dist (function (2d-array, 1d-array) -&gt; 1d-array):</dt>
 <dd>distance function used to calculate the distance between template
-vectors. Sampen is defined using <cite>rowwise_chebyshev</cite>. You should only use
+vectors. Sampen is defined using <code class="docutils literal"><span class="pre">rowwise_chebyshev</span></code>. You should only use
 something else, if you are sure that you need it.</dd>
 <dt>debug_plot (boolean):</dt>
 <dd>if True, a histogram of the individual distances for m and m+1</dd>
@@ -389,7 +389,7 @@ something else, if you are sure that you need it.</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
-<cite>plt.show()</cite></dd>
+<code class="docutils literal"><span class="pre">plt.show()</span></code></dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
@@ -398,7 +398,7 @@ under the given file name instead of directly showing it through
 <dd>the sample entropy of the data (negative logarithm of ratio between
 similar template vectors of length emb_dim + 1 and emb_dim)</dd>
 <dt>[float list, float list]:</dt>
-<dd>Lists of lists of the form <cite>[dists_m, dists_m1]</cite> containing the distances
+<dd>Lists of lists of the form <code class="docutils literal"><span class="pre">[dists_m,</span> <span class="pre">dists_m1]</span></code> containing the distances
 between template vectors for m (dists_m) and for m + 1 (dists_m1).</dd>
 </dl>
 </dd>
@@ -560,7 +560,7 @@ url: <a class="reference external" href="http://de.mathworks.com/matlabcentral/f
 logarithmically spaced values in the medium 25% of the logarithmic range)</p>
 <p class="last">Generally, the choice for n is a trade-off between the length and the
 number of the subsequences that are used for the calculation of the
-(R/S)_n. Very low values of n lead to high variance in the <cite>r</cite> and <cite>s</cite>
+(R/S)_n. Very low values of n lead to high variance in the <code class="docutils literal"><span class="pre">r</span></code> and <code class="docutils literal"><span class="pre">s</span></code>
 while very high values may leave too few subsequences that the mean along
 them is still meaningful. Logarithmic spacing makes sense, because it 
 translates to even spacing in the log-log-plot.</p>
@@ -576,7 +576,7 @@ is more robust to outliers</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
-<cite>plt.show()</cite></dd>
+<code class="docutils literal"><span class="pre">plt.show()</span></code></dd>
 <dt>corrected (boolean):</dt>
 <dd>if True, the Anis-Lloyd-Peters correction factor will be applied to the
 output according to the expected value for the individual (R/S)_n
@@ -597,9 +597,9 @@ negative long-range correlations, if K &gt; 0.5 there are positive
 long-range correlations)</dd>
 <dt>(1d-vector, 1d-vector, list):</dt>
 <dd>only present if debug_data is True: debug data of the form
-<cite>(nvals, rsvals, poly)</cite> where <cite>nvals</cite> are the values used for log(n), 
-<cite>rsvals</cite> are the corresponding log((R/S)_n) and <cite>poly</cite> are the line 
-coefficients (<cite>[slope, intercept]</cite>)</dd>
+<code class="docutils literal"><span class="pre">(nvals,</span> <span class="pre">rsvals,</span> <span class="pre">poly)</span></code> where <code class="docutils literal"><span class="pre">nvals</span></code> are the values used for log(n), 
+<code class="docutils literal"><span class="pre">rsvals</span></code> are the corresponding log((R/S)_n) and <code class="docutils literal"><span class="pre">poly</span></code> are the line 
+coefficients (<code class="docutils literal"><span class="pre">[slope,</span> <span class="pre">intercept]</span></code>)</dd>
 </dl>
 </dd>
 </dl>
@@ -707,7 +707,7 @@ is more robust to outliers</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
-<cite>plt.show()</cite></dd>
+<code class="docutils literal"><span class="pre">plt.show()</span></code></dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
@@ -716,9 +716,9 @@ under the given file name instead of directly showing it through
 <dd>correlation dimension as slope of the line fitted to log(r) vs log(C(r))</dd>
 <dt>(1d-vector, 1d-vector, list):</dt>
 <dd>only present if debug_data is True: debug data of the form
-<cite>(rvals, csums, poly)</cite> where <cite>rvals</cite> are the values used for log(r), 
-<cite>csums</cite> are the corresponding log(C(r)) and <cite>poly</cite> are the line 
-coefficients (<cite>[slope, intercept]</cite>)</dd>
+<code class="docutils literal"><span class="pre">(rvals,</span> <span class="pre">csums,</span> <span class="pre">poly)</span></code> where <code class="docutils literal"><span class="pre">rvals</span></code> are the values used for log(r), 
+<code class="docutils literal"><span class="pre">csums</span></code> are the corresponding log(C(r)) and <code class="docutils literal"><span class="pre">poly</span></code> are the line 
+coefficients (<code class="docutils literal"><span class="pre">[slope,</span> <span class="pre">intercept]</span></code>)</dd>
 </dl>
 </dd>
 </dl>
@@ -856,7 +856,7 @@ is more robust to outliers</dd>
 <dt>plot_file (str):</dt>
 <dd>if debug_plot is True and plot_file is not None, the plot will be saved
 under the given file name instead of directly showing it through
-<cite>plt.show()</cite></dd>
+<code class="docutils literal"><span class="pre">plt.show()</span></code></dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
@@ -868,9 +868,9 @@ alpha &gt; 1: non-stationary process similar to fractional Brownian
 motion with H = alpha - 1)</dd>
 <dt>(1d-vector, 1d-vector, list):</dt>
 <dd>only present if debug_data is True: debug data of the form
-<cite>(nvals, fluctuations, poly)</cite> where <cite>nvals</cite> are the values used for
-log(n), <cite>fluctuations</cite> are the corresponding log(std(X,n)) and <cite>poly</cite>
-are the line coefficients (<cite>[slope, intercept]</cite>)</dd>
+<code class="docutils literal"><span class="pre">(nvals,</span> <span class="pre">fluctuations,</span> <span class="pre">poly)</span></code> where <code class="docutils literal"><span class="pre">nvals</span></code> are the values used for
+log(n), <code class="docutils literal"><span class="pre">fluctuations</span></code> are the corresponding log(std(X,n)) and <code class="docutils literal"><span class="pre">poly</span></code>
+are the line coefficients (<code class="docutils literal"><span class="pre">[slope,</span> <span class="pre">intercept]</span></code>)</dd>
 </dl>
 </dd>
 </dl>
@@ -1057,8 +1057,12 @@ to use lyap_r.</p>
 <p>Note that none of the required parameters may be set to None.</p>
 <dl class="docutils">
 <dt>Kwargs:</dt>
-<dd>kwargs(dict): arguments used for lyap_r (required: emb_dim, lag,
-trajectory_len and min_tsep)</dd>
+<dd><dl class="first last docutils">
+<dt>kwargs(dict):</dt>
+<dd>arguments used for lyap_r (required: emb_dim, lag, trajectory_len and
+min_tsep)</dd>
+</dl>
+</dd>
 <dt>Returns:</dt>
 <dd>minimum number of data points required to call lyap_r with the given
 parameters</dd>
@@ -1073,8 +1077,12 @@ to use lyap_e.</p>
 <p>Note that none of the required parameters may be set to None.</p>
 <dl class="docutils">
 <dt>Kwargs:</dt>
-<dd>kwargs(dict): arguments used for lyap_e (required: emb_dim, matrix_dim,
-min_nb and min_tsep)</dd>
+<dd><dl class="first last docutils">
+<dt>kwargs(dict):</dt>
+<dd>arguments used for lyap_e (required: emb_dim, matrix_dim, min_nb
+and min_tsep)</dd>
+</dl>
+</dd>
 <dt>Returns:</dt>
 <dd>minimum number of data points required to call lyap_e with the given
 parameters</dd>
@@ -1093,7 +1101,7 @@ parameters</dd>
 It is a synthetic dataset from the book “Chaos and Order in the Capital
 markets”<a class="reference internal" href="#b7-a" id="id5">[b7_a]</a>.</p>
 <p>It is included here, because the dataset can be found online <a class="reference internal" href="#b7-b" id="id6">[b7_b]</a> and is
-used by other software packages such as the R-package <cite>pracma</cite> <a class="reference internal" href="#b7-c" id="id7">[b7_c]</a>.
+used by other software packages such as the R-package <code class="docutils literal"><span class="pre">pracma</span></code> <a class="reference internal" href="#b7-c" id="id7">[b7_c]</a>.
 As such it can be used to compare different implementations.</p>
 <p>However, it should be noted that the idea that the “true” Hurst exponent of
 this series is indeed 0.7270 is problematic for several reasons:</p>
