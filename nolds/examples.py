@@ -236,8 +236,7 @@ if __name__ == "__main__":
   # run this with the following command:
   # python -m nolds.examples lyapunov-logistic
   import sys
-  if len(sys.argv) < 2:
-    print("please tell me which tests you want to run")
+  def print_options():
     print("options are:")
     print("  lyapunov-logistic")
     print("  lyapunov-tent")
@@ -245,6 +244,9 @@ if __name__ == "__main__":
     print("  hurst-weron2")
     print("  hurst-hist")
     print("  hurst-nvals")
+  if len(sys.argv) < 2:
+    print("please tell me which tests you want to run")
+    print_options()
   elif sys.argv[1] == "lyapunov-logistic":
     plot_lyap()
   elif sys.argv[1] == "lyapunov-tent":
@@ -258,3 +260,6 @@ if __name__ == "__main__":
     plot_hurst_hist()
   elif sys.argv[1] == "hurst-nvals":
     hurst_compare_nvals(datasets.brown72)
+  else:
+    print("i do not know any test of that name")
+    print_options()
