@@ -206,7 +206,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
-      `plt.show()`
+      ``plt.show()``
     fit_offset (int):
       neglect the first fit_offset steps when fitting
 
@@ -216,9 +216,9 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
       a strong indicator for chaos)
     (1d-vector, 1d-vector, list):
       only present if debug_data is True: debug data of the form
-      `(ks, div_traj, poly)` where `ks` are the x-values of the line fit, 
-      `div_traj` are the y-values and `poly` are the line coefficients
-      (`[slope, intercept]`).
+      ``(ks, div_traj, poly)`` where ``ks`` are the x-values of the line fit, 
+      ``div_traj`` are the y-values and ``poly`` are the line coefficients
+      (``[slope, intercept]``).
 
   """
   # convert data to float to avoid overflow errors in rowwise_euclidean
@@ -461,7 +461,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
-      `plt.show()`
+      ``plt.show()``
 
   Returns:
     float array:
@@ -709,7 +709,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       (default: 0.2 * std(data))
     dist (function (2d-array, 1d-array) -> 1d-array):
       distance function used to calculate the distance between template
-      vectors. Sampen is defined using `rowwise_chebyshev`. You should only use
+      vectors. Sampen is defined using ``rowwise_chebyshev``. You should only use
       something else, if you are sure that you need it.
     debug_plot (boolean):
       if True, a histogram of the individual distances for m and m+1
@@ -718,14 +718,14 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
-      `plt.show()`
+      ``plt.show()``
 
   Returns:
     float:
       the sample entropy of the data (negative logarithm of ratio between
       similar template vectors of length emb_dim + 1 and emb_dim)
     [float list, float list]:
-      Lists of lists of the form `[dists_m, dists_m1]` containing the distances
+      Lists of lists of the form ``[dists_m, dists_m1]`` containing the distances
       between template vectors for m (dists_m) and for m + 1 (dists_m1).
   """
   data = np.asarray(data)
@@ -1027,7 +1027,7 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
              reg_label="regression line", fname=None):
   """
   Helper function to plot trend lines for line-fitting approaches. This
-  function will show a plot through `plt.show()` and close it after the window
+  function will show a plot through ``plt.show()`` and close it after the window
   has been closed by the user.
 
   Args:
@@ -1036,7 +1036,7 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
     yvals (list/array of float):
       list of y-values
     poly (list/array of float):
-      polynomial parameters as accepted by `np.polyval`
+      polynomial parameters as accepted by ``np.polyval``
   Kwargs:
     x_label (str):
       label of the x-axis
@@ -1048,7 +1048,7 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
       label of the regression line
     fname (str):
       file name (if not None, the plot will be saved to disc instead of
-      showing it though `plt.show()`)
+      showing it though ``plt.show()``)
   """
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
@@ -1182,7 +1182,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 
       Generally, the choice for n is a trade-off between the length and the
       number of the subsequences that are used for the calculation of the
-      (R/S)_n. Very low values of n lead to high variance in the `r` and `s`
+      (R/S)_n. Very low values of n lead to high variance in the ``r`` and ``s``
       while very high values may leave too few subsequences that the mean along
       them is still meaningful. Logarithmic spacing makes sense, because it 
       translates to even spacing in the log-log-plot.
@@ -1197,7 +1197,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
-      `plt.show()`
+      ``plt.show()``
     corrected (boolean):
       if True, the Anis-Lloyd-Peters correction factor will be applied to the
       output according to the expected value for the individual (R/S)_n
@@ -1216,9 +1216,9 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
       long-range correlations)
     (1d-vector, 1d-vector, list):
       only present if debug_data is True: debug data of the form
-      `(nvals, rsvals, poly)` where `nvals` are the values used for log(n), 
-      `rsvals` are the corresponding log((R/S)_n) and `poly` are the line 
-      coefficients (`[slope, intercept]`)
+      ``(nvals, rsvals, poly)`` where ``nvals`` are the values used for log(n), 
+      ``rsvals`` are the corresponding log((R/S)_n) and ``poly`` are the line 
+      coefficients (``[slope, intercept]``)
   """
   data = np.asarray(data)
   total_N = len(data)
@@ -1334,16 +1334,16 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
-      `plt.show()`
+      ``plt.show()``
 
   Returns:
     float:
       correlation dimension as slope of the line fitted to log(r) vs log(C(r))
     (1d-vector, 1d-vector, list):
       only present if debug_data is True: debug data of the form
-      `(rvals, csums, poly)` where `rvals` are the values used for log(r), 
-      `csums` are the corresponding log(C(r)) and `poly` are the line 
-      coefficients (`[slope, intercept]`)
+      ``(rvals, csums, poly)`` where ``rvals`` are the values used for log(r), 
+      ``csums`` are the corresponding log(C(r)) and ``poly`` are the line 
+      coefficients (``[slope, intercept]``)
   """
   data = np.asarray(data)
 
@@ -1487,7 +1487,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     plot_file (str):
       if debug_plot is True and plot_file is not None, the plot will be saved
       under the given file name instead of directly showing it through
-      `plt.show()`
+      ``plt.show()``
   Returns:
     float:
       the estimate alpha for the Hurst parameter (alpha < 1: stationary
@@ -1496,9 +1496,9 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
       motion with H = alpha - 1)
     (1d-vector, 1d-vector, list):
       only present if debug_data is True: debug data of the form
-      `(nvals, fluctuations, poly)` where `nvals` are the values used for
-      log(n), `fluctuations` are the corresponding log(std(X,n)) and `poly`
-      are the line coefficients (`[slope, intercept]`)
+      ``(nvals, fluctuations, poly)`` where ``nvals`` are the values used for
+      log(n), ``fluctuations`` are the corresponding log(std(X,n)) and ``poly``
+      are the line coefficients (``[slope, intercept]``)
   """
   data = np.asarray(data)
   total_N = len(data)

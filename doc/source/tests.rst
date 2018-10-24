@@ -2,7 +2,7 @@ Nolds Unittests
 ===============
 
 Nolds includes a set of unittests that can be run with
-`python -m unittest nolds.test_measures`.
+``python -m unittest nolds.test_measures``.
 Some of these tests are based on random numbers and can therefore fail in rare
 cases.
 
