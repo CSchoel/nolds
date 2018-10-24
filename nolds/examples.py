@@ -226,7 +226,8 @@ def hurst_compare_nvals(data, nvals=None):
   plt.xlabel("log(n)")
   plt.ylabel("log((R/S)_n - E[(R/S)_n])")
   plt.legend(l_all + l_def + l_div + l_cst, ["all", "default", "divisors"] + t_cst)
-  for data, label in zip([dd_all[0], dd_def[0], dd_div[0]], "all", "def", "div"):
+  labeled_data = zip([dd_all[0], dd_def[0], dd_div[0]], ["all", "def", "div"])
+  for data, label in labeled_data:
     print("%s: %.3f" % (label, data))
   if nvals is not None:
     print("custom: %.3f" % dd_cst[0])
