@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [0.5.0]
+
+### Added
+
 - test function `hurst_compare_nvals` that compares different choices for the `nvals` parameter for `hurst_rs`
 - example for `hurst_compare_nvals` (can be called using `python -m nolds.examples hurst-nvals`)
 - helper functions `lyap_r_len` and `lyap_e_len` to calculate minimum data length required for `lyap_r` and `lyap_e`
