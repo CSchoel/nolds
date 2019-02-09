@@ -6,11 +6,14 @@ import numpy as np
 import warnings
 import math
 
+
 def rowwise_chebyshev(x, y):
   return np.max(np.abs(x - y), axis=1)
 
+
 def rowwise_euclidean(x, y):
   return np.sqrt(np.sum((x - y)**2, axis=1))
+
 
 def poly_fit(x, y, degree, fit="RANSAC"):
   # check if we can use RANSAC
@@ -82,6 +85,7 @@ def delay_embedding(data, emb_dim, lag=1):
   indices += np.arange(m).reshape((m, 1))
   return data[indices]
 
+
 def lyap_r_len(**kwargs):
   """
   Helper function that calculates the minimum number of data points required
@@ -105,6 +109,7 @@ def lyap_r_len(**kwargs):
   # we need min_tsep * 2 + 1 orbit vectors to find neighbors for each
   min_len += kwargs['min_tsep'] * 2 + 1
   return min_len
+
 
 def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
            trajectory_len=20, fit="RANSAC", debug_plot=False, debug_data=False,
@@ -217,7 +222,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
       a strong indicator for chaos)
     (1d-vector, 1d-vector, list):
       only present if debug_data is True: debug data of the form
-      ``(ks, div_traj, poly)`` where ``ks`` are the x-values of the line fit, 
+      ``(ks, div_traj, poly)`` where ``ks`` are the x-values of the line fit,
       ``div_traj`` are the y-values and ``poly`` are the line coefficients
       (``[slope, intercept]``).
 
@@ -249,6 +254,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     acorr = np.roll(acorr, n - 1)
     eps = acorr[n - 1] * (1 - 1.0 / np.e)
     lag = 1
+
     # small helper function to calculate resulting number of vectors for a
     # given lag value
     def nb_neighbors(lag_value):
@@ -258,7 +264,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
       )
       return max(0, n - min_len)
     # find lag
-    for i in range(1,n):
+    for i in range(1, n):
       lag = i
       if acorr[n - 1 + i] < eps or acorr[n - 1 - i] < eps:
         break
@@ -291,7 +297,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     dists[i, max(0, i - min_tsep):i + min_tsep + 1] = float("inf")
   # check that we have enough data points to continue
   ntraj = m - trajectory_len + 1
-  min_traj = min_tsep * 2 + 2 # in each row min_tsep + 1 disances are inf
+  min_traj = min_tsep * 2 + 2  # in each row min_tsep + 1 disances are inf
   if ntraj <= 0:
     msg = "Not enough data points. Need {} additional data points to follow " \
         + "a complete trajectory."
@@ -307,7 +313,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
   # find nearest neighbors (exclude last columns, because these vectors cannot
   # be followed in time for trajectory_len steps)
   nb_idx = np.argmin(dists[:ntraj, :ntraj], axis=1)
-  
+
   # build divergence trajectory by averaging distances along the trajectory
   # over all neighbor pairs
   div_traj = np.zeros(trajectory_len, dtype=float)
@@ -335,12 +341,15 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     # normal line fitting
     poly = poly_fit(ks[fit_offset:], div_traj[fit_offset:], 1, fit=fit)
   if debug_plot:
-    plot_reg(ks[fit_offset:], div_traj[fit_offset:], poly, "k", "log(d(k))", fname=plot_file)
+    plot_reg(
+      ks[fit_offset:], div_traj[fit_offset:],
+      poly, "k", "log(d(k))", fname=plot_file)
   le = poly[0] / tau
   if debug_data:
     return (le, (ks, div_traj, poly))
   else:
     return le
+
 
 def lyap_e_len(**kwargs):
   """
@@ -368,6 +377,7 @@ def lyap_e_len(**kwargs):
   # we need at least min_nb neighbors for each orbit vector
   min_len += kwargs['min_nb']
   return min_len
+
 
 def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
            debug_plot=False, debug_data=False, plot_file=None):
@@ -487,8 +497,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     emb_dim=emb_dim, matrix_dim=matrix_dim, min_nb=min_nb, min_tsep=min_tsep
   )
   if n < min_len:
-    msg = "{} data points are not enough! For emb_dim = {}, matrix_dim = {}, " \
-      + "min_tsep = {} and min_nb = {} you need at least {} data points " \
+    msg = "{} data points are not enough! For emb_dim = {}, matrix_dim = {}" \
+      + ", min_tsep = {} and min_nb = {} you need at least {} data points " \
       + "in your time series"
     warnings.warn(
       msg.format(n, emb_dim, matrix_dim, min_tsep, min_nb, min_len),
@@ -576,11 +586,11 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     # x_j1+(d_M)m - x_i+(d_M)m
     # x_j2+(d_M)m - x_i+(d_M)m
     # ...
-    if max(np.max(indices),i) + matrix_dim * m >= len(data):
+    if max(np.max(indices), i) + matrix_dim * m >= len(data):
       assert len(data) < min_len
       msg = "Not enough data points. Cannot follow orbit vector {} for " \
-          + "{} (matrix_dim * m) time steps. Input must have at least length " \
-          + "{}."
+          + "{} (matrix_dim * m) time steps. Input must have at least " \
+          + "length {}."
       raise ValueError(msg.format(i, matrix_dim * m, min_len))
     vec_beta = data[indices + matrix_dim * m] - data[i + matrix_dim * m]
 
@@ -711,8 +721,8 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       (default: 0.2 * std(data))
     dist (function (2d-array, 1d-array) -> 1d-array):
       distance function used to calculate the distance between template
-      vectors. Sampen is defined using ``rowwise_chebyshev``. You should only use
-      something else, if you are sure that you need it.
+      vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
+      use something else, if you are sure that you need it.
     debug_plot (boolean):
       if True, a histogram of the individual distances for m and m+1
     debug_data (boolean):
@@ -727,11 +737,12 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       the sample entropy of the data (negative logarithm of ratio between
       similar template vectors of length emb_dim + 1 and emb_dim)
     [float list, float list]:
-      Lists of lists of the form ``[dists_m, dists_m1]`` containing the distances
-      between template vectors for m (dists_m) and for m + 1 (dists_m1).
+      Lists of lists of the form ``[dists_m, dists_m1]`` containing the
+      distances between template vectors for m (dists_m)
+      and for m + 1 (dists_m1).
   """
   data = np.asarray(data)
-    
+
   if tolerance is None:
     tolerance = 0.2 * np.std(data)
   n = len(data)
@@ -836,6 +847,7 @@ def logarithmic_n(min_n, max_n, factor):
       ns.append(n)
   return ns
 
+
 def logmid_n(max_n, ratio=1/4.0, nsteps=15):
   """
   Creates an array of integers that lie evenly spaced in the "middle" of the
@@ -872,6 +884,7 @@ def logmid_n(max_n, ratio=1/4.0, nsteps=15):
   midrange = start + 1.0*np.arange(nsteps)/nsteps*span
   nvals = np.round(np.exp(midrange)).astype("int32")
   return np.unique(nvals)
+
 
 def logarithmic_r(min_n, max_n, factor):
   """
@@ -912,13 +925,14 @@ def expected_rs(n):
       expected (R/S)_n for white noise
   """
   front = (n - 0.5) / n
-  i = np.arange(1,n)
+  i = np.arange(1, n)
   back = np.sum(np.sqrt((n - i) / i))
   if n <= 340:
     middle = math.gamma((n-1) * 0.5) / math.sqrt(math.pi) / math.gamma(n * 0.5)
   else:
     middle = 1.0 / math.sqrt(n * math.pi * 0.5)
   return front * middle * back
+
 
 def expected_h(nvals, fit="RANSAC"):
   """
@@ -971,7 +985,7 @@ def rs(data, n, unbiased=True):
   """
   data = np.asarray(data)
   total_N = len(data)
-  m = total_N // n # number of sequences
+  m = total_N // n  # number of sequences
   # cut values at the end of data to make the array divisible by n
   data = data[:total_N - (total_N % n)]
   # split remaining data into subsequences of length n
@@ -1029,8 +1043,8 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
              reg_label="regression line", fname=None):
   """
   Helper function to plot trend lines for line-fitting approaches. This
-  function will show a plot through ``plt.show()`` and close it after the window
-  has been closed by the user.
+  function will show a plot through ``plt.show()`` and close it after the
+  window has been closed by the user.
 
   Args:
     xvals (list/array of float):
@@ -1138,16 +1152,16 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
              of the length of the sequence as n. The length is reduced by at
              most 1% to find the value that has the most divisors.
 
-             * The "Simple R/S" estimate is just log((R/S)_n) / log(n) for 
+             * The "Simple R/S" estimate is just log((R/S)_n) / log(n) for
                n = N.
              * The "theoretical Hurst exponent" is the value that would be
                expected of an uncorrected rescaled range approach for random
                noise of the size of the input data.
              * The "empirical Hurst exponent" is the uncorrected Hurst exponent
                obtained by the rescaled range approach.
-             * The "corrected empirical Hurst exponent" is the Anis-Lloyd-Peters
-               corrected Hurst exponent, but with sqrt(1/2 * pi * n) added to
-               the (R/S)_n before the log.
+             * The "corrected empirical Hurst exponent" is the
+               Anis-Lloyd-Peters corrected Hurst exponent, but with
+               sqrt(1/2 * pi * n) added to the (R/S)_n before the log.
              * The "corrected R over S Hurst exponent" uses the R-function "lm"
                instead of pracmas own "polyfit" and uses n = N/2, N/4, N/8, ...
                by successively halving the subsequences (which means that some
@@ -1184,10 +1198,10 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 
       Generally, the choice for n is a trade-off between the length and the
       number of the subsequences that are used for the calculation of the
-      (R/S)_n. Very low values of n lead to high variance in the ``r`` and ``s``
-      while very high values may leave too few subsequences that the mean along
-      them is still meaningful. Logarithmic spacing makes sense, because it 
-      translates to even spacing in the log-log-plot.
+      (R/S)_n. Very low values of n lead to high variance in the ``r`` and
+      ``s`` while very high values may leave too few subsequences that the mean
+      along them is still meaningful. Logarithmic spacing makes sense, because
+      it translates to even spacing in the log-log-plot.
     fit (str):
       the fitting method to use for the line fit, either 'poly' for normal
       least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
@@ -1218,8 +1232,8 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
       long-range correlations)
     (1d-vector, 1d-vector, list):
       only present if debug_data is True: debug data of the form
-      ``(nvals, rsvals, poly)`` where ``nvals`` are the values used for log(n), 
-      ``rsvals`` are the corresponding log((R/S)_n) and ``poly`` are the line 
+      ``(nvals, rsvals, poly)`` where ``nvals`` are the values used for log(n),
+      ``rsvals`` are the corresponding log((R/S)_n) and ``poly`` are the line
       coefficients (``[slope, intercept]``)
   """
   data = np.asarray(data)
@@ -1260,6 +1274,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     return h
 
 # TODO implement generalized hurst exponent H_q
+
 
 def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
              fit="RANSAC", debug_plot=False, debug_data=False, plot_file=None):
@@ -1343,8 +1358,8 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
       correlation dimension as slope of the line fitted to log(r) vs log(C(r))
     (1d-vector, 1d-vector, list):
       only present if debug_data is True: debug data of the form
-      ``(rvals, csums, poly)`` where ``rvals`` are the values used for log(r), 
-      ``csums`` are the corresponding log(C(r)) and ``poly`` are the line 
+      ``(rvals, csums, poly)`` where ``rvals`` are the values used for log(r),
+      ``csums`` are the corresponding log(C(r)) and ``poly`` are the line
       coefficients (``[slope, intercept]``)
   """
   data = np.asarray(data)
@@ -1378,6 +1393,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     return (poly[0], (np.log(rvals), np.log(csums), poly))
   else:
     return poly[0]
+
 
 def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
         fit_exp="RANSAC", debug_plot=False, debug_data=False, plot_file=None):
@@ -1513,7 +1529,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
       nvals = [total_N-2, total_N-1]
       msg = "choosing nvals = {} , DFA with less than ten data points is " \
           + "extremely unreliable"
-      warnings.warn(msg.format(nvals),RuntimeWarning)
+      warnings.warn(msg.format(nvals), RuntimeWarning)
   if len(nvals) < 2:
     raise ValueError("at least two nvals are needed")
   if np.min(nvals) < 2:
