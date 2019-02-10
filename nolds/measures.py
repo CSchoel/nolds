@@ -1273,7 +1273,117 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   else:
     return h
 
-# TODO implement generalized hurst exponent H_q
+# TODO implement MFDFA as second (more reliable) measure for multifractality
+
+
+def hurst_multifractal(data, qvals=[1], delta_d=1, dists=range(1, 20)):
+  """
+  Generalized Hurst exponent
+  (what I think is correct according to Barabási and Vicsek)
+  """
+  # transform to array if necessary
+  data = np.asarray(data)
+  if len(data) < 60:
+    warnings.warn(
+      "H(q) is not reliable for small time series ({} < 60)".format(len(data))
+    )
+
+  def hhcorr(d, q):
+    diffs = np.abs(data[:-dist] - data[dist:])
+    diffs = diffs[np.where(diffs > 0)]
+    return np.mean(diffs ** q)
+
+  corrvals = [hhcorr(dist, q) for d in dists for q in qvals]
+  corrvals = np.array(corrvals, dtype="float32")
+  corrvals = corrvals.reshape(len(dists), len(qvals))
+  H = [
+    np.polyfit(np.log(dists * delta_d), np.log(corrvals[:, qi]))[0] - qvals[qi]
+    for qi in range(len(qvals))
+  ]
+  return H
+
+
+def _aste_line_fit(x, y):
+  """
+  Simple linear regression with ordinary least squares
+  https://en.wikipedia.org/wiki/Simple_linear_regression
+
+  NOTE: this function is left here to demonstrate the correctness of
+  T. Aste's MATLAB code for hurst_multifractal_dm. You can get the same
+  results with a call to ``np.polyfit(x, y, 1)[::-1]``.
+  """
+  N = len(x)
+  mx = np.mean(x)
+  my = np.mean(y)
+  # calculate the variance in x
+  # sum((x - mx) ^ 2) = sum(x ^ 2) - 2 * sum(x * mx) + N * mx ^ 2
+  #                   = sum(x ^ 2) - 2 * mx * sum(x) + N * mx ^ 2
+  #                   = sum(x ^ 2) - 2 * mx * N * mx + N * mx ^ 2
+  #                   = sum(x ^ 2) - N * mx ^ 2
+  var = np.sum(x ** 2) - N * mx * mx
+  # corvariance of x and y
+  # sum((x - mx) * (y - my))
+  #   = sum(xy) - sum(mx * y) - sum(my * x) + N * mx * my
+  #   = sum(xy) - mx * sum(y) - my * sum(x) + N * mx * my
+  #   = sum(xy) - mx * my * N - my * mx * N + N * mx * my
+  #   = sum(xy) - N * mx * my
+  # NOTE: T. Aste's code is a little confusing here
+  #    X = 1:N;
+  #    Y = S(((tt+1):tt:(L+tt))-tt)';
+  #    ...
+  #    SSxy = sum(X.*Y) - N*mx*my;
+  # Here, Y is transposed and the multiplication for SSxy uses .* instead of *.
+  # This suggests that we have a matrix multiplication with (possible)
+  # broadcasting. If X was an array and not a range, we would have a NxN array
+  # as a result since size(X) = [1, N] and size(Y) = [N, 1]. Ranges behave
+  # differently in MATLAB and this is the only reason why we get the correct
+  # result here.
+  cov = np.sum(x * y) - N * mx * my
+  # calculate slope and intercept (this is correct again)
+  slope = cov / var
+  intercept = my - slope * mx
+  return [intercept, slope]
+
+
+def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20)):
+  """
+  Generalized Hurst exponent
+  (reverse engineered from Tomaso Aste's MATLAB code)
+  https://ch.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
+  """
+  # transform to array if necessary
+  data = np.asarray(data)
+  if len(data) < 60:
+    warnings.warn(
+      "H(q) is not reliable for small time series ({} < 60)".format(len(data))
+    )
+  N = len(data)
+  max_max_dist = np.max(max_dists)
+  hhcorr = []
+  for dist in range(1, max_max_dist):
+    step_size = dist
+    # build the difference array of X(t + tau) - X(t)
+    # apart from the step_size this is reasonable
+    #  S(((tt+1):tt:L)-tt) = S(1:tt:L-tt)
+    diffs = data[dist:N:step_size] - data[0:N-dist:step_size]
+    #  S(((tt+1):tt:(L+tt))-tt) = S(1:tt:L)
+    stepdata = data[::step_size]
+    intercept, slope = _aste_line_fit(np.arange(len(stepdata))+1, stepdata)
+    diffs -= slope
+    stepdata -= slope * np.arange(len(stepdata)) + intercept
+    hhcorr.append([
+      np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q)
+      for q in qvals
+    ])
+  hhcorr = np.array(hhcorr, dtype="float32")
+  H = np.array([
+    _aste_line_fit(np.log(range(1, md)), np.log(hhcorr[:md-1, qi]))[1]
+    for qi in range(qvals)
+    for md in max_dists
+  ], dtype="float32").reshape(len(qvals), len(max_dists))
+  mH = np.mean(H, axis=1)
+  sH = np.mean(H, axis=1)
+  return [mH, sH]
 
 
 def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,

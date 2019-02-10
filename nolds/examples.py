@@ -250,6 +250,31 @@ def hurst_compare_nvals(data, nvals=None):
   plt.show()
 
 
+def aste_line_fitting(N=100):
+  slope = np.random.random() * 10 - 5
+  intercept = np.random.random() * 100 - 50
+  xvals = np.arange(N)
+  yvals = xvals * slope + intercept + np.random.randn(N)*100
+  import matplotlib.pyplot as plt
+  plt.plot(xvals, yvals, "rx", label="data")
+  plt.plot(
+    [0, N-1], [intercept, intercept + slope * (N-1)],
+    "r-", label="true ({:.3f} x + {:.3f})".format(slope, intercept), alpha=0.5
+  )
+  i_aste, s_aste = nolds._aste_line_fit(xvals, yvals)
+  s_np, i_np = np.polyfit(xvals, yvals, 1)
+  plt.plot(
+    [0, N-1], [i_aste, i_aste + s_aste * (N-1)],
+    "b-", label="aste ({:.3f} x + {:.3f})".format(s_aste, i_aste), alpha=0.5
+  )
+  plt.plot(
+    [0, N-1], [i_np, i_np + s_np * (N-1)],
+    "g-", label="numpy ({:.3f} x + {:.3f})".format(s_np, i_np), alpha=0.5
+  )
+  plt.legend()
+  plt.show()
+
+
 if __name__ == "__main__":
   # run this with the following command:
   # python -m nolds.examples lyapunov-logistic
@@ -263,6 +288,7 @@ if __name__ == "__main__":
     print("  hurst-weron2")
     print("  hurst-hist")
     print("  hurst-nvals")
+    print("  aste-line")
   if len(sys.argv) < 2:
     print("please tell me which tests you want to run")
     print_options()
@@ -279,6 +305,8 @@ if __name__ == "__main__":
     plot_hurst_hist()
   elif sys.argv[1] == "hurst-nvals":
     hurst_compare_nvals(datasets.brown72)
+  elif sys.argv[1] == "aste-line":
+    aste_line_fitting()
   else:
     print("i do not know any test of that name")
     print_options()
