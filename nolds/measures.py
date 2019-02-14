@@ -1383,7 +1383,7 @@ def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20)):
   hhcorr = np.array(hhcorr, dtype="float32")
   H = np.array([
     _aste_line_fit(np.log(range(1, md)), np.log(hhcorr[:md-1, qi]))[1]
-    for qi in range(qvals)
+    for qi in range(len(qvals))
     for md in max_dists
   ], dtype="float32").reshape(len(qvals), len(max_dists))
   mH = np.mean(H, axis=1)
