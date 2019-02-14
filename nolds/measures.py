@@ -1386,8 +1386,8 @@ def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20)):
     for qi in range(len(qvals))
     for md in max_dists
   ], dtype="float32").reshape(len(qvals), len(max_dists))
-  mH = np.mean(H, axis=1)
-  sH = np.mean(H, axis=1)
+  mH = np.mean(H, axis=1) / qvals
+  sH = np.mean(H, axis=1) / qvals
   return [mH, sH]
 
 
