@@ -4,6 +4,7 @@ from __future__ import (absolute_import, division,
 from builtins import *
 import numpy as np
 import pkg_resources
+import datetime
 
 
 def fbm(n, H=0.75):
@@ -263,4 +264,44 @@ def logistic_map(x, steps, r=4):
     yield x
 
 
+def load_financial():
+
+  def load_finance_yahoo_data(f):
+    f.readline()
+    days = []
+    values = []
+    for l in f:
+      fields = l.decode("utf-8")
+      fields = fields.split(",")
+      d = datetime.datetime.strptime(fields[0], "%Y-%m-%d")
+      v = [np.nan if x.strip() == "null" else float(x) for x in fields[1:]]
+      days.append(d)
+      values.append(v)
+    return np.array(days), np.array(values)
+
+  def pad_opening_values(values):
+    # fill first value from future if required
+    first = 0
+    while np.isnan(values[first, 0]):
+      first += 1
+    values[0, 0] = first
+    # iterate over all indices where data is missing
+    for i in np.where(np.isnan(values))[0]:
+      j = i
+      # pad opening value with close value of previous data
+      while np.isfinite(values[j][0]):
+        j -= 1
+      values[i, 0] = values[j, 3]
+
+  data = []
+  for index in ["^JKSE", "^N225", "^NDX"]:
+    fname = "datasets/{}.csv".format(index)
+    with pkg_resources.resource_stream(__name__, fname) as f:
+      days, values = load_finance_yahoo_data(f)
+      pad_opening_values(values)
+      data.append((days, values))
+  return data
+
+
 brown72 = load_brown72()
+jkse, n225, ndx = load_financial()
