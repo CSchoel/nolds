@@ -275,6 +275,13 @@ def aste_line_fitting(N=100):
   plt.show()
 
 
+def hurst_mf_stock():
+  print(len(datasets.jkse[0]))
+  print(len(datasets.n225[0]))
+  print(len(datasets.ndx[0]))
+  print(nolds.hurst_multifractal(datasets.ndx[1][:, 0], qvals=[1]))
+
+
 if __name__ == "__main__":
   # run this with the following command:
   # python -m nolds.examples lyapunov-logistic
@@ -289,6 +296,7 @@ if __name__ == "__main__":
     print("  hurst-hist")
     print("  hurst-nvals")
     print("  aste-line")
+    print("  hurst-mf-stock")
   if len(sys.argv) < 2:
     print("please tell me which tests you want to run")
     print_options()
@@ -307,6 +315,8 @@ if __name__ == "__main__":
     hurst_compare_nvals(datasets.brown72)
   elif sys.argv[1] == "aste-line":
     aste_line_fitting()
+  elif sys.argv[1] == "hurst-mf-stock":
+    hurst_mf_stock()
   else:
     print("i do not know any test of that name")
     print_options()
