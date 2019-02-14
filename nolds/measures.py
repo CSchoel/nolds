@@ -1283,6 +1283,7 @@ def hurst_multifractal(data, qvals=[1], delta_d=1, dists=range(1, 20)):
   """
   # transform to array if necessary
   data = np.asarray(data)
+  dists = np.asarray(dists)
   if len(data) < 60:
     warnings.warn(
       "H(q) is not reliable for small time series ({} < 60)".format(len(data))
