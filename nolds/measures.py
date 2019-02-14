@@ -1289,7 +1289,7 @@ def hurst_multifractal(data, qvals=[1], delta_d=1, dists=range(1, 20)):
     )
 
   def hhcorr(d, q):
-    diffs = np.abs(data[:-dist] - data[dist:])
+    diffs = np.abs(data[:-d] - data[d:])
     diffs = diffs[np.where(diffs > 0)]
     return np.mean(diffs ** q)
 
