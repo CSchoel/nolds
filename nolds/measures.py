@@ -1374,8 +1374,8 @@ def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20)):
     #  S(((tt+1):tt:(L+tt))-tt) = S(1:tt:L)
     stepdata = data[::step_size]
     intercept, slope = _aste_line_fit(np.arange(len(stepdata))+1, stepdata)
-    diffs -= slope
-    stepdata -= slope * np.arange(len(stepdata)) + intercept
+    diffs = diffs - slope
+    stepdata = stepdata - slope * np.arange(len(stepdata)) - intercept
     hhcorr.append([
       np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q)
       for q in qvals
