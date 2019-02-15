@@ -228,7 +228,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
 
   """
   # convert data to float to avoid overflow errors in rowwise_euclidean
-  data = np.asarray(data, dtype="float32")
+  data = np.asarray(data, dtype=np.float64)
   n = len(data)
   max_tsep_factor = 0.25
   if lag is None or min_tsep is None:
@@ -520,7 +520,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
         + "to have min_nb = {} neighbor candidates"
     raise ValueError(msg.format(min_nb-len(orbit), min_nb))
   old_Q = np.identity(matrix_dim)
-  lexp = np.zeros(matrix_dim, dtype="float32")
+  lexp = np.zeros(matrix_dim, dtype=np.float64)
   lexp_counts = np.zeros(lexp.shape)
   debug_values = []
   # TODO reduce number of points to visit?
@@ -621,7 +621,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     diag_R = np.diag(mat_R)
     # filter zeros in mat_R (would lead to -infs)
     idx = np.where(diag_R > 0)
-    lexp_i = np.zeros(diag_R.shape, dtype="float32")
+    lexp_i = np.zeros(diag_R.shape, dtype=np.float64)
     lexp_i[idx] = np.log(diag_R[idx])
     lexp_i[np.where(diag_R == 0)] = np.inf
     if debug_plot or debug_data:
@@ -1027,7 +1027,7 @@ def plot_histogram_matrix(data, name, fname=None):
     rng = (-absmax, absmax)
     h, bins = np.histogram(data[:, i], nbins, rng)
     bin_width = bins[1] - bins[0]
-    h = h.astype("float32") / np.sum(h)
+    h = h.astype(np.float64) / np.sum(h)
     plt.bar(bins[:-1], h, bin_width)
     plt.axvline(np.mean(data[:, i]), color="red")
     plt.ylim(ylim)
@@ -1295,7 +1295,7 @@ def hurst_multifractal(data, qvals=[1], delta_d=1, dists=range(1, 20)):
     return np.mean(diffs ** q)
 
   corrvals = [hhcorr(d, q) for d in dists for q in qvals]
-  corrvals = np.array(corrvals, dtype="float32")
+  corrvals = np.array(corrvals, dtype=np.float64)
   corrvals = corrvals.reshape(len(dists), len(qvals))
   H = [
     np.polyfit(
@@ -1380,12 +1380,12 @@ def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20)):
       np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q)
       for q in qvals
     ])
-  hhcorr = np.array(hhcorr, dtype="float32")
+  hhcorr = np.array(hhcorr, dtype=np.float64)
   H = np.array([
     _aste_line_fit(np.log(range(1, md+1)), np.log(hhcorr[:md, qi]))[1]
     for qi in range(len(qvals))
     for md in max_dists
-  ], dtype="float32").reshape(len(qvals), len(max_dists))
+  ], dtype=np.float64).reshape(len(qvals), len(max_dists))
   mH = np.mean(H, axis=1) / qvals
   sH = np.mean(H, axis=1) / qvals
   return [mH, sH]
