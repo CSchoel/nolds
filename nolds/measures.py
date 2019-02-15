@@ -1302,7 +1302,7 @@ def hurst_multifractal(data, qvals=[1], delta_d=1, dists=range(1, 20)):
       np.log(dists * delta_d),
       np.log(corrvals[:, qi]),
       1
-    )[0] - qvals[qi]
+    )[0] / qvals[qi]
     for qi in range(len(qvals))
   ]
   return H
