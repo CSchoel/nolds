@@ -1297,14 +1297,10 @@ def hurst_multifractal(data, qvals=[1], delta_d=1, dists=range(1, 20)):
   corrvals = [hhcorr(d, q) for d in dists for q in qvals]
   corrvals = np.array(corrvals, dtype=np.float64)
   corrvals = corrvals.reshape(len(dists), len(qvals))
-  H = [
-    np.polyfit(
-      np.log(dists * delta_d),
-      np.log(corrvals[:, qi]),
-      1
-    )[0] / qvals[qi]
-    for qi in range(len(qvals))
-  ]
+  xvals = np.log(dists * delta_d)
+  yvals = np.log(corrvals)
+  polys = [np.polyfit(xvals, yvals[:, qi], 1) for qi in range(len(qvals))]
+  H = np.array(polys)[:, 0] / qvals
   return H
 
 
