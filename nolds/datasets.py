@@ -317,7 +317,8 @@ def barabasi1991_fractal(size, iterations, b1=0.8, b2=0.5):
     data[x0 - x0:x1 - x0] = np.linspace(0, 1, x1 - x0) * b1 * h + y0
     data[x1 - x0:x2 - x0] = np.linspace(1, 0, x2 - x1) * b1 * h + y0
     data[x2 - x0:x3 - x0] = np.linspace(0, 1, x3 - x2) * b2 * h + y0
-    data[x3 - x0:x4 - x0] = np.linspace(0, 1, x4 - x3) * (1 - b2) * h + y0 + b2 * h
+    data[x3 - x0:x4 - x0] = np.linspace(0, 1, x4 - x3) * (1 - b2) * h \
+                          + y0 + b2 * h
     return data, [x0, x1, x2, x3, x4]
   fractal = np.linspace(0, 1, size)
   intervals = [(0, size)]
