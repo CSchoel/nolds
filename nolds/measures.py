@@ -1297,7 +1297,9 @@ def hurst_multifractal(data, qvals=[1], delta_d=1, dists=range(1, 20)):
   corrvals = [hhcorr(d, q) for d in dists for q in qvals]
   corrvals = np.array(corrvals, dtype=np.float64)
   corrvals = corrvals.reshape(len(dists), len(qvals))
-  xvals = np.log(dists * delta_d)
+  # NOTE: the scaling of the x-axis does not matter, since any delta
+  # np.log(dists * delta) would only change the intercept and not the slope
+  xvals = np.log(dists)
   yvals = np.log(corrvals)
   polys = [np.polyfit(xvals, yvals[:, qi], 1) for qi in range(len(qvals))]
   H = np.array(polys)[:, 0] / qvals
