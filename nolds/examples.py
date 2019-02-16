@@ -295,6 +295,16 @@ def barabasi_1991_figure2():
   plt.show()
 
 
+def barabasi_1991_figure3():
+  import matplotlib.pyplot as plt
+  brown = np.cumsum(np.random.random(10000000)-0.5)
+  qvals = range(1, 11)
+  Hq = nolds.hurst_multifractal(brown, qvals=qvals, dists=[2 ** i for i in range(3, 9)], debug_plot=True)
+  plt.plot(qvals, Hq, "r+")
+  plt.ylim(0, 1)
+  plt.show()
+
+
 if __name__ == "__main__":
   # run this with the following command:
   # python -m nolds.examples lyapunov-logistic
@@ -332,6 +342,8 @@ if __name__ == "__main__":
     hurst_mf_stock()
   elif sys.argv[1] == "hurst-mf-barabasi2":
     barabasi_1991_figure2()
+  elif sys.argv[1] == "hurst-mf-barabasi3":
+    barabasi_1991_figure3()
   else:
     print("i do not know any test of that name")
     print_options()
