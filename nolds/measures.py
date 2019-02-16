@@ -1081,6 +1081,35 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
   plt.close()
 
 
+def plot_reg_tiled(xvals, yvals, polys, x_label="x", y_label="y",
+                   data_labels=None, reg_labels=None, fname=None,
+                   columns=None):
+  # local import to avoid dependency for non-debug use
+  import matplotlib.pyplot as plt
+  max_span = max([np.max(y) - np.min(y) for y in yvals])
+  means = [np.mean(y) for y in yvals]
+  if columns is None:
+    columns = min(4, int(np.ceil(np.sqrt(len(xvals)))))
+  if data_labels is None:
+    data_labels = ["data"] * len(xvals)
+  if reg_labels is None:
+    reg_labels = ["regression line"] * len(xvals)
+  for i in range(len(xvals)):
+    plt.subplot(int(np.ceil(len(xvals) / columns)), columns, i + 1)
+    plt.plot(xvals[i], yvals[i], "bo", label=data_labels[i])
+    if not (polys is None):
+      plt.plot(xvals[i], np.polyval(polys[i], xvals[i]), "r-", label=reg_labels[i])
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.ylim(means[i] - max_span / 2, means[i] + max_span / 2)
+    plt.legend(loc="best")
+  if fname is None:
+    plt.show()
+  else:
+    plt.savefig(fname)
+  plt.close()
+
+
 def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
              debug_data=False, plot_file=None, corrected=True, unbiased=True):
   """
@@ -1276,7 +1305,8 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 # TODO implement MFDFA as second (more reliable) measure for multifractality
 
 
-def hurst_multifractal(data, qvals=[1], delta_d=1, dists=range(1, 20)):
+def hurst_multifractal(data, qvals=[1], dists=range(1, 20),
+                       debug_plot=False):
   """
   Generalized Hurst exponent
   (what I think is correct according to Barabási and Vicsek)
@@ -1303,6 +1333,12 @@ def hurst_multifractal(data, qvals=[1], delta_d=1, dists=range(1, 20)):
   yvals = np.log(corrvals)
   polys = [np.polyfit(xvals, yvals[:, qi], 1) for qi in range(len(qvals))]
   H = np.array(polys)[:, 0] / qvals
+  if debug_plot:
+    plot_reg_tiled([xvals] * len(qvals),
+                   [yvals[:, qi] / qvals[qi] for qi in range(len(qvals))],
+                   [p / q for p, q in zip(polys, qvals)],
+                   x_label="log(x)", y_label="$\\log(c_q(x)) / q$",
+                   data_labels=["q = %d" % q for q in qvals])
   return H
 
 
