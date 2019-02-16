@@ -284,7 +284,7 @@ def load_financial():
     first = 0
     while np.isnan(values[first, 0]):
       first += 1
-    values[0, 0] = first
+    values[0, 0] = values[first, 0]
     # iterate over all indices where data is missing
     for i in np.where(np.isnan(values))[0]:
       j = i
