@@ -305,6 +305,10 @@ def load_financial():
 
 def barabasi1991_fractal(size, iterations, b1=0.8, b2=0.5):
   def b1991(x0, y0, w, h):
+    if h < 0:
+      # for a segment with negative slope we have flip the x-axis
+      d, nxtp = b1991(x0, y0 + h, w, -h)
+      return d[::-1], nxtp
     x1 = x0 + w // 4
     x2 = x0 + w // 2
     x3 = x2 + w // 4
