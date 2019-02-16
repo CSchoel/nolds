@@ -289,7 +289,7 @@ def load_financial():
     for i in np.where(np.isnan(values[:, 0]))[0]:
       j = i
       # pad opening value with close value of previous data
-      while np.isfinite(values[j][0]):
+      while np.isnan(values[j][3]):
         j -= 1
       values[i, 0] = values[j, 3]
 
