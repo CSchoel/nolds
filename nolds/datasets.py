@@ -303,5 +303,29 @@ def load_financial():
   return data
 
 
+def barabasi1991_fractal(size, iterations, b1=0.8, b2=0.5):
+  def b1991(x0, y0, w, h):
+    x1 = x0 + w // 4
+    x2 = x0 + w // 2
+    x3 = x0 + w - int(np.round(b2 * (w / 2)))
+    x4 = x0 + w
+    data = np.zeros(w, dtype=np.float64)
+    data[x0 - x0:x1 - x0] = np.linspace(0, 1, x1 - x0) * b1 * h + y0
+    data[x1 - x0:x2 - x0] = np.linspace(1, 0, x2 - x1) * b1 * h + y0
+    data[x2 - x0:x4 - x0] = np.linspace(0, 1, x4 - x2) * h
+    return data, [x0, x1, x2, x3, x4]
+  fractal = np.linspace(0, 1, size)
+  intervals = [(0, size)]
+  for _ in range(iterations):
+    print(intervals)
+    next_intervals = []
+    for x1, x2 in intervals:
+      d, nxtp = b1991(x1, fractal[x1], x2 - x1, fractal[x2-1] - fractal[x1])
+      fractal[x1:x2] = d
+      next_intervals.extend([(np1, np2) for np1, np2 in zip(nxtp[:-1], nxtp[1:])])
+    intervals = next_intervals
+  return fractal
+
+
 brown72 = load_brown72()
 jkse, n225, ndx = load_financial()
