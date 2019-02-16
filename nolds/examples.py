@@ -281,6 +281,19 @@ def hurst_mf_stock():
   print(len(datasets.ndx[0]))
   print(nolds.hurst_multifractal(datasets.ndx[1][:, 0], qvals=[1]))
 
+def barabasi_1991_figure2():
+  import matplotlib.pyplot as plt
+  b1991 = datasets.barabasi1991_fractal(10000000, 9)
+  qvals = range(1, 11)
+  qvals_t = range(-10, 11)
+  b1 = 0.8
+  b2 = 0.5
+  Hq = nolds.hurst_multifractal(b1991, qvals=qvals, dists=[4 ** i for i in range(3, 9)], debug_plot=True)
+  Hq_t = [np.log((b1 ** q + b2 ** q) / 2) / np.log(0.25) / q for q in qvals_t]
+  plt.plot(qvals, Hq, "r+")
+  plt.plot(qvals_t, Hq_t)
+  plt.show()
+
 
 if __name__ == "__main__":
   # run this with the following command:
@@ -317,6 +330,8 @@ if __name__ == "__main__":
     aste_line_fitting()
   elif sys.argv[1] == "hurst-mf-stock":
     hurst_mf_stock()
+  elif sys.argv[1] == "hurst-mf-barabasi2":
+    barabasi_1991_figure2()
   else:
     print("i do not know any test of that name")
     print_options()
