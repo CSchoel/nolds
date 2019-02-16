@@ -286,7 +286,7 @@ def load_financial():
       first += 1
     values[0, 0] = values[first, 0]
     # iterate over all indices where data is missing
-    for i in np.where(np.isnan(values))[0]:
+    for i in np.where(np.isnan(values[:, 0]))[0]:
       j = i
       # pad opening value with close value of previous data
       while np.isfinite(values[j][0]):
