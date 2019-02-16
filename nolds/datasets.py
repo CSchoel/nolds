@@ -323,7 +323,6 @@ def barabasi1991_fractal(size, iterations, b1=0.8, b2=0.5):
   fractal = np.linspace(0, 1, size)
   intervals = [(0, size)]
   for _ in range(iterations):
-    print(intervals)
     next_intervals = []
     for x1, x2 in intervals:
       d, nxtp = b1991(x1, fractal[x1], x2 - x1, fractal[x2-1] - fractal[x1])
