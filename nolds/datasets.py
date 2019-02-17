@@ -265,6 +265,11 @@ def logistic_map(x, steps, r=4):
 
 
 def load_financial():
+  """
+  https://finance.yahoo.com/quote/%5EN225/history?period1=631148400&period2=988668000&interval=1d&filter=history&frequency=1d
+  https://finance.yahoo.com/quote/%5ENDX/history?period1=631148400&period2=988668000&interval=1d&filter=history&frequency=1d
+  https://finance.yahoo.com/quote/%5EJKSE/history?period1=631148400&period2=988668000&interval=1d&filter=history&frequency=1d
+  """
 
   def load_finance_yahoo_data(f):
     f.readline()
