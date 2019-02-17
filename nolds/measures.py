@@ -1366,7 +1366,7 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20),
   return H
 
 
-def genhurst(S, q):
+def _genhurst(S, q):
     """
     ####################################
     # Calculates the generalized Hurst exponent H(q) from the scaling
