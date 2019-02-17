@@ -1408,7 +1408,7 @@ def _aste_line_fit(x, y):
   return [intercept, slope]
 
 
-def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20)):
+def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20), detrended=True):
   """
   Generalized Hurst exponent
   (reverse engineered from Tomaso Aste's MATLAB code)
@@ -1424,16 +1424,13 @@ def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20)):
   max_max_dist = np.max(max_dists)
   hhcorr = []
   for dist in range(1, max_max_dist+1):
+    # NOTE: I don't think the step size is reasonable
+    # i cannot find any justification for this in the papers
     step_size = dist
     stepdata = data[::step_size]
-    # build the difference array of X(t + tau) - X(t)
-    # apart from the step_size this is reasonable
-    #  S(((tt+1):tt:L)-tt) = S(1:tt:L-tt)
+    if detrended:
+      stepdata = detrend(stepdata, order=1)
     diffs = stepdata[1:] - stepdata[:-1]
-    #  S(((tt+1):tt:(L+tt))-tt) = S(1:tt:L)
-    intercept, slope = _aste_line_fit(np.arange(len(stepdata))+1, stepdata)
-    diffs = diffs - slope
-    stepdata = stepdata - slope * np.arange(1, len(stepdata)+1) - intercept
     hhcorr.append([
       np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q)
       for q in qvals
@@ -1566,6 +1563,17 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     return (poly[0], (np.log(rvals), np.log(csums), poly))
   else:
     return poly[0]
+
+
+def detrend(data, order=1):
+  """
+  Removes a trend of given order from the data.
+  """
+  # TODO also use this function in dfa
+  xvals = np.arange(len(data))
+  trend = np.polyfit(xvals, data, order)
+  detrended = data - np.polyval(trend, xvals)
+  return detrended
 
 
 def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
