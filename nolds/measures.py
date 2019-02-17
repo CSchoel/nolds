@@ -1439,8 +1439,13 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True):
       for q in qvals
     ])
   hhcorr = np.array(hhcorr, dtype=np.float64)
+  xvals = np.log(np.arange(1, max_max_dist+1))
+  yvals = np.log(hhcorr)
+  # NOTE: using several maximum distances seems to be a strange way to
+  # introduce stability, since it only places emphasis on the lower distance
+  # ranges
   H = np.array([
-    _aste_line_fit(np.log(range(1, md+1)), np.log(hhcorr[:md, qi]))[1]
+    _aste_line_fit(xvals[:md], yvals[:md, qi])[1]
     for qi in range(len(qvals))
     for md in max_dists
   ], dtype=np.float64).reshape(len(qvals), len(max_dists))
