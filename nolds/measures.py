@@ -1375,6 +1375,9 @@ def _aste_line_fit(x, y):
   T. Aste's MATLAB code for hurst_multifractal_dm. You can get the same
   results with a call to ``np.polyfit(x, y, 1)[::-1]``.
   """
+  # convert to float to avoid integer overflow problems
+  x = np.asarray(x, dtype=np.float64)
+  y = np.asarray(y, dtype=np.float64)
   N = len(x)
   mx = np.mean(x)
   my = np.mean(y)
