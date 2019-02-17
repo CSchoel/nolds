@@ -1427,9 +1427,14 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
   N = len(data)
   max_max_dist = np.max(max_dists)
   hhcorr = []
+  # NOTE: I don't think it's a good idea to use a linear scale for the distance
+  # values. Our fit is in logarithmic space, so this will place more weight on
+  # the higher distance. This is not bad per se, but if you think that the
+  # first values are unreliable, it would be better to skip them alltogether.
   for dist in range(1, max_max_dist+1):
-    # NOTE: I don't think the step size is reasonable
-    # i cannot find any justification for this in the papers
+    # NOTE: I don't think applying a step size to the input data is reasonable.
+    # I cannot find any justification for this in the papers and reduces the
+    # number of points that we can use to make our mean statistically stable.
     step_size = dist
     stepdata = data[::step_size]
     if detrend:
@@ -1442,9 +1447,9 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
   hhcorr = np.array(hhcorr, dtype=np.float64)
   xvals = np.log(np.arange(1, max_max_dist+1))
   yvals = np.log(hhcorr)
-  # NOTE: using several maximum distances seems to be a strange way to
+  # NOTE: Using several maximum distances seems to be a strange way to
   # introduce stability, since it only places emphasis on the lower distance
-  # ranges
+  # ranges and does not introduce any new information.
   H = np.array([
     _aste_line_fit(xvals[:md], yvals[:md, qi])[1]
     for qi in range(len(qvals))
