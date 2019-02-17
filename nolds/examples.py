@@ -276,10 +276,23 @@ def aste_line_fitting(N=100):
 
 
 def hurst_mf_stock():
-  print(len(datasets.jkse[0]))
-  print(len(datasets.n225[0]))
-  print(len(datasets.ndx[0]))
-  print(nolds.hurst_multifractal(datasets.ndx[1][:, 0], qvals=[1]))
+  import matplotlib.pyplot as plt
+  qvals = [1, 2, 3, 4]
+  print("Dataset  mfhurst_b  mfhurst_dm  _genhurst")
+  for data, lab in zip(datasets.load_financial(), ["jkse", "n225", "ndx"]):
+    data = data[1][:, 0]
+    # plt.plot(data)
+    # plt.show()
+    # plt.close()
+    # print(lab)
+    # print([nolds.genhurst(data, q) for q in qvals])
+    # print(nolds.mfhurst_b(data, qvals=qvals, debug_plot=True))
+    # print(nolds.mfhurst_dm(data, qvals=qvals, debug_plot=True)[0])
+    mfh_b = nolds.mfhurst_b(data, qvals=[2])[0]
+    mfh_dm = nolds.mfhurst_dm(data, qvals=[2])[0][0]
+    gh = nolds._genhurst(data, 2)
+    print("{:10s}   {:5.3f}       {:5.3f}      {:5.3f}".format(lab, mfh_b, mfh_dm, gh))
+
 
 def barabasi_1991_figure2():
   import matplotlib.pyplot as plt
