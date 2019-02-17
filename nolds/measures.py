@@ -1424,12 +1424,12 @@ def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20)):
   hhcorr = []
   for dist in range(1, max_max_dist+1):
     step_size = dist
+    stepdata = data[::step_size]
     # build the difference array of X(t + tau) - X(t)
     # apart from the step_size this is reasonable
     #  S(((tt+1):tt:L)-tt) = S(1:tt:L-tt)
-    diffs = data[dist:N:step_size] - data[0:N-dist:step_size]
+    diffs = stepdata[1:] - stepdata[:-1]
     #  S(((tt+1):tt:(L+tt))-tt) = S(1:tt:L)
-    stepdata = data[::step_size]
     intercept, slope = _aste_line_fit(np.arange(len(stepdata))+1, stepdata)
     diffs = diffs - slope
     stepdata = stepdata - slope * np.arange(1, len(stepdata)+1) - intercept
