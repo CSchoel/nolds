@@ -1408,7 +1408,7 @@ def _aste_line_fit(x, y):
   return [intercept, slope]
 
 
-def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrended=True):
+def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True):
   """
   Generalized Hurst exponent
   (reverse engineered from Tomaso Aste's MATLAB code)
@@ -1429,7 +1429,7 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrended=True):
     step_size = dist
     stepdata = data[::step_size]
     if detrended:
-      stepdata = detrend(stepdata, order=1)
+      stepdata = detrend_data(stepdata, order=1)
     diffs = stepdata[1:] - stepdata[:-1]
     hhcorr.append([
       np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q)
@@ -1565,7 +1565,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     return poly[0]
 
 
-def detrend(data, order=1):
+def detrend_data(data, order=1):
   """
   Removes a trend of given order from the data.
   """
