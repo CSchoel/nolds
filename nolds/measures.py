@@ -1110,6 +1110,27 @@ def plot_reg_tiled(xvals, yvals, polys, x_label="x", y_label="y",
   plt.close()
 
 
+def plot_reg_multiple(xvals, yvals, polys, x_label="x", y_label="y",
+                      data_labels=None, reg_labels=None, fname=None):
+  import matplotlib.pyplot as plt
+  if data_labels is None:
+    data_labels = ["data"] * len(xvals)
+  if reg_labels is None:
+    reg_labels = ["regression line"] * len(xvals)
+  for i in range(len(xvals)):
+    plt.plot(xvals[i], yvals[i], "+", label=data_labels[i])
+    if not (polys is None):
+      plt.plot(xvals[i], np.polyval(polys[i], xvals[i]), label=reg_labels[i])
+  plt.xlabel(x_label)
+  plt.ylabel(y_label)
+  plt.legend(loc="best")
+  if fname is None:
+    plt.show()
+  else:
+    plt.savefig(fname)
+  plt.close()
+
+
 def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
              debug_data=False, plot_file=None, corrected=True, unbiased=True):
   """
@@ -1334,11 +1355,13 @@ def hurst_multifractal(data, qvals=[1], dists=range(1, 20),
   polys = [np.polyfit(xvals, yvals[:, qi], 1) for qi in range(len(qvals))]
   H = np.array(polys)[:, 0] / qvals
   if debug_plot:
-    plot_reg_tiled([xvals] * len(qvals),
-                   [yvals[:, qi] / qvals[qi] for qi in range(len(qvals))],
-                   [p / q for p, q in zip(polys, qvals)],
-                   x_label="log(x)", y_label="$\\log(c_q(x)) / q$",
-                   data_labels=["q = %d" % q for q in qvals])
+    plot_reg_multiple(
+      [xvals] * len(qvals),
+      [yvals[:, qi] / qvals[qi] for qi in range(len(qvals))],
+      [p / q for p, q in zip(polys, qvals)],
+      x_label="log(x)", y_label="$\\log(c_q(x)) / q$",
+      data_labels=["q = %d" % q for q in qvals]
+    )
   return H
 
 
