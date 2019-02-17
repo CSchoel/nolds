@@ -1428,7 +1428,7 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True):
     # i cannot find any justification for this in the papers
     step_size = dist
     stepdata = data[::step_size]
-    if detrended:
+    if detrend:
       stepdata = detrend_data(stepdata, order=1)
     diffs = stepdata[1:] - stepdata[:-1]
     hhcorr.append([
