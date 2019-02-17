@@ -1360,7 +1360,8 @@ def hurst_multifractal(data, qvals=[1], dists=range(1, 20),
       [yvals[:, qi] / qvals[qi] for qi in range(len(qvals))],
       [p / q for p, q in zip(polys, qvals)],
       x_label="log(x)", y_label="$\\log(c_q(x)) / q$",
-      data_labels=["q = %d" % q for q in qvals]
+      data_labels=["q = %d" % q for q in qvals],
+      reg_labels=["reg. line (H = {:.3f})".format(h) for h in H]
     )
   return H
 
