@@ -1326,8 +1326,8 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 # TODO implement MFDFA as second (more reliable) measure for multifractality
 
 
-def hurst_multifractal(data, qvals=[1], dists=range(1, 20),
-                       debug_plot=False):
+def mfhurst_b(data, qvals=[1], dists=range(1, 20),
+              debug_plot=False):
   """
   Generalized Hurst exponent
   (what I think is correct according to Barabási and Vicsek)
@@ -1408,7 +1408,7 @@ def _aste_line_fit(x, y):
   return [intercept, slope]
 
 
-def hurst_multifractal_dm(data, qvals=[1], max_dists=range(5, 20), detrended=True):
+def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrended=True):
   """
   Generalized Hurst exponent
   (reverse engineered from Tomaso Aste's MATLAB code)

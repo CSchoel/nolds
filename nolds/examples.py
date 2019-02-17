@@ -288,7 +288,7 @@ def barabasi_1991_figure2():
   qvals_t = range(-10, 11)
   b1 = 0.8
   b2 = 0.5
-  Hq = nolds.hurst_multifractal(b1991, qvals=qvals, dists=[4 ** i for i in range(3, 9)], debug_plot=True)
+  Hq = nolds.mfhurst_b(b1991, qvals=qvals, dists=[4 ** i for i in range(3, 9)], debug_plot=True)
   Hq_t = [np.log((b1 ** q + b2 ** q) / 2) / np.log(0.25) / q for q in qvals_t]
   plt.plot(qvals, Hq, "r+")
   plt.plot(qvals_t, Hq_t)
@@ -299,7 +299,7 @@ def barabasi_1991_figure3():
   import matplotlib.pyplot as plt
   brown = np.cumsum(np.random.random(10000000)-0.5)
   qvals = range(1, 11)
-  Hq = nolds.hurst_multifractal(brown, qvals=qvals, dists=[2 ** i for i in range(3, 9)], debug_plot=True)
+  Hq = nolds.mfhurst_b(brown, qvals=qvals, dists=[2 ** i for i in range(3, 9)], debug_plot=True)
   plt.plot(qvals, Hq, "r+")
   plt.ylim(0, 1)
   plt.show()
