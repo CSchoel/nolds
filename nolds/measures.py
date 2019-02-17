@@ -1411,7 +1411,8 @@ def _aste_line_fit(x, y):
   return [intercept, slope]
 
 
-def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True):
+def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
+               debug_plot=False):
   """
   Generalized Hurst exponent
   (reverse engineered from Tomaso Aste's MATLAB code)
@@ -1449,6 +1450,19 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True):
     for qi in range(len(qvals))
     for md in max_dists
   ], dtype=np.float64).reshape(len(qvals), len(max_dists))
+  if debug_plot:
+    polys = [
+      np.array(_aste_line_fit(xvals, yvals[:, qi])[::-1]) / qvals[qi]
+      for qi in range(len(qvals))
+    ]
+    plot_reg_multiple(
+      [xvals] * len(qvals),
+      [yvals[:, qi] / qvals[qi] for qi in range(len(qvals))],
+      polys,
+      x_label="log(x)", y_label="$\\log(c_q(x)) / q$",
+      data_labels=["q = %d" % q for q in qvals],
+      reg_labels=["reg. line (H = {:.3f})".format(h) for h in H[:, -1] / qvals]
+    )
   mH = np.mean(H, axis=1) / qvals
   sH = np.mean(H, axis=1) / qvals
   return [mH, sH]
