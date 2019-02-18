@@ -276,22 +276,25 @@ def aste_line_fitting(N=100):
 
 
 def hurst_mf_stock():
+  """
+  Recreates results from DiMatteo 2003 (table at start of section 4).
+  """
   import matplotlib.pyplot as plt
   qvals = [1, 2, 3, 4]
-  print("Dataset  mfhurst_b  mfhurst_dm  _genhurst")
+  print("Dataset  mfhurst_b  mfhurst_b + dt  mfhurst_dm  _genhurst")
   for data, lab in zip(datasets.load_financial(), ["jkse", "n225", "ndx"]):
     data = data[1][:, 0]
-    # plt.plot(data)
-    # plt.show()
-    # plt.close()
-    # print(lab)
-    # print([nolds.genhurst(data, q) for q in qvals])
-    # print(nolds.mfhurst_b(data, qvals=qvals, debug_plot=True))
-    # print(nolds.mfhurst_dm(data, qvals=qvals, debug_plot=True)[0])
-    mfh_b = nolds.mfhurst_b(data, qvals=[2])[0]
-    mfh_dm = nolds.mfhurst_dm(data, qvals=[2])[0][0]
+    data = np.log(data)
+    dists = range(1, 20)
+    debug = False
+    mfh_b = nolds.mfhurst_b(data, qvals=[2], dists=dists, debug_plot=debug)[0]
+    mfh_b_dt = nolds.mfhurst_b(
+      nolds.detrend_data(data, order=1),
+      qvals=[2], dists=dists, debug_plot=debug
+    )[0]
+    mfh_dm = nolds.mfhurst_dm(data, qvals=[2], debug_plot=debug)[0][0]
     gh = nolds._genhurst(data, 2)
-    print("{:10s}   {:5.3f}       {:5.3f}      {:5.3f}".format(lab, mfh_b, mfh_dm, gh))
+    print("{:10s}   {:5.3f}           {:5.3f}       {:5.3f}      {:5.3f}".format(lab, mfh_b, mfh_b_dt, mfh_dm, gh))
 
 
 def barabasi_1991_figure2():
