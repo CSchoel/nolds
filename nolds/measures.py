@@ -1533,13 +1533,13 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
   # introduce stability, since it only places emphasis on the lower distance
   # ranges and does not introduce any new information.
   H = np.array([
-    _aste_line_fit(xvals[:md], yvals[:md, qi])[1]
+    poly_fit(xvals[:md], yvals[:md, qi], 1)[0]
     for qi in range(len(qvals))
     for md in max_dists
   ], dtype=np.float64).reshape(len(qvals), len(max_dists))
   if debug_plot:
     polys = [
-      np.array(_aste_line_fit(xvals, yvals[:, qi])[::-1]) / qvals[qi]
+      np.array(poly_fit(xvals, yvals[:, qi], 1)) / qvals[qi]
       for qi in range(len(qvals))
     ]
     plot_reg_multiple(
