@@ -1674,13 +1674,13 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     return poly[0]
 
 
-def detrend_data(data, order=1):
+def detrend_data(data, order=1, fit="poly"):
   """
   Removes a trend of given order from the data.
   """
   # TODO also use this function in dfa
   xvals = np.arange(len(data))
-  trend = np.polyfit(xvals, data, order)
+  trend = poly_fit(xvals, data, order, fit=fit)
   detrended = data - np.polyval(trend, xvals)
   return detrended
 
