@@ -1368,6 +1368,16 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20),
 
 def _genhurst(S, q):
     """
+    Computes the generalized hurst exponent H_q for time series S.
+
+    This function should not be used. It is only kept here to demonstrate that
+    ``mfhurst_dm`` is implemented correctly. You can use the following call to
+    get the exact same result:
+
+    ``mfhurst_dm(S, [q])``
+
+    Below you can find the original documentation by T. Aste:
+
     ####################################
     # Calculates the generalized Hurst exponent H(q) from the scaling
     # of the renormalized q-moments of the distribution
