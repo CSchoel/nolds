@@ -1500,9 +1500,11 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
   measure.
 
   Explanation of the General Hurst Exponent:
-    The Generalized Hurst Exponent (GHE, H_q or H(q)) is (as the name implies)
-    a generalization of the Hurst exponent for data series with multifractal
-    properties.
+    The Generalized Hurst Exponent (GHE, H_q or H(q)) can (as the name implies)
+    be seen as a generalization of the Hurst exponent for data series with
+    multifractal properties. It's origins are however not directly related
+    to Hurst's rescaled range approach, but to the definition of self-affine
+    functions.
 
     A single-valued self-affine function h by definition satisfies the relation
 
