@@ -1495,9 +1495,51 @@ def _aste_line_fit(x, y):
 def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
                debug_plot=False):
   """
+  Calculates the Generalized Hurst Exponent H_q for different q according to
+  the MATLAB code of Tomaso Aste - one of the authors that introduced this
+  measure.
+
+  Explanation of the General Hurst Exponent:
+    The Generalized Hurst Exponent (GHE, H_q or H(q)) is (as the name implies)
+    a generalization of the Hurst exponent for data series with multifractal
+    properties.
+
+    A single-valued self-affine function h by definition satisfies the relation
+
+      h(x) ~= lambda^(-H) h(lambda x)
+
+    for any positive real valued lambda and some positive real valued exponent
+    H, which is called the Hölder or roughness exponent. In other words you
+    can view lambda as a scaling factor or "step size". With lambda < 1 we
+    decrease the step size and zoom into our function. In this case lambda^(-H)
+    becomes greater than one, meaning that h(lambda x) looks similar to a
+    smaller version of h(x). With lambda > 1 we zoom out and get
+    lambda^(-H) < 1.
+
+    To calculate H, you can use the height-height correlation function (also
+    called autocorrelation) c(x) = <(h(x') - h(x' + x))^2>_x' where <...>_x'
+    denotes the expected value over x'. Here, the aforementioned self-affine
+    property is equivalent to c(x) ~ x^(2H).
+
+    TODO: Can I explain why the autocorrelation has to follow this rule?
+
+    A.-L. Barabási and T. Vicsek extended this notion to an infinite hierarchy
+    of exponents H_q for the qth-order correlation function with
+
+      c_q(x) = <(h(x') - h(x' + x))^q>_x' ~ x^(q H_q)
+
+    With q = 1 you get a value H_1 that is closely related to the normal Hurst
+    exponent, but with different q you either get a constant value H_q = H_0
+    independent of q, which indicates that the function has no multifractal
+    properties or different H_q, which is a sign for multifractal behavior.
+
+    T. Di Matteo, T. Aste and M.M. Dacorogna applied this technique to
+    financial data series and gave it the name "Generalized Hurst Exponent".
+
   Generalized Hurst exponent
   (reverse engineered from Tomaso Aste's MATLAB code)
   https://ch.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
+
 
   """
   # transform to array if necessary
