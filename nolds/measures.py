@@ -1329,6 +1329,48 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 def mfhurst_b(data, qvals=[1], dists=range(1, 20),
               debug_plot=False):
   """
+  Calculates the Generalized Hurst Exponent H_q for different q according to
+  A.-L. Barabási and T. Vicsek.
+
+  Explanation of the General Hurst Exponent:
+    The Generalized Hurst Exponent (GHE, H_q or H(q)) can (as the name implies)
+    be seen as a generalization of the Hurst exponent for data series with
+    multifractal properties. It's origins are however not directly related
+    to Hurst's rescaled range approach, but to the definition of self-affine
+    functions.
+
+    A single-valued self-affine function h by definition satisfies the relation
+
+      h(x) ~= lambda^(-H) h(lambda x)
+
+    for any positive real valued lambda and some positive real valued exponent
+    H, which is called the Hölder or roughness exponent. In other words you
+    can view lambda as a scaling factor or "step size". With lambda < 1 we
+    decrease the step size and zoom into our function. In this case lambda^(-H)
+    becomes greater than one, meaning that h(lambda x) looks similar to a
+    smaller version of h(x). With lambda > 1 we zoom out and get
+    lambda^(-H) < 1.
+
+    To calculate H, you can use the height-height correlation function (also
+    called autocorrelation) c(x) = <(h(x') - h(x' + x))^2>_x' where <...>_x'
+    denotes the expected value over x'. Here, the aforementioned self-affine
+    property is equivalent to c(x) ~ x^(2H).
+
+    TODO: Can I explain why the autocorrelation has to follow this rule?
+
+    A.-L. Barabási and T. Vicsek extended this notion to an infinite hierarchy
+    of exponents H_q for the qth-order correlation function with
+
+      c_q(x) = <(h(x') - h(x' + x))^q>_x' ~ x^(q H_q)
+
+    With q = 1 you get a value H_1 that is closely related to the normal Hurst
+    exponent, but with different q you either get a constant value H_q = H_0
+    independent of q, which indicates that the function has no multifractal
+    properties, or different H_q, which is a sign for multifractal behavior.
+
+    T. Di Matteo, T. Aste and M.M. Dacorogna applied this technique to
+    financial data series and gave it the name "Generalized Hurst Exponent".
+
   Generalized Hurst exponent
   (what I think is correct according to Barabási and Vicsek)
   """
@@ -1500,43 +1542,7 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
   measure.
 
   Explanation of the General Hurst Exponent:
-    The Generalized Hurst Exponent (GHE, H_q or H(q)) can (as the name implies)
-    be seen as a generalization of the Hurst exponent for data series with
-    multifractal properties. It's origins are however not directly related
-    to Hurst's rescaled range approach, but to the definition of self-affine
-    functions.
-
-    A single-valued self-affine function h by definition satisfies the relation
-
-      h(x) ~= lambda^(-H) h(lambda x)
-
-    for any positive real valued lambda and some positive real valued exponent
-    H, which is called the Hölder or roughness exponent. In other words you
-    can view lambda as a scaling factor or "step size". With lambda < 1 we
-    decrease the step size and zoom into our function. In this case lambda^(-H)
-    becomes greater than one, meaning that h(lambda x) looks similar to a
-    smaller version of h(x). With lambda > 1 we zoom out and get
-    lambda^(-H) < 1.
-
-    To calculate H, you can use the height-height correlation function (also
-    called autocorrelation) c(x) = <(h(x') - h(x' + x))^2>_x' where <...>_x'
-    denotes the expected value over x'. Here, the aforementioned self-affine
-    property is equivalent to c(x) ~ x^(2H).
-
-    TODO: Can I explain why the autocorrelation has to follow this rule?
-
-    A.-L. Barabási and T. Vicsek extended this notion to an infinite hierarchy
-    of exponents H_q for the qth-order correlation function with
-
-      c_q(x) = <(h(x') - h(x' + x))^q>_x' ~ x^(q H_q)
-
-    With q = 1 you get a value H_1 that is closely related to the normal Hurst
-    exponent, but with different q you either get a constant value H_q = H_0
-    independent of q, which indicates that the function has no multifractal
-    properties or different H_q, which is a sign for multifractal behavior.
-
-    T. Di Matteo, T. Aste and M.M. Dacorogna applied this technique to
-    financial data series and gave it the name "Generalized Hurst Exponent".
+    See ``mfhurst_b``.
 
   Generalized Hurst exponent
   (reverse engineered from Tomaso Aste's MATLAB code)
