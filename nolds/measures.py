@@ -1147,9 +1147,9 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     capacity that would be required to keep the discharge steady at its mean
     value.
 
-    To do so, we first substract the mean over all x_i from the individual
+    To do so, we first subtract the mean over all x_i from the individual
     x_i to obtain the departures x'_i from the mean for each year i. As the
-    excess or deficit in discharge always carrys over from year i to year i+1,
+    excess or deficit in discharge always carries over from year i to year i+1,
     we need to examine the cumulative sum of x'_i, denoted by y_i. This
     cumulative sum represents the filling of our hypothetical storage. If the
     sum is above 0, we are storing excess discharge from the river, if it is
