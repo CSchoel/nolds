@@ -1332,7 +1332,7 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20),
   Calculates the Generalized Hurst Exponent H_q for different q according to
   A.-L. Barabási and T. Vicsek.
 
-  Explanation of the General Hurst Exponent:
+  Explanation of the Generalized Hurst Exponent:
     The Generalized Hurst Exponent (GHE, H_q or H(q)) can (as the name implies)
     be seen as a generalization of the Hurst exponent for data series with
     multifractal properties. It's origins are however not directly related
@@ -1344,19 +1344,21 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20),
       h(x) ~= lambda^(-H) h(lambda x)
 
     for any positive real valued lambda and some positive real valued exponent
-    H, which is called the Hölder or roughness exponent. In other words you
-    can view lambda as a scaling factor or "step size". With lambda < 1 we
-    decrease the step size and zoom into our function. In this case lambda^(-H)
-    becomes greater than one, meaning that h(lambda x) looks similar to a
-    smaller version of h(x). With lambda > 1 we zoom out and get
-    lambda^(-H) < 1.
+    H, which is called the Hurst, Hölder, Hurst-Hölder or roughness exponent
+    in the literature. In other words you can view lambda as a scaling factor
+    or "step size". With lambda < 1 we decrease the step size and zoom into our
+    function. In this case lambda^(-H) becomes greater than one, meaning that
+    h(lambda x) looks similar to a smaller version of h(x). With lambda > 1 we
+    zoom out and get lambda^(-H) < 1.
 
     To calculate H, you can use the height-height correlation function (also
     called autocorrelation) c(x) = <(h(x') - h(x' + x))^2>_x' where <...>_x'
     denotes the expected value over x'. Here, the aforementioned self-affine
-    property is equivalent to c(x) ~ x^(2H).
-
-    TODO: Can I explain why the autocorrelation has to follow this rule?
+    property is equivalent to c(x) ~ x^(2H). You can also think of x as a step
+    size. Increasing or decreasing x from 1 to some y is the same as setting
+    lambda = y: It increases or decreases the scale of the function by a factor
+    of 1/y^(-H) = y^H. Therefore the squared differences will be proportional
+    to y^2H.
 
     A.-L. Barabási and T. Vicsek extended this notion to an infinite hierarchy
     of exponents H_q for the qth-order correlation function with
@@ -1368,8 +1370,37 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20),
     independent of q, which indicates that the function has no multifractal
     properties, or different H_q, which is a sign for multifractal behavior.
 
-    T. Di Matteo, T. Aste and M.M. Dacorogna applied this technique to
+    T. Di Matteo, T. Aste and M. M. Dacorogna applied this technique to
     financial data series and gave it the name "Generalized Hurst Exponent".
+
+  Explanation of the Algorithm:
+    Curiously, I could not find any algorithmic description how to calculate
+    H_q in the literature. Researchers seem to just imply that you can obtain
+    the exponent by a line fitting algorithm in a log-log plot, but they do not
+    talk about the actual procedure or the required parameters.
+
+    Essentially, we can calculate c_q(x) of a discrete evenly spaced time
+    series Y = [y_0, y_1, y_2, ... y_(N-1)] by taking the absolute differences
+    [|y_0 - y_x|, |y_1 - y_(x+1)|, ... , |y_(N-x-1) - y_(N-1)|] raising them to
+    the qth power and taking the mean.
+
+    Now we take the logarithm on both sides of our relation c_q(x) ~ x^(q H_q)
+    and get
+
+    log(c_q(x)) ~ log(x) * q H_q
+
+    So in other words if we plot log(c_q(x)) against log(x) for several x we
+    should get a straight line with slope q H_q. This enables us to use a
+    linear least squares algorithm to obtain H_q.
+
+    Note that we consider x as a discrete variable in the range 0 <= x < N.
+    We can do this, because the actual sampling rate of our data series does
+    not alter the result. After taking the logarithm any scaling factor delta_x
+    would only result in an additive term since
+    log(delta_x * x) = log(x) + log(delta_x) and we only care about the slope
+    of the line and not the intercept.
+
+
 
   Generalized Hurst exponent
   (what I think is correct according to Barabási and Vicsek)
@@ -1542,7 +1573,7 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
   measure.
 
   Explanation of the General Hurst Exponent:
-    See ``mfhurst_b``.
+    See mfhurst_b.
 
   Generalized Hurst exponent
   (reverse engineered from Tomaso Aste's MATLAB code)
