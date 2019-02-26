@@ -1353,10 +1353,10 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
     zoom out and get lambda^(-H) < 1.
 
     To calculate H, you can use the height-height correlation function (also
-    called autocorrelation) c(x) = <(h(x') - h(x' + x))^2>_x' where <...>_x'
-    denotes the expected value over x'. Here, the aforementioned self-affine
-    property is equivalent to c(x) ~ x^(2H). You can also think of x as a step
-    size. Increasing or decreasing x from 1 to some y is the same as setting
+    called autocorrelation) c(d) = <(h(x) - h(x + d))^2>_x where <...>_x
+    denotes the expected value over x. Here, the aforementioned self-affine
+    property is equivalent to c(d) ~ d^(2H). You can also think of d as a step
+    size. Increasing or decreasing d from 1 to some y is the same as setting
     lambda = y: It increases or decreases the scale of the function by a factor
     of 1/y^(-H) = y^H. Therefore the squared differences will be proportional
     to y^2H.
@@ -1364,7 +1364,7 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
     A.-L. Barabási and T. Vicsek extended this notion to an infinite hierarchy
     of exponents H_q for the qth-order correlation function with
 
-      c_q(x) = <(h(x') - h(x' + x))^q>_x' ~ x^(q H_q)
+      c_q(d) = <(h(x) - h(x + d))^q>_x ~ d^(q H_q)
 
     With q = 1 you get a value H_1 that is closely related to the normal Hurst
     exponent, but with different q you either get a constant value H_q = H_0
@@ -1380,17 +1380,17 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
     the exponent by a line fitting algorithm in a log-log plot, but they do not
     talk about the actual procedure or the required parameters.
 
-    Essentially, we can calculate c_q(x) of a discrete evenly sampled time
+    Essentially, we can calculate c_q(d) of a discrete evenly sampled time
     series Y = [y_0, y_1, y_2, ... y_(N-1)] by taking the absolute differences
-    [|y_0 - y_x|, |y_1 - y_(x+1)|, ... , |y_(N-x-1) - y_(N-1)|] raising them to
+    [|y_0 - y_d|, |y_1 - y_(d+1)|, ... , |y_(N-d-1) - y_(N-1)|] raising them to
     the qth power and taking the mean.
 
-    Now we take the logarithm on both sides of our relation c_q(x) ~ x^(q H_q)
+    Now we take the logarithm on both sides of our relation c_q(d) ~ d^(q H_q)
     and get
 
-    log(c_q(x)) ~ log(x) * q H_q
+    log(c_q(d)) ~ log(d) * q H_q
 
-    So in other words if we plot log(c_q(x)) against log(x) for several x we
+    So in other words if we plot log(c_q(d)) against log(d) for several d we
     should get a straight line with slope q H_q. This enables us to use a
     linear least squares algorithm to obtain H_q.
 
@@ -1440,6 +1440,7 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
       the line coefficients (``[slope, intercept]``) for each q in the shape
       len(qvals) x 2.
   """
+  # TODO use logarithmic d by default and note why we do that
   # transform to array if necessary
   data = np.asarray(data)
   dists = np.asarray(dists)
