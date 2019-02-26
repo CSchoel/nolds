@@ -1234,6 +1234,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
              implementation.
     .. [h_c] Bill Davidson, "Hurst exponent",
              url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent
+    TODO: remove
     .. [h_d] Tomaso Aste, "Generalized Hurst exponent",
              url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
 
@@ -1326,8 +1327,8 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 # TODO implement MFDFA as second (more reliable) measure for multifractality
 
 
-def mfhurst_b(data, qvals=[1], dists=range(1, 20),
-              debug_plot=False):
+def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
+              debug_plot=False, debug_data=True, plot_file=None):
   """
   Calculates the Generalized Hurst Exponent H_q for different q according to
   A.-L. Barabási and T. Vicsek.
@@ -1379,7 +1380,7 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20),
     the exponent by a line fitting algorithm in a log-log plot, but they do not
     talk about the actual procedure or the required parameters.
 
-    Essentially, we can calculate c_q(x) of a discrete evenly spaced time
+    Essentially, we can calculate c_q(x) of a discrete evenly sampled time
     series Y = [y_0, y_1, y_2, ... y_(N-1)] by taking the absolute differences
     [|y_0 - y_x|, |y_1 - y_(x+1)|, ... , |y_(N-x-1) - y_(N-1)|] raising them to
     the qth power and taking the mean.
@@ -1400,10 +1401,44 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20),
     log(delta_x * x) = log(x) + log(delta_x) and we only care about the slope
     of the line and not the intercept.
 
+  References:
+    .. [mh_1] A.-L. Barabási and T. Vicsek, “Multifractality of self-affine
+       fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.
 
+  Args:
+    data (array-like of float):
+      time series of data points (should be evenly sampled)
 
-  Generalized Hurst exponent
-  (what I think is correct according to Barabási and Vicsek)
+  Kwargs:
+    qvals (iterable of float or int):
+      values of q for which H_q should be calculated
+    dists (iterable of int):
+      distances for which the height-height correlation should be calculated
+      (determines the x-coordinates in the log-log plot)
+    fit (str):
+      the fitting method to use for the line fit, either 'poly' for normal
+      least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+      is more robust to outliers
+    debug_plot (boolean):
+      if True, a simple plot of the final line-fitting step will be shown
+    debug_data (boolean):
+      if True, debugging data will be returned alongside the result
+    plot_file (str):
+      if debug_plot is True and plot_file is not None, the plot will be saved
+      under the given file name instead of directly showing it through
+      ``plt.show()``
+
+  Returns:
+    array of float:
+      list of H_q for every q given in ``qvals``
+    (1d-vector, 2d-vector, 2d-vector):
+      only present if debug_data is True: debug data of the form
+      ``(xvals, yvals, poly)`` where ``xvals`` is the logarithm of ``dists``,
+      ``yvals`` are the logarithms of the corresponding height-height-
+      correlations for each distance (first dimension) and each q
+      (second dimension) in the shape len(dists) x len(qvals) and ``poly`` are
+      the line coefficients (``[slope, intercept]``) for each q in the shape
+      len(qvals) x 2.
   """
   # transform to array if necessary
   data = np.asarray(data)
@@ -1418,14 +1453,18 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20),
     diffs = diffs[np.where(diffs > 0)]
     return np.mean(diffs ** q)
 
+  # calculate height-height correlations
   corrvals = [hhcorr(d, q) for d in dists for q in qvals]
   corrvals = np.array(corrvals, dtype=np.float64)
   corrvals = corrvals.reshape(len(dists), len(qvals))
-  # NOTE: the scaling of the x-axis does not matter, since any delta
-  # np.log(dists * delta) would only change the intercept and not the slope
+
+  # line fitting
   xvals = np.log(dists)
   yvals = np.log(corrvals)
-  polys = [np.polyfit(xvals, yvals[:, qi], 1) for qi in range(len(qvals))]
+  polys = [
+    polyfit(xvals, yvals[:, qi], 1, fit=fit)
+    for qi in range(len(qvals))
+  ]
   H = np.array(polys)[:, 0] / qvals
   if debug_plot:
     plot_reg_multiple(
@@ -1434,9 +1473,13 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20),
       [p / q for p, q in zip(polys, qvals)],
       x_label="log(x)", y_label="$\\log(c_q(x)) / q$",
       data_labels=["q = %d" % q for q in qvals],
-      reg_labels=["reg. line (H = {:.3f})".format(h) for h in H]
+      reg_labels=["reg. line (H = {:.3f})".format(h) for h in H],
+      fname=plot_file
     )
-  return H
+  if debug_data:
+    return H, (xvals, yvals, polys)
+  else:
+    return H
 
 
 def _genhurst(S, q):
