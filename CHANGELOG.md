@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 
+## [0.5.2]
+
+### Fixed
+
+- Issue #13: corr_dim ignored the fit argument
+
 ## [0.5.1] - 2018-10-24
 
 ### Added
