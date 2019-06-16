@@ -1789,7 +1789,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     # all sums are zero => we cannot fit a line
     poly = [np.nan, np.nan]
   else:
-    poly = poly_fit(np.log(rvals), np.log(csums), 1)
+    poly = poly_fit(np.log(rvals), np.log(csums), 1, fit=fit)
   if debug_plot:
     plot_reg(np.log(rvals), np.log(csums), poly, "log(r)", "log(C(r))",
              fname=plot_file)
