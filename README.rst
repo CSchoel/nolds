@@ -75,4 +75,8 @@ Contact information
 If you have any questions, suggestions or corrections, you can find my contact
 information on my blog_.
 
+Please note that this is one of my side projects.
+Depending on my current workload it may take days, weeks or even months until
+I can find the time to check on mails and issues for nolds.
+
 .. _blog: http://arbitrary-but-fixed.net/
