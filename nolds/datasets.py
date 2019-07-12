@@ -326,6 +326,39 @@ def load_financial():
 
 
 def barabasi1991_fractal(size, iterations, b1=0.8, b2=0.5):
+  """
+  Generates the simple fractal described in [bf]_.
+
+  The fractal divides a rectangular segment starting at (x0, y0) with width w
+  and height h along the x axis into four line segments of equal size with the
+  boundary points [x0, x1, x2, x3, x4]. It has two parameters b1 and b2 that
+  allow to choose the value for y(x1) and y(x3) while it always holds that
+  y(x0) = y0, y(x2) = y0 and y(x4) = y0 + h.
+
+  The process starts with a single line segment of height 1 spanning the whole
+  data range. In each iteration, the rectangles spanning the line segments
+  from the previous iteration are subdivided according to the same rule.
+
+  References:
+    .. [bf] A.-L. Barabási and T. Vicsek, “Multifractality of self-affine
+       fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.
+
+  Args:
+    size (int):
+      number of data points in the resulting array
+    iterations (int):
+      number of iterations to perform
+
+  Kwargs:
+    b1 (float):
+      relative height at x1 (between 0 and 1)
+    b2 (float):
+      relative height at x3 (between 0 and 1)
+
+  Returns:
+    (1d-array of float):
+      generated fractal
+  """
   def b1991(x0, y0, w, h):
     if h < 0:
       # for a segment with negative slope we have flip the x-axis
