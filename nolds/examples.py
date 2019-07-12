@@ -251,6 +251,10 @@ def hurst_compare_nvals(data, nvals=None):
 
 
 def aste_line_fitting(N=100):
+  """
+  Shows plot that proves that the line fitting in T. Astes original MATLAB code
+  provides the same results as `np.polyfit`.
+  """
   slope = np.random.random() * 10 - 5
   intercept = np.random.random() * 100 - 50
   xvals = np.arange(N)
