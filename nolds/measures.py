@@ -1328,7 +1328,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 
 
 def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
-              debug_plot=False, debug_data=True, plot_file=None):
+              debug_plot=False, debug_data=False, plot_file=None):
   """
   Calculates the Generalized Hurst Exponent H_q for different q according to
   A.-L. Barabási and T. Vicsek.
