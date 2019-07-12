@@ -10,7 +10,10 @@ from . import datasets
 import unittest
 import warnings
 
+# TODO add tests for mfhurst_b and mfhurst_dm
+
 # TODO add more tests using fgn and fbm for hurst_rs and dfa
+
 
 class TestNoldsHelperFunctions(unittest.TestCase):
   """
