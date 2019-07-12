@@ -266,9 +266,26 @@ def logistic_map(x, steps, r=4):
 
 def load_financial():
   """
-  https://finance.yahoo.com/quote/%5EN225/history?period1=631148400&period2=988668000&interval=1d&filter=history&frequency=1d
-  https://finance.yahoo.com/quote/%5ENDX/history?period1=631148400&period2=988668000&interval=1d&filter=history&frequency=1d
-  https://finance.yahoo.com/quote/%5EJKSE/history?period1=631148400&period2=988668000&interval=1d&filter=history&frequency=1d
+  Loads the following datasets from CSV files in this package:
+
+  - jkse: Jakarta Composite Index, downloaded on 2019-02-12 from https://finance.yahoo.com/quote/%5EJKSE/history?period1=631148400&period2=988668000&interval=1d&filter=history&frequency=1d
+  - n225: Nikkei 225, downloaded on 2019-02-12 from https://finance.yahoo.com/quote/%5EN225/history?period1=631148400&period2=988668000&interval=1d&filter=history&frequency=1d
+  - ndx: NASDAQ 100, downloaded on 2019-02-12 from https://finance.yahoo.com/quote/%5ENDX/history?period1=631148400&period2=988668000&interval=1d&filter=history&frequency=1d
+
+  All datasets are daily prices from the period from 1990-01-01 to 2001-05-01
+  missing values are NaN except for opening values which are treated as
+  follows:
+
+  - If the first opening value is missing, the first *existing* opening value
+      is used for the first day.
+  - All other missing opening values are filled by the close value of the last
+      day where data was available.
+
+  Returns:
+    list of tuple(1d-array, 2d-array):
+      datasets with days as array of date objects and 2d-array with the columns
+      "Open", "High", "Low", "Close", "Adj Close", and "Volume". Note that
+      "Open" values have been padded to ensure that there are no NaNs left.
   """
 
   def load_finance_yahoo_data(f):
