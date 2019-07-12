@@ -63,7 +63,8 @@ setup(
     ],
     extras_require={
         'RANSAC': ['sklearn>=0.19'],
-        'qrandom': ['quantumrandom']
+        'qrandom': ['quantumrandom'],
+        'plots': ['matplotlib']
     },
     cmdclass={
         'clean': CleanCommand
