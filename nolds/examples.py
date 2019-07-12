@@ -277,7 +277,7 @@ def aste_line_fitting(N=100):
   plt.show()
 
 
-def hurst_mf_stock(debug=True):
+def hurst_mf_stock(debug=False):
   """
   Recreates results from [mfs_1]_ (table at start of section 4) as print
   output.
