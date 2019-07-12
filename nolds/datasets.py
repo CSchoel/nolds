@@ -349,7 +349,9 @@ def barabasi1991_fractal(size, iterations, b1=0.8, b2=0.5):
     for x1, x2 in intervals:
       d, nxtp = b1991(x1, fractal[x1], x2 - x1, fractal[x2-1] - fractal[x1])
       fractal[x1:x2] = d
-      next_intervals.extend([(np1, np2) for np1, np2 in zip(nxtp[:-1], nxtp[1:])])
+      next_intervals.extend(
+        [(np1, np2) for np1, np2 in zip(nxtp[:-1], nxtp[1:])]
+      )
     intervals = next_intervals
   return fractal
 
