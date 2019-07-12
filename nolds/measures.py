@@ -1443,7 +1443,7 @@ def mfhurst_b(data, qvals=[1], dists=None, fit='poly',
       len(qvals) x 2.
   """
   # transform to array if necessary
-  data = np.asarray(data)
+  data = np.asarray(data, dtype=np.float64)
   if dists is None:
     dists = logarithmic_n(1, max(20, 0.02 * len(data)), 1.5)
   dists = np.asarray(dists)
