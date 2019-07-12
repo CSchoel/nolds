@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+
+- new measures
+  * `mfhurst_b` calculates the multifractal "generalized" Hurst exponent according to Barabasi et al.
+  * `mfhurst_dm` calculates the multifractal "generalized" Hurst exponent according to Di Matteo et al.
+- new datasets
+  * `load_financial` loads three financial datasets from finance.yahoo.com that can be used to recreate the results from Di Matteo et al. 2003.
+  * `barabasi1991_fractal` generates the fractal data used by Barabasi et al. in their 1991 paper
+- new examples
+  * `hurst_mf_stock` example function recreates a plot from Di Matteo 2003.
+  * `barabasi_1991_figure2` and `barabasi_1991_figure3` recreate the respective plots from Barabasi et al. 1991
+
 ### Changed
+
+- uses `np.float64` as standard `dtype` instead of `"float32"`
+
 ### Fixed
 
 ## [0.5.2]
