@@ -1463,7 +1463,7 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
   xvals = np.log(dists)
   yvals = np.log(corrvals)
   polys = [
-    polyfit(xvals, yvals[:, qi], 1, fit=fit)
+    poly_fit(xvals, yvals[:, qi], 1, fit=fit)
     for qi in range(len(qvals))
   ]
   H = np.array(polys)[:, 0] / qvals
