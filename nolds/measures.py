@@ -1234,9 +1234,6 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
              implementation.
     .. [h_c] Bill Davidson, "Hurst exponent",
              url: http://www.mathworks.com/matlabcentral/fileexchange/9842-hurst-exponent
-    TODO: remove
-    .. [h_d] Tomaso Aste, "Generalized Hurst exponent",
-             url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
 
   Args:
     data (array-like of float):
