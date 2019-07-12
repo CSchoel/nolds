@@ -6,8 +6,6 @@ from . import measures as nolds
 from . import datasets
 import numpy as np
 
-# TODO better legends for plots
-
 
 def weron_2002_figure2(n=10000):
   """
