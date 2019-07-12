@@ -275,7 +275,7 @@ def aste_line_fitting(N=100):
   plt.show()
 
 
-def hurst_mf_stock():
+def hurst_mf_stock(debug=False):
   """
   Recreates results from DiMatteo 2003 (table at start of section 4).
   """
@@ -286,7 +286,6 @@ def hurst_mf_stock():
     data = data[1][:, 0]
     data = np.log(data)
     dists = range(1, 20)
-    debug = False
     mfh_b = nolds.mfhurst_b(data, qvals=[2], dists=dists, debug_plot=debug)[0]
     mfh_b_dt = nolds.mfhurst_b(
       nolds.detrend_data(data, order=1),
