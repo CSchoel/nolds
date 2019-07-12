@@ -22,6 +22,7 @@ class CleanCommand(Command):
         shutil.rmtree("dist")
         shutil.rmtree("nolds.egg-info")
 
+
 with open("README.rst", "r", encoding="utf-8") as f:
     readme = f.read()
 version = '0.5.2'
