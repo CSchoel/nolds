@@ -1327,7 +1327,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 # TODO implement MFDFA as second (more reliable) measure for multifractality
 
 
-def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
+def mfhurst_b(data, qvals=[1], dists=None, fit='poly',
               debug_plot=False, debug_data=False, plot_file=None):
   """
   Calculates the Generalized Hurst Exponent H_q for different q according to
@@ -1415,6 +1415,8 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
     dists (iterable of int):
       distances for which the height-height correlation should be calculated
       (determines the x-coordinates in the log-log plot)
+      default: logarithmic_n(1, max(20, 0.02 * len(data)), 1.5) to ensure
+      even spacing on the logarithmic axis
     fit (str):
       the fitting method to use for the line fit, either 'poly' for normal
       least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
@@ -1440,9 +1442,10 @@ def mfhurst_b(data, qvals=[1], dists=range(1, 20), fit='poly',
       the line coefficients (``[slope, intercept]``) for each q in the shape
       len(qvals) x 2.
   """
-  # TODO use logarithmic d by default and note why we do that
   # transform to array if necessary
   data = np.asarray(data)
+  if dists is None:
+    dists = logarithmic_n(1, max(20, 0.02 * len(data)), 1.5)
   dists = np.asarray(dists)
   if len(data) < 60:
     warnings.warn(
