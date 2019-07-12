@@ -1610,7 +1610,7 @@ def _aste_line_fit(x, y):
 
 
 def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
-               debug_plot=False):
+               fit="poly", debug_plot=False):
   """
   Calculates the Generalized Hurst Exponent H_q for different q according to
   the MATLAB code of Tomaso Aste - one of the authors that introduced this
@@ -1658,7 +1658,7 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
   # introduce stability, since it only places emphasis on the lower distance
   # ranges and does not introduce any new information.
   H = np.array([
-    poly_fit(xvals[:md], yvals[:md, qi], 1)[0]
+    poly_fit(xvals[:md], yvals[:md, qi], 1, fit=fit)[0]
     for qi in range(len(qvals))
     for md in max_dists
   ], dtype=np.float64).reshape(len(qvals), len(max_dists))
