@@ -1493,6 +1493,12 @@ def _genhurst(S, q):
 
     ``mfhurst_dm(S, [q])``
 
+    Reference code:
+      .. [gh_a] Tomaso Aste, "Generalized Hurst exponent",
+         url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
+      .. [gh_b] Peter Rupprecht, "GenHurst",
+         url: https://github.com/PTRRupprecht/GenHurst
+
     Below you can find the original documentation by T. Aste:
 
     ####################################
