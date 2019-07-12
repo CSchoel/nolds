@@ -1613,7 +1613,7 @@ def _aste_line_fit(x, y):
 
 
 def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
-               fit="poly", debug_plot=False):
+               fit="poly", debug_plot=False, debug_data=False, plot_file=None):
   """
   Calculates the Generalized Hurst Exponent H_q for different q according to
   the MATLAB code of Tomaso Aste - one of the authors that introduced this
@@ -1622,11 +1622,86 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
   Explanation of the General Hurst Exponent:
     See mfhurst_b.
 
-  Generalized Hurst exponent
-  (reverse engineered from Tomaso Aste's MATLAB code)
-  https://ch.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
+  Warning: I do not recommend to use this function unless you want to reproduce
+  examples from Di Matteo et al.. From my experiments and a critical code
+  analysis it seems that mfhurst_b should provide more robust results.
 
+  The design choices that make mfhurst_dm different than mfhurst_d are the
+  following:
 
+  - By default, a linear trend is removed from the data. This can be sensible
+      in some application areas (such as stock market analysis), but I think
+      it should not be considered an additional preprocessing step and not
+      part of this algorithm.
+  - In the calculation of the height-height correlations, the differences
+      (h(x) - h(x + d) are not calculated for every possible x from 0 to N-d-1,
+      but instead d is used as a step size for x. I see no justification for
+      this choice. It makes the algorithm run faster, but it also takes away
+      a lot of statistical robustness, especially for large values of d.
+      This effect can be clearly seen when setting `debug_plot` to `True`.
+  - The algorithm uses a linear scale for the distance values d = 1, 2, 3,
+      ..., tau_max. This is counter intuitive, since we later plot log(d)
+      against log(c_q(d)). A linear scale will have a bias towards larger
+      values in the logarithmic scale. A logarithmic scale for d seems to be
+      a more natural fit. If low values of d yield statistically unstable
+      results, they should simply be omitted.
+  - The algorithm tests multiple values for tau_max, which is the maximum
+      distance that will be calculated. In [mdh]_ the authors state that this
+      is done to test the robustness of the approach. However, taking the
+      mean of several runs with different tau_max will not introduce any more
+      information than performing one run with the largest tau_max. Instead
+      it will only introduce a bias towards low values for d.
+
+  References:
+    .. [mhd_1] T. Di Matteo, T. Aste, and M. M. Dacorogna, “Scaling behaviors
+       in differently developed markets,” Physica A: Statistical Mechanics
+       and its Applications, vol. 324, no. 1–2, pp. 183–188, 2003.
+
+  Reference code:
+    .. [mdh_a] Tomaso Aste, "Generalized Hurst exponent",
+       url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
+
+  Args:
+    data (1d-vector of float):
+      input data (should be evenly sampled)
+    qvals (1d-vector of float)
+      values of q for which H_q should be calculated
+
+  Kwargs:
+    max_dists (1d-vector of int):
+      different values to test for tau_max, the maximum value for the distance
+      d. The resulting H_q will be a mean of all H_q calculated with tau_max
+      = max_dists[0], max_dists[1], ... .
+    detrend (boolean):
+      if True, a linear trend will be removed from the data before H_q will
+      be calculated
+    fit (str):
+      the fitting method to use for the line fit, either 'poly' for normal
+      least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+      is more robust to outliers
+    debug_plot (boolean):
+      if True, a simple plot of the final line-fitting step will be shown
+    debug_data (boolean):
+      if True, debugging data will be returned alongside the result
+    plot_file (str):
+      if debug_plot is True and plot_file is not None, the plot will be saved
+      under the given file name instead of directly showing it through
+      ``plt.show()``
+
+  Returns:
+    array of float:
+      array of mH_q for every q given in ``qvals`` where mH_q is the mean of
+      all H_q calculated for different max distances in max_dists.
+    array of float:
+      array of standard deviations sH_q for each mH_q returned
+    (1d-vector, 2d-vector, 2d-vector):
+      only present if debug_data is True: debug data of the form
+      ``(xvals, yvals, poly)`` where ``xvals`` is the logarithm of ``dists``,
+      ``yvals`` are the logarithms of the corresponding height-height-
+      correlations for each distance (first dimension) and each q
+      (second dimension) in the shape len(dists) x len(qvals) and ``poly`` are
+      the line coefficients (``[slope, intercept]``) for each q in the shape
+      len(qvals) x 2.
   """
   # transform to array if necessary
   data = np.asarray(data)
@@ -1676,11 +1751,15 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
       polys,
       x_label="log(x)", y_label="$\\log(c_q(x)) / q$",
       data_labels=["q = %d" % q for q in qvals],
-      reg_labels=["reg. line (H = {:.3f})".format(h) for h in H[:, -1] / qvals]
+      reg_labels=["reg. line (H = {:.3f})".format(h) for h in H[:, -1] / qvals],
+      fname=plot_file
     )
   mH = np.mean(H, axis=1) / qvals
   sH = np.mean(H, axis=1) / qvals
-  return [mH, sH]
+  if debug_data:
+    return [mh, sH, (xvals, yvals, polys)]
+  else:
+    return [mH, sH]
 
 
 def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
