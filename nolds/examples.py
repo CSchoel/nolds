@@ -317,7 +317,10 @@ def hurst_mf_stock(debug=True):
   import matplotlib.pyplot as plt
   qvals = [1, 2, 3, 4]
   print("Dataset  mfhurst_b  mfhurst_b + dt  mfhurst_dm  _genhurst")
-  for data, lab in zip(datasets.load_financial(), ["jkse", "n225", "ndx"]):
+  financial = [
+    (datasets.jkse, "jkse"), (datasets.n225, "n225"), (datasets.ndx, "ndx")
+  ]
+  for data, lab in financial:
     data = data[1][:, 0]
     data = np.log(data)
     dists = range(1, 20)
