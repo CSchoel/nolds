@@ -364,12 +364,29 @@ def barabasi_1991_figure2():
 
 
 def barabasi_1991_figure3():
+  """
+  Recreates figure 3 from [bf2]_.
+
+  This figure compares calculated and estimated values for H(q) for a simple
+  Brownian motion that moves in unit steps (-1 or +1) in each time step.
+
+  References:
+    .. [bf2] A.-L. Barabási and T. Vicsek, “Multifractality of self-affine
+       fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.
+  """
   import matplotlib.pyplot as plt
-  brown = np.cumsum(np.random.random(10000000)-0.5)
-  qvals = range(1, 11)
-  Hq = nolds.mfhurst_b(brown, qvals=qvals, dists=[2 ** i for i in range(3, 9)], debug_plot=True)
-  plt.plot(qvals, Hq, "r+")
+  brown = np.cumsum(np.random.randint(0, 2, size=10000000)*2-1)
+  qvals = [-5, -4, -3, -2, -1.1, 0.1, 1, 2, 3, 4, 5]
+  Hq_t = [0.5 if q > -1 else -0.5/q for q in qvals]
+  dists = [2 ** i for i in range(6, 15)]
+  # dists = nolds.logarithmic_n(100, 0.01 * len(brown), 1.5)
+  Hq = nolds.mfhurst_b(brown, qvals=qvals, dists=dists, debug_plot=False)
+  plt.plot(qvals, Hq, "r+", label="mfhurst_b")
+  plt.plot(qvals, Hq_t, label="calculated value")
   plt.ylim(0, 1)
+  plt.legend(loc="best")
+  plt.xlabel("q")
+  plt.ylabel("H(q)")
   plt.show()
 
 
