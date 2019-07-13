@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- the test `test_measures.TestNoldsCorrDim.test_corr_dim` would fail if `sklearn` was not installed, because the standard "RANSAC" fitting method produces quite different results compared to the fallback "poly" method
+
 ## [0.5.2]
 
 ### Fixed
