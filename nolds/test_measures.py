@@ -319,7 +319,7 @@ class TestNoldsCorrDim(unittest.TestCase):
     self.assertAlmostEqual(cd, 1, delta=0.05)
     # TODO what is the prescribed correlation dimension for random data?
     data = np.random.random(n)
-    cd = nolds.corr_dim(data, 4, fit="poly", debug_plot=True)
+    cd = nolds.corr_dim(data, 4, fit="poly")
     self.assertAlmostEqual(cd, 0.5, delta=0.15)
     # TODO test example for cd > 1
 
