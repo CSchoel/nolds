@@ -2,6 +2,7 @@
 from setuptools import setup, Command
 import glob
 import shutil
+import io
 
 
 class CleanCommand(Command):
@@ -20,7 +21,7 @@ class CleanCommand(Command):
         shutil.rmtree("nolds.egg-info")
 
 
-with open("README.rst", "r", encoding="utf-8") as f:
+with io.open("README.rst", "r", encoding="utf-8") as f:
     readme = f.read()
 version = '0.5.2'
 setup(
