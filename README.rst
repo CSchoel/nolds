@@ -1,6 +1,13 @@
 NOnLinear measures for Dynamical Systems (nolds)
 ================================================
 
+.. image:: https://travis-ci.com/CSchoel/nolds.svg?branch=master
+    :target: https://travis-ci.com/CSchoel/nolds
+
+.. image:: https://img.shields.io/lgtm/grade/python/g/CSchoel/nolds.svg?logo=lgtm&logoWidth=18
+    :alt: Language grade: Python
+    :target: https://lgtm.com/projects/g/CSchoel/nolds/context:python
+
 Nolds is a small numpy-based library that provides an implementation and a learning resource for nonlinear measures for dynamical systems based on one-dimensional time series.
 Currently the following measures are implemented:
 
