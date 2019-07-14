@@ -1087,6 +1087,9 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
 def plot_reg_tiled(xvals, yvals, polys, x_label="x", y_label="y",
                    data_labels=None, reg_labels=None, fname=None,
                    columns=None):
+  """
+  TODO
+  """
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
   max_span = max([np.max(y) - np.min(y) for y in yvals])
@@ -1115,6 +1118,9 @@ def plot_reg_tiled(xvals, yvals, polys, x_label="x", y_label="y",
 
 def plot_reg_multiple(xvals, yvals, polys, x_label="x", y_label="y",
                       data_labels=None, reg_labels=None, fname=None):
+  """
+  TODO
+  """
   import matplotlib.pyplot as plt
   if data_labels is None:
     data_labels = ["data"] * len(xvals)
