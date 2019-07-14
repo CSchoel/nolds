@@ -226,7 +226,7 @@ class TestNoldsHurst(unittest.TestCase):
     # strong negative correlation between successive elements
     seq_neg = []
     x = np.random.random()
-    for i in range(10000):
+    for _ in range(10000):
       x = -x + np.random.random() - 0.5
       seq_neg.append(x)
     h_neg = nolds.hurst_rs(seq_neg)
