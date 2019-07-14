@@ -19,11 +19,11 @@ EVd6ciVKh7RTczs9jk7J5RV2K25mPzxIN9kbqT98Th41MWEzqFhDBFAf9o+gzTuRHSo+RrrIJgaNxVUy
 AN0SoULy5XiYElgBEktgZxXp48fFlE2f5tNGiLwdhX4aZkd9VZ0ov8="
 
 install:
-  pip install codecov
-  pip install .
+  - pip install codecov
+  - pip install .
 
 script:
-  coverage run -m unittest nolds.test_measures
+  - coverage run -m unittest nolds.test_measures
 
 after-success:
   - codecov
