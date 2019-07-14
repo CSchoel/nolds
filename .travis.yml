@@ -24,7 +24,4 @@ install:
 
 script:
   - coverage run -m unittest nolds.test_measures
-
-after-success:
   - codecov
-
