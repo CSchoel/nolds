@@ -4,3 +4,7 @@ dist
 __pycache__
 *.egg-info
 *.pyc
+
+# code coverage files
+.coverage
+coverage.xml

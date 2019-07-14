@@ -7,9 +7,24 @@ python:
     - 3.6
     - 3.7
 
+env:
+  - secure: "j388bvWaPQXpelyiwewKQ9VmGOd1Ln2dcRwMiLZCuYKaqNoq0wpzESLPVXUqT7nvd/wiY
+vgEmbTzorjFZkNiOImrD0eAOMpjerVhHxiZKimdKTi4GCqdgsPDu8a90p7pGXbLT8wpWtt+/b29cXZy0
+s/XbZgO3DCCbucg83yA3wA/PqONLHw0h7fXxukhwi4osNKSE8IhPm6ByO0PCLSbLhfrYb9z8h3pPgF+s
+25YFRvwoNZ6l4BCURU6aSGWyLkR1tUPtRalvGO6ZXSa0TGsoWASJ97QxOWZolEwgTQEQs0kXH8thBokR
+aQoBp8uRkd1d01P7sZh+FTjXwOoiB/T+nyldVGNINfvlwrsdY3T9JGCfVZXn9D+y9k1nFOpTlg2NFDVg
+rizddNIa4G8qm2RE/lBVqB2WdHoLD0e4yU28eBjEpt2UpNhUc3Qln9jxzDkprIM7/k5NeYpaV5eQbI+w
+EVd6ciVKh7RTczs9jk7J5RV2K25mPzxIN9kbqT98Th41MWEzqFhDBFAf9o+gzTuRHSo+RrrIJgaNxVUy
+6eow7ZkHCcxSt/VgZPpLKJdm1Tud1qZhWQAletB0ayaGJ5/oun3ivNK6eKvJpOkT2fCP36iC5+5vYZmE
+AN0SoULy5XiYElgBEktgZxXp48fFlE2f5tNGiLwdhX4aZkd9VZ0ov8="
+
 install:
+  pip install codecov
   pip install .
 
 script:
-  python -m unittest nolds.test_measures
+  coverage run -m unittest nolds.test_measures
+
+after-success:
+  - codecov
 
