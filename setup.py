@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, Command
-import glob
 import shutil
 import io
 
