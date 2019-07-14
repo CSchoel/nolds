@@ -4,19 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## \[Unreleased\]
 
 ### Added
 
 - new measures
-  * `mfhurst_b` calculates the multifractal "generalized" Hurst exponent according to Barabasi et al.
-  * `mfhurst_dm` calculates the multifractal "generalized" Hurst exponent according to Di Matteo et al.
+    - `mfhurst_b` calculates the multifractal "generalized" Hurst exponent according to Barabasi et al.
+    - `mfhurst_dm` calculates the multifractal "generalized" Hurst exponent according to Di Matteo et al.
 - new datasets
-  * `load_financial` loads three financial datasets from finance.yahoo.com that can be used to recreate the results from Di Matteo et al. 2003.
-  * `barabasi1991_fractal` generates the fractal data used by Barabasi et al. in their 1991 paper
+    - `load_financial` loads three financial datasets from finance.yahoo.com that can be used to recreate the results from Di Matteo et al. 2003.
+    - `barabasi1991_fractal` generates the fractal data used by Barabasi et al. in their 1991 paper
 - new examples
-  * `hurst_mf_stock` example function recreates a plot from Di Matteo 2003.
-  * `barabasi_1991_figure2` and `barabasi_1991_figure3` recreate the respective plots from Barabasi et al. 1991
+    - `hurst_mf_stock` example function recreates a plot from Di Matteo 2003.
+    - `barabasi_1991_figure2` and `barabasi_1991_figure3` recreate the respective plots from Barabasi et al. 1991
 
 ### Changed
 
@@ -26,13 +26,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - the test `test_measures.TestNoldsCorrDim.test_corr_dim` would fail if `sklearn` was not installed, because the standard "RANSAC" fitting method produces quite different results compared to the fallback "poly" method
 
-## [0.5.2]
+## \[0.5.2\]
 
 ### Fixed
 
 - Issue #13: corr_dim ignored the fit argument
 
-## [0.5.1] - 2018-10-24
+## \[0.5.1\] - 2018-10-24
 
 ### Added
 
@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - some formatting problems in the documentation
 
-## [0.5.0] - 2018-10-24
+## \[0.5.0\] - 2018-10-24
 
 ### Added
 
@@ -56,13 +56,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - test cases `test_lyap_r_limits` and `test_lyap_e_limits` to ensure that `lyap_r_len` and `lyap_e_len` are calculated correctly
 - description of parameter `min_nb` for `lyap_e`
 - uses `np.asarray` wherever possible. The following functions should now also work with pandas objects and other "array-like" structures:
-  * `lyap_r`
-  * `lyap_e`
-  * `sampen`
-  * `hurst_rs`
-  * `corr_dim`
-  * `dfa `
-- nolds documentation can now also be found on readthedocs.org: http://nolds.readthedocs.io/
+    - `lyap_r`
+    - `lyap_e`
+    - `sampen`
+    - `hurst_rs`
+    - `corr_dim`
+    - `dfa `
+- nolds documentation can now also be found [on readthedocs.org](http://nolds.readthedocs.io/)
 
 ### Changed
 
@@ -83,7 +83,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -  distance values `"euler"`, `"chebychev"`, `rowwise_euler` and `rowwise_chebychev` for `sampen` and `corr_dim` (was deprecated)
 -  keyword parameter `min_vectors` for `lyap_r` (was deprecated)
 
-## [0.4.1] - 2017-11-30
+## \[0.4.1\] - 2017-11-30
 
 ### Added
 
@@ -93,14 +93,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - adds more descriptions and instructions for comparing `hurst_rs` with other implementations
 
-## [0.4.0] - 2017-11-21
+## \[0.4.0\] - 2017-11-21
 
 ### Added
 
 - module `datasets`
-  + dataset `brown72` that has a prescribed hurst exponent of 0.72
-  + generators for the logistic and the tent map
-  + true random numbers using the package `quantumrandom`
+    - dataset `brown72` that has a prescribed hurst exponent of 0.72
+    - generators for the logistic and the tent map
+    - true random numbers using the package `quantumrandom`
 - test `test_hurst_pracma` that uses the same testing sequences for `hurst_rs` as the R-package `pracma`
 - example function `plot_hurst_hist` that plots a histogram of hurst exponent values for random data
 - example function `weron_2002_figure2`
@@ -120,7 +120,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - NaNs in `hurst_rs` where filtered from the set of (R/S)_n values, but the filtered values for n would remain in the calculation and fitting
 - `hurst_rs` used the wrong standard deviation, since we estimate the mean of the samples from the data we need to set the parameter `ddof` to `1`
 
-## [0.3.4] - 2017-08-10
+## \[0.3.4\] - 2017-08-10
 
 ### Added
 - `lyap_r` now has a new parameter `fit_offset` that allows to ignore the first steps of the plot in the fitting process.
@@ -132,7 +132,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - The algorithm for choosing the `lag` would always choose 0 in `lyap_r`.
 - There was an error in the calculation of the number of vectors used for `min_vectors` in `lyap_r`.
 
-## [0.3.3] - 2017-06-26
+## \[0.3.3\] - 2017-06-26
 
 ### Added
 - more test cases for `sampen`
@@ -149,17 +149,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Notes
 - all changes mentioned above are backwards-compatible, but this compatibility will be dropped in the next version (since these are really stupid errors that I want to sweep under the rug :wink:)
 
-## [0.3.2] - 2016-11-19
+## \[0.3.2\] - 2016-11-19
 ### Added
 - `LICENSE.txt` is now part of the distribution
 - specifies platform (any) and license (MIT) in `setup.py`
 - loads `long_description` from `README.rst`
 
-## [0.3.1] - 2016-11-18
+## \[0.3.1\] - 2016-11-18
 ### Fixed
 - typo in `setup.py` regarding `extras_require`
 
-## [0.3.0] - 2016-11-18
+## \[0.3.0\] - 2016-11-18
 ### Added
 - Allows to use RANSAC as line fitting algorithm
 - Uses classifiers in `setup.py`
@@ -172,11 +172,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - deprecation warning about `assertAlmostEquals` in test cases
 
-## [0.2.1] - 2016-10-17
+## \[0.2.1\] - 2016-10-17
 ### Fixed
 - Description on PyPI was broken due to formatting error in README.rst
 
-## [0.2.0] - 2016-10-14
+## \[0.2.0\] - 2016-10-14
 ### Added
 - exportable documentation with Sphinx
 - this change log
@@ -190,11 +190,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - wrong default plotting parameters for function `sampen`
 
 
-## [0.1.1] - 2016-08-03
+## \[0.1.1\] - 2016-08-03
 ### Added
 - nolds now lists numpy as dependency (it had the dependency before, but did not tell the user, because who the hell uses python without numpy ;P)
 
-## [0.1.0] - 2016-08-05
+## \[0.1.0\] - 2016-08-05
 ### Added
 - initial release including the following algorithms:
     - sample entropy (`sampen`)
