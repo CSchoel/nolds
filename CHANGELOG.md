@@ -9,14 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - new measures
-    - `mfhurst_b` calculates the multifractal "generalized" Hurst exponent according to Barabasi et al.
-    - `mfhurst_dm` calculates the multifractal "generalized" Hurst exponent according to Di Matteo et al.
+  - `mfhurst_b` calculates the multifractal "generalized" Hurst exponent according to Barabasi et al.
+  - `mfhurst_dm` calculates the multifractal "generalized" Hurst exponent according to Di Matteo et al.
 - new datasets
-    - `load_financial` loads three financial datasets from finance.yahoo.com that can be used to recreate the results from Di Matteo et al. 2003.
-    - `barabasi1991_fractal` generates the fractal data used by Barabasi et al. in their 1991 paper
+  - `load_financial` loads three financial datasets from finance.yahoo.com that can be used to recreate the results from Di Matteo et al. 2003.
+  - `barabasi1991_fractal` generates the fractal data used by Barabasi et al. in their 1991 paper
 - new examples
-    - `hurst_mf_stock` example function recreates a plot from Di Matteo 2003.
-    - `barabasi_1991_figure2` and `barabasi_1991_figure3` recreate the respective plots from Barabasi et al. 1991
+  - `hurst_mf_stock` example function recreates a plot from Di Matteo 2003.
+  - `barabasi_1991_figure2` and `barabasi_1991_figure3` recreate the respective plots from Barabasi et al. 1991
 
 ### Changed
 
@@ -56,12 +56,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - test cases `test_lyap_r_limits` and `test_lyap_e_limits` to ensure that `lyap_r_len` and `lyap_e_len` are calculated correctly
 - description of parameter `min_nb` for `lyap_e`
 - uses `np.asarray` wherever possible. The following functions should now also work with pandas objects and other "array-like" structures:
-    - `lyap_r`
-    - `lyap_e`
-    - `sampen`
-    - `hurst_rs`
-    - `corr_dim`
-    - `dfa `
+  - `lyap_r`
+  - `lyap_e`
+  - `sampen`
+  - `hurst_rs`
+  - `corr_dim`
+  - `dfa `
 - nolds documentation can now also be found [on readthedocs.org](http://nolds.readthedocs.io/)
 
 ### Changed
@@ -80,8 +80,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 
--  distance values `"euler"`, `"chebychev"`, `rowwise_euler` and `rowwise_chebychev` for `sampen` and `corr_dim` (was deprecated)
--  keyword parameter `min_vectors` for `lyap_r` (was deprecated)
+- distance values `"euler"`, `"chebychev"`, `rowwise_euler` and `rowwise_chebychev` for `sampen` and `corr_dim` (was deprecated)
+- keyword parameter `min_vectors` for `lyap_r` (was deprecated)
 
 ## \[0.4.1\] - 2017-11-30
 
@@ -98,9 +98,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - module `datasets`
-    - dataset `brown72` that has a prescribed hurst exponent of 0.72
-    - generators for the logistic and the tent map
-    - true random numbers using the package `quantumrandom`
+  - dataset `brown72` that has a prescribed hurst exponent of 0.72
+  - generators for the logistic and the tent map
+  - true random numbers using the package `quantumrandom`
 - test `test_hurst_pracma` that uses the same testing sequences for `hurst_rs` as the R-package `pracma`
 - example function `plot_hurst_hist` that plots a histogram of hurst exponent values for random data
 - example function `weron_2002_figure2`
@@ -197,8 +197,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## \[0.1.0\] - 2016-08-05
 ### Added
 - initial release including the following algorithms:
-    - sample entropy (`sampen`)
-    - correlation dimension (`corr_dim`)
-    - Lyapunov exponent (`lyap_r`, `lyap_e`)
-    - Hurst exponent (`hurst_rs`)
-    - detrended fluctuation analysis (DFA) (`dfa`)
+  - sample entropy (`sampen`)
+  - correlation dimension (`corr_dim`)
+  - Lyapunov exponent (`lyap_r`, `lyap_e`)
+  - Hurst exponent (`hurst_rs`)
+  - detrended fluctuation analysis (DFA) (`dfa`)
