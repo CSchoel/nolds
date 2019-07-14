@@ -1327,7 +1327,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
 # TODO implement MFDFA as second (more reliable) measure for multifractality
 
 
-def mfhurst_b(data, qvals=[1], dists=None, fit='poly',
+def mfhurst_b(data, qvals=None, dists=None, fit='poly',
               debug_plot=False, debug_data=False, plot_file=None):
   """
   Calculates the Generalized Hurst Exponent H_q for different q according to
@@ -1411,7 +1411,7 @@ def mfhurst_b(data, qvals=[1], dists=None, fit='poly',
 
   Kwargs:
     qvals (iterable of float or int):
-      values of q for which H_q should be calculated
+      values of q for which H_q should be calculated (default: [1])
     dists (iterable of int):
       distances for which the height-height correlation should be calculated
       (determines the x-coordinates in the log-log plot)
@@ -1444,6 +1444,10 @@ def mfhurst_b(data, qvals=[1], dists=None, fit='poly',
   """
   # transform to array if necessary
   data = np.asarray(data, dtype=np.float64)
+  if qvals is None:
+    # actual default parameter would introduce shared list
+    # see: http://pylint-messages.wikidot.com/messages:w0102
+    qvals = [1]
   if dists is None:
     dists = logarithmic_n(1, max(20, 0.02 * len(data)), 1.5)
   dists = np.asarray(dists)
@@ -1618,7 +1622,7 @@ def _aste_line_fit(x, y):
   return [intercept, slope]
 
 
-def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
+def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
                fit="poly", debug_plot=False, debug_data=False, plot_file=None):
   """
   Calculates the Generalized Hurst Exponent H_q for different q according to
@@ -1671,7 +1675,7 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
     data (1d-vector of float):
       input data (should be evenly sampled)
     qvals (1d-vector of float)
-      values of q for which H_q should be calculated
+      values of q for which H_q should be calculated (default: [1])
 
   Kwargs:
     max_dists (1d-vector of int):
@@ -1711,6 +1715,10 @@ def mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True,
   """
   # transform to array if necessary
   data = np.asarray(data)
+  if qvals is None:
+    # actual default parameter would introduce shared list
+    # see: http://pylint-messages.wikidot.com/messages:w0102
+    qvals = [1]
   if len(data) < 60:
     warnings.warn(
       "H(q) is not reliable for small time series ({} < 60)".format(len(data))
