@@ -233,7 +233,6 @@ def hurst_compare_nvals(data, nvals=None):
   if nvals is not None:
     dd_cst = nolds.hurst_rs(data, nvals=nvals, debug_data=True, fit="poly")
     l_cst = plt.plot(dd_cst[1][0], dd_cst[1][1] - corr(nvals), "o")
-    l_cst = l_cst
     t_cst = ["custom"]
   plt.xlabel("log(n)")
   plt.ylabel("log((R/S)_n - E[(R/S)_n])")
