@@ -1723,7 +1723,6 @@ def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
     warnings.warn(
       "H(q) is not reliable for small time series ({} < 60)".format(len(data))
     )
-  N = len(data)
   max_max_dist = np.max(max_dists)
   hhcorr = []
   # NOTE: I don't think it's a good idea to use a linear scale for the distance
