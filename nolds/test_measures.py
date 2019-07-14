@@ -249,10 +249,10 @@ class TestNoldsHurst(unittest.TestCase):
     # expected h is around 1.0
     self.assertGreater(h_walk, 0.9)
 
-  """
-  Tests for hurst_rs using the same tests as in the R-package pracma
-  """
   def test_hurst_pracma(self):
+    """
+    Tests for hurst_rs using the same tests as in the R-package pracma
+    """
     # This test reproduces the results presented by Ian L. Kaplan on
     # bearcave.com
     h72 = nolds.hurst_rs(
