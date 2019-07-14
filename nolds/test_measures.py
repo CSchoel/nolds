@@ -114,7 +114,7 @@ class TestNoldsLyap(unittest.TestCase):
     for r, s in zip(rvals, sign):
       log = []
       x = x0
-      for i in range(100):
+      for _ in range(100):
         x = logistic(x, r)
         log.append(x)
       log = np.array(log, dtype="float32")
@@ -282,7 +282,7 @@ class TestNoldsDFA(unittest.TestCase):
     # strong negative correlation between successive elements
     seq_neg = []
     x = np.random.random()
-    for i in range(10000):
+    for _ in range(10000):
       x = -x + np.random.random() - 0.5
       seq_neg.append(x)
     h_neg = nolds.dfa(seq_neg)
