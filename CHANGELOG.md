@@ -189,7 +189,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - wrong default plotting parameters for function `sampen`
 
-
 ## \[0.1.1\] - 2016-08-03
 ### Added
 - nolds now lists numpy as dependency (it had the dependency before, but did not tell the user, because who the hell uses python without numpy ;P)
