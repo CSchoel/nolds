@@ -668,7 +668,7 @@ def plot_dists(dists, tolerance, m, title=None, fname=None):
 
 
 def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
-           debug_plot=False, debug_data=False, plot_file=None):
+           closed=False, debug_plot=False, debug_data=False, plot_file=None):
   """
   Computes the sample entropy of the given data.
 
@@ -713,6 +713,10 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       distance function used to calculate the distance between template
       vectors. Sampen is defined using ``rowwise_chebyshev``. You should only use
       something else, if you are sure that you need it.
+    closed (boolean):
+      if True, will check for vector pairs whose distance is in the closed
+      interval [0, r] (less or equal to r), otherwise the open interval
+      [0, r) (less than r) will be used
     debug_plot (boolean):
       if True, a histogram of the individual distances for m and m+1
     debug_data (boolean):
@@ -765,7 +769,10 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       if debug_plot or debug_data:
         plot_data[-1].extend(dsts)
       # count how many distances are smaller than the tolerance
-      counts[-1] += np.sum(dsts < tolerance)
+      if closed:
+        counts[-1] += np.sum(dsts <= tolerance)
+      else:
+        counts[-1] += np.sum(dsts < tolerance)
   if counts[0] > 0 and counts[1] > 0:
     saen = -np.log(1.0 * counts[1] / counts[0])
   else:

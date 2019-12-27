@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+
+- new parameter `closed` for `sampen` to determine if `<` or `<=` should be used for checking if the distance between a vector pair is within the tolerance
+
 ### Changed
 ### Fixed
 
