@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - new parameter `closed` for `sampen` to determine if `<` or `<=` should be used for checking if the distance between a vector pair is within the tolerance
 
 ### Changed
+
+- `debug_data` for `sampen` now also contains counts of similar vectors
+
 ### Fixed
 
 ## [0.5.2]

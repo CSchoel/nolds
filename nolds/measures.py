@@ -730,6 +730,9 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
     float:
       the sample entropy of the data (negative logarithm of ratio between
       similar template vectors of length emb_dim + 1 and emb_dim)
+    [c_m, c_m1]:
+      list of two floats: count of similar template vectors of length emb_dim
+      (c_m) and of length emb_dim + 1 (c_m1)
     [float list, float list]:
       Lists of lists of the form ``[dists_m, dists_m1]`` containing the distances
       between template vectors for m (dists_m) and for m + 1 (dists_m1).
