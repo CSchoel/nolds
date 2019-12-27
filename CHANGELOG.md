@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - `debug_data` for `sampen` now also contains counts of similar vectors
+- `sampen` now issues a warning if one or both count variables are zero
 
 ### Fixed
 
