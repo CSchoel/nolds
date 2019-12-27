@@ -8,3 +8,9 @@ __pycache__
 # code coverage files
 .coverage
 coverage.xml
+
+# merge conflicts
+*.orig
+
+# temporary folder for test scripts
+temp
