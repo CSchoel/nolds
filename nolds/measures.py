@@ -775,7 +775,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
     plot_dists(plot_data, tolerance, m, title="sampEn = {:.3f}".format(saen),
                fname=plot_file)
   if debug_data:
-    return (saen, plot_data)
+    return (saen, counts, plot_data)
   else:
     return saen
 
