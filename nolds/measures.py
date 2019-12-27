@@ -766,11 +766,26 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
         plot_data[-1].extend(dsts)
       # count how many distances are smaller than the tolerance
       counts[-1] += np.sum(dsts < tolerance)
-  if counts[1] == 0:
-    # log would be infinite => cannot determine saen
-    saen = np.inf
-  else:
+  if counts[0] > 0 and counts[1] > 0:
     saen = -np.log(1.0 * counts[1] / counts[0])
+  else:
+    # log would be infinite or undefined => cannot determine saen
+    zcounts = []
+    if counts[0] == 0:
+      zcounts.append("emb_dim")
+    if counts[1] == 0:
+      zcounts.append("emb_dim + 1")
+    warnings.warn(
+      "Zero vectors are within tolerance for %s. " \
+      + "Consider raising the tolerance parameter to avoid %s result." \
+      % (" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf")
+    )
+    if counts[0] == 0 and counts[1] == 0:
+      saen = np.nan
+    elif counts[0] == 0:
+      saen = -np.inf
+    else:
+      saen = np.inf
   if debug_plot:
     plot_dists(plot_data, tolerance, m, title="sampEn = {:.3f}".format(saen),
                fname=plot_file)
