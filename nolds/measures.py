@@ -1267,7 +1267,10 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   if len(rsvals) == 0:
     poly = [np.nan, np.nan]
     if debug_plot:
-      warnings.warn("Cannot display debug plot, all (R/S)_n are NaN")
+      warnings.warn(
+        "Cannot display debug plot, all (R/S)_n are NaN",
+        RuntimeWarning
+      )
   else:
     # fit a line to the logarithm of the obtained (R/S)_n
     xvals = np.log(nvals)
