@@ -786,9 +786,11 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
     if counts[1] == 0:
       zcounts.append("emb_dim + 1")
     warnings.warn(
-      "Zero vectors are within tolerance for %s. " \
-      + "Consider raising the tolerance parameter to avoid %s result." \
-      % (" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf")
+      (
+        "Zero vectors are within tolerance for %s. " \
+        + "Consider raising the tolerance parameter to avoid %s result."
+      ) % (" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf"),
+      RuntimeWarning
     )
     if counts[0] == 0 and counts[1] == 0:
       saen = np.nan
