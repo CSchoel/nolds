@@ -740,7 +740,15 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
   data = np.asarray(data)
     
   if tolerance is None:
-    tolerance = 0.2 * np.std(data)
+    # the reasoning behind this default value is the following:
+    # 1. physionet uses the default values emb_dim = 2, tolerance = 0.2
+    # 2. the chebyshev distance rises logarithmically with increasing dimension
+    # 3. 0.5627 * np.log(emb_dim) + 1.3334 is the logarithmic trend line for
+    #    the chebyshev distance of vectors sampled from a univariate normal
+    #    distribution
+    # 4. 0.1164 is used as a factor to ensure that tolerance == std * 0.2 for
+    #    emb_dim == 2
+    tolerance = np.std(data) * 0.1164 * (0.5627 * np.log(emb_dim) + 1.3334)
   n = len(data)
 
   # build matrix of "template vectors"
