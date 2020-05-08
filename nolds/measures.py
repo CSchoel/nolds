@@ -708,7 +708,8 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       the embedding dimension (length of vectors to compare)
     tolerance (float):
       distance threshold for two template vectors to be considered equal
-      (default: 0.2 * std(data))
+      (default: 0.2 * std(data) at emb_dim = 2, corrected for dimension effect
+      for other values of emb_dim)
     dist (function (2d-array, 1d-array) -> 1d-array):
       distance function used to calculate the distance between template
       vectors. Sampen is defined using ``rowwise_chebyshev``. You should only use
