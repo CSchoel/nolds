@@ -1,6 +1,9 @@
 NOnLinear measures for Dynamical Systems (nolds)
 ================================================
 
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3814723.svg
+   :target: https://doi.org/10.5281/zenodo.3814723
+
 Nolds is a small numpy-based library that provides an implementation and a learning resource for nonlinear measures for dynamical systems based on one-dimensional time series.
 Currently the following measures are implemented:
 
@@ -67,6 +70,17 @@ Therefore the corresponding functions feature extensive documentation that not o
 The documentation can be found in the code, but it is also available as `HTML-Version <https://cschoel.github.io/nolds/>`_ and on `Read the Docs <http://nolds.readthedocs.io/>`_.
 
 The relevant measures can be found in the file ``nolds/measures.py``.
+
+
+How to cite nolds
+-----------------
+
+I am planning to publish nolds in a peer-reviewed journal, but as this is a side project of my PhD thesis this may take a while.
+For the time being you can use the following [Zenodo reference](https://zenodo.org/record/3814723):
+
+    Schölzel, Christopher. (2019, June 16). Nonlinear measures for dynamical systems (Version 0.5.2). Zenodo. http://doi.org/10.5281/zenodo.3814723
+
+You can also [export a BibTeX reference](https://zenodo.org/record/3814723/export/hx) from Zenodo.
 
 
 Contact information
