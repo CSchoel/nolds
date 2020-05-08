@@ -76,21 +76,25 @@ How to cite nolds
 -----------------
 
 I am planning to publish nolds in a peer-reviewed journal, but as this is a side project of my PhD thesis this may take a while.
-For the time being you can use the following [Zenodo reference](https://zenodo.org/record/3814723):
+For the time being you can use the following `Zenodo reference`_:
 
     Schölzel, Christopher. (2019, June 16). Nonlinear measures for dynamical systems (Version 0.5.2). Zenodo. http://doi.org/10.5281/zenodo.3814723
 
-You can also [export a BibTeX reference](https://zenodo.org/record/3814723/export/hx) from Zenodo.
+You can also `export a BibTeX reference`_ from Zenodo.
+
+.. _Zenodo reference: https://zenodo.org/record/3814723
+.. _export a BibTeX reference: https://zenodo.org/record/3814723/export/hx
 
 
 Contact information
 -------------------
 
 If you have any questions, suggestions or corrections, you can find my contact
-information on my blog_.
+information in `my GitHub profile`_ or on `my blog`_.
 
 Please note that this is one of my side projects.
 Depending on my current workload it may take days, weeks or even months until
 I can find the time to check on mails and issues for nolds.
 
-.. _blog: http://arbitrary-but-fixed.net/
+.. _my GitHub profile: https://github.com/CSchoel
+.. _my blog: http://arbitrary-but-fixed.net/
