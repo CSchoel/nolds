@@ -344,5 +344,29 @@ class TestNoldsSampEn(unittest.TestCase):
     se = nolds.sampen(data, emb_dim=3, tolerance=0.5)
     self.assertAlmostEqual(se, -np.log(1.0/4), delta=0.01)
 
+  def test_sampen_logistic(self):
+    # logistic map with r = 2.8 => static value
+    data = list(datasets.logistic_map(0.45, 1000, r=2.8))
+    self.assertAlmostEqual(0, nolds.sampen(data), delta=0.001)
+    self.assertAlmostEqual(0, nolds.sampen(data[100:], emb_dim=5), delta=0.001)
+    # logistic map with r = 3.3 => oscillation between two values
+    data = list(datasets.logistic_map(0.45, 1000, r=3.3))
+    self.assertAlmostEqual(0, nolds.sampen(data), delta=0.001)
+    self.assertAlmostEqual(0, nolds.sampen(data[100:], emb_dim=5), delta=0.001)
+    # logistic map with r = 3.5 => oscillation between four values
+    data = list(datasets.logistic_map(0.45, 1000, r=3.5))
+    self.assertAlmostEqual(0, nolds.sampen(data), delta=0.001)
+    self.assertAlmostEqual(0, nolds.sampen(data[100:], emb_dim=5), delta=0.001)
+    # logistic map with r = 3.9 => chaotic behavior
+    data = list(datasets.logistic_map(0.45, 1000, r=3.9))
+    self.assertAlmostEqual(0.5, nolds.sampen(data[100:]), delta=0.1)
+    self.assertAlmostEqual(0.5, nolds.sampen(data[100:], emb_dim=5), delta=0.1)
+
+  def test_sampen_random(self):
+    # normally distributed random numbers
+    data = np.random.randn(10000)
+    self.assertAlmostEqual(2.21, nolds.sampen(data), delta=0.1)
+    self.assertAlmostEqual(2.21, nolds.sampen(data, emb_dim=3), delta=0.1)
+
 if __name__ == "__main__":
   unittest.main()
