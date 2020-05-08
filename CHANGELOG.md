@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - new parameter `closed` for `sampen` to determine if `<` or `<=` should be used for checking if the distance between a vector pair is within the tolerance
+- new example `sampen-tol` that compares old and new default tolerance values for `sampen`
+- more tests for `sampen` based on the logistic map and random data
 - new measures
   - `mfhurst_b` calculates the multifractal "generalized" Hurst exponent according to Barabasi et al.
   - `mfhurst_dm` calculates the multifractal "generalized" Hurst exponent according to Di Matteo et al.
@@ -23,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - `debug_data` for `sampen` now also contains counts of similar vectors
 - `sampen` now issues a warning if one or both count variables are zero
+- the parameter `tolerance` in `sampen` now has a more sophisticated default value that takes into account that the chebyshev distance rises logarithmically with increasing dimension
 - uses `np.float64` as standard `dtype` instead of `"float32"`
 
 ### Fixed

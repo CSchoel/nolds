@@ -3,6 +3,8 @@ NOnLinear measures for Dynamical Systems (nolds)
 
 .. image:: https://travis-ci.com/CSchoel/nolds.svg?branch=master
     :target: https://travis-ci.com/CSchoel/nolds
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3814723.svg
+   :target: https://doi.org/10.5281/zenodo.3814723
 
 .. image:: https://img.shields.io/lgtm/grade/python/g/CSchoel/nolds.svg?logo=lgtm&logoWidth=18
     :alt: Language grade: Python
@@ -83,14 +85,29 @@ The documentation can be found in the code, but it is also available as `HTML-Ve
 The relevant measures can be found in the file ``nolds/measures.py``.
 
 
+How to cite nolds
+-----------------
+
+I am planning to publish nolds in a peer-reviewed journal, but as this is a side project of my PhD thesis this may take a while.
+For the time being you can use the following `Zenodo reference`_:
+
+    Schölzel, Christopher. (2019, June 16). Nonlinear measures for dynamical systems (Version 0.5.2). Zenodo. http://doi.org/10.5281/zenodo.3814723
+
+You can also `export a BibTeX reference`_ from Zenodo.
+
+.. _Zenodo reference: https://zenodo.org/record/3814723
+.. _export a BibTeX reference: https://zenodo.org/record/3814723/export/hx
+
+
 Contact information
 -------------------
 
 If you have any questions, suggestions or corrections, you can find my contact
-information on my blog_.
+information in `my GitHub profile`_ or on `my blog`_.
 
 Please note that this is one of my side projects.
 Depending on my current workload it may take days, weeks or even months until
 I can find the time to check on mails and issues for nolds.
 
-.. _blog: http://arbitrary-but-fixed.net/
+.. _my GitHub profile: https://github.com/CSchoel
+.. _my blog: http://arbitrary-but-fixed.net/

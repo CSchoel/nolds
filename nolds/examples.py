@@ -249,6 +249,21 @@ def hurst_compare_nvals(data, nvals=None):
     print("custom: %.3f" % dd_cst[0])
   plt.show()
 
+def sampen_default_tolerance():
+  data = list(datasets.logistic_map(0.34, 1000, r=3.9))
+  oldtol = 0.2 * np.std(data)
+  old_res = [
+    nolds.sampen(data, emb_dim=i, tolerance=oldtol)
+    for i in range(1, 25)
+  ]
+  new_res = [
+    nolds.sampen(data, emb_dim=i)
+    for i in range(1, 25)
+  ]
+  for i, old, new in zip(range(1, 25), old_res, new_res):
+    print("emb_dim={} old={:.3f} corrected={:.3f}".format(i, old, new))
+  print("      old variance: {:.3f}".format(np.var(old_res)))
+  print("corrected variance: {:.3f}".format(np.var(new_res)))
 
 def aste_line_fitting(N=100):
   """
@@ -404,6 +419,7 @@ if __name__ == "__main__":
     print("  hurst-weron2")
     print("  hurst-hist")
     print("  hurst-nvals")
+    print("  sampen-tol")
     print("  aste-line")
     print("  hurst-mf-stock")
   if len(sys.argv) < 2:
@@ -422,6 +438,8 @@ if __name__ == "__main__":
     plot_hurst_hist()
   elif sys.argv[1] == "hurst-nvals":
     hurst_compare_nvals(datasets.brown72)
+  elif sys.argv[1] == "sampen-tol":
+    sampen_default_tolerance()
   elif sys.argv[1] == "aste-line":
     aste_line_fitting()
   elif sys.argv[1] == "hurst-mf-stock":
