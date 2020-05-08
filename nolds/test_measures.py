@@ -319,6 +319,9 @@ class TestNoldsCorrDim(unittest.TestCase):
     # TODO this test fails when you do not have sklearn installed
     self.assertAlmostEqual(cd, 0.2, delta=0.15)
     # TODO test example for cd > 1
+  def test_corr_dim_logistic(self):
+    # TODO replicate tests with logistic map from grassberger-procaccia
+    pass
 
 
 class TestNoldsSampEn(unittest.TestCase):
@@ -367,6 +370,12 @@ class TestNoldsSampEn(unittest.TestCase):
     data = np.random.randn(10000)
     self.assertAlmostEqual(2.21, nolds.sampen(data), delta=0.1)
     self.assertAlmostEqual(2.21, nolds.sampen(data, emb_dim=3), delta=0.1)
+    # uniform random numbers
+    # TODO add tests with uniformly distributed random numbers
+
+  def test_sampen_sinus(self):
+    # TODO add test with sinus signal
+    pass
 
 if __name__ == "__main__":
   unittest.main()
