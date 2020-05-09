@@ -1686,8 +1686,8 @@ def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
 
   - By default, a linear trend is removed from the data. This can be sensible
       in some application areas (such as stock market analysis), but I think
-      it should not be considered an additional preprocessing step and not
-      part of this algorithm.
+      this should be an additional preprocessing step and not part of this
+      algorithm.
   - In the calculation of the height-height correlations, the differences
       (h(x) - h(x + d) are not calculated for every possible x from 0 to N-d-1,
       but instead d is used as a step size for x. I see no justification for
@@ -1703,7 +1703,7 @@ def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
   - The algorithm tests multiple values for tau_max, which is the maximum
       distance that will be calculated. In [mdh]_ the authors state that this
       is done to test the robustness of the approach. However, taking the
-      mean of several runs with different tau_max will not introduce any more
+      mean of several runs with different tau_max will not produce any more
       information than performing one run with the largest tau_max. Instead
       it will only introduce a bias towards low values for d.
 
