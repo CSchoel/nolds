@@ -17,6 +17,8 @@ import warnings
 
 # TODO add more tests using fgn and fbm for hurst_rs and dfa
 
+# TODO split up tests into smaller units => one hypothesis = one test
+
 
 class TestNoldsHelperFunctions(unittest.TestCase):
   """
