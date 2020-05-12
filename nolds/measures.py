@@ -1370,6 +1370,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     return h
 
 # TODO implement MFDFA as second (more reliable) measure for multifractality
+# NOTE: probably not needed, since mfhurst_b is already pretty reliable
 
 
 def mfhurst_b(data, qvals=None, dists=None, fit='poly',
