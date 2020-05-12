@@ -251,7 +251,7 @@ def hurst_compare_nvals(data, nvals=None):
 
 def sampen_default_tolerance():
   data = list(datasets.logistic_map(0.34, 1000, r=3.9))
-  oldtol = 0.2 * np.std(data)
+  oldtol = 0.2 * np.std(data, ddof=1)
   old_res = [
     nolds.sampen(data, emb_dim=i, tolerance=oldtol)
     for i in range(1, 25)

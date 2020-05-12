@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - the test `test_measures.TestNoldsCorrDim.test_corr_dim` would fail if `sklearn` was not installed, because the standard "RANSAC" fitting method produces quite different results compared to the fallback "poly" method
+- uses `ddof=1` in `np.std` when creating debug plot for `sampen` and when computing default `rvals` for `corr_dim`
 
 ## \[0.5.2\]
 
