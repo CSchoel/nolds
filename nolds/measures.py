@@ -644,7 +644,7 @@ def plot_dists(dists, tolerance, m, title=None, fname=None):
   dists_full = np.concatenate(dists)
   ymax = len(dists_full) * 0.05
   mean = np.mean(dists_full)
-  std = np.std(dists_full)
+  std = np.std(dists_full, ddof=1)
   rng = (0, mean + std * nstd)
   i = 0
   colors = ["green", "blue"]
@@ -749,7 +749,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
     #    distribution
     # 4. 0.1164 is used as a factor to ensure that tolerance == std * 0.2 for
     #    emb_dim == 2
-    tolerance = np.std(data) * 0.1164 * (0.5627 * np.log(emb_dim) + 1.3334)
+    tolerance = np.std(data, ddof=1) * 0.1164 * (0.5627 * np.log(emb_dim) + 1.3334)
   n = len(data)
 
   # build matrix of "template vectors"
@@ -1391,7 +1391,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
   # TODO what are good values for r?
   # TODO do this for multiple values of emb_dim?
   if rvals is None:
-    sd = np.std(data)
+    sd = np.std(data, ddof=1)
     rvals = logarithmic_r(0.1 * sd, 0.5 * sd, 1.03)
   n = len(data)
   orbit = delay_embedding(data, emb_dim, lag=1)
