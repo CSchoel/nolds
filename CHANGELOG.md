@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- uses `ddof=1` in `np.std` when creating debug plot for `sampen` and when computing default `rvals` for `corr_dim`
+
 ## [0.5.2]
 
 ### Fixed
