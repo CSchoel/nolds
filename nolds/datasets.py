@@ -10,6 +10,31 @@ import pkg_resources
 import datetime
 
 
+def lorenz_euler(length, sigma, rho, beta, dt=0.01, start=[1,1,1]):
+  """
+  Simulates the Lorenz system using a simple euler method
+  """
+  def lorenz(state, sigma, rho, beta):
+    x, y, z = state
+    return np.array([
+      sigma * (y - x),
+      rho * x - y - x * z,
+      x * y - beta * z
+    ], dtype="float32")
+  trajectory = np.zeros((length, 3), dtype="float32")
+  trajectory[0] = start
+  for i in range(1, length):
+    t = i * dt
+    trajectory[i] = trajectory[i-1] + lorenz(trajectory[i-1], sigma, rho, beta) * dt
+  return trajectory
+
+def lorenz_lyap(sigma, rho, beta):
+  """
+  Calculates the exact Lyapunov dimension of the Lorenz system
+  """
+  return 3 - 2 * (sigma + beta + 1) / (sigma + 1 + np.sqrt((sigma-1) ** 2 + 4 * sigma * rho))
+
+
 def fbm(n, H=0.75):
   """
   Generates fractional brownian motions of desired length.

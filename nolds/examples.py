@@ -254,13 +254,13 @@ def sampen_default_tolerance():
   oldtol = 0.2 * np.std(data, ddof=1)
   old_res = [
     nolds.sampen(data, emb_dim=i, tolerance=oldtol)
-    for i in range(1, 25)
+    for i in range(1, 30)
   ]
   new_res = [
     nolds.sampen(data, emb_dim=i)
-    for i in range(1, 25)
+    for i in range(1, 30)
   ]
-  for i, old, new in zip(range(1, 25), old_res, new_res):
+  for i, old, new in zip(range(1, 30), old_res, new_res):
     print("emb_dim={} old={:.3f} corrected={:.3f}".format(i, old, new))
   print("      old variance: {:.3f}".format(np.var(old_res)))
   print("corrected variance: {:.3f}".format(np.var(new_res)))
@@ -406,6 +406,55 @@ def barabasi_1991_figure3():
   plt.show()
 
 
+def lorenz():
+  import matplotlib.pyplot as plt
+  sigma = 10
+  rho = 28
+  beta = 8.0/3
+  data = datasets.lorenz_euler(10000, sigma, rho, beta)
+
+  fig = plt.figure()
+  ax = fig.add_subplot(111, projection="3d")
+  ax.plot(data[:, 0], data[:, 1], data[:, 2])
+  plt.show()
+  plt.close(fig)
+
+  lyap_expected = datasets.lorenz_lyap(sigma, rho, beta)
+  lyap_rx = nolds.lyap_r(data[:, 0], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
+  lyap_ry = nolds.lyap_r(data[:, 1], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
+  lyap_rz = nolds.lyap_r(data[:, 2], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
+  lyap_ex = nolds.lyap_e(data[:, 0], min_tsep=1000, emb_dim=5, matrix_dim=3, tau=0.01)
+  lyap_ey = nolds.lyap_e(data[:, 1], min_tsep=1000, emb_dim=5, matrix_dim=3, tau=0.01)
+  lyap_ez = nolds.lyap_e(data[:, 2], min_tsep=1000, emb_dim=5, matrix_dim=3, tau=0.01)
+  print("Expected Lyapunov exponent: ", lyap_expected)
+  print("lyap_r(x)                 : ", lyap_rx)
+  print("lyap_r(y)                 : ", lyap_ry)
+  print("lyap_r(z)                 : ", lyap_rz)
+  print("lyap_e(x)                 : ", lyap_ex)
+  print("lyap_e(y)                 : ", lyap_ey)
+  print("lyap_e(z)                 : ", lyap_ez)
+  print()
+
+  cdx = nolds.corr_dim(data[:, 0], 10)
+  cdy = nolds.corr_dim(data[:, 1], 10)
+  cdz = nolds.corr_dim(data[:, 2], 10)
+  print("Expected correlation dimension:  2.05")
+  print("corr_dim(x)                   : ", cdx)
+  print("corr_dim(y)                   : ", cdy)
+  print("corr_dim(z)                   : ", cdz)
+  print()
+
+  hx = nolds.hurst_rs(data[:, 0])
+  hy = nolds.hurst_rs(data[:, 1])
+  hz = nolds.hurst_rs(data[:, 2])
+  # reference: https://arxiv.org/pdf/1501.03766.pdf
+  print("Expected hurst exponent: 0.5 / > 0.5")
+  print("hurst_rs(x)            : ", hx)
+  print("hurst_rs(y)            : ", hy)
+  print("hurst_rs(z)            : ", hz)
+
+  # TODO dfa, sampen
+
 if __name__ == "__main__":
   # run this with the following command:
   # python -m nolds.examples lyapunov-logistic
@@ -422,6 +471,7 @@ if __name__ == "__main__":
     print("  sampen-tol")
     print("  aste-line")
     print("  hurst-mf-stock")
+    print("  lorenz")
   if len(sys.argv) < 2:
     print("please tell me which tests you want to run")
     print_options()
@@ -448,6 +498,8 @@ if __name__ == "__main__":
     barabasi_1991_figure2()
   elif sys.argv[1] == "hurst-mf-barabasi3":
     barabasi_1991_figure3()
+  elif sys.argv[1] == "lorenz":
+    lorenz()
   else:
     print("i do not know any test of that name")
     print_options()
