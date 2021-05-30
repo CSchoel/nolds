@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `sampen` now issues a warning if one or both count variables are zero
 - the parameter `tolerance` in `sampen` now has a more sophisticated default value that takes into account that the chebyshev distance rises logarithmically with increasing dimension
 - uses `np.float64` as standard `dtype` instead of `"float32"`
+- input data of `lyap_e` is now converted to `np.float64` to avoid errors with `inf` values for integer inputs (see https://github.com/CSchoel/nolds/issues/21)
 
 ### Fixed
 
