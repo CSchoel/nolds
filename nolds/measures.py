@@ -1817,7 +1817,7 @@ def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
   mH = np.mean(H, axis=1) / qvals
   sH = np.mean(H, axis=1) / qvals
   if debug_data:
-    return [mh, sH, (xvals, yvals, polys)]
+    return [mH, sH, (xvals, yvals, polys)]
   else:
     return [mH, sH]
 
