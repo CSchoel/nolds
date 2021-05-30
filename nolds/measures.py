@@ -487,7 +487,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
       Lyapunov exponents from the x iterations of R_i. The shape of this debug
       data is (x, matrix_dim).
   """
-  data = np.asarray(data)
+  # convert to float to avoid errors when using 'inf' as distance
+  data = np.asarray(data, dtype=np.float64)
   n = len(data)
   if (emb_dim - 1) % (matrix_dim - 1) != 0:
     raise ValueError("emb_dim - 1 must be divisible by matrix_dim - 1!")
