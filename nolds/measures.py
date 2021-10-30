@@ -231,8 +231,11 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     f = np.fft.rfft(data, n * 2 - 1)
   if min_tsep is None:
     # calculate min_tsep as mean period (= 1 / mean frequency)
-    mf = np.fft.rfftfreq(n * 2 - 1) * np.abs(f)
-    mf = np.mean(mf[1:]) / np.sum(np.abs(f[1:]))
+    # to get the mean frequency, we weight the frequency buckets in the
+    # fft result by the absolute power in that bucket and then divide
+    # by the total power accross all buckets to get a weigthed mean
+    mf = np.fft.rfftfreq(n * 2 - 1) * f**2
+    mf = np.sum(mf[1:]) / np.sum(f[1:]**2)
     min_tsep = int(np.ceil(1.0 / mf))
     if min_tsep > max_tsep_factor * n:
       min_tsep = int(max_tsep_factor * n)
