@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - new examples
   - `hurst_mf_stock` example function recreates a plot from Di Matteo 2003.
   - `barabasi_1991_figure2` and `barabasi_1991_figure3` recreate the respective plots from Barabasi et al. 1991
+  - `lorenz` calculates all main measures of `nolds` for x, y, and z coordinates of a Lorenz plot and compares them to prescribed values from the literature
 
 ### Changed
 
