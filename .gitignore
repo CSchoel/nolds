@@ -14,3 +14,6 @@ coverage.xml
 
 # temporary folder for test scripts
 temp
+
+# Vscode sphinx build files
+_build
