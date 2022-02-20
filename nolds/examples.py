@@ -407,25 +407,70 @@ def barabasi_1991_figure3():
 
 
 def lorenz():
+  """
+  Calculates different measures for the Lorenz system of ordinary
+  differential equations and compares nolds results with prescribed
+  results from the literature.
+
+  Parameters for Lorenz system:
+
+  - sigma = 10
+  - rho = 28
+  - beta = 8/3
+  - dt = 0.01
+
+  Algorithms:
+
+  - ``lyap_r`` with min_tsep=1000, emb_dim=5, tau=0.01, and lag=5  (see [l_4]_)
+  - ``lyap_e`` with min_tsep=1000, emb_dim=5, matrix_dim=5, and tau=0.01 (see [l_4]_)
+  - ``corr_dim`` with emb_dim=10, and fit=poly (see [l_1]_)
+  - ``hurst_rs`` with fit=poly (see [l_3]_)
+  - ``dfa`` with default parameters (see [l_5]_)
+  - ``sampen`` with default parameters (see [l_2]_)
+
+  References:
+
+    .. [l_1] P. Grassberger and I. Procaccia, “Measuring the strangeness
+       of strange attractors,” Physica D: Nonlinear Phenomena, vol. 9,
+       no. 1, pp. 189–208, 1983.
+    .. [l_2] F. Kaffashi, R. Foglyano, C. G. Wilson, and K. A. Loparo,
+       “The effect of time delay on Approximate & Sample Entropy
+       calculations,” Physica D: Nonlinear Phenomena, vol. 237, no. 23,
+       pp. 3069–3074, 2008, doi: 10.1016/j.physd.2008.06.005.
+    .. [l_3] V. Suyal, A. Prasad, and H. P. Singh, “Nonlinear Time Series
+       Analysis of Sunspot Data,” Sol Phys, vol. 260, no. 2, pp. 441–449,
+       2009, doi: 10.1007/s11207-009-9467-x.
+    .. [l_4] G. A. Leonov and N. V. Kuznetsov, “On differences and
+       similarities in the analysis of Lorenz, Chen, and Lu systems,”
+       Applied Mathematics and Computation, vol. 256, pp. 334–343, 2015,
+       doi: 10.1016/j.amc.2014.12.132.
+    .. [l_5] J. S. González-Salas, M. S. Shbat, F. C. Ordaz-Salazar, and
+       J. Simón, “Analyzing Chaos Systems and Fine Spectrum Sensing
+       Using Detrended Fluctuation Analysis Algorithm,” Mathematical
+       Problems in Engineering, vol. 2016, pp. 1–18, 2016,
+       doi: 10.1155/2016/2865195.
+
+  """
   import matplotlib.pyplot as plt
   sigma = 10
   rho = 28
   beta = 8.0/3
-  data = datasets.lorenz_euler(10000, sigma, rho, beta)
+  start = [0, 22, 10]
+  data = datasets.lorenz_euler(10000, sigma, rho, beta, start=start)
 
-  fig = plt.figure()
-  ax = fig.add_subplot(111, projection="3d")
-  ax.plot(data[:, 0], data[:, 1], data[:, 2])
-  plt.show()
-  plt.close(fig)
+  # fig = plt.figure()
+  # ax = fig.add_subplot(111, projection="3d")
+  # ax.plot(data[:, 0], data[:, 1], data[:, 2])
+  # plt.show()
+  # plt.close(fig)
 
   lyap_expected = datasets.lorenz_lyap(sigma, rho, beta)
   lyap_rx = nolds.lyap_r(data[:, 0], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
   lyap_ry = nolds.lyap_r(data[:, 1], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
   lyap_rz = nolds.lyap_r(data[:, 2], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
-  lyap_ex = nolds.lyap_e(data[:, 0], min_tsep=1000, emb_dim=5, matrix_dim=3, tau=0.01)
-  lyap_ey = nolds.lyap_e(data[:, 1], min_tsep=1000, emb_dim=5, matrix_dim=3, tau=0.01)
-  lyap_ez = nolds.lyap_e(data[:, 2], min_tsep=1000, emb_dim=5, matrix_dim=3, tau=0.01)
+  lyap_ex = nolds.lyap_e(data[:, 0], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=0.01)
+  lyap_ey = nolds.lyap_e(data[:, 1], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=0.01)
+  lyap_ez = nolds.lyap_e(data[:, 2], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=0.01)
   print("Expected Lyapunov exponent: ", lyap_expected)
   print("lyap_r(x)                 : ", lyap_rx)
   print("lyap_r(y)                 : ", lyap_ry)
@@ -435,25 +480,47 @@ def lorenz():
   print("lyap_e(z)                 : ", lyap_ez)
   print()
 
-  cdx = nolds.corr_dim(data[:, 0], 10)
-  cdy = nolds.corr_dim(data[:, 1], 10)
-  cdz = nolds.corr_dim(data[:, 2], 10)
+  cdx = nolds.corr_dim(data[:, 0], 10, fit="poly")
+  cdy = nolds.corr_dim(data[:, 1], 10, fit="poly")
+  cdz = nolds.corr_dim(data[:, 2], 10, fit="poly")
+  # reference Grassberger-Procaccia 1983
   print("Expected correlation dimension:  2.05")
   print("corr_dim(x)                   : ", cdx)
   print("corr_dim(y)                   : ", cdy)
   print("corr_dim(z)                   : ", cdz)
   print()
 
-  hx = nolds.hurst_rs(data[:, 0])
-  hy = nolds.hurst_rs(data[:, 1])
-  hz = nolds.hurst_rs(data[:, 2])
-  # reference: https://arxiv.org/pdf/1501.03766.pdf
-  print("Expected hurst exponent: 0.5 / > 0.5")
+  hx = nolds.hurst_rs(data[:, 0], fit="poly")
+  hy = nolds.hurst_rs(data[:, 1], fit="poly")
+  hz = nolds.hurst_rs(data[:, 2], fit="poly")
+  # reference: Suyal 2009
+  print("Expected hurst exponent: 0.64 < H < 0.93")
   print("hurst_rs(x)            : ", hx)
   print("hurst_rs(y)            : ", hy)
   print("hurst_rs(z)            : ", hz)
+  print()
 
-  # TODO dfa, sampen
+  # reference Gonzáles-Salas 2016
+  nvals = nolds.logarithmic_n(round(2**4.75), 2**7, 2**0.2) # only use scales < 2^7 and >= 2^4.75
+  print(nvals)
+  dx = nolds.dfa(data[:, 0], nvals=nvals, debug_plot=True)
+  dy = nolds.dfa(data[:, 1], nvals=nvals)
+  dz = nolds.dfa(data[:, 2], nvals=nvals)
+  print("Expected hurst parameter: [1.5, 1.4, 1.4]")
+  print("dfa(x)                  : ", dx)
+  print("dfa(y)                  : ", dy)
+  print("dfa(z)                  : ", dz)
+  print()
+
+  # reference: Kaffashi 2008
+  sx = nolds.sampen(data[:, 0])
+  sy = nolds.sampen(data[:, 1])
+  sz = nolds.sampen(data[:, 2])
+  print("Expected sample entropy: [0.15, 0.15, 0.25]")
+  print("sampen(x): ", sx)
+  print("sampen(y): ", sy)
+  print("sampen(z): ", sz)
+
 
 if __name__ == "__main__":
   # run this with the following command:
