@@ -30,7 +30,13 @@ def lorenz_euler(length, sigma, rho, beta, dt=0.01, start=[1,1,1]):
 
 def lorenz_lyap(sigma, rho, beta):
   """
-  Calculates the exact Lyapunov dimension of the Lorenz system
+  Calculates the exact Lyapunov dimension of the Lorenz system according to
+  Leonov 2015 [ll_1]_.
+
+  References:
+    .. [ll_1] G. A. Leonov and N. V. Kuznetsov, “On differences and similarities in the
+       analysis of Lorenz, Chen, and Lu systems,” Applied Mathematics and Computation,
+       vol. 256, pp. 334–343, Apr. 2015, doi: 10.1016/j.amc.2014.12.132.
   """
   return 3 - 2 * (sigma + beta + 1) / (sigma + 1 + np.sqrt((sigma-1) ** 2 + 4 * sigma * rho))
 
