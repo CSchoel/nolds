@@ -9,7 +9,6 @@ This file contains a list of general ideas for the future that are not yet detai
 
 ## Roadmap for version 1.0
 
-* travis CI -> GH actions
 * complete Lorenz example
 * use Lorenz example for unit tests
 * multidimensional data + Lorenz test
