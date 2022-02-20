@@ -412,6 +412,18 @@ def lorenz():
   differential equations and compares nolds results with prescribed
   results from the literature.
 
+  The Lorenz system is a three dimensional dynamical system given
+  by the following equations:
+
+  dx/dt = sigma * (y - x)
+  dy/dt = rho * x - y - x * z
+  dz/dt = x * y - beta * z
+
+  To test the reconstruction of higher-dimensional phenomena from
+  one-dimensional data, the lorenz system is simulated with a
+  simple Euler method and then the x-, y-, and z-values are used
+  as one-dimensional input for the nolds algorithms.
+
   Parameters for Lorenz system:
 
   - sigma = 10

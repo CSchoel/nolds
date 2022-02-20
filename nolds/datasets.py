@@ -12,7 +12,14 @@ import datetime
 
 def lorenz_euler(length, sigma, rho, beta, dt=0.01, start=[1,1,1]):
   """
-  Simulates the Lorenz system using a simple euler method
+  Simulates the Lorenz system using a simple Euler method
+
+  The Lorenz system is a three dimensional dynamical system given
+  by the following equations:
+
+  dx/dt = sigma * (y - x)
+  dy/dt = rho * x - y - x * z
+  dz/dt = x * y - beta * z
   """
   def lorenz(state, sigma, rho, beta):
     x, y, z = state
