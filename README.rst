@@ -1,8 +1,9 @@
 NOnLinear measures for Dynamical Systems (nolds)
 ================================================
 
-.. image:: https://travis-ci.com/CSchoel/nolds.svg?branch=master
-    :target: https://travis-ci.com/CSchoel/nolds
+.. image:: https://github.com/CSchoel/nolds/actions/workflows/ci.yaml/badge.svg
+    :target: https://github.com/CSchoel/nolds/actions/workflows/ci.yaml
+
 .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3814723.svg
    :target: https://doi.org/10.5281/zenodo.3814723
 
@@ -13,8 +14,9 @@ NOnLinear measures for Dynamical Systems (nolds)
 .. image:: https://api.codacy.com/project/badge/Grade/42c30d253b384e87a86b70c8fa0da6b2
     :target: https://www.codacy.com/app/christopher.schoelzel/nolds?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CSchoel/nolds&amp;utm_campaign=Badge_Grade
 
-.. image:: https://codecov.io/gh/CSchoel/nolds/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/CSchoel/nolds/branch/master/graph/badge.svg?token=Xgr82QKhFi
     :target: https://codecov.io/gh/CSchoel/nolds
+
 
 Nolds is a small numpy-based library that provides an implementation and a learning resource for nonlinear measures for dynamical systems based on one-dimensional time series.
 
