@@ -1825,7 +1825,7 @@ def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
     return [mH, sH]
 
 
-def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
+def corr_dim(data, emb_dim, lag=1, rvals=None, dist=rowwise_euclidean,
              fit="RANSAC", debug_plot=False, debug_data=False, plot_file=None):
   """
   Calculates the correlation dimension with the Grassberger-Procaccia algorithm
@@ -1857,9 +1857,12 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     This version of the algorithm is created for one-dimensional (scalar) time
     series. Therefore, before calculating C(r), a delay embedding of the time
     series is performed to yield emb_dim dimensional vectors
-    Y_i = [X_i, X_(i+1), X_(i+2), ... X_(i+embd_dim-1)]. Choosing a higher
-    value for emb_dim allows to reconstruct higher dimensional dynamics and
-    avoids "systematic errors due to corrections to scaling".
+    Y_i = [X_i, X_(i+1*lag), X_(i+2*lag), ... X_(i+(embd_dim-1)*lag)]. Choosing
+    a higher value for emb_dim allows to reconstruct higher dimensional dynamics
+    and avoids "systematic errors due to corrections to scaling". Choosing a
+    higher value for lag allows to avoid overestimating correlation because
+    X_i ~= X_i+1, but it should also not be set too high to not underestimate
+    correlation due to exponential divergence of trajectories in chaotic systems.
 
   References:
     .. [cd_1] P. Grassberger and I. Procaccia, “Characterization of strange
@@ -1911,6 +1914,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
       ``csums`` are the corresponding log(C(r)) and ``poly`` are the line
       coefficients (``[slope, intercept]``)
   """
+  # TODO determine lag in units of time instead of number of datapoints
   data = np.asarray(data)
 
   # TODO what are good values for r?
@@ -1918,7 +1922,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
   if rvals is None:
     sd = np.std(data, ddof=1)
     rvals = logarithmic_r(0.1 * sd, 0.5 * sd, 1.03)
-  orbit = delay_embedding(data, emb_dim, lag=1)
+  orbit = delay_embedding(data, emb_dim, lag=lag)
   n = len(orbit)
   dists = np.zeros((len(orbit), len(orbit)), dtype=np.float64)
   for i in range(len(orbit)):
