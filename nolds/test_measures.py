@@ -333,7 +333,22 @@ class TestNoldsCorrDim(unittest.TestCase):
     cd = nolds.corr_dim(data, 4, fit="poly")
     self.assertAlmostEqual(cd, 0.5, delta=0.15)
     # TODO test example for cd > 1
-  def test_corr_dim_logistic(self):
+
+  def test_lorenz(self):
+    # NOTE: The settings of n, discard, lag, emb_dim, and rvals were determined
+    # experimentally to find the smallest dataset that yields the results reported
+    # by Grassberger and Procaccia (1983).
+    discard = 5000
+    n = 5000
+    lag = 5
+    emb_dim = 5
+    data = datasets.lorenz_euler(n + discard, 10, 28, 8/3, start=(1,1,1), dt=0.012)
+    x = data[discard:,1]
+    rvals = nolds.logarithmic_r(1, np.e, 1.1)  # determined experimentally
+    cd = nolds.corr_dim(x, emb_dim, fit="poly", rvals=rvals, lag=5, debug_plot=True)
+    self.assertAlmostEqual(cd, 2.05, delta=0.1)
+
+  def test_logistic(self):
     # TODO replicate tests with logistic map from grassberger-procaccia
     pass
 
