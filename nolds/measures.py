@@ -1921,6 +1921,8 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
   n = len(data)
   orbit = delay_embedding(data, emb_dim, lag=1)
   dists = np.array([dist(orbit, orbit[i]) for i in range(len(orbit))])
+  # exclude self-matches by setting their distance to infinity
+  dists = np.where(np.identity(len(orbit)) == 1, np.Inf, dists)
   csums = []
   for r in rvals:
     s = 1.0 / (n * (n - 1)) * np.sum(dists < r)
