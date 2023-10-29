@@ -1918,8 +1918,8 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
   if rvals is None:
     sd = np.std(data, ddof=1)
     rvals = logarithmic_r(0.1 * sd, 0.5 * sd, 1.03)
-  n = len(data)
   orbit = delay_embedding(data, emb_dim, lag=1)
+  n = len(orbit)
   dists = np.zeros((len(orbit), len(orbit)), dtype=np.float64)
   for i in range(len(orbit)):
     # calculate distances between X_i and X_i+1, X_i+2, ... , X_n-1
