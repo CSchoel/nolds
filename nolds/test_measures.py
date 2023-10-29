@@ -8,8 +8,8 @@ from builtins import (
 import numpy as np
 
 # import internal module to test helping functions
-from . import measures as nolds
-from . import datasets
+from nolds import measures as nolds
+from nolds import datasets
 import unittest
 import warnings
 
