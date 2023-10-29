@@ -1920,11 +1920,24 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     rvals = logarithmic_r(0.1 * sd, 0.5 * sd, 1.03)
   n = len(data)
   orbit = delay_embedding(data, emb_dim, lag=1)
-  dists = np.array([dist(orbit, orbit[i]) for i in range(len(orbit))])
-  # exclude self-matches by setting their distance to infinity
-  dists = np.where(np.identity(len(orbit)) == 1, np.Inf, dists)
+  dists = np.zeros((len(orbit), len(orbit)), dtype=np.float64)
+  for i in range(len(orbit)):
+    # calculate distances between X_i and X_i+1, X_i+2, ... , X_n-1
+    # NOTE: strictly speaking, [cd_1] does not specify to exclude self-matches
+    # however, since both [cd_2] and [cd_3] specify to only compare i with j != i
+    # or j > i respectively, it is safe to assume that this was an oversight in
+    # [cd_1]
+    d = dist(orbit[i+1:], orbit[i])
+    dists[i+1:,i] = d  # fill column i
+    dists[i,i+1:] = d  # fill row i
   csums = []
   for r in rvals:
+    # NOTE: The [cd_1] and [cd_2] both use the factor 1/N^2 here.
+    # However, since we only use these values to fit a line in a log-log plot
+    # any multiplicative constant doesn't change the result since it will
+    # only result in an offset on the y-axis. Also, [cd_3] has a point here
+    # in that if we exclude self-matches in the numerator, it makes sense to
+    # also exclude self-matches from the denominator.
     s = 1.0 / (n * (n - 1)) * np.sum(dists < r)
     csums.append(s)
   csums = np.array(csums)
