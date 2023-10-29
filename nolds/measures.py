@@ -1938,7 +1938,7 @@ def corr_dim(data, emb_dim, rvals=None, dist=rowwise_euclidean,
     # only result in an offset on the y-axis. Also, [cd_3] has a point here
     # in that if we exclude self-matches in the numerator, it makes sense to
     # also exclude self-matches from the denominator.
-    s = 1.0 / (n * (n - 1)) * np.sum(dists < r)
+    s = 1.0 / (n * (n - 1)) * np.sum(dists <= r)
     csums.append(s)
   csums = np.array(csums)
   # filter zeros from csums
