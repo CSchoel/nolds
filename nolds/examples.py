@@ -468,7 +468,10 @@ def lorenz():
   rho = 28
   beta = 8.0/3
   start = [0, 22, 10]
-  data = datasets.lorenz_euler(10000, sigma, rho, beta, start=start)
+  n = 10000
+  skip = 10000
+  dt = 0.012
+  data = datasets.lorenz_euler(n + skip, sigma, rho, beta, start=start, dt=dt)[skip:]
 
   # fig = plt.figure()
   # ax = fig.add_subplot(111, projection="3d")
@@ -477,12 +480,12 @@ def lorenz():
   # plt.close(fig)
 
   lyap_expected = datasets.lorenz_lyap(sigma, rho, beta)
-  lyap_rx = nolds.lyap_r(data[:, 0], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
-  lyap_ry = nolds.lyap_r(data[:, 1], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
-  lyap_rz = nolds.lyap_r(data[:, 2], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
-  lyap_ex = nolds.lyap_e(data[:, 0], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=0.01)
-  lyap_ey = nolds.lyap_e(data[:, 1], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=0.01)
-  lyap_ez = nolds.lyap_e(data[:, 2], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=0.01)
+  lyap_rx = nolds.lyap_r(data[:, 0], min_tsep=1000, emb_dim=5, tau=dt, lag=5)
+  lyap_ry = nolds.lyap_r(data[:, 1], min_tsep=1000, emb_dim=5, tau=dt, lag=5)
+  lyap_rz = nolds.lyap_r(data[:, 2], min_tsep=1000, emb_dim=5, tau=dt, lag=5)
+  lyap_ex = nolds.lyap_e(data[:, 0], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=dt)
+  lyap_ey = nolds.lyap_e(data[:, 1], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=dt)
+  lyap_ez = nolds.lyap_e(data[:, 2], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=dt)
   print("Expected Lyapunov exponent: ", lyap_expected)
   print("lyap_r(x)                 : ", lyap_rx)
   print("lyap_r(y)                 : ", lyap_ry)
