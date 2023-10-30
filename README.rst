@@ -30,12 +30,19 @@ Currently the following measures are implemented:
   Positive Lyapunov exponents indicate chaos and unpredictability.
   Nolds provides the algorithm of Rosenstein et al. (``lyap_r``) to estimate the largest Lyapunov exponent and the algorithm of Eckmann et al. (``lyap_e``) to estimate the whole spectrum of Lyapunov exponents.
 **Hurst exponent** (``hurst_rs``)
-	The hurst exponent is a measure of the "long-term memory" of a time series.
+	The Hurst exponent is a measure of the "long-term memory" of a time series.
 	It can be used to determine whether the time series is more, less, or equally likely to increase if it has increased in previous steps.
 	This property makes the Hurst exponent especially interesting for the analysis of stock data.
 **detrended fluctuation analysis (DFA)** (``dfa``)
 	DFA measures the Hurst parameter *H*, which is very similar to the Hurst exponent.
 	The main difference is that DFA can be used for non-stationary processes (whose mean and/or variance change over time).
+**Generalized Hurst Exponent** (``mfhurst_b``)
+  The Generalized Hurst Exponent (GHE, H_q or H(q)) can (as the name implies) be seen as a generalization of the Hurst exponent for data series with multifractal properties.
+  It's origins are however not directly related to Hurst's rescaled range approach, but to the definition of self-affine functions.
+
+  .. warning:: Nolds also supports the GHE implementation by Di Matteo and Aste (2003) as ``mfhurst_dm``.
+    However, it is not recommended to use this for anything else than reproducing the results of the authors as ``mfhurst_b`` is more stable and mathematically sound.
+  
 
 Example
 -------
