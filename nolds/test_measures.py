@@ -345,7 +345,7 @@ class TestNoldsCorrDim(unittest.TestCase):
     data = datasets.lorenz_euler(n + discard, 10, 28, 8/3, start=(1,1,1), dt=0.012)
     x = data[discard:,1]
     rvals = nolds.logarithmic_r(1, np.e, 1.1)  # determined experimentally
-    cd = nolds.corr_dim(x, emb_dim, fit="poly", rvals=rvals, lag=5, debug_plot=True)
+    cd = nolds.corr_dim(x, emb_dim, fit="poly", rvals=rvals, lag=5)
     self.assertAlmostEqual(cd, 2.05, delta=0.1)
 
   def test_logistic(self):
