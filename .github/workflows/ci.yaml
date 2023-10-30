@@ -1,6 +1,6 @@
 on:
   push:
-    branches: ["main", "dev"]
+    branches: ["main", "dev", "v*"]
 
 name: build
 
@@ -11,8 +11,8 @@ jobs:
         python: ["2.7", "3.7", "3.10"]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python }}
       - run: pip install codecov .
