@@ -17,3 +17,6 @@ temp
 
 # Vscode sphinx build files
 _build
+
+# virtual environment
+.venv
