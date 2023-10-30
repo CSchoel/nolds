@@ -182,6 +182,8 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     .. [lr_b] Shapour Mohammadi, "LYAPROSEN: MATLAB function to calculate
        Lyapunov exponent",
        url: https://ideas.repec.org/c/boc/bocode/t741502.html
+    .. [lr_c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, "TISEAN 3.0.0 - Nonlinear Time Series Analysis",
+       url: https://www.pks.mpg.de/tisean/Tisean_3.0.0/docs/docs_c/lyap_r.html
 
   Args:
     data (iterable of float):
