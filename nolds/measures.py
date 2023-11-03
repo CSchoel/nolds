@@ -686,7 +686,7 @@ def plot_dists(dists, tolerance, m, title=None, fname=None):
   plt.close()
 
 
-def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
+def sampen(data, emb_dim=2, tolerance=None, lag=1, dist=rowwise_chebyshev,
            closed=False, debug_plot=False, debug_data=False, plot_file=None):
   """
   Computes the sample entropy of the given data.
@@ -701,7 +701,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
 
   Explanation of the algorithm:
     The algorithm constructs all subsequences of length emb_dim
-    [s_1, s_2, s_3, ...] and then counts each pair (s_i, s_j) with i != j
+    [s_1, s_1+lag, s_1+2*lag, ...] and then counts each pair (s_i, s_j) with i != j
     where dist(s_i, s_j) < tolerance. The same process is repeated for all
     subsequences of length emb_dim + 1. The sum of similar sequence pairs
     with length emb_dim + 1 is divided by the sum of similar sequence pairs
@@ -729,6 +729,8 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
       distance threshold for two template vectors to be considered equal
       (default: 0.2 * std(data) at emb_dim = 2, corrected for dimension effect
       for other values of emb_dim)
+    lag (int):
+      delay for the delay embedding
     dist (function (2d-array, 1d-array) -> 1d-array):
       distance function used to calculate the distance between template
       vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
@@ -787,7 +789,7 @@ def sampen(data, emb_dim=2, tolerance=None, dist=rowwise_chebyshev,
   # because this vector has no corresponding vector of length m+1 and thus does
   # not count towards the conditional probability
   # (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)
-  tVecs = delay_embedding(np.asarray(data), emb_dim+1, lag=1)
+  tVecs = delay_embedding(np.asarray(data), emb_dim+1, lag=lag)
   plot_data = []
   counts = []
   for m in [emb_dim, emb_dim + 1]:
