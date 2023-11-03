@@ -541,11 +541,14 @@ def lorenz():
   print()
 
   # reference Gonzáles-Salas 2016
+  # RATIONALE for parameter choices: Just follow paper
+  # NOTE: discrepancies here can be explained by different solver (RK4 vs euler)
+  # and different step size (0.01 vs 0.012).
   nvals = nolds.logarithmic_n(round(2**4.75), 2**7, 2**0.2) # only use scales < 2^7 and >= 2^4.75
-  print(nvals)
-  dx = nolds.dfa(data[:, 0], nvals=nvals, debug_plot=True)
-  dy = nolds.dfa(data[:, 1], nvals=nvals)
-  dz = nolds.dfa(data[:, 2], nvals=nvals)
+  dfa_args = dict(nvals=nvals, fit_exp="poly")
+  dx = nolds.dfa(data[:, 0], **dfa_args)
+  dy = nolds.dfa(data[:, 1], **dfa_args)
+  dz = nolds.dfa(data[:, 2], **dfa_args)
   print("Expected hurst parameter: [1.5, 1.4, 1.4]")
   print("dfa(x)                  : ", dx)
   print("dfa(y)                  : ", dy)
