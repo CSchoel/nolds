@@ -429,7 +429,7 @@ def lorenz():
   - sigma = 10
   - rho = 28
   - beta = 8/3
-  - dt = 0.01
+  - dt = 0.012
 
   Algorithms:
 
@@ -480,7 +480,7 @@ def lorenz():
   # plt.close(fig)
 
   lyap_expected = datasets.lorenz_lyap(sigma, rho, beta)
-  # RATIONALE for argument values:
+  # Rationale for argument values:
   # start with medium settings for min_tsep and lag, span a large area with trajectory_len, set fit_offset to 0
   # up the embedding dimension until you get a clear line in the debug plot
   # adjust trajectory_len and fit_offset to split off only the linear part
@@ -489,7 +489,7 @@ def lorenz():
   lyap_rx = nolds.lyap_r(data[:, 0], **lyap_r_args)
   lyap_ry = nolds.lyap_r(data[:, 1], **lyap_r_args)
   lyap_rz = nolds.lyap_r(data[:, 2], **lyap_r_args)
-  # RATIONALE for argument values:
+  # Rationale for argument values:
   # Start with emb_dim=matrix_dim, medium min_tsep and min_nb
   # After that, no good guidelines for stability. :(
   # -> Just experiment with settings until you get close to expected value. ¯\_(ツ)_/¯
@@ -507,7 +507,7 @@ def lorenz():
   print("lyap_e(z)                 : ", lyap_ez)
   print()
 
-  # RATIONALE for argument values:
+  # Rationale for argument values:
   # Start with moderate settings for lag and a large span of rvals.
   # Increase emb_dim until you get a clear line in the debug plot
   # Clip rvals to select only the linear part of the plot.
@@ -525,11 +525,11 @@ def lorenz():
   print("corr_dim(z)                   : ", cdz)
   print()
 
-  # RATIONALE for argument values:
+  # Rationale for argument values:
   # Start with a large range of nvals.
   # Reduce those down cutting of the first few data points and then only keep the
   # linear-ish looking part of the initial rise.
-  hurst_rs_args = dict(fit="poly", debug_plot=True, nvals=nolds.logarithmic_n(10, 70, 1.1))
+  hurst_rs_args = dict(fit="poly", nvals=nolds.logarithmic_n(10, 70, 1.1))
   hx = nolds.hurst_rs(data[:, 0], **hurst_rs_args)
   hy = nolds.hurst_rs(data[:, 1], **hurst_rs_args)
   hz = nolds.hurst_rs(data[:, 2], **hurst_rs_args)
@@ -541,7 +541,7 @@ def lorenz():
   print()
 
   # reference Gonzáles-Salas 2016
-  # RATIONALE for parameter choices: Just follow paper
+  # Rationale for argument values: Just follow paper
   # NOTE: discrepancies here can be explained by different solver (RK4 vs euler)
   # and different step size (0.01 vs 0.012).
   nvals = nolds.logarithmic_n(round(2**4.75), 2**7, 2**0.2) # only use scales < 2^7 and >= 2^4.75
@@ -556,9 +556,11 @@ def lorenz():
   print()
 
   # reference: Kaffashi 2008
-  sx = nolds.sampen(data[:, 0])
-  sy = nolds.sampen(data[:, 1])
-  sz = nolds.sampen(data[:, 2])
+  # Rationale for argument values: Just follow paper.
+  sampen_args = dict(emb_dim=2, lag=1)
+  sx = nolds.sampen(data[:, 0], **sampen_args)
+  sy = nolds.sampen(data[:, 1], **sampen_args)
+  sz = nolds.sampen(data[:, 2], **sampen_args)
   print("Expected sample entropy: [0.15, 0.15, 0.25]")
   print("sampen(x): ", sx)
   print("sampen(y): ", sy)
