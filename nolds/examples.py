@@ -480,12 +480,24 @@ def lorenz():
   # plt.close(fig)
 
   lyap_expected = datasets.lorenz_lyap(sigma, rho, beta)
-  lyap_rx = nolds.lyap_r(data[:, 0], min_tsep=1000, emb_dim=5, tau=dt, lag=5)
-  lyap_ry = nolds.lyap_r(data[:, 1], min_tsep=1000, emb_dim=5, tau=dt, lag=5)
-  lyap_rz = nolds.lyap_r(data[:, 2], min_tsep=1000, emb_dim=5, tau=dt, lag=5)
-  lyap_ex = nolds.lyap_e(data[:, 0], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=dt)
-  lyap_ey = nolds.lyap_e(data[:, 1], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=dt)
-  lyap_ez = nolds.lyap_e(data[:, 2], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=dt)
+  # RATIONALE for argument values:
+  # start with medium settings for min_tsep and lag, span a large area with trajectory_len, set fit_offset to 0
+  # up the embedding dimension until you get a clear line in the debug plot
+  # adjust trajectory_len and fit_offset to split off only the linear part
+  # in general: the longer the linear part of the plot, the better
+  lyap_r_args = dict(min_tsep=10, emb_dim=5, tau=dt, lag=5, trajectory_len=28, fit_offset=8, fit="poly")
+  lyap_rx = nolds.lyap_r(data[:, 0], **lyap_r_args)
+  lyap_ry = nolds.lyap_r(data[:, 1], **lyap_r_args)
+  lyap_rz = nolds.lyap_r(data[:, 2], **lyap_r_args)
+  # RATIONALE for argument values:
+  # Start with emb_dim=matrix_dim, medium min_tsep and min_nb
+  # After that, no good guidelines for stability. :(
+  # -> Just experiment with settings until you get close to expected value. ¯\_(ツ)_/¯
+  # NOTE: It seems from this example and `lyapunov-logistic` that lyap_e has a scaling problem.
+  lyap_e_args = dict(min_tsep=10, emb_dim=5, matrix_dim=5, tau=dt, min_nb=8)
+  lyap_ex = nolds.lyap_e(data[:, 0], **lyap_e_args)
+  lyap_ey = nolds.lyap_e(data[:, 1], **lyap_e_args)
+  lyap_ez = nolds.lyap_e(data[:, 2], **lyap_e_args)
   print("Expected Lyapunov exponent: ", lyap_expected)
   print("lyap_r(x)                 : ", lyap_rx)
   print("lyap_r(y)                 : ", lyap_ry)
