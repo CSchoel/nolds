@@ -1060,7 +1060,7 @@ def rs(data, n, unbiased=True):
     return np.mean(r / s)
 
 
-def plot_histogram_matrix(data, name, fname=None):
+def plot_histogram_matrix(data, name, bin_range="3sigma", fname=None):
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
   nhists = len(data[0])
@@ -1071,7 +1071,13 @@ def plot_histogram_matrix(data, name, fname=None):
   for i in range(nhists):
     plt.subplot(nrows, nrows, i + 1)
     absmax = max(abs(np.max(data[:, i])), abs(np.min(data[:, i])))
-    rng = (-absmax, absmax)
+    if bin_range == "absmax":
+      rng = (-absmax, absmax)
+    elif bin_range.endswith("sigma"):
+      n = int(bin_range[:-len("sigma")])
+      mu = np.mean(data[:,i])
+      sigma = np.std(data[:, i], ddof=1)
+      rng = (mu - n * sigma, mu + n * sigma)
     h, bins = np.histogram(data[:, i], nbins, rng)
     bin_width = bins[1] - bins[0]
     h = h.astype(np.float64) / np.sum(h)
