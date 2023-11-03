@@ -525,9 +525,14 @@ def lorenz():
   print("corr_dim(z)                   : ", cdz)
   print()
 
-  hx = nolds.hurst_rs(data[:, 0], fit="poly")
-  hy = nolds.hurst_rs(data[:, 1], fit="poly")
-  hz = nolds.hurst_rs(data[:, 2], fit="poly")
+  # RATIONALE for argument values:
+  # Start with a large range of nvals.
+  # Reduce those down cutting of the first few data points and then only keep the
+  # linear-ish looking part of the initial rise.
+  hurst_rs_args = dict(fit="poly", debug_plot=True, nvals=nolds.logarithmic_n(10, 70, 1.1))
+  hx = nolds.hurst_rs(data[:, 0], **hurst_rs_args)
+  hy = nolds.hurst_rs(data[:, 1], **hurst_rs_args)
+  hz = nolds.hurst_rs(data[:, 2], **hurst_rs_args)
   # reference: Suyal 2009
   print("Expected hurst exponent: 0.64 < H < 0.93")
   print("hurst_rs(x)            : ", hx)
