@@ -429,7 +429,7 @@ def lorenz():
   - sigma = 10
   - rho = 28
   - beta = 8/3
-  - dt = 0.01
+  - dt = 0.012
 
   Algorithms:
 
@@ -468,7 +468,10 @@ def lorenz():
   rho = 28
   beta = 8.0/3
   start = [0, 22, 10]
-  data = datasets.lorenz_euler(10000, sigma, rho, beta, start=start)
+  n = 10000
+  skip = 10000
+  dt = 0.012
+  data = datasets.lorenz_euler(n + skip, sigma, rho, beta, start=start, dt=dt)[skip:]
 
   # fig = plt.figure()
   # ax = fig.add_subplot(111, projection="3d")
@@ -477,12 +480,24 @@ def lorenz():
   # plt.close(fig)
 
   lyap_expected = datasets.lorenz_lyap(sigma, rho, beta)
-  lyap_rx = nolds.lyap_r(data[:, 0], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
-  lyap_ry = nolds.lyap_r(data[:, 1], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
-  lyap_rz = nolds.lyap_r(data[:, 2], min_tsep=1000, emb_dim=5, tau=0.01, lag=5)
-  lyap_ex = nolds.lyap_e(data[:, 0], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=0.01)
-  lyap_ey = nolds.lyap_e(data[:, 1], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=0.01)
-  lyap_ez = nolds.lyap_e(data[:, 2], min_tsep=1000, emb_dim=5, matrix_dim=5, tau=0.01)
+  # Rationale for argument values:
+  # start with medium settings for min_tsep and lag, span a large area with trajectory_len, set fit_offset to 0
+  # up the embedding dimension until you get a clear line in the debug plot
+  # adjust trajectory_len and fit_offset to split off only the linear part
+  # in general: the longer the linear part of the plot, the better
+  lyap_r_args = dict(min_tsep=10, emb_dim=5, tau=dt, lag=5, trajectory_len=28, fit_offset=8, fit="poly")
+  lyap_rx = nolds.lyap_r(data[:, 0], **lyap_r_args)
+  lyap_ry = nolds.lyap_r(data[:, 1], **lyap_r_args)
+  lyap_rz = nolds.lyap_r(data[:, 2], **lyap_r_args)
+  # Rationale for argument values:
+  # Start with emb_dim=matrix_dim, medium min_tsep and min_nb
+  # After that, no good guidelines for stability. :(
+  # -> Just experiment with settings until you get close to expected value. ¯\_(ツ)_/¯
+  # NOTE: It seems from this example and `lyapunov-logistic` that lyap_e has a scaling problem.
+  lyap_e_args = dict(min_tsep=10, emb_dim=5, matrix_dim=5, tau=dt, min_nb=8)
+  lyap_ex = nolds.lyap_e(data[:, 0], **lyap_e_args)
+  lyap_ey = nolds.lyap_e(data[:, 1], **lyap_e_args)
+  lyap_ez = nolds.lyap_e(data[:, 2], **lyap_e_args)
   print("Expected Lyapunov exponent: ", lyap_expected)
   print("lyap_r(x)                 : ", lyap_rx)
   print("lyap_r(y)                 : ", lyap_ry)
@@ -492,9 +507,17 @@ def lorenz():
   print("lyap_e(z)                 : ", lyap_ez)
   print()
 
-  cdx = nolds.corr_dim(data[:, 0], 10, fit="poly")
-  cdy = nolds.corr_dim(data[:, 1], 10, fit="poly")
-  cdz = nolds.corr_dim(data[:, 2], 10, fit="poly")
+  # Rationale for argument values:
+  # Start with moderate settings for lag and a large span of rvals.
+  # Increase emb_dim until you get a clear line in the debug plot
+  # Clip rvals to select only the linear part of the plot.
+  # Increase lag as long as it increases the output. Stop when the output becomes smaller
+  # (or when you feel that the lag is unreasonably large.)
+  rvals = nolds.logarithmic_r(1, np.e, 1.1)  # determined experimentally
+  corr_dim_args = dict(emb_dim=5, lag=10, fit="poly", rvals=rvals)
+  cdx = nolds.corr_dim(data[:, 0], **corr_dim_args)
+  cdy = nolds.corr_dim(data[:, 1], **corr_dim_args)
+  cdz = nolds.corr_dim(data[:, 2], **corr_dim_args)
   # reference Grassberger-Procaccia 1983
   print("Expected correlation dimension:  2.05")
   print("corr_dim(x)                   : ", cdx)
@@ -502,9 +525,14 @@ def lorenz():
   print("corr_dim(z)                   : ", cdz)
   print()
 
-  hx = nolds.hurst_rs(data[:, 0], fit="poly")
-  hy = nolds.hurst_rs(data[:, 1], fit="poly")
-  hz = nolds.hurst_rs(data[:, 2], fit="poly")
+  # Rationale for argument values:
+  # Start with a large range of nvals.
+  # Reduce those down cutting of the first few data points and then only keep the
+  # linear-ish looking part of the initial rise.
+  hurst_rs_args = dict(fit="poly", nvals=nolds.logarithmic_n(10, 70, 1.1))
+  hx = nolds.hurst_rs(data[:, 0], **hurst_rs_args)
+  hy = nolds.hurst_rs(data[:, 1], **hurst_rs_args)
+  hz = nolds.hurst_rs(data[:, 2], **hurst_rs_args)
   # reference: Suyal 2009
   print("Expected hurst exponent: 0.64 < H < 0.93")
   print("hurst_rs(x)            : ", hx)
@@ -513,11 +541,14 @@ def lorenz():
   print()
 
   # reference Gonzáles-Salas 2016
+  # Rationale for argument values: Just follow paper
+  # NOTE: discrepancies here can be explained by different solver (RK4 vs euler)
+  # and different step size (0.01 vs 0.012).
   nvals = nolds.logarithmic_n(round(2**4.75), 2**7, 2**0.2) # only use scales < 2^7 and >= 2^4.75
-  print(nvals)
-  dx = nolds.dfa(data[:, 0], nvals=nvals, debug_plot=True)
-  dy = nolds.dfa(data[:, 1], nvals=nvals)
-  dz = nolds.dfa(data[:, 2], nvals=nvals)
+  dfa_args = dict(nvals=nvals, fit_exp="poly")
+  dx = nolds.dfa(data[:, 0], **dfa_args)
+  dy = nolds.dfa(data[:, 1], **dfa_args)
+  dz = nolds.dfa(data[:, 2], **dfa_args)
   print("Expected hurst parameter: [1.5, 1.4, 1.4]")
   print("dfa(x)                  : ", dx)
   print("dfa(y)                  : ", dy)
@@ -525,9 +556,11 @@ def lorenz():
   print()
 
   # reference: Kaffashi 2008
-  sx = nolds.sampen(data[:, 0])
-  sy = nolds.sampen(data[:, 1])
-  sz = nolds.sampen(data[:, 2])
+  # Rationale for argument values: Just follow paper.
+  sampen_args = dict(emb_dim=2, lag=1)
+  sx = nolds.sampen(data[:, 0], **sampen_args)
+  sy = nolds.sampen(data[:, 1], **sampen_args)
+  sz = nolds.sampen(data[:, 2], **sampen_args)
   print("Expected sample entropy: [0.15, 0.15, 0.25]")
   print("sampen(x): ", sx)
   print("sampen(y): ", sy)
