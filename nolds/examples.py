@@ -507,9 +507,17 @@ def lorenz():
   print("lyap_e(z)                 : ", lyap_ez)
   print()
 
-  cdx = nolds.corr_dim(data[:, 0], 10, fit="poly")
-  cdy = nolds.corr_dim(data[:, 1], 10, fit="poly")
-  cdz = nolds.corr_dim(data[:, 2], 10, fit="poly")
+  # RATIONALE for argument values:
+  # Start with moderate settings for lag and a large span of rvals.
+  # Increase emb_dim until you get a clear line in the debug plot
+  # Clip rvals to select only the linear part of the plot.
+  # Increase lag as long as it increases the output. Stop when the output becomes smaller
+  # (or when you feel that the lag is unreasonably large.)
+  rvals = nolds.logarithmic_r(1, np.e, 1.1)  # determined experimentally
+  corr_dim_args = dict(emb_dim=5, lag=10, fit="poly", rvals=rvals)
+  cdx = nolds.corr_dim(data[:, 0], **corr_dim_args)
+  cdy = nolds.corr_dim(data[:, 1], **corr_dim_args)
+  cdz = nolds.corr_dim(data[:, 2], **corr_dim_args)
   # reference Grassberger-Procaccia 1983
   print("Expected correlation dimension:  2.05")
   print("corr_dim(x)                   : ", cdx)
