@@ -148,7 +148,7 @@ def load_brown72():
   """
   Loads the dataset brown72 with a prescribed Hurst exponent of 0.72
 
-  Source: http://www.bearcave.com/misl/misl_tech/wavelets/hurst/
+  Source: http://bearcave.com/misl/misl_tech/wavelets/hurst/index.html
 
   Returns:
     float array:

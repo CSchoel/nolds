@@ -87,7 +87,7 @@ Benchmark dataset for hurst exponent
       View of Cycles, Prices, and Market Volatility”, Wiley: Hoboken, 
       2nd Edition, 1996.
    .. [b7_b] Ian L. Kaplan, "Estimating the Hurst Exponent", 
-      url: http://www.bearcave.com/misl/misl_tech/wavelets/hurst/
+      url: http://bearcave.com/misl/misl_tech/wavelets/hurst/index.html
    .. [b7_c] HwB, "Pracma: brown72",
       url: https://www.rdocumentation.org/packages/pracma/versions/1.9.9/topics/brown72
 
