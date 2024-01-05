@@ -1993,7 +1993,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     * nvals should be equally spaced on a logarithmic scale so that each window
       scale hase the same weight
     * min(nvals) < 4 does not make much sense as fitting a polynomial (even if
-      it is only of order 1) to 3 or less data points is very prone.
+      it is only of order 1) to 3 or less data points is very prone to errors.
     * max(nvals) > len(data) / 10 does not make much sense as we will then have
       less than 10 windows to calculate the average fluctuation
     * use overlap=True to obtain more windows and therefore better statistics
@@ -2145,10 +2145,13 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
              for i in range(len(d))]
     tpoly = np.array(tpoly)
     trend = np.array([np.polyval(tpoly[i], x) for i in range(len(d))])
-    # calculate standard deviation ("fluctuation") of walks in d around trend
-    flucs = np.sqrt(np.sum((d - trend) ** 2, axis=1) / n)
-    # calculate mean fluctuation over all subsequences
-    f_n = np.sum(flucs) / len(flucs)
+    # calculate mean-square differences for each walk in d around trend
+    flucs = np.sum((d - trend) ** 2, axis=1) / n
+    # take another mean across all walks and finally take the square root of that
+    # NOTE: To map this to the formula in Peng1995, observe that this simplifies
+    # to np.sqrt(np.sum((d - trend) ** 2) / total_N) if we have non-overlapping
+    # windows and the last window matches the end of the data perfectly.
+    f_n = np.sqrt(np.sum(flucs) / len(flucs))
     fluctuations.append(f_n)
   fluctuations = np.array(fluctuations)
   # filter zeros from fluctuations
