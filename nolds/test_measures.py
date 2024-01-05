@@ -126,6 +126,20 @@ class TestNoldsLyap(unittest.TestCase):
       self.assertEqual(s, int(np.sign(lr)), "r = {}".format(r))
 
   def test_lyap_lorenz(self):
+      """Test hypothesis: Both lyap_r and lyap_e can reconstruct the largest Lyapunov exponent of the Lorenz system.
+      
+      The parameters for generating the Lorenz system were chosen to be as close as
+      possible to the experiments performed by Leonov and Kuznetsov (see [l_4]_)
+      and .
+
+      For performance reasons the size of the input data was reduced and therefore the
+      assert conditions needed to be relaxed a bit.
+
+      .. [l_4] G. A. Leonov and N. V. Kuznetsov, “On differences and
+        similarities in the analysis of Lorenz, Chen, and Lu systems,”
+        Applied Mathematics and Computation, vol. 256, pp. 334–343, 2015,
+        doi: 10.1016/j.amc.2014.12.132.
+      """
       data = datasets.lorenz_euler(3000, 10, 28, 8/3.0, start=[1,1,1], dt=0.01)[1000:]
       lyap_r_args = dict(min_tsep=10, emb_dim=5, tau=0.01, lag=5, trajectory_len=28, fit_offset=8, fit="poly")
       lyap_rx = nolds.lyap_r(data[:, 0], **lyap_r_args)
@@ -295,6 +309,18 @@ class TestNoldsHurst(unittest.TestCase):
     self.assertAlmostEqual(hlm, 0.43, delta=0.05)
   
   def test_hurst_lorenz(self):
+    """Test hypothesis: We get correct values for estimating the hurst exponent of the Lorenz system.
+
+    All parameter values are chosen to replicate the experiment by Suyal et al. (see [l_3]_)
+    as closely as possible.
+
+    For performance reasons the size of the input data was reduced and therefore the
+    assert conditions needed to be relaxed a bit.
+
+    .. [l_3] V. Suyal, A. Prasad, and H. P. Singh, “Nonlinear Time Series
+       Analysis of Sunspot Data,” Sol Phys, vol. 260, no. 2, pp. 441–449,
+       2009, doi: 10.1007/s11207-009-9467-x.
+    """
     data = datasets.lorenz_euler(3000, 10, 28, 8/3.0, start=[1,1,1], dt=0.01)[1000:]
     hurst_rs_args = dict(fit="poly", nvals=nolds.logarithmic_n(10, 70, 1.1))
     hx = nolds.hurst_rs(data[:, 0], **hurst_rs_args)
@@ -342,6 +368,20 @@ class TestNoldsDFA(unittest.TestCase):
       self.assertAlmostEqual(he, h + 1, delta=0.15)
 
   def test_dfa_lorenz(self):
+    """Test hypothesis: We get correct values for estimating the Hurst parameter of the Lorenz system.
+
+    All parameter values are chosen to replicate the experiment by González-Salas et al. (see [l_5]_)
+    as closely as possible.
+
+    For performance reasons the size of the input data was reduced and therefore the
+    assert conditions needed to be relaxed a bit.
+
+    .. [l_5] J. S. González-Salas, M. S. Shbat, F. C. Ordaz-Salazar, and
+       J. Simón, “Analyzing Chaos Systems and Fine Spectrum Sensing
+       Using Detrended Fluctuation Analysis Algorithm,” Mathematical
+       Problems in Engineering, vol. 2016, pp. 1–18, 2016,
+       doi: 10.1155/2016/2865195.
+    """
     data = datasets.lorenz_euler(3000, 10, 28, 8/3.0, start=[1,1,1], dt=0.012)[1000:]
     nvals = nolds.logarithmic_n(round(2**4.75), 2**7, 2**0.2)
     dfa_args = dict(nvals=nvals, fit_exp="poly")
@@ -370,9 +410,20 @@ class TestNoldsCorrDim(unittest.TestCase):
     # TODO test example for cd > 1
 
   def test_lorenz(self):
-    # NOTE: The settings of n, discard, lag, emb_dim, and rvals were determined
-    # experimentally to find the smallest dataset that yields the results reported
-    # by Grassberger and Procaccia (1983).
+    """Test hypothesis: We get correct values for estimating the correlation dimension of the Lorenz system.
+
+    All parameter values are chosen to replicate the experiment by Grassberger and Procaccia (1983)
+    as closely as possible.
+
+    For performance reasons the size of the input data was reduced and therefore the
+    assert conditions needed to be relaxed a bit. The settings of n, discard,
+    lag, emb_dim, and rvals were determined experimentally to find the smallest
+    dataset that yields the results reported.
+
+    .. [l_1] P. Grassberger and I. Procaccia, “Measuring the strangeness
+       of strange attractors,” Physica D: Nonlinear Phenomena, vol. 9,
+       no. 1, pp. 189–208, 1983.
+    """
     discard = 5000
     n = 5000
     lag = 10
@@ -443,6 +494,19 @@ class TestNoldsSampEn(unittest.TestCase):
 
 
   def test_sampen_lorenz(self):
+    """Test hypothesis: We get correct values for estimating the sample entropy of the Lorenz system.
+
+    All parameter values are chosen to replicate the experiment by Kaffashi et al. (2008)
+    as closely as possible.
+
+    For performance reasons the size of the input data was reduced and therefore the
+    assert conditions needed to be relaxed a bit.
+
+    .. [l_2] F. Kaffashi, R. Foglyano, C. G. Wilson, and K. A. Loparo,
+       “The effect of time delay on Approximate & Sample Entropy
+       calculations,” Physica D: Nonlinear Phenomena, vol. 237, no. 23,
+       pp. 3069–3074, 2008, doi: 10.1016/j.physd.2008.06.005.
+    """
     data = datasets.lorenz_euler(3000, 10, 28, 8/3.0, start=[1,1,1], dt=0.01)[1000:]
     sampen_args = dict(emb_dim=2, lag=1)
     sx = nolds.sampen(data[:, 0], **sampen_args)
