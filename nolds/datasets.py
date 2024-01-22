@@ -159,6 +159,36 @@ def load_brown72():
     return np.load(f)
 
 
+def load_lorenz_physionet():
+  """
+  Loads a dataset containing the X variable of the Lorenz system
+    as well as the output of PhysioNet's dfa implementation on that dataset.
+
+  The input data was created with the following code:
+
+      data = datasets.lorenz_euler(
+        3000, 10, 28, 8/3.0, start=[0.1,0.1,0.1], dt=0.012
+      )[1000:,0]
+
+  The ouptut from PhysioNet was created by calling:
+
+      dfa < lorenz.txt > lorenz_physionet.txt
+ 
+  Returns:
+    1d float array:
+      time series of the X variable of the Lorenz system that was used as input
+    2d float array:
+      x- and y-coordinates of the line fitting step in the PhysioNet output
+  """
+  fname = "datasets/lorenz.txt"
+  with pkg_resources.resource_stream(__name__, fname) as f:
+    data_in = np.loadtxt(f)
+  fname = "datasets/lorenz_physionet.txt"
+  with pkg_resources.resource_stream(__name__, fname) as f:
+    data_out = np.loadtxt(f)
+  return data_in, data_out
+
+
 def tent_map(x, steps, mu=2):
   """
   Generates a time series of the tent map.

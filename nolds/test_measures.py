@@ -392,6 +392,16 @@ class TestNoldsDFA(unittest.TestCase):
     self.assertAlmostEqual(1.4, dy, delta=0.4)
     self.assertAlmostEqual(1.4, dz, delta=0.4)
 
+  def test_dfa_agreement_with_physionet(self):
+    """Test hypothesis: Using the same parameters, the output of nolds is identical to the output of PhysioNet."""
+    lorenz_x, physionet_points = datasets.load_lorenz_physionet()
+    nvals = [round(x) for x in 10 ** physionet_points[:,0]]
+    _, (_, nolds_rs, _) = nolds.dfa(lorenz_x, nvals=nvals, overlap=False, fit_exp="poly", debug_data=True)
+    nolds_rs_log10 = nolds_rs / np.log(10)
+    # assert that sum of squared errors is less than 1e-9
+    self.assertLess(sum((physionet_points[:,1] - nolds_rs_log10)**2), 1e-9)
+
+
 
 class TestNoldsCorrDim(unittest.TestCase):
   """
