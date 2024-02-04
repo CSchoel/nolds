@@ -540,16 +540,17 @@ def lorenz():
   print("hurst_rs(z)            : ", hz)
   print()
 
-  # reference Gonzáles-Salas 2016
+  # reference: Wallot 2023, Table 1
   # Rationale for argument values: Just follow paper
-  # NOTE: discrepancies here can be explained by different solver (RK4 vs euler)
-  # and different step size (0.01 vs 0.012).
-  nvals = nolds.logarithmic_n(round(2**4.75), 2**7, 2**0.2) # only use scales < 2^7 and >= 2^4.75
-  dfa_args = dict(nvals=nvals, fit_exp="poly")
-  dx = nolds.dfa(data[:, 0], **dfa_args)
+  # NOTE: discrepancies here can be explained by different initial values (
+  # x = y = z = 0.1 + e), step sizes (not reported), and size of data (
+  # 100k data points, 1000 runs)
+  nvals = nolds.logarithmic_n(200, len(data)/8, 2**0.2)
+  dfa_args = dict(nvals=nvals, order=2, fit_exp="poly")
+  dx = nolds.dfa(data[:, 0], **dfa_args, debug_plot=True)
   dy = nolds.dfa(data[:, 1], **dfa_args)
   dz = nolds.dfa(data[:, 2], **dfa_args)
-  print("Expected hurst parameter: [1.5, 1.4, 1.4]")
+  print("Expected hurst parameter: [1.008, 0.926, 0.650]")
   print("dfa(x)                  : ", dx)
   print("dfa(y)                  : ", dy)
   print("dfa(z)                  : ", dz)
