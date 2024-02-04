@@ -2001,29 +2001,45 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
 
   Explanation of DFA:
     Detrended fluctuation analysis, much like the Hurst exponent, is used to
-    find long-term statistical dependencies in time series.
+    find long-term statistical dependencies in time series. However, while the
+    Hurst exponent will indicate long-term correlations for any non-stationary
+    process (i.e. a stochastic process whose probability distribution changes
+    when shifted in time, such as a random walk whose mean changes over time),
+    DFA was designed to distinguish between correlations that are purely an
+    artifact of non-stationarity and those that show inherent long-range
+    behavior of the studied system.
 
-    The idea behind DFA originates from the definition of self-affine
-    processes. A process X is said to be self-affine if the standard deviation
-    of the values within a window of length n changes with the window length
-    factor L in a power law:
+    The main idea of DFA can be understood when looking at the definition of
+    self-affine processes. A process X is said to be self-affine if you can
+    take a small part of it - let's say a window of length n -, rescale it
+    to the original full length N, and it will still have the same statistical
+    distribution. Depending on the process, this scaling might not be 1:1 but
+    instead require a factor based on the window length:
 
-    std(X,L * n) = L^H * std(X, n)
+    X(N/n * t) ≈ (N/n)^H * X(t)
 
-    where std(X, k) is the standard deviation of the process X calculated over
-    windows of size k. In this equation, H is called the Hurst parameter, which
-    behaves indeed very similar to the Hurst exponent.
+    where X(t) is the value of the process X at time t. In this equation,
+    H is called the Hurst parameter, which behaves indeed very similar to
+    the Hurst exponent. The approximate equal sign (≈) means that both sides
+    have the same statistical distribution.
 
-    Like the Hurst exponent, H can be obtained from a time series by
-    calculating std(X,n) for different n and fitting a straight line to the
-    plot of log(std(X,n)) versus log(n).
+    If we look at the standard deviation of the process X at window length n
+    denoted by std(X, n) as one feature of this statistical distribution, we
+    get one step closer to measuring H:
+
+    std(X, n) = (N/n)^H * std(X, N)
+
+    Assuming that this relationship holds, H, much like the Hurst exponent,
+    can be obtained from a time series by calculating std(X, n) for different
+    n and fitting a straight line to the plot of log(std(X,n)) versus log(n).
 
     To calculate a single std(X,n), the time series is split into windows of
     equal length n, so that the ith window of this size has the form
 
     W_(n,i) = [x_i, x_(i+1), x_(i+2), ... x_(i+n-1)]
 
-    The value std(X,n) is then obtained by calculating std(W_(n,i)) for each i
+    The value std(X,n) is then obtained by using all
+    calculating std(W_(n,i)) for each i
     and averaging the obtained values over i.
 
     The aforementioned definition of self-affinity, however, assumes that the
