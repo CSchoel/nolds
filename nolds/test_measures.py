@@ -384,7 +384,7 @@ class TestNoldsDFA(unittest.TestCase):
     """
     data = datasets.lorenz_euler(120000, 10, 28, 8/3.0, start=[0.1,0.1,0.1], dt=0.002)[20000:]
     nvals = nolds.logarithmic_n(200, len(data)/8, 2**0.2)
-    dfa_args = dict(nvals=nvals, order=2, fit_exp="poly")
+    dfa_args = dict(nvals=nvals, order=2, overlap=False, fit_exp="poly")
     dx = nolds.dfa(data[:, 0], **dfa_args)
     dy = nolds.dfa(data[:, 1], **dfa_args)
     dz = nolds.dfa(data[:, 2], **dfa_args)
