@@ -370,27 +370,27 @@ class TestNoldsDFA(unittest.TestCase):
   def test_dfa_lorenz(self):
     """Test hypothesis: We get correct values for estimating the Hurst parameter of the Lorenz system.
 
-    All parameter values are chosen to replicate the experiment by González-Salas et al. (see [l_5]_)
+    All parameter values are chosen to replicate the experiment by Wallot et al. (see [l_5]_)
     as closely as possible.
 
     For performance reasons the size of the input data was reduced and therefore the
     assert conditions needed to be relaxed a bit.
 
-    .. [l_5] J. S. González-Salas, M. S. Shbat, F. C. Ordaz-Salazar, and
-       J. Simón, “Analyzing Chaos Systems and Fine Spectrum Sensing
-       Using Detrended Fluctuation Analysis Algorithm,” Mathematical
-       Problems in Engineering, vol. 2016, pp. 1–18, 2016,
-       doi: 10.1155/2016/2865195.
+    .. [l_5] S. Wallot, J. P. Irmer, M. Tschense, N. Kuznetsov, A. Højlund,
+       and M. Dietz, “A Multivariate Method for Dynamic System Analysis:
+       Multivariate Detrended Fluctuation Analysis Using Generalized Variance,”
+       Topics in Cognitive Science, p. tops.12688, Sep. 2023,
+       doi: 10.1111/tops.12688.
     """
-    data = datasets.lorenz_euler(3000, 10, 28, 8/3.0, start=[1,1,1], dt=0.012)[1000:]
-    nvals = nolds.logarithmic_n(round(2**4.75), 2**7, 2**0.2)
-    dfa_args = dict(nvals=nvals, fit_exp="poly")
+    data = datasets.lorenz_euler(120000, 10, 28, 8/3.0, start=[0.1,0.1,0.1], dt=0.002)[20000:]
+    nvals = nolds.logarithmic_n(200, len(data)/8, 2**0.2)
+    dfa_args = dict(nvals=nvals, order=2, fit_exp="poly")
     dx = nolds.dfa(data[:, 0], **dfa_args)
     dy = nolds.dfa(data[:, 1], **dfa_args)
     dz = nolds.dfa(data[:, 2], **dfa_args)
-    self.assertAlmostEqual(1.5, dx, delta=0.4)
-    self.assertAlmostEqual(1.4, dy, delta=0.4)
-    self.assertAlmostEqual(1.4, dz, delta=0.4)
+    self.assertAlmostEqual(1.008, dx, delta=0.032)
+    self.assertAlmostEqual(0.926, dy, delta=0.032)
+    self.assertAlmostEqual(0.650, dz, delta=0.44)
 
   def test_dfa_agreement_with_physionet(self):
     """Test hypothesis: Using the same parameters, the output of nolds is identical to the output of PhysioNet."""
