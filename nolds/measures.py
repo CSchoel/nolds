@@ -2006,62 +2006,65 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     process (i.e. a stochastic process whose probability distribution changes
     when shifted in time, such as a random walk whose mean changes over time),
     DFA was designed to distinguish between correlations that are purely an
-    artifact of non-stationarity and those that show inherent long-range
+    artifact of non-stationarity and those that show inherent long-term
     behavior of the studied system.
 
-    The main idea of DFA can be understood when looking at the definition of
-    self-affine processes. A process X is said to be self-affine if you can
-    take a small part of it - let's say a window of length n -, rescale it
-    to the original full length N, and it will still have the same statistical
-    distribution. Depending on the process, this scaling might not be 1:1 but
-    instead require a factor based on the window length:
+    Mathematically, the long-term correlations that we are interested in can
+    be characterized using the autocorrelation function C(s). For a time series
+    (x_i) with i = 1, ..., N it is defined as follows:
 
-    X(N/n * t) ≈ (N/n)^H * X(t)
+    C(s) = 1/(N-s) * (y_1 * y_1+s + y_2 * y_2+s + ... y_(N-s) * y_N)
 
-    where X(t) is the value of the process X at time t. In this equation,
-    H is called the Hurst parameter, which behaves indeed very similar to
-    the Hurst exponent. The approximate equal sign (≈) means that both sides
-    have the same statistical distribution.
+    with y_i = x_i - mean(x). If there are no correlations at all, C(s) would
+    be zero for s > 0. For short-range correlations, C(s) will decline
+    exponentially, but for long-term correlations the decline follows a power
+    law of the form C(s) ~ s^(-gamma) instead with 0 < gamma < 1.
 
-    If we look at the standard deviation of the process X at window length n
-    denoted by std(X, n) as one feature of this statistical distribution, we
-    get one step closer to measuring H:
+    Due to noise and underlying trends, calculating C(s) directly is usually not
+    feasible. The main idea of DFA is therefore to remove trends up to a given
+    order from the input data and analyze the remaining fluctuations. Trends
+    in this sense are smooth signals with monotonous or slowly oscillating
+    behavior that are caused by external effects and not the dynamical system
+    under study.
+  
+    To get a hold of these trends, the first step is to calculate the "profile"
+    of our time series as the cumulative sum of deviations from the mean. By
+    effectively integrating our data, we both smooth out noise and (TODO).
 
-    std(X, n) = (N/n)^H * std(X, N)
+    y_i = x_1 - mean(x) + x_2 - mean(x) + ... + x_i - mean(x).
 
-    Assuming that this relationship holds, H, much like the Hurst exponent,
-    can be obtained from a time series by calculating std(X, n) for different
-    n and fitting a straight line to the plot of log(std(X,n)) versus log(n).
+    After that, we split Y(i) into (usually non-overlapping) windows of length
+    n to calculate local trends at this given scale. The ith window of this
+    size has the form
 
-    To calculate a single std(X,n), the time series is split into windows of
-    equal length n, so that the ith window of this size has the form
+    W_(n,i) = [y_i, y_(i+1), y_(i+2), ... y_(i+n-1)]
+    
+    The local trends are then removed for each window separately by fitting a
+    polynomial p_(n,i) to the window W_(n,i) and then calculating
+    W'_(n,i) = W_(n,i) - p_(n,i) (element-wise substraction).
 
-    W_(n,i) = [x_i, x_(i+1), x_(i+2), ... x_(i+n-1)]
+    This leaves us with the deviations from the trend - the "fluctuations" -
+    that we are interested in. To quantify them, we take the root mean square
+    of these fluctuations. It is important to note that we have to sum up all
+    individual fluctuations across all windows and divide by the total number
+    of fluctuations here before finally taking the root as last step. Some
+    implementations apply another root per window, which skews the result.
 
-    The value std(X,n) is then obtained by using all
-    calculating std(W_(n,i)) for each i
-    and averaging the obtained values over i.
+    The resulting fluctuation F(n) is then only dependent on the window size n,
+    the scale at which we observe our data. It behaves similar to the
+    autocorrelation function in that it follows a power-law for long-term
+    correlations:
 
-    The aforementioned definition of self-affinity, however, assumes that the
-    process is  non-stationary (i.e. that the standard deviation changes over
-    time) and it is highly influenced by local and global trends of the time
-    series.
+    F(n) ~ n^alpha
 
-    To overcome these problems, an estimate alpha of H is calculated by using a
-    "walk" or "signal profile" instead of the raw time series. This walk is
-    obtained by substracting the mean and then taking the cumulative sum of the
-    original time series. The local trends are removed for each window
-    separately by fitting a polynomial p_(n,i) to the window W_(n,i) and then
-    calculating W'_(n,i) = W_(n,i) - p_(n,i) (element-wise substraction).
+    Where alpha is the Hurst parameter, which we can obtain from fitting a line
+    into the plot of log(n) versus log(F(n)) and taking the slope.
 
-    We then calculate std(X,n) as before only using the "detrended" window
-    W'_(n,i) instead of W_(n,i). Instead of H we obtain the parameter alpha
-    from the line fitting.
-
-    For alpha < 1 the underlying process is stationary and can be modelled as
-    fractional Gaussian noise with H = alpha. This means for alpha = 0.5 we
-    have no correlation or "memory", for 0.5 < alpha < 1 we have a memory with
-    positive correlation and for alpha < 0.5 the correlation is negative.
+    The result can be interpreted as follows: For alpha < 1 the underlying
+    process is stationary and can be modelled as fractional Gaussian noise with
+    H = alpha. This means for alpha = 0.5 we have no long-term correlation or
+    "memory", for 0.5 < alpha < 1 we have positive long-term correlations and
+    for alpha < 0.5 the long-term correlations are negative.
 
     For alpha > 1 the underlying process is non-stationary and can be modeled
     as fractional Brownian motion with H = alpha - 1.
