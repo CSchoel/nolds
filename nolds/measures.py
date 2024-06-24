@@ -2077,6 +2077,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
                V. V. Nikulin, H. D. Mansvelder, and K. Linkenkaer-Hansen,
                “Detrended fluctuation analysis: A scale-free view on neuronal
                oscillations,” Frontiers in Physiology, vol. 30, 2012.
+    # TODO add Kantelhardt and remove Hardstone
 
   Reference code:
     .. [dfa_a] Peter Jurica, "Introduction to MDFA in Python",
