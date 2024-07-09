@@ -2028,8 +2028,12 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     under study.
   
     To get a hold of these trends, the first step is to calculate the "profile"
-    of our time series as the cumulative sum of deviations from the mean. By
-    effectively integrating our data, we both smooth out noise and (TODO).
+    of our time series as the cumulative sum of deviations from the mean,
+    effectively integrating our data. This both smoothes out measurement noise
+    and makes it easier to distinguish the fractal properties of bounded time
+    series (i.e. time series whose values cannot grow or shrink beyond certain
+    bounds such as most biological or physical signals) by applying random walk
+    theory (see [dfa_3]_ and [dfa_4]_).
 
     y_i = x_1 - mean(x) + x_2 - mean(x) + ... + x_i - mean(x).
 
@@ -2073,11 +2077,26 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     .. [dfa_1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,
                H. E. Stanley, and A. L. Goldberger, “Mosaic organization of
                DNA nucleotides,” Physical Review E, vol. 49, no. 2, 1994.
-    .. [dfa_2] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
+    .. [dfa_2] J. W. Kantelhardt, E. Koscielny-Bunde, H. H. A. Rego, S.
+               Havlin, and A. Bunde, “Detecting long-range correlations with
+               detrended fluctuation analysis,” Physica A: Statistical
+               Mechanics and its Applications, vol. 295, no. 3–4, pp. 441–454,
+               Jun. 2001, doi: 10.1016/S0378-4371(01)00144-3.
+    .. [dfa_3] C. Peng, J. M. Hausdorff, and A. L. Goldberger, “Fractal
+               mechanisms in neuronal control: human heartbeat and gait
+               dynamics in health and disease,” in Self-Organized Biological
+               Dynamics and Nonlinear Control, 1st ed., J. Walleczek, Ed.,
+               Cambridge University Press, 2000, pp. 66–96.
+               doi: 10.1017/CBO9780511535338.006.
+    .. [dfa_4] A. Bashan, R. Bartsch, J. W. Kantelhardt, and S. Havlin,
+               “Comparison of detrending methods for fluctuation analysis,”
+               Physica A: Statistical Mechanics and its Applications, vol. 387,
+               no. 21, pp. 5080–5090, Sep. 2008,
+               doi: 10.1016/j.physa.2008.04.023.
+    .. [dfa_5] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
                V. V. Nikulin, H. D. Mansvelder, and K. Linkenkaer-Hansen,
                “Detrended fluctuation analysis: A scale-free view on neuronal
                oscillations,” Frontiers in Physiology, vol. 30, 2012.
-    # TODO add Kantelhardt and remove Hardstone
 
   Reference code:
     .. [dfa_a] Peter Jurica, "Introduction to MDFA in Python",
