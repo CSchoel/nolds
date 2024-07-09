@@ -2045,7 +2045,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     
     The local trends are then removed for each window separately by fitting a
     polynomial p_(n,i) to the window W_(n,i) and then calculating
-    W'_(n,i) = W_(n,i) - p_(n,i) (element-wise substraction).
+    W'_(n,i) = W_(n,i) - p_(n,i) (element-wise subtraction).
 
     This leaves us with the deviations from the trend - the "fluctuations" -
     that we are interested in. To quantify them, we take the root mean square
