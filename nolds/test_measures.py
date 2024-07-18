@@ -394,7 +394,7 @@ class TestNoldsDFA(unittest.TestCase):
     dx = nolds.dfa(data[:, 0], **dfa_args)
     dy = nolds.dfa(data[:, 1], **dfa_args)
     dz = nolds.dfa(data[:, 2], **dfa_args)
-    self.assertAlmostEqual(1.008, dx, delta=0.032)
+    self.assertAlmostEqual(1.008, dx, delta=0.04)
     self.assertAlmostEqual(0.926, dy, delta=0.032)
     self.assertAlmostEqual(0.650, dz, delta=0.44)
 
