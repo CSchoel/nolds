@@ -1993,7 +1993,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     * nvals should be equally spaced on a logarithmic scale so that each window
       scale hase the same weight
     * min(nvals) < 4 does not make much sense as fitting a polynomial (even if
-      it is only of order 1) to 3 or less data points is very prone.
+      it is only of order 1) to 3 or less data points is very prone to errors.
     * max(nvals) > len(data) / 10 does not make much sense as we will then have
       less than 10 windows to calculate the average fluctuation
     * use overlap=True to obtain more windows and therefore better statistics
@@ -2001,51 +2001,74 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
 
   Explanation of DFA:
     Detrended fluctuation analysis, much like the Hurst exponent, is used to
-    find long-term statistical dependencies in time series.
+    find long-term statistical dependencies in time series. However, while the
+    Hurst exponent will indicate long-term correlations for any non-stationary
+    process (i.e. a stochastic process whose probability distribution changes
+    when shifted in time, such as a random walk whose mean changes over time),
+    DFA was designed to distinguish between correlations that are purely an
+    artifact of non-stationarity and those that show inherent long-term
+    behavior of the studied system.
 
-    The idea behind DFA originates from the definition of self-affine
-    processes. A process X is said to be self-affine if the standard deviation
-    of the values within a window of length n changes with the window length
-    factor L in a power law:
+    Mathematically, the long-term correlations that we are interested in can
+    be characterized using the autocorrelation function C(s). For a time series
+    (x_i) with i = 1, ..., N it is defined as follows:
 
-    std(X,L * n) = L^H * std(X, n)
+    C(s) = 1/(N-s) * (y_1 * y_1+s + y_2 * y_2+s + ... y_(N-s) * y_N)
 
-    where std(X, k) is the standard deviation of the process X calculated over
-    windows of size k. In this equation, H is called the Hurst parameter, which
-    behaves indeed very similar to the Hurst exponent.
+    with y_i = x_i - mean(x). If there are no correlations at all, C(s) would
+    be zero for s > 0. For short-range correlations, C(s) will decline
+    exponentially, but for long-term correlations the decline follows a power
+    law of the form C(s) ~ s^(-gamma) instead with 0 < gamma < 1.
 
-    Like the Hurst exponent, H can be obtained from a time series by
-    calculating std(X,n) for different n and fitting a straight line to the
-    plot of log(std(X,n)) versus log(n).
+    Due to noise and underlying trends, calculating C(s) directly is usually not
+    feasible. The main idea of DFA is therefore to remove trends up to a given
+    order from the input data and analyze the remaining fluctuations. Trends
+    in this sense are smooth signals with monotonous or slowly oscillating
+    behavior that are caused by external effects and not the dynamical system
+    under study.
+  
+    To get a hold of these trends, the first step is to calculate the "profile"
+    of our time series as the cumulative sum of deviations from the mean,
+    effectively integrating our data. This both smoothes out measurement noise
+    and makes it easier to distinguish the fractal properties of bounded time
+    series (i.e. time series whose values cannot grow or shrink beyond certain
+    bounds such as most biological or physical signals) by applying random walk
+    theory (see [dfa_3]_ and [dfa_4]_).
 
-    To calculate a single std(X,n), the time series is split into windows of
-    equal length n, so that the ith window of this size has the form
+    y_i = x_1 - mean(x) + x_2 - mean(x) + ... + x_i - mean(x).
 
-    W_(n,i) = [x_i, x_(i+1), x_(i+2), ... x_(i+n-1)]
+    After that, we split Y(i) into (usually non-overlapping) windows of length
+    n to calculate local trends at this given scale. The ith window of this
+    size has the form
 
-    The value std(X,n) is then obtained by calculating std(W_(n,i)) for each i
-    and averaging the obtained values over i.
+    W_(n,i) = [y_i, y_(i+1), y_(i+2), ... y_(i+n-1)]
+    
+    The local trends are then removed for each window separately by fitting a
+    polynomial p_(n,i) to the window W_(n,i) and then calculating
+    W'_(n,i) = W_(n,i) - p_(n,i) (element-wise subtraction).
 
-    The aforementioned definition of self-affinity, however, assumes that the
-    process is  non-stationary (i.e. that the standard deviation changes over
-    time) and it is highly influenced by local and global trends of the time
-    series.
+    This leaves us with the deviations from the trend - the "fluctuations" -
+    that we are interested in. To quantify them, we take the root mean square
+    of these fluctuations. It is important to note that we have to sum up all
+    individual fluctuations across all windows and divide by the total number
+    of fluctuations here before finally taking the root as last step. Some
+    implementations apply another root per window, which skews the result.
 
-    To overcome these problems, an estimate alpha of H is calculated by using a
-    "walk" or "signal profile" instead of the raw time series. This walk is
-    obtained by substracting the mean and then taking the cumulative sum of the
-    original time series. The local trends are removed for each window
-    separately by fitting a polynomial p_(n,i) to the window W_(n,i) and then
-    calculating W'_(n,i) = W_(n,i) - p_(n,i) (element-wise substraction).
+    The resulting fluctuation F(n) is then only dependent on the window size n,
+    the scale at which we observe our data. It behaves similar to the
+    autocorrelation function in that it follows a power-law for long-term
+    correlations:
 
-    We then calculate std(X,n) as before only using the "detrended" window
-    W'_(n,i) instead of W_(n,i). Instead of H we obtain the parameter alpha
-    from the line fitting.
+    F(n) ~ n^alpha
 
-    For alpha < 1 the underlying process is stationary and can be modelled as
-    fractional Gaussian noise with H = alpha. This means for alpha = 0.5 we
-    have no correlation or "memory", for 0.5 < alpha < 1 we have a memory with
-    positive correlation and for alpha < 0.5 the correlation is negative.
+    Where alpha is the Hurst parameter, which we can obtain from fitting a line
+    into the plot of log(n) versus log(F(n)) and taking the slope.
+
+    The result can be interpreted as follows: For alpha < 1 the underlying
+    process is stationary and can be modelled as fractional Gaussian noise with
+    H = alpha. This means for alpha = 0.5 we have no long-term correlation or
+    "memory", for 0.5 < alpha < 1 we have positive long-term correlations and
+    for alpha < 0.5 the long-term correlations are negative.
 
     For alpha > 1 the underlying process is non-stationary and can be modeled
     as fractional Brownian motion with H = alpha - 1.
@@ -2054,7 +2077,23 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     .. [dfa_1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,
                H. E. Stanley, and A. L. Goldberger, “Mosaic organization of
                DNA nucleotides,” Physical Review E, vol. 49, no. 2, 1994.
-    .. [dfa_2] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
+    .. [dfa_2] J. W. Kantelhardt, E. Koscielny-Bunde, H. H. A. Rego, S.
+               Havlin, and A. Bunde, “Detecting long-range correlations with
+               detrended fluctuation analysis,” Physica A: Statistical
+               Mechanics and its Applications, vol. 295, no. 3–4, pp. 441–454,
+               Jun. 2001, doi: 10.1016/S0378-4371(01)00144-3.
+    .. [dfa_3] C. Peng, J. M. Hausdorff, and A. L. Goldberger, “Fractal
+               mechanisms in neuronal control: human heartbeat and gait
+               dynamics in health and disease,” in Self-Organized Biological
+               Dynamics and Nonlinear Control, 1st ed., J. Walleczek, Ed.,
+               Cambridge University Press, 2000, pp. 66–96.
+               doi: 10.1017/CBO9780511535338.006.
+    .. [dfa_4] A. Bashan, R. Bartsch, J. W. Kantelhardt, and S. Havlin,
+               “Comparison of detrending methods for fluctuation analysis,”
+               Physica A: Statistical Mechanics and its Applications, vol. 387,
+               no. 21, pp. 5080–5090, Sep. 2008,
+               doi: 10.1016/j.physa.2008.04.023.
+    .. [dfa_5] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
                V. V. Nikulin, H. D. Mansvelder, and K. Linkenkaer-Hansen,
                “Detrended fluctuation analysis: A scale-free view on neuronal
                oscillations,” Frontiers in Physiology, vol. 30, 2012.
@@ -2145,10 +2184,13 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
              for i in range(len(d))]
     tpoly = np.array(tpoly)
     trend = np.array([np.polyval(tpoly[i], x) for i in range(len(d))])
-    # calculate standard deviation ("fluctuation") of walks in d around trend
-    flucs = np.sqrt(np.sum((d - trend) ** 2, axis=1) / n)
-    # calculate mean fluctuation over all subsequences
-    f_n = np.sum(flucs) / len(flucs)
+    # calculate mean-square differences for each walk in d around trend
+    flucs = np.sum((d - trend) ** 2, axis=1) / n
+    # take another mean across all walks and finally take the square root of that
+    # NOTE: To map this to the formula in Peng1995, observe that this simplifies
+    # to np.sqrt(np.sum((d - trend) ** 2) / total_N) if we have non-overlapping
+    # windows and the last window matches the end of the data perfectly.
+    f_n = np.sqrt(np.sum(flucs) / len(flucs))
     fluctuations.append(f_n)
   fluctuations = np.array(fluctuations)
   # filter zeros from fluctuations

@@ -456,11 +456,12 @@ def lorenz():
        similarities in the analysis of Lorenz, Chen, and Lu systems,”
        Applied Mathematics and Computation, vol. 256, pp. 334–343, 2015,
        doi: 10.1016/j.amc.2014.12.132.
-    .. [l_5] J. S. González-Salas, M. S. Shbat, F. C. Ordaz-Salazar, and
-       J. Simón, “Analyzing Chaos Systems and Fine Spectrum Sensing
-       Using Detrended Fluctuation Analysis Algorithm,” Mathematical
-       Problems in Engineering, vol. 2016, pp. 1–18, 2016,
-       doi: 10.1155/2016/2865195.
+    .. [l_5] S. Wallot, J. P. Irmer, M. Tschense, N. Kuznetsov, A. Højlund,
+       and M. Dietz, “A Multivariate Method for Dynamic System Analysis:
+       Multivariate Detrended Fluctuation Analysis Using Generalized Variance,”
+       Topics in Cognitive Science, p. tops.12688, Sep. 2023,
+       doi: 10.1111/tops.12688.
+
 
   """
   import matplotlib.pyplot as plt
@@ -540,16 +541,18 @@ def lorenz():
   print("hurst_rs(z)            : ", hz)
   print()
 
-  # reference Gonzáles-Salas 2016
+  # reference: Wallot 2023, Table 1
   # Rationale for argument values: Just follow paper
-  # NOTE: discrepancies here can be explained by different solver (RK4 vs euler)
-  # and different step size (0.01 vs 0.012).
-  nvals = nolds.logarithmic_n(round(2**4.75), 2**7, 2**0.2) # only use scales < 2^7 and >= 2^4.75
-  dfa_args = dict(nvals=nvals, fit_exp="poly")
-  dx = nolds.dfa(data[:, 0], **dfa_args)
-  dy = nolds.dfa(data[:, 1], **dfa_args)
-  dz = nolds.dfa(data[:, 2], **dfa_args)
-  print("Expected hurst parameter: [1.5, 1.4, 1.4]")
+  # NOTE since DFA is quite fast and Wallot 2023 use different initial values
+  # (x = y = z = 0.1 + e) and size of data (100k data points, 1000 runs) and
+  # don't report step size, we use different data here
+  data_dfa = datasets.lorenz_euler(120000, 10, 28, 8/3.0, start=[0.1,0.1,0.1], dt=0.002)[20000:]
+  nvals = nolds.logarithmic_n(200, len(data_dfa)/8, 2**0.2)
+  dfa_args = dict(nvals=nvals, order=2, overlap=False, fit_exp="poly")
+  dx = nolds.dfa(data_dfa[:, 0], **dfa_args)
+  dy = nolds.dfa(data_dfa[:, 1], **dfa_args)
+  dz = nolds.dfa(data_dfa[:, 2], **dfa_args)
+  print("Expected hurst parameter: [1.008 ±0.016, 0.926 ±0.016, 0.650 ±0.22]")
   print("dfa(x)                  : ", dx)
   print("dfa(y)                  : ", dy)
   print("dfa(z)                  : ", dz)
