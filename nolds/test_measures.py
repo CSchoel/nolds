@@ -19,6 +19,12 @@ import warnings
 
 # TODO split up tests into smaller units => one hypothesis = one test
 
+try:
+  from scipy.stats import levy_stable
+  SCIPY_AVAILABLE = True
+except ImportError:
+  SCIPY_AVAILABLE = False
+
 
 class TestNoldsHelperFunctions(unittest.TestCase):
   """
@@ -400,6 +406,17 @@ class TestNoldsDFA(unittest.TestCase):
     nolds_rs_log10 = nolds_rs / np.log(10)
     # assert that sum of squared errors is less than 1e-9
     self.assertLess(sum((physionet_points[:,1] - nolds_rs_log10)**2), 1e-9)
+
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests using Lévy motion require scipy.")
+  def test_dfa_levy(self):
+    """Test hypothesis: We get correct values for estimating the Hurst parameter of Lévy motion.
+
+    Reference: https://github.com/CSchoel/nolds/issues/17#issuecomment-1905472813.
+    """
+    alpha = 1.5
+    x = levy_stable.rvs(alpha=alpha, beta=0, size=10000)
+    h = nolds.dfa(x, fit_exp="poly")
+    self.assertAlmostEqual(0.5, h, delta=0.1)
 
 
 
