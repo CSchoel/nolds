@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - `barabasi_1991_figure2` and `barabasi_1991_figure3` recreate the respective plots from Barabasi et al. 1991
   - `lorenz` calculates all main measures of `nolds` for x, y, and z coordinates of a Lorenz plot and compares them to prescribed values from the literature
 - tests for all `nolds` existing measures based on the Lorenz system
+- additional tests for `dfa` allowing a direct comparison to the implementation in PhysioNet and using Lévy motion.
 
 ### Changed
 
@@ -30,11 +31,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - the parameter `tolerance` in `sampen` now has a more sophisticated default value that takes into account that the chebyshev distance rises logarithmically with increasing dimension
 - uses `np.float64` as standard `dtype` instead of `"float32"`
 - input data of `lyap_e` is now converted to `np.float64` to avoid errors with `inf` values for integer inputs (see https://github.com/CSchoel/nolds/issues/21)
+- completely revises the explanation of `dfa` with new and more accurate sources
 
 ### Fixed
 
 - the test `test_measures.TestNoldsCorrDim.test_corr_dim` would fail if `sklearn` was not installed, because the standard "RANSAC" fitting method produces quite different results compared to the fallback "poly" method
 - uses `ddof=1` in `np.std` when creating debug plot for `sampen` and when computing default `rvals` for `corr_dim`
+- `dfa` was applying `np.sqrt` too early in the process. We actually only take the square root once after averaging over _all_ windows.
 
 ## [0.5.2]
 
