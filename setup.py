@@ -22,7 +22,7 @@ class CleanCommand(Command):
 
 with io.open("README.rst", "r", encoding="utf-8") as f:
     readme = f.read()
-version = '0.5.2'
+version = '0.6.0'
 setup(
     name='nolds',
     packages=['nolds'],

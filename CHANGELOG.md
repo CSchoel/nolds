@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+### Changed
+### Fixed
+
+## [0.6.0]
+
+### Added
 
 - new parameter `closed` for `sampen` to determine if `<` or `<=` should be used for checking if the distance between a vector pair is within the tolerance
 - new example `sampen-tol` that compares old and new default tolerance values for `sampen`
@@ -215,7 +221,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - Hurst exponent (`hurst_rs`)
   - detrended fluctuation analysis (DFA) (`dfa`)
 
-[Unreleased]: https://github.com/CSchoel/nolds/compare/0.5.2..HEAD
+[Unreleased]: https://github.com/CSchoel/nolds/compare/0.6.0..HEAD
+[0.6.0]: https://github.com/CSchoel/nolds/compare/0.5.2..0.6.0
 [0.5.2]: https://github.com/CSchoel/nolds/compare/0.5.1..0.5.2
 [0.5.1]: https://github.com/CSchoel/nolds/compare/0.5.0..0.5.1
 [0.5.0]: https://github.com/CSchoel/nolds/compare/0.4.1..0.5.0
