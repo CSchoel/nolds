@@ -15,7 +15,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-          cache: 'pip'
       - run: pip install .
       - run: pip install codecov .
       - run: coverage run -m unittest nolds.test_measures
