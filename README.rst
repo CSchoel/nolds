@@ -42,7 +42,8 @@ Currently the following measures are implemented:
 
     .. warning::
         Nolds also supports the GHE implementation by Di Matteo and Aste (2003) as ``mfhurst_dm``.
-        However, it is not recommended to use this for anything else than reproducing the results of the authors as ``mfhurst_b`` is more stable and mathematically sound.
+        However, it is not recommended to use this for anything else than reproducing the results of the authors.
+        Instead, use ``mfhurst_b``, which is more stable and mathematically sound.
 
 
 Example
