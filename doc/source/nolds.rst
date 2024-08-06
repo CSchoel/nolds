@@ -35,6 +35,14 @@ Detrended fluctuation analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: nolds.dfa
 
+Generalized Hurst Exponent (Barabási et al.)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autofunction:: nolds.mfhurst_b
+
+Generalized Hurst Exponent (Di Matteo et al.)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autofunction:: nolds.mfhurst_da
+
 Helper functions
 -----------------
 .. autofunction:: nolds.binary_n
@@ -111,3 +119,11 @@ Quantum random numbers
 ~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: nolds.qrandom
 .. autofunction:: nolds.load_qrandom
+
+Financial example datasets
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autofunction:: nolds.load_financial
+
+Fractal data used by Barabasi et al. (1991)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autofunction:: nolds.barabasi1991_fractal
