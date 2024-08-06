@@ -57,7 +57,7 @@ setup(
     ],
     test_suite='nolds.test_measures',
     install_requires=[
-        'numpy',
+        'numpy<2.0',
         'future',
         'setuptools'
     ],
