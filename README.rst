@@ -7,10 +7,6 @@ NOnLinear measures for Dynamical Systems (nolds)
 .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3814723.svg
    :target: https://doi.org/10.5281/zenodo.3814723
 
-.. image:: https://img.shields.io/lgtm/grade/python/g/CSchoel/nolds.svg?logo=lgtm&logoWidth=18
-    :alt: Language grade: Python
-    :target: https://lgtm.com/projects/g/CSchoel/nolds/context:python
-
 .. image:: https://api.codacy.com/project/badge/Grade/42c30d253b384e87a86b70c8fa0da6b2
     :target: https://www.codacy.com/app/christopher.schoelzel/nolds?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CSchoel/nolds&amp;utm_campaign=Badge_Grade
 
