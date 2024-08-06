@@ -1716,7 +1716,7 @@ def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
       a more natural fit. If low values of d yield statistically unstable
       results, they should simply be omitted.
   - The algorithm tests multiple values for tau_max, which is the maximum
-      distance that will be calculated. In [mdh]_ the authors state that this
+      distance that will be calculated. In [mhd_1]_ the authors state that this
       is done to test the robustness of the approach. However, taking the
       mean of several runs with different tau_max will not produce any more
       information than performing one run with the largest tau_max. Instead
@@ -1728,7 +1728,7 @@ def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
        and its Applications, vol. 324, no. 1–2, pp. 183–188, 2003.
 
   Reference code:
-    .. [mdh_a] Tomaso Aste, "Generalized Hurst exponent",
+    .. [mhd_a] Tomaso Aste, "Generalized Hurst exponent",
        url: http://de.mathworks.com/matlabcentral/fileexchange/30076-generalized-hurst-exponent
 
   Args:

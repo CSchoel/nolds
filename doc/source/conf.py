@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Nolds'
-copyright = u'2016-2018, Christopher Schölzel'
+copyright = u'2016-2024, Christopher Schölzel'
 author = u'Christopher Schölzel'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -292,4 +292,4 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
 
-autodoc_mock_imports = ['numpy', 'future', 'setuptools', 'builtins']
+# autodoc_mock_imports = ['numpy', 'future', 'setuptools', 'builtins']

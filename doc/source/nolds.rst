@@ -41,7 +41,7 @@ Generalized Hurst Exponent (Barabási et al.)
 
 Generalized Hurst Exponent (Di Matteo et al.)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autofunction:: nolds.mfhurst_da
+.. autofunction:: nolds.mfhurst_dm
 
 Helper functions
 -----------------

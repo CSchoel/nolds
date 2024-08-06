@@ -23,7 +23,7 @@ You can run some examples for the functions in nolds with the command
 These tests are also available as functions inside the module ``nolds.examples``.
 
 Functions in ``nolds.examples``
------------------------------
+-------------------------------
 
 .. autofunction:: nolds.examples.plot_lyap
 .. autofunction:: nolds.examples.profiling
