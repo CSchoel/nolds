@@ -1,57 +1,52 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" data-content_root="../../">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>nolds.examples &#8212; Nolds 0.5.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.5.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nolds.examples &#8212; Nolds 0.6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=19a2ea7e" />
+    <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  
+  
+
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for nolds.examples</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span>
                         <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">measures</span> <span class="k">as</span> <span class="n">nolds</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="p">(</span>
+  <span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ascii</span><span class="p">,</span> <span class="nb">chr</span><span class="p">,</span> <span class="nb">hex</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">next</span><span class="p">,</span>
+  <span class="nb">oct</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">measures</span> <span class="k">as</span> <span class="n">nolds</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">datasets</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="c1"># TODO better legends for plots</span>
 
-<div class="viewcode-block" id="weron_2002_figure2"><a class="viewcode-back" href="../../examples.html#nolds.examples.weron_2002_figure2">[docs]</a><span class="k">def</span> <span class="nf">weron_2002_figure2</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="weron_2002_figure2">
+<a class="viewcode-back" href="../../examples.html#nolds.examples.weron_2002_figure2">[docs]</a>
+<span class="k">def</span> <span class="nf">weron_2002_figure2</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Recreates figure 2 of [w]_ comparing the reported values by Weron to the</span>
 <span class="sd">  values obtained by the functions in this package.</span>
 
@@ -61,8 +56,8 @@
 <span class="sd">  over all iterations is plotted for the following configurations:</span>
 
 <span class="sd">  * ``weron`` is the Anis-Lloyd-corrected Hurst exponent calculated by Weron</span>
-<span class="sd">  * ``rs50`` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with</span>
-<span class="sd">    the same parameters as used by Weron</span>
+<span class="sd">  * ``rs50`` is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds</span>
+<span class="sd">    with the same parameters as used by Weron</span>
 <span class="sd">  * ``weron_raw`` is the uncorrected Hurst exponent calculated by Weron</span>
 <span class="sd">  * ``rs50_raw`` is the uncorrected Hurst exponent calculated by Nolds with the</span>
 <span class="sd">    same parameters as used by Weron</span>
@@ -89,18 +84,19 @@
   <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
   <span class="c1"># note: these values are calculated by measurements in inkscape of the plot</span>
   <span class="c1"># from the paper</span>
-  <span class="n">reported</span> <span class="o">=</span> <span class="p">[</span><span class="mf">6.708</span><span class="p">,</span> <span class="mf">13.103</span><span class="p">,</span> <span class="mf">20.240</span><span class="p">,</span> <span class="mf">21.924</span><span class="p">,</span> <span class="mf">22.256</span><span class="p">,</span> <span class="mf">24.112</span><span class="p">,</span> <span class="mf">24.054</span><span class="p">,</span> <span class="mf">26.299</span><span class="p">,</span> 
+  <span class="n">reported</span> <span class="o">=</span> <span class="p">[</span><span class="mf">6.708</span><span class="p">,</span> <span class="mf">13.103</span><span class="p">,</span> <span class="mf">20.240</span><span class="p">,</span> <span class="mf">21.924</span><span class="p">,</span> <span class="mf">22.256</span><span class="p">,</span> <span class="mf">24.112</span><span class="p">,</span> <span class="mf">24.054</span><span class="p">,</span> <span class="mf">26.299</span><span class="p">,</span>
               <span class="mf">26.897</span><span class="p">]</span>
   <span class="n">reported_raw</span> <span class="o">=</span> <span class="p">[</span><span class="mf">160.599</span><span class="p">,</span> <span class="mf">141.663</span><span class="p">,</span> <span class="mf">128.454</span><span class="p">,</span> <span class="mf">115.617</span><span class="p">,</span> <span class="mf">103.651</span><span class="p">,</span> <span class="mf">95.481</span><span class="p">,</span> <span class="mf">86.810</span><span class="p">,</span>
                   <span class="mf">81.799</span><span class="p">,</span> <span class="mf">76.270</span><span class="p">]</span>
+
   <span class="k">def</span> <span class="nf">height_to_h</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
     <span class="k">return</span> <span class="mf">0.49</span> <span class="o">+</span> <span class="n">height</span> <span class="o">/</span> <span class="mf">29.894</span> <span class="o">*</span> <span class="mf">0.01</span>
   <span class="n">reported</span> <span class="o">=</span> <span class="n">height_to_h</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">reported</span><span class="p">))</span>
   <span class="n">reported_raw</span> <span class="o">=</span> <span class="n">height_to_h</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">reported_raw</span><span class="p">))</span>
   <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-  <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="p">):</span>
     <span class="n">l</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">e</span>
-    <span class="n">nvals</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">nvals</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
     <span class="n">rsn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span>
       <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">l</span><span class="p">),</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
       <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
@@ -110,21 +106,27 @@
       <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     <span class="p">])</span>
     <span class="n">rs50_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span>
-      <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">l</span><span class="p">),</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="n">nvals</span><span class="p">,</span> <span class="n">corrected</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+      <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">l</span><span class="p">),</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="n">nvals</span><span class="p">,</span> <span class="n">corrected</span><span class="o">=</span><span class="kc">False</span>
+      <span class="p">)</span>
       <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     <span class="p">])</span>
     <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">rsn</span><span class="p">,</span> <span class="n">rs50</span><span class="p">,</span> <span class="n">rs50_raw</span><span class="p">))</span>
-  <span class="n">lines</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
-  <span class="n">r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">),</span> <span class="n">reported</span><span class="p">)</span>
-  <span class="n">rr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">),</span> <span class="n">reported_raw</span><span class="p">)</span>
+  <span class="n">lines</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+  <span class="n">r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="n">reported</span><span class="p">)</span>
+  <span class="n">rr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="n">reported_raw</span><span class="p">)</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">rr</span> <span class="o">+</span> <span class="n">lines</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;weron&quot;</span><span class="p">,</span> <span class="s2">&quot;weron_raw&quot;</span><span class="p">,</span> <span class="s2">&quot;rsn&quot;</span><span class="p">,</span> <span class="s2">&quot;rs50&quot;</span><span class="p">,</span> <span class="s2">&quot;rs50_raw&quot;</span><span class="p">))</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">),</span><span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">17</span><span class="p">))</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;sequence length&quot;</span><span class="p">)</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;estimated hurst exponent&quot;</span><span class="p">)</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="plot_hurst_hist"><a class="viewcode-back" href="../../examples.html#nolds.examples.plot_hurst_hist">[docs]</a><span class="k">def</span> <span class="nf">plot_hurst_hist</span><span class="p">():</span>
-  <span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="plot_hurst_hist">
+<a class="viewcode-back" href="../../examples.html#nolds.examples.plot_hurst_hist">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_hurst_hist</span><span class="p">():</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Plots a histogram of values obtained for the hurst exponent of uniformly</span>
 <span class="sd">  distributed white noise.</span>
 
@@ -132,17 +134,25 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># local import to avoid dependency for non-debug use</span>
   <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-  <span class="n">hs</span> <span class="o">=</span> <span class="p">[</span><span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10000</span><span class="p">),</span> <span class="n">corrected</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
+  <span class="n">hs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10000</span><span class="p">),</span> <span class="n">corrected</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+  <span class="p">]</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">hs</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;esimated value of hurst exponent&quot;</span><span class="p">)</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;number of experiments&quot;</span><span class="p">)</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="plot_lyap"><a class="viewcode-back" href="../../examples.html#nolds.examples.plot_lyap">[docs]</a><span class="k">def</span> <span class="nf">plot_lyap</span><span class="p">(</span><span class="n">maptype</span><span class="o">=</span><span class="s2">&quot;logistic&quot;</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="plot_lyap">
+<a class="viewcode-back" href="../../examples.html#nolds.examples.plot_lyap">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_lyap</span><span class="p">(</span><span class="n">maptype</span><span class="o">=</span><span class="s2">&quot;logistic&quot;</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Plots a bifurcation plot of the given map and superimposes the true</span>
 <span class="sd">  lyapunov exponent as well as the estimates of the largest lyapunov exponent</span>
-<span class="sd">  obtained by ``lyap_r`` and ``lyap_e``. The idea for this plot is taken from [ll]_.</span>
+<span class="sd">  obtained by ``lyap_r`` and ``lyap_e``. The idea for this plot is taken</span>
+<span class="sd">  from [ll]_.</span>
 
 <span class="sd">  This function requires the package ``matplotlib``.</span>
 
@@ -153,8 +163,8 @@
 
 <span class="sd">  Kwargs:</span>
 <span class="sd">    maptype (str):</span>
-<span class="sd">      can be either ``&quot;logistic&quot;`` for the logistic map or ``&quot;tent&quot;`` for the tent</span>
-<span class="sd">      map.</span>
+<span class="sd">      can be either ``&quot;logistic&quot;`` for the logistic map or ``&quot;tent&quot;`` for the</span>
+<span class="sd">      tent map.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># local import to avoid dependency for non-debug use</span>
   <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -166,26 +176,26 @@
     <span class="n">param_name</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
     <span class="n">param_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
     <span class="n">full_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-      <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">logistic_map</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">logistic_map</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
       <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">param_range</span>
     <span class="p">])</span>
     <span class="c1"># It can be proven that the lyapunov exponent of the logistic map</span>
     <span class="c1"># (or any map that is an iterative application of a function) can be</span>
     <span class="c1"># calculated as the mean of the logarithm of the absolute of the</span>
     <span class="c1"># derivative at the individual data points.</span>
-    <span class="c1"># For a proof see for example: </span>
+    <span class="c1"># For a proof see for example:</span>
     <span class="c1"># https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/</span>
     <span class="c1"># Derivative of logistic map: f(x) = r * x * (1 - x) = r * x - r * x²</span>
     <span class="c1"># =&gt; f&#39;(x) = r - 2 * r * x</span>
     <span class="n">lambdas</span> <span class="o">=</span> <span class="p">[</span>
       <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="mf">0.5</span><span class="p">)])))</span>
-      <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">full_data</span><span class="p">,</span> <span class="n">param_range</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">full_data</span><span class="p">,</span> <span class="n">param_range</span><span class="p">)</span>
     <span class="p">]</span>
   <span class="k">elif</span> <span class="n">maptype</span> <span class="o">==</span> <span class="s2">&quot;tent&quot;</span><span class="p">:</span>
-    <span class="n">param_name</span> <span class="o">=</span> <span class="s2">&quot;$\mu$&quot;</span>
+    <span class="n">param_name</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">mu$&quot;</span>
     <span class="n">param_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
     <span class="n">full_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-      <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">tent_map</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">tent_map</span><span class="p">(</span><span class="n">x_start</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
       <span class="k">for</span> <span class="n">mu</span> <span class="ow">in</span> <span class="n">param_range</span>
     <span class="p">])</span>
     <span class="c1"># for the tent map the lyapunov exponent is much easier to calculate</span>
@@ -197,12 +207,12 @@
   <span class="k">else</span><span class="p">:</span>
     <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span><span class="s2">&quot;maptype </span><span class="si">%s</span><span class="s2"> not recognized&quot;</span> <span class="o">%</span> <span class="n">maptype</span><span class="p">)</span>
 
-  <span class="n">kwargs_e</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;emb_dim&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;matrix_dim&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}</span>
-  <span class="n">kwargs_r</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;emb_dim&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;lag&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;min_tsep&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;trajectory_len&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+  <span class="n">kwargs_e</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;emb_dim&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;matrix_dim&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+  <span class="n">kwargs_r</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;emb_dim&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;lag&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;min_tsep&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;trajectory_len&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
   <span class="n">lambdas_e</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">nolds</span><span class="o">.</span><span class="n">lyap_e</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_e</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">full_data</span><span class="p">]</span>
   <span class="n">lambdas_r</span> <span class="o">=</span> <span class="p">[</span><span class="n">nolds</span><span class="o">.</span><span class="n">lyap_r</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_r</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">full_data</span><span class="p">]</span>
   <span class="n">bifur_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">param_range</span><span class="p">,</span> <span class="n">nbifur</span><span class="p">)</span>
-  <span class="n">bifur</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">full_data</span><span class="p">[:,</span><span class="o">-</span><span class="n">nbifur</span><span class="p">:],</span> <span class="n">nbifur</span> <span class="o">*</span> <span class="n">param_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="n">bifur</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">full_data</span><span class="p">[:,</span> <span class="o">-</span><span class="n">nbifur</span><span class="p">:],</span> <span class="n">nbifur</span> <span class="o">*</span> <span class="n">param_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
   <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Lyapunov exponent of the </span><span class="si">%s</span><span class="s2"> map&quot;</span> <span class="o">%</span> <span class="n">maptype</span><span class="p">)</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">param_range</span><span class="p">,</span> <span class="n">lambdas</span><span class="p">,</span> <span class="s2">&quot;b-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true lyap. exponent&quot;</span><span class="p">)</span>
@@ -218,9 +228,14 @@
   <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="profiling"><a class="viewcode-back" href="../../examples.html#nolds.examples.profiling">[docs]</a><span class="k">def</span> <span class="nf">profiling</span><span class="p">():</span>
-  <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  Runs a profiling test for the function ``lyap_e`` (mainly used for development)</span>
+
+
+<div class="viewcode-block" id="profiling">
+<a class="viewcode-back" href="../../examples.html#nolds.examples.profiling">[docs]</a>
+<span class="k">def</span> <span class="nf">profiling</span><span class="p">():</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Runs a profiling test for the function ``lyap_e`` (mainly used for</span>
+<span class="sd">  development)</span>
 
 <span class="sd">  This function requires the package ``cProfile``.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
@@ -229,8 +244,12 @@
   <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
   <span class="n">cProfile</span><span class="o">.</span><span class="n">runctx</span><span class="p">(</span><span class="s1">&#39;lyap_e(data)&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;lyap_e&#39;</span><span class="p">:</span> <span class="n">nolds</span><span class="o">.</span><span class="n">lyap_e</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="hurst_compare_nvals"><a class="viewcode-back" href="../../examples.html#nolds.examples.hurst_compare_nvals">[docs]</a><span class="k">def</span> <span class="nf">hurst_compare_nvals</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="hurst_compare_nvals">
+<a class="viewcode-back" href="../../examples.html#nolds.examples.hurst_compare_nvals">[docs]</a>
+<span class="k">def</span> <span class="nf">hurst_compare_nvals</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Creates a plot that compares the results of different choices for nvals</span>
 <span class="sd">  for the function hurst_rs.</span>
 
@@ -245,15 +264,15 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
   <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-  <span class="n">n_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">n_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
   <span class="n">dd_all</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="n">n_all</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
   <span class="n">dd_def</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
   <span class="n">n_def</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dd_def</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
   <span class="n">n_div</span> <span class="o">=</span> <span class="n">n_all</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_all</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span>
   <span class="n">dd_div</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="n">n_div</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+
   <span class="k">def</span> <span class="nf">corr</span><span class="p">(</span><span class="n">nvals</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nolds</span><span class="o">.</span><span class="n">expected_rs</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nvals</span><span class="p">]</span>
-
 
   <span class="n">l_all</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dd_all</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dd_all</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">corr</span><span class="p">(</span><span class="n">n_all</span><span class="p">),</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
   <span class="n">l_def</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dd_def</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dd_def</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">corr</span><span class="p">(</span><span class="n">n_def</span><span class="p">),</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
@@ -264,11 +283,12 @@
   <span class="k">if</span> <span class="n">nvals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">dd_cst</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="n">nvals</span><span class="p">,</span> <span class="n">debug_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
     <span class="n">l_cst</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dd_cst</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dd_cst</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">corr</span><span class="p">(</span><span class="n">nvals</span><span class="p">),</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
-    <span class="n">l_cst</span> <span class="o">=</span> <span class="n">l_cst</span>
     <span class="n">t_cst</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">]</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;log(n)&quot;</span><span class="p">)</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;log((R/S)_n - E[(R/S)_n])&quot;</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">l_all</span> <span class="o">+</span> <span class="n">l_def</span> <span class="o">+</span> <span class="n">l_div</span> <span class="o">+</span> <span class="n">l_cst</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;divisors&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">t_cst</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+    <span class="n">l_all</span> <span class="o">+</span> <span class="n">l_def</span> <span class="o">+</span> <span class="n">l_div</span> <span class="o">+</span> <span class="n">l_cst</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;divisors&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">t_cst</span>
+  <span class="p">)</span>
   <span class="n">labeled_data</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">([</span><span class="n">dd_all</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dd_def</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dd_div</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;def&quot;</span><span class="p">,</span> <span class="s2">&quot;div&quot;</span><span class="p">])</span>
   <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labeled_data</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
@@ -276,10 +296,333 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;custom: </span><span class="si">%.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">dd_cst</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
   <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
+
+<span class="k">def</span> <span class="nf">sampen_default_tolerance</span><span class="p">():</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">logistic_map</span><span class="p">(</span><span class="mf">0.34</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">3.9</span><span class="p">))</span>
+  <span class="n">oldtol</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">old_res</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">nolds</span><span class="o">.</span><span class="n">sampen</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">oldtol</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+  <span class="p">]</span>
+  <span class="n">new_res</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">nolds</span><span class="o">.</span><span class="n">sampen</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+  <span class="p">]</span>
+  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="n">old_res</span><span class="p">,</span> <span class="n">new_res</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;emb_dim=</span><span class="si">{}</span><span class="s2"> old=</span><span class="si">{:.3f}</span><span class="s2"> corrected=</span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">))</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;      old variance: </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">old_res</span><span class="p">)))</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;corrected variance: </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">new_res</span><span class="p">)))</span>
+
+<span class="k">def</span> <span class="nf">aste_line_fitting</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Shows plot that proves that the line fitting in T. Astes original MATLAB code</span>
+<span class="sd">  provides the same results as `np.polyfit`.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">slope</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">-</span> <span class="mi">5</span>
+  <span class="n">intercept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">-</span> <span class="mi">50</span>
+  <span class="n">xvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+  <span class="n">yvals</span> <span class="o">=</span> <span class="n">xvals</span> <span class="o">*</span> <span class="n">slope</span> <span class="o">+</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="s2">&quot;rx&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">intercept</span><span class="p">,</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)],</span>
+    <span class="s2">&quot;r-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true (</span><span class="si">{:.3f}</span><span class="s2"> x + </span><span class="si">{:.3f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span>
+  <span class="p">)</span>
+  <span class="n">i_aste</span><span class="p">,</span> <span class="n">s_aste</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">_aste_line_fit</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">)</span>
+  <span class="n">s_np</span><span class="p">,</span> <span class="n">i_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">i_aste</span><span class="p">,</span> <span class="n">i_aste</span> <span class="o">+</span> <span class="n">s_aste</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)],</span>
+    <span class="s2">&quot;b-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;aste (</span><span class="si">{:.3f}</span><span class="s2"> x + </span><span class="si">{:.3f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s_aste</span><span class="p">,</span> <span class="n">i_aste</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span>
+  <span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">i_np</span><span class="p">,</span> <span class="n">i_np</span> <span class="o">+</span> <span class="n">s_np</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)],</span>
+    <span class="s2">&quot;g-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;numpy (</span><span class="si">{:.3f}</span><span class="s2"> x + </span><span class="si">{:.3f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s_np</span><span class="p">,</span> <span class="n">i_np</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span>
+  <span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">hurst_mf_stock</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Recreates results from [mfs_1]_ (table at start of section 4) as print</span>
+<span class="sd">  output.</span>
+
+<span class="sd">  Unfortunately as a layman in finance, I could not determine the exact data</span>
+<span class="sd">  that Di Matteo et al. used. Instead I use the data from</span>
+<span class="sd">  `nolds.datasets.load_financial()`.</span>
+
+<span class="sd">  Plots H(2) for the following datasets and algorithms.</span>
+
+<span class="sd">  Datasets (opening values from `load_financial()`):</span>
+
+<span class="sd">  - jkse: Jakarta Composite Index</span>
+<span class="sd">  - n225: Nikkei 225</span>
+<span class="sd">  - ndx: NASDAQ 100</span>
+
+<span class="sd">  Algorithms:</span>
+
+<span class="sd">  - mfhurst_b: GHE according to Barabási et al.</span>
+<span class="sd">  - mfhurst_b + dt: like mfhurst_b, but with linear detrending performed first</span>
+<span class="sd">  - mfhurst_dm: GHE according to Di Matteo et al. (should be identical to</span>
+<span class="sd">                _genhurst)</span>
+<span class="sd">  - _genhurst: GHE according to translated MATLAB code by T. Aste (one of the</span>
+<span class="sd">               co-authors of Di Matteo).</span>
+
+<span class="sd">  References:</span>
+
+<span class="sd">    .. [mfs_1] T. Di Matteo, T. Aste, and M. M. Dacorogna, “Scaling behaviors</span>
+<span class="sd">       in differently developed markets,” Physica A: Statistical Mechanics</span>
+<span class="sd">       and its Applications, vol. 324, no. 1–2, pp. 183–188, 2003.</span>
+
+<span class="sd">  Kwargs:</span>
+<span class="sd">    debug (boolean):</span>
+<span class="sd">      if `True`, a debug plot will be shown for each calculated GHE value</span>
+<span class="sd">      except for the ones generated by `_genhurst`.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dataset  mfhurst_b  mfhurst_b + dt  mfhurst_dm  _genhurst&quot;</span><span class="p">)</span>
+  <span class="n">financial</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">jkse</span><span class="p">,</span> <span class="s2">&quot;jkse&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">n225</span><span class="p">,</span> <span class="s2">&quot;n225&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">ndx</span><span class="p">,</span> <span class="s2">&quot;ndx&quot;</span><span class="p">)</span>
+  <span class="p">]</span>
+  <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">lab</span> <span class="ow">in</span> <span class="n">financial</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">dists</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="n">mfh_b</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">mfhurst_b</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">qvals</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dists</span><span class="o">=</span><span class="n">dists</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="n">debug</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">mfh_b_dt</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">mfhurst_b</span><span class="p">(</span>
+      <span class="n">nolds</span><span class="o">.</span><span class="n">detrend_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+      <span class="n">qvals</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dists</span><span class="o">=</span><span class="n">dists</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="n">debug</span>
+    <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">mfh_dm</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">mfhurst_dm</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">qvals</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">debug_plot</span><span class="o">=</span><span class="n">debug</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">gh</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">_genhurst</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:10s}</span><span class="s2">   </span><span class="si">{:5.3f}</span><span class="s2">           </span><span class="si">{:5.3f}</span><span class="s2">       </span><span class="si">{:5.3f}</span><span class="s2">      </span><span class="si">{:5.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">mfh_b</span><span class="p">,</span> <span class="n">mfh_b_dt</span><span class="p">,</span> <span class="n">mfh_dm</span><span class="p">,</span> <span class="n">gh</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">barabasi_1991_figure2</span><span class="p">():</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Recreates figure 2 from [bf2]_.</span>
+
+<span class="sd">  This figure compares calculated and estimated values for H(q) for</span>
+<span class="sd">  a fractal generated by 9 iterations of the `barabasi1991_fractal` function</span>
+<span class="sd">  with b1 = 0.8 and b2 = 0.5.</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [bf2] A.-L. Barabási and T. Vicsek, “Multifractality of self-affine</span>
+<span class="sd">       fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+  <span class="n">b1991</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">barabasi1991_fractal</span><span class="p">(</span><span class="mi">10000000</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+  <span class="n">qvals</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+  <span class="n">qvals_t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+  <span class="n">b1</span> <span class="o">=</span> <span class="mf">0.8</span>
+  <span class="n">b2</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">dists</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span> <span class="o">**</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span>
+  <span class="c1"># dists = nolds.logarithmic_n(100, 0.01 * len(b1991), 2)</span>
+  <span class="n">Hq</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">mfhurst_b</span><span class="p">(</span><span class="n">b1991</span><span class="p">,</span> <span class="n">qvals</span><span class="o">=</span><span class="n">qvals</span><span class="p">,</span> <span class="n">dists</span><span class="o">=</span><span class="n">dists</span><span class="p">)</span>
+  <span class="n">Hq_t</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">b1</span> <span class="o">**</span> <span class="n">q</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">**</span> <span class="n">q</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span> <span class="o">/</span> <span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qvals_t</span><span class="p">]</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">qvals</span><span class="p">,</span> <span class="n">Hq</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;mfhurst_b&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">qvals_t</span><span class="p">,</span> <span class="n">Hq_t</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;calculated value&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;H(q)&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">barabasi_1991_figure3</span><span class="p">():</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Recreates figure 3 from [bf3]_.</span>
+
+<span class="sd">  This figure compares calculated and estimated values for H(q) for a simple</span>
+<span class="sd">  Brownian motion that moves in unit steps (-1 or +1) in each time step.</span>
+
+<span class="sd">  References:</span>
+<span class="sd">    .. [bf3] A.-L. Barabási and T. Vicsek, “Multifractality of self-affine</span>
+<span class="sd">       fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+  <span class="n">brown</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10000000</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">qvals</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+  <span class="n">Hq_t</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="k">if</span> <span class="n">q</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">/</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qvals</span><span class="p">]</span>
+  <span class="n">dists</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span> <span class="o">**</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">)]</span>
+  <span class="c1"># dists = nolds.logarithmic_n(100, 0.01 * len(brown), 1.5)</span>
+  <span class="n">Hq</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">mfhurst_b</span><span class="p">(</span><span class="n">brown</span><span class="p">,</span> <span class="n">qvals</span><span class="o">=</span><span class="n">qvals</span><span class="p">,</span> <span class="n">dists</span><span class="o">=</span><span class="n">dists</span><span class="p">,</span> <span class="n">debug_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">qvals</span><span class="p">,</span> <span class="n">Hq</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;mfhurst_b&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">qvals</span><span class="p">,</span> <span class="n">Hq_t</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;calculated value&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;H(q)&quot;</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">lorenz</span><span class="p">():</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Calculates different measures for the Lorenz system of ordinary</span>
+<span class="sd">  differential equations and compares nolds results with prescribed</span>
+<span class="sd">  results from the literature.</span>
+
+<span class="sd">  The Lorenz system is a three dimensional dynamical system given</span>
+<span class="sd">  by the following equations:</span>
+
+<span class="sd">  dx/dt = sigma * (y - x)</span>
+<span class="sd">  dy/dt = rho * x - y - x * z</span>
+<span class="sd">  dz/dt = x * y - beta * z</span>
+
+<span class="sd">  To test the reconstruction of higher-dimensional phenomena from</span>
+<span class="sd">  one-dimensional data, the lorenz system is simulated with a</span>
+<span class="sd">  simple Euler method and then the x-, y-, and z-values are used</span>
+<span class="sd">  as one-dimensional input for the nolds algorithms.</span>
+
+<span class="sd">  Parameters for Lorenz system:</span>
+
+<span class="sd">  - sigma = 10</span>
+<span class="sd">  - rho = 28</span>
+<span class="sd">  - beta = 8/3</span>
+<span class="sd">  - dt = 0.012</span>
+
+<span class="sd">  Algorithms:</span>
+
+<span class="sd">  - ``lyap_r`` with min_tsep=1000, emb_dim=5, tau=0.01, and lag=5  (see [l_4]_)</span>
+<span class="sd">  - ``lyap_e`` with min_tsep=1000, emb_dim=5, matrix_dim=5, and tau=0.01 (see [l_4]_)</span>
+<span class="sd">  - ``corr_dim`` with emb_dim=10, and fit=poly (see [l_1]_)</span>
+<span class="sd">  - ``hurst_rs`` with fit=poly (see [l_3]_)</span>
+<span class="sd">  - ``dfa`` with default parameters (see [l_5]_)</span>
+<span class="sd">  - ``sampen`` with default parameters (see [l_2]_)</span>
+
+<span class="sd">  References:</span>
+
+<span class="sd">    .. [l_1] P. Grassberger and I. Procaccia, “Measuring the strangeness</span>
+<span class="sd">       of strange attractors,” Physica D: Nonlinear Phenomena, vol. 9,</span>
+<span class="sd">       no. 1, pp. 189–208, 1983.</span>
+<span class="sd">    .. [l_2] F. Kaffashi, R. Foglyano, C. G. Wilson, and K. A. Loparo,</span>
+<span class="sd">       “The effect of time delay on Approximate &amp; Sample Entropy</span>
+<span class="sd">       calculations,” Physica D: Nonlinear Phenomena, vol. 237, no. 23,</span>
+<span class="sd">       pp. 3069–3074, 2008, doi: 10.1016/j.physd.2008.06.005.</span>
+<span class="sd">    .. [l_3] V. Suyal, A. Prasad, and H. P. Singh, “Nonlinear Time Series</span>
+<span class="sd">       Analysis of Sunspot Data,” Sol Phys, vol. 260, no. 2, pp. 441–449,</span>
+<span class="sd">       2009, doi: 10.1007/s11207-009-9467-x.</span>
+<span class="sd">    .. [l_4] G. A. Leonov and N. V. Kuznetsov, “On differences and</span>
+<span class="sd">       similarities in the analysis of Lorenz, Chen, and Lu systems,”</span>
+<span class="sd">       Applied Mathematics and Computation, vol. 256, pp. 334–343, 2015,</span>
+<span class="sd">       doi: 10.1016/j.amc.2014.12.132.</span>
+<span class="sd">    .. [l_5] S. Wallot, J. P. Irmer, M. Tschense, N. Kuznetsov, A. Højlund,</span>
+<span class="sd">       and M. Dietz, “A Multivariate Method for Dynamic System Analysis:</span>
+<span class="sd">       Multivariate Detrended Fluctuation Analysis Using Generalized Variance,”</span>
+<span class="sd">       Topics in Cognitive Science, p. tops.12688, Sep. 2023,</span>
+<span class="sd">       doi: 10.1111/tops.12688.</span>
+
+
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+  <span class="n">sigma</span> <span class="o">=</span> <span class="mi">10</span>
+  <span class="n">rho</span> <span class="o">=</span> <span class="mi">28</span>
+  <span class="n">beta</span> <span class="o">=</span> <span class="mf">8.0</span><span class="o">/</span><span class="mi">3</span>
+  <span class="n">start</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
+  <span class="n">skip</span> <span class="o">=</span> <span class="mi">10000</span>
+  <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.012</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">lorenz_euler</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">skip</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)[</span><span class="n">skip</span><span class="p">:]</span>
+
+  <span class="c1"># fig = plt.figure()</span>
+  <span class="c1"># ax = fig.add_subplot(111, projection=&quot;3d&quot;)</span>
+  <span class="c1"># ax.plot(data[:, 0], data[:, 1], data[:, 2])</span>
+  <span class="c1"># plt.show()</span>
+  <span class="c1"># plt.close(fig)</span>
+
+  <span class="n">lyap_expected</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">lorenz_lyap</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+  <span class="c1"># Rationale for argument values:</span>
+  <span class="c1"># start with medium settings for min_tsep and lag, span a large area with trajectory_len, set fit_offset to 0</span>
+  <span class="c1"># up the embedding dimension until you get a clear line in the debug plot</span>
+  <span class="c1"># adjust trajectory_len and fit_offset to split off only the linear part</span>
+  <span class="c1"># in general: the longer the linear part of the plot, the better</span>
+  <span class="n">lyap_r_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">min_tsep</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">trajectory_len</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">fit_offset</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+  <span class="n">lyap_rx</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">lyap_r</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">lyap_r_args</span><span class="p">)</span>
+  <span class="n">lyap_ry</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">lyap_r</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">lyap_r_args</span><span class="p">)</span>
+  <span class="n">lyap_rz</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">lyap_r</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">**</span><span class="n">lyap_r_args</span><span class="p">)</span>
+  <span class="c1"># Rationale for argument values:</span>
+  <span class="c1"># Start with emb_dim=matrix_dim, medium min_tsep and min_nb</span>
+  <span class="c1"># After that, no good guidelines for stability. :(</span>
+  <span class="c1"># -&gt; Just experiment with settings until you get close to expected value. ¯\_(ツ)_/¯</span>
+  <span class="c1"># NOTE: It seems from this example and `lyapunov-logistic` that lyap_e has a scaling problem.</span>
+  <span class="n">lyap_e_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">min_tsep</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">emb_dim</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">matrix_dim</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">min_nb</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+  <span class="n">lyap_ex</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">lyap_e</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">lyap_e_args</span><span class="p">)</span>
+  <span class="n">lyap_ey</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">lyap_e</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">lyap_e_args</span><span class="p">)</span>
+  <span class="n">lyap_ez</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">lyap_e</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">**</span><span class="n">lyap_e_args</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expected Lyapunov exponent: &quot;</span><span class="p">,</span> <span class="n">lyap_expected</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lyap_r(x)                 : &quot;</span><span class="p">,</span> <span class="n">lyap_rx</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lyap_r(y)                 : &quot;</span><span class="p">,</span> <span class="n">lyap_ry</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lyap_r(z)                 : &quot;</span><span class="p">,</span> <span class="n">lyap_rz</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lyap_e(x)                 : &quot;</span><span class="p">,</span> <span class="n">lyap_ex</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lyap_e(y)                 : &quot;</span><span class="p">,</span> <span class="n">lyap_ey</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lyap_e(z)                 : &quot;</span><span class="p">,</span> <span class="n">lyap_ez</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">()</span>
+
+  <span class="c1"># Rationale for argument values:</span>
+  <span class="c1"># Start with moderate settings for lag and a large span of rvals.</span>
+  <span class="c1"># Increase emb_dim until you get a clear line in the debug plot</span>
+  <span class="c1"># Clip rvals to select only the linear part of the plot.</span>
+  <span class="c1"># Increase lag as long as it increases the output. Stop when the output becomes smaller</span>
+  <span class="c1"># (or when you feel that the lag is unreasonably large.)</span>
+  <span class="n">rvals</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">logarithmic_r</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">)</span>  <span class="c1"># determined experimentally</span>
+  <span class="n">corr_dim_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">emb_dim</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="n">rvals</span><span class="o">=</span><span class="n">rvals</span><span class="p">)</span>
+  <span class="n">cdx</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">corr_dim</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">corr_dim_args</span><span class="p">)</span>
+  <span class="n">cdy</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">corr_dim</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">corr_dim_args</span><span class="p">)</span>
+  <span class="n">cdz</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">corr_dim</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">**</span><span class="n">corr_dim_args</span><span class="p">)</span>
+  <span class="c1"># reference Grassberger-Procaccia 1983</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expected correlation dimension:  2.05&quot;</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;corr_dim(x)                   : &quot;</span><span class="p">,</span> <span class="n">cdx</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;corr_dim(y)                   : &quot;</span><span class="p">,</span> <span class="n">cdy</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;corr_dim(z)                   : &quot;</span><span class="p">,</span> <span class="n">cdz</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">()</span>
+
+  <span class="c1"># Rationale for argument values:</span>
+  <span class="c1"># Start with a large range of nvals.</span>
+  <span class="c1"># Reduce those down cutting of the first few data points and then only keep the</span>
+  <span class="c1"># linear-ish looking part of the initial rise.</span>
+  <span class="n">hurst_rs_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">fit</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="n">nvals</span><span class="o">=</span><span class="n">nolds</span><span class="o">.</span><span class="n">logarithmic_n</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">))</span>
+  <span class="n">hx</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">hurst_rs_args</span><span class="p">)</span>
+  <span class="n">hy</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">hurst_rs_args</span><span class="p">)</span>
+  <span class="n">hz</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">hurst_rs</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">**</span><span class="n">hurst_rs_args</span><span class="p">)</span>
+  <span class="c1"># reference: Suyal 2009</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expected hurst exponent: 0.64 &lt; H &lt; 0.93&quot;</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hurst_rs(x)            : &quot;</span><span class="p">,</span> <span class="n">hx</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hurst_rs(y)            : &quot;</span><span class="p">,</span> <span class="n">hy</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hurst_rs(z)            : &quot;</span><span class="p">,</span> <span class="n">hz</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">()</span>
+
+  <span class="c1"># reference: Wallot 2023, Table 1</span>
+  <span class="c1"># Rationale for argument values: Just follow paper</span>
+  <span class="c1"># NOTE since DFA is quite fast and Wallot 2023 use different initial values</span>
+  <span class="c1"># (x = y = z = 0.1 + e) and size of data (100k data points, 1000 runs) and</span>
+  <span class="c1"># don&#39;t report step size, we use different data here</span>
+  <span class="n">data_dfa</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">lorenz_euler</span><span class="p">(</span><span class="mi">120000</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">8</span><span class="o">/</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">],</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.002</span><span class="p">)[</span><span class="mi">20000</span><span class="p">:]</span>
+  <span class="n">nvals</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">logarithmic_n</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_dfa</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mf">0.2</span><span class="p">)</span>
+  <span class="n">dfa_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">nvals</span><span class="o">=</span><span class="n">nvals</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fit_exp</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
+  <span class="n">dx</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">dfa</span><span class="p">(</span><span class="n">data_dfa</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">dfa_args</span><span class="p">)</span>
+  <span class="n">dy</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">dfa</span><span class="p">(</span><span class="n">data_dfa</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">dfa_args</span><span class="p">)</span>
+  <span class="n">dz</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">dfa</span><span class="p">(</span><span class="n">data_dfa</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">**</span><span class="n">dfa_args</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expected hurst parameter: [1.008 ±0.016, 0.926 ±0.016, 0.650 ±0.22]&quot;</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dfa(x)                  : &quot;</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dfa(y)                  : &quot;</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dfa(z)                  : &quot;</span><span class="p">,</span> <span class="n">dz</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">()</span>
+
+  <span class="c1"># reference: Kaffashi 2008</span>
+  <span class="c1"># Rationale for argument values: Just follow paper.</span>
+  <span class="n">sampen_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">emb_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">sx</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">sampen</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">sampen_args</span><span class="p">)</span>
+  <span class="n">sy</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">sampen</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">sampen_args</span><span class="p">)</span>
+  <span class="n">sz</span> <span class="o">=</span> <span class="n">nolds</span><span class="o">.</span><span class="n">sampen</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">**</span><span class="n">sampen_args</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expected sample entropy: [0.15, 0.15, 0.25]&quot;</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sampen(x): &quot;</span><span class="p">,</span> <span class="n">sx</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sampen(y): &quot;</span><span class="p">,</span> <span class="n">sy</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sampen(z): &quot;</span><span class="p">,</span> <span class="n">sz</span><span class="p">)</span>
+
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
   <span class="c1"># run this with the following command:</span>
   <span class="c1"># python -m nolds.examples lyapunov-logistic</span>
   <span class="kn">import</span> <span class="nn">sys</span>
+
   <span class="k">def</span> <span class="nf">print_options</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;options are:&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  lyapunov-logistic&quot;</span><span class="p">)</span>
@@ -288,6 +631,10 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  hurst-weron2&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  hurst-hist&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  hurst-nvals&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  sampen-tol&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  aste-line&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  hurst-mf-stock&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  lorenz&quot;</span><span class="p">)</span>
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;please tell me which tests you want to run&quot;</span><span class="p">)</span>
     <span class="n">print_options</span><span class="p">()</span>
@@ -304,16 +651,55 @@
     <span class="n">plot_hurst_hist</span><span class="p">()</span>
   <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hurst-nvals&quot;</span><span class="p">:</span>
     <span class="n">hurst_compare_nvals</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">brown72</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;sampen-tol&quot;</span><span class="p">:</span>
+    <span class="n">sampen_default_tolerance</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;aste-line&quot;</span><span class="p">:</span>
+    <span class="n">aste_line_fitting</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hurst-mf-stock&quot;</span><span class="p">:</span>
+    <span class="n">hurst_mf_stock</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hurst-mf-barabasi2&quot;</span><span class="p">:</span>
+    <span class="n">barabasi_1991_figure2</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;hurst-mf-barabasi3&quot;</span><span class="p">:</span>
+    <span class="n">barabasi_1991_figure3</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;lorenz&quot;</span><span class="p">:</span>
+    <span class="n">lorenz</span><span class="p">()</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;i do not know any test of that name&quot;</span><span class="p">)</span>
     <span class="n">print_options</span><span class="p">()</span>
 </pre></div>
 
           </div>
+          
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Nolds</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../nolds.html"><code class="docutils literal notranslate"><span class="pre">nolds</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Nolds examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests.html">Nolds Unittests</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
@@ -322,26 +708,24 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016-2018, Christopher Schölzel.
+      &#169;2016-2024, Christopher Schölzel.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 

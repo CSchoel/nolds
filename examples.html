@@ -1,27 +1,17 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" data-content_root="./">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Nolds examples &#8212; Nolds 0.5.1 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.5.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Nolds examples &#8212; Nolds 0.6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=19a2ea7e" />
+    <script src="_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Nolds Unittests" href="tests.html" />
@@ -29,195 +19,219 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  
+  
+
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
-  <div class="section" id="nolds-examples">
-<h1>Nolds examples<a class="headerlink" href="#nolds-examples" title="Permalink to this headline">¶</a></h1>
+  <section id="nolds-examples">
+<h1>Nolds examples<a class="headerlink" href="#nolds-examples" title="Link to this heading">¶</a></h1>
 <p>You can run some examples for the functions in nolds with the command
-<code class="docutils literal"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">nolds.examples</span> <span class="pre">&lt;key&gt;</span></code> where <code class="docutils literal"><span class="pre">&lt;key&gt;</span></code> can be one of the following:</p>
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">nolds.examples</span> <span class="pre">&lt;key&gt;</span></code> where <code class="docutils literal notranslate"><span class="pre">&lt;key&gt;</span></code> can be one of the following:</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">lyapunov-logistic</span></code> shows a bifurcation plot of the logistic map and compares
-the true lyapunov exponent to the estimates obtained with <code class="docutils literal"><span class="pre">lyap_e</span></code> and
-<code class="docutils literal"><span class="pre">lyap_r</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">lyapunov-tent</span></code> shows the same plot as <code class="docutils literal"><span class="pre">lyapunov-logistic</span></code>, but for the tent
-map.</li>
-<li><code class="docutils literal"><span class="pre">profiling</span></code> runs a profiling test with the package <code class="docutils literal"><span class="pre">cProfile</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">hurst-weron2</span></code> plots a reconstruction of figure 2 of the weron 2002 paper
-about the hurst exponent.</li>
-<li><code class="docutils literal"><span class="pre">hurst-hist</span></code> plots a histogram of hurst exponents obtained for random noise.</li>
-<li><code class="docutils literal"><span class="pre">hurst-nvals</span></code> creates a plot that compares the results of different choices for nvals
-for the function <code class="docutils literal"><span class="pre">hurst_rs</span></code>.</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lyapunov-logistic</span></code> shows a bifurcation plot of the logistic map and compares
+the true lyapunov exponent to the estimates obtained with <code class="docutils literal notranslate"><span class="pre">lyap_e</span></code> and
+<code class="docutils literal notranslate"><span class="pre">lyap_r</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lyapunov-tent</span></code> shows the same plot as <code class="docutils literal notranslate"><span class="pre">lyapunov-logistic</span></code>, but for the tent
+map.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">profiling</span></code> runs a profiling test with the package <code class="docutils literal notranslate"><span class="pre">cProfile</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hurst-weron2</span></code> plots a reconstruction of figure 2 of the weron 2002 paper
+about the hurst exponent.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hurst-hist</span></code> plots a histogram of hurst exponents obtained for random noise.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hurst-nvals</span></code> creates a plot that compares the results of different choices for nvals
+for the function <code class="docutils literal notranslate"><span class="pre">hurst_rs</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sampen-tol</span></code> compares old and new default tolerance values for <code class="docutils literal notranslate"><span class="pre">sampen</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hurst_mf_stock</span></code> example function recreates a plot from Di Matteo (2003).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">barabasi_1991_figure2</span></code> and <code class="docutils literal notranslate"><span class="pre">barabasi_1991_figure3</span></code> recreate the respective plots from Barabasi et al. (1991)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lorenz</span></code> calculates all main measures of <code class="docutils literal notranslate"><span class="pre">nolds</span></code> for x, y, and z coordinates of a Lorenz plot and compares them to prescribed values from the literature.</p></li>
 </ul>
-<p>These tests are also available as functions inside the module <code class="docutils literal"><span class="pre">nolds.examples</span></code>.</p>
-<div class="section" id="functions-in-nolds-examples">
-<h2>Functions in <code class="docutils literal"><span class="pre">nolds.examples</span></code><a class="headerlink" href="#functions-in-nolds-examples" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="nolds.examples.plot_lyap">
-<code class="descclassname">nolds.examples.</code><code class="descname">plot_lyap</code><span class="sig-paren">(</span><em>maptype='logistic'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#plot_lyap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.plot_lyap" title="Permalink to this definition">¶</a></dt>
+<p>These tests are also available as functions inside the module <code class="docutils literal notranslate"><span class="pre">nolds.examples</span></code>.</p>
+<section id="functions-in-nolds-examples">
+<h2>Functions in <code class="docutils literal notranslate"><span class="pre">nolds.examples</span></code><a class="headerlink" href="#functions-in-nolds-examples" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="nolds.examples.plot_lyap">
+<span class="sig-prename descclassname"><span class="pre">nolds.examples.</span></span><span class="sig-name descname"><span class="pre">plot_lyap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maptype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'logistic'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#plot_lyap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.examples.plot_lyap" title="Link to this definition">¶</a></dt>
 <dd><p>Plots a bifurcation plot of the given map and superimposes the true
 lyapunov exponent as well as the estimates of the largest lyapunov exponent
-obtained by <code class="docutils literal"><span class="pre">lyap_r</span></code> and <code class="docutils literal"><span class="pre">lyap_e</span></code>. The idea for this plot is taken from <a class="reference internal" href="#ll" id="id1">[ll]</a>.</p>
-<p>This function requires the package <code class="docutils literal"><span class="pre">matplotlib</span></code>.</p>
+obtained by <code class="docutils literal notranslate"><span class="pre">lyap_r</span></code> and <code class="docutils literal notranslate"><span class="pre">lyap_e</span></code>. The idea for this plot is taken
+from <a class="reference internal" href="#ll" id="id1"><span>[ll]</span></a>.</p>
+<p>This function requires the package <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>.</p>
 <p>References:</p>
-<table class="docutils citation" frame="void" id="ll" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[ll]</a></td><td>Manfred Füllsack, “Lyapunov exponent”,
-url: <a class="reference external" href="http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html">http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</a></td></tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
-<dt>maptype (str):</dt>
-<dd>can be either <code class="docutils literal"><span class="pre">&quot;logistic&quot;</span></code> for the logistic map or <code class="docutils literal"><span class="pre">&quot;tent&quot;</span></code> for the tent
-map.</dd>
+<div role="list" class="citation-list">
+<div class="citation" id="ll" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">ll</a><span class="fn-bracket">]</span></span>
+<p>Manfred Füllsack, “Lyapunov exponent”,
+url: <a class="reference external" href="http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html">http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html</a></p>
+</div>
+</div>
+<dl class="simple">
+<dt>Kwargs:</dt><dd><dl class="simple">
+<dt>maptype (str):</dt><dd><p>can be either <code class="docutils literal notranslate"><span class="pre">&quot;logistic&quot;</span></code> for the logistic map or <code class="docutils literal notranslate"><span class="pre">&quot;tent&quot;</span></code> for the
+tent map.</p>
+</dd>
 </dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="nolds.examples.profiling">
-<code class="descclassname">nolds.examples.</code><code class="descname">profiling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#profiling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.profiling" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs a profiling test for the function <code class="docutils literal"><span class="pre">lyap_e</span></code> (mainly used for development)</p>
-<p>This function requires the package <code class="docutils literal"><span class="pre">cProfile</span></code>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nolds.examples.profiling">
+<span class="sig-prename descclassname"><span class="pre">nolds.examples.</span></span><span class="sig-name descname"><span class="pre">profiling</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#profiling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.examples.profiling" title="Link to this definition">¶</a></dt>
+<dd><p>Runs a profiling test for the function <code class="docutils literal notranslate"><span class="pre">lyap_e</span></code> (mainly used for
+development)</p>
+<p>This function requires the package <code class="docutils literal notranslate"><span class="pre">cProfile</span></code>.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="nolds.examples.weron_2002_figure2">
-<code class="descclassname">nolds.examples.</code><code class="descname">weron_2002_figure2</code><span class="sig-paren">(</span><em>n=10000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#weron_2002_figure2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.weron_2002_figure2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recreates figure 2 of <a class="reference internal" href="#w" id="id2">[w]</a> comparing the reported values by Weron to the
+<dl class="py function">
+<dt class="sig sig-object py" id="nolds.examples.weron_2002_figure2">
+<span class="sig-prename descclassname"><span class="pre">nolds.examples.</span></span><span class="sig-name descname"><span class="pre">weron_2002_figure2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#weron_2002_figure2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.examples.weron_2002_figure2" title="Link to this definition">¶</a></dt>
+<dd><p>Recreates figure 2 of <a class="reference internal" href="#w" id="id2"><span>[w]</span></a> comparing the reported values by Weron to the
 values obtained by the functions in this package.</p>
 <p>The experiment consists of n iterations where the hurst exponent of randomly
 generated gaussian noise is calculated. This is done with differing sequence
 lengths of 256, 512, 1024, …., 65536. The average estimated hurst exponent
 over all iterations is plotted for the following configurations:</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">weron</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Weron</li>
-<li><code class="docutils literal"><span class="pre">rs50</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
-the same parameters as used by Weron</li>
-<li><code class="docutils literal"><span class="pre">weron_raw</span></code> is the uncorrected Hurst exponent calculated by Weron</li>
-<li><code class="docutils literal"><span class="pre">rs50_raw</span></code> is the uncorrected Hurst exponent calculated by Nolds with the
-same parameters as used by Weron</li>
-<li><code class="docutils literal"><span class="pre">rsn</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
-the default settings of Nolds</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weron</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Weron</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rs50</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds
+with the same parameters as used by Weron</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weron_raw</span></code> is the uncorrected Hurst exponent calculated by Weron</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rs50_raw</span></code> is the uncorrected Hurst exponent calculated by Nolds with the
+same parameters as used by Weron</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rsn</span></code> is the Anis-Lloyd-corrected Hurst exponent calculated by Nolds with
+the default settings of Nolds</p></li>
 </ul>
 <p>The values reported by Weron are only measured from the plot in the PDF
 version of the paper and can therefore have some small inaccuracies.</p>
-<p>This function requires the package <code class="docutils literal"><span class="pre">matplotlib</span></code>.</p>
+<p>This function requires the package <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>.</p>
 <p>References:</p>
-<table class="docutils citation" frame="void" id="w" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[w]</a></td><td>R. Weron, “Estimating long-range dependence: finite sample
+<div role="list" class="citation-list">
+<div class="citation" id="w" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">w</a><span class="fn-bracket">]</span></span>
+<p>R. Weron, “Estimating long-range dependence: finite sample
 properties and confidence intervals,” Physica A: Statistical Mechanics
-and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</td></tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
-<dt>n (int):</dt>
-<dd>number of iterations of the experiment (Weron used 10000, but this takes
-a while)</dd>
+and its Applications, vol. 312, no. 1, pp. 285–299, 2002.</p>
+</div>
+</div>
+<dl class="simple">
+<dt>Kwargs:</dt><dd><dl class="simple">
+<dt>n (int):</dt><dd><p>number of iterations of the experiment (Weron used 10000, but this takes
+a while)</p>
+</dd>
 </dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="nolds.examples.plot_hurst_hist">
-<code class="descclassname">nolds.examples.</code><code class="descname">plot_hurst_hist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#plot_hurst_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.plot_hurst_hist" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="nolds.examples.plot_hurst_hist">
+<span class="sig-prename descclassname"><span class="pre">nolds.examples.</span></span><span class="sig-name descname"><span class="pre">plot_hurst_hist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#plot_hurst_hist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.examples.plot_hurst_hist" title="Link to this definition">¶</a></dt>
 <dd><p>Plots a histogram of values obtained for the hurst exponent of uniformly
 distributed white noise.</p>
-<p>This function requires the package <code class="docutils literal"><span class="pre">matplotlib</span></code>.</p>
+<p>This function requires the package <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="nolds.examples.hurst_compare_nvals">
-<code class="descclassname">nolds.examples.</code><code class="descname">hurst_compare_nvals</code><span class="sig-paren">(</span><em>data</em>, <em>nvals=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#hurst_compare_nvals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nolds.examples.hurst_compare_nvals" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="nolds.examples.hurst_compare_nvals">
+<span class="sig-prename descclassname"><span class="pre">nolds.examples.</span></span><span class="sig-name descname"><span class="pre">hurst_compare_nvals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/examples.html#hurst_compare_nvals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.examples.hurst_compare_nvals" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a plot that compares the results of different choices for nvals
 for the function hurst_rs.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>data (array-like of float):</dt>
-<dd>the input data from which the hurst exponent should be estimated</dd>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>data (array-like of float):</dt><dd><p>the input data from which the hurst exponent should be estimated</p>
+</dd>
 </dl>
 </dd>
-<dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
-<dt>nvals (array of int):</dt>
-<dd>a manually selected value for the nvals parameter that should be plotted
-in comparison to the default choices</dd>
+<dt>Kwargs:</dt><dd><dl class="simple">
+<dt>nvals (array of int):</dt><dd><p>a manually selected value for the nvals parameter that should be plotted
+in comparison to the default choices</p>
+</dd>
 </dl>
 </dd>
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
+          
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Nolds examples</a><ul>
-<li><a class="reference internal" href="#functions-in-nolds-examples">Functions in <code class="docutils literal"><span class="pre">nolds.examples</span></code></a></li>
+<h1 class="logo"><a href="index.html">Nolds</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="nolds.html"><code class="docutils literal notranslate"><span class="pre">nolds</span></code> module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Nolds examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#functions-in-nolds-examples">Functions in <code class="docutils literal notranslate"><span class="pre">nolds.examples</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nolds.examples.plot_lyap"><code class="docutils literal notranslate"><span class="pre">plot_lyap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nolds.examples.profiling"><code class="docutils literal notranslate"><span class="pre">profiling()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nolds.examples.weron_2002_figure2"><code class="docutils literal notranslate"><span class="pre">weron_2002_figure2()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nolds.examples.plot_hurst_hist"><code class="docutils literal notranslate"><span class="pre">plot_hurst_hist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nolds.examples.hurst_compare_nvals"><code class="docutils literal notranslate"><span class="pre">hurst_compare_nvals()</span></code></a></li>
 </ul>
 </li>
 </ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Nolds Unittests</a></li>
+</ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="nolds.html" title="previous chapter"><code class="docutils literal"><span class="pre">nolds</span></code> module</a></li>
+      <li>Previous: <a href="nolds.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">nolds</span></code> module</a></li>
       <li>Next: <a href="tests.html" title="next chapter">Nolds Unittests</a></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/examples.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2016-2018, Christopher Schölzel.
+      &#169;2016-2024, Christopher Schölzel.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/examples.rst.txt"
