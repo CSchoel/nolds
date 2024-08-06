@@ -10,7 +10,7 @@ NOnLinear measures for Dynamical Systems (nolds)
 .. image:: https://api.codacy.com/project/badge/Grade/42c30d253b384e87a86b70c8fa0da6b2
     :target: https://www.codacy.com/app/christopher.schoelzel/nolds?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CSchoel/nolds&amp;utm_campaign=Badge_Grade
 
-.. image:: https://codecov.io/gh/CSchoel/nolds/branch/master/graph/badge.svg?token=Xgr82QKhFi
+.. image:: https://codecov.io/gh/CSchoel/nolds/graph/badge.svg?token=Xgr82QKhFi 
     :target: https://codecov.io/gh/CSchoel/nolds
 
 
