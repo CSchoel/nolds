@@ -36,7 +36,7 @@ class TestNoldsHelperFunctions(unittest.TestCase):
       print("==")
       print(expected)
       print()
-    self.assertTrue(np.alltrue(actual == expected))
+    self.assertTrue(np.all(actual == expected))
 
   def test_delay_embed_lag2(self):
     data = np.arange(10, dtype="float32")
