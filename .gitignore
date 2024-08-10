@@ -20,3 +20,6 @@ _build
 
 # virtual environment
 .venv
+
+# working copy for GH pages
+.pages
