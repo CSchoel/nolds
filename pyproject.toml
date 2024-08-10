@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "nolds"
+version = "0.6.0"
+description = "Nonlinear measures for dynamical systems (based on one-dimensional time series)"
+authors = ["Christopher Schölzel <christopher.schoelzel@mailbox.org>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+numpy = "<2.0"
+scikit-learn = { version = "^1.0", optional = true }
+future = "^1.0.0"
+setuptools = "^72.1.0"
+
+[tool.poetry.extras]
+RANSAC = ["scikit-learn"]
+qrandom = ["quantumrandom"]
+plots = ["matplotlib"]
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.5.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
