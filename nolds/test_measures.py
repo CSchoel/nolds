@@ -589,7 +589,7 @@ class RegressionTests(unittest.TestCase):
     np.random.seed(42)
     # set lag to 2 for weird duplicate lines
     # set trajectory_len to 100 to get many datapoints for RANSAC to choose from
-    le = nolds.lyap_r(data, emb_dim=10, lag=2, min_tsep=1, tau=1, min_neighbors=10, trajectory_len=100, fit="RANSAC", debug_plot=True)
+    le = nolds.lyap_r(data, emb_dim=10, lag=2, min_tsep=1, tau=1, min_neighbors=10, trajectory_len=100, fit="RANSAC")
     expected = 0.0003401212353253564
     self.assertAlmostEqual(expected, le, places=15)
 
@@ -633,7 +633,7 @@ class RegressionTests(unittest.TestCase):
   def test_mfhurst_b_RANSAC(self):
     data = datasets.load_qrandom()[:1000]
     np.random.seed(42)
-    h = nolds.mfhurst_b(data, qvals=[1], dists=None, fit="RANSAC", debug_plot=True)
+    h = nolds.mfhurst_b(data, qvals=[1], dists=None, fit="RANSAC")
     expected = [-0.009056463064211057]
     self.assertAlmostEqual(expected[0], h[0], places=15)
 
