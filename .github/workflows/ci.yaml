@@ -19,6 +19,8 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: pip install ".${{ matrix.extras }}"
       - run: pip install codecov .
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - run: coverage run -m unittest nolds.test_measures
       - run: codecov
         if: ${{ matrix.python == '3.10' && matrix.extras != '' }}
