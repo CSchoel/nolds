@@ -563,6 +563,7 @@ class RegressionTests(unittest.TestCase):
     cd = nolds.corr_dim(data, emb_dim=5, lag=1, rvals=None, dist=nolds.rowwise_euclidean, fit="poly")
     self.assertAlmostEqual(1.303252839255068, cd, places=15)
 
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
   def test_corr_dim_RANSAC(self):
     """Test hypothesis: The exact output of corr_dim() with `fit=RANSAC` on random data hasn't changed since the last version."""
     data = datasets.load_qrandom()[:1000]
@@ -589,6 +590,7 @@ class RegressionTests(unittest.TestCase):
     expected = 0.094715945307378
     self.assertAlmostEqual(expected, le, places=15)
 
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
   def test_lyap_r_RANSAC(self):
     """Test hypothesis: The exact output of lyap_r() with `fit=RANSAC` on random data hasn't changed since the last version."""
     data = datasets.load_qrandom()[:1000]
@@ -606,6 +608,7 @@ class RegressionTests(unittest.TestCase):
     expected = 0.5123887964986258
     self.assertAlmostEqual(expected, rs, places=15)
 
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
   def test_hurst_rs_RANSAC(self):
     """Test hypothesis: The exact output of hurst_rs() with `fit=RANSAC` on random data hasn't changed since the last version."""
     data = datasets.load_qrandom()[:1000]
@@ -623,6 +626,7 @@ class RegressionTests(unittest.TestCase):
     expected = 0.5450874638765073
     self.assertAlmostEqual(expected, h, places=15)
 
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
   def test_dfa_RANSAC(self):
     """Test hypothesis: The exact output of dfa() with `fit_exp=RANSAC` on random data hasn't changed since the last version."""
     # adds trend to data to introduce a less clear line for fitting
@@ -641,6 +645,7 @@ class RegressionTests(unittest.TestCase):
     expected = [-0.00559398934417339]
     self.assertAlmostEqual(expected[0], h[0], places=15)
 
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
   def test_mfhurst_b_RANSAC(self):
     """Test hypothesis: The exact output of mfhurst_b() with `fit=RANSAC` on random data hasn't changed since the last version."""
     data = datasets.load_qrandom()[:1000]
@@ -656,6 +661,7 @@ class RegressionTests(unittest.TestCase):
     expected = [0.008762803881203145]
     self.assertAlmostEqual(expected[0], h[0], places=15)
 
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
   def test_mfhurst_dm_RANSAC(self):
     """Test hypothesis: The exact output of mfhurst_dm() with `fit=RANSAC` on random data hasn't changed since the last version."""
     data = datasets.load_qrandom()[:1000]
