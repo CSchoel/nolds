@@ -62,7 +62,7 @@ setup(
         'setuptools'
     ],
     extras_require={
-        'RANSAC': ['sklearn>=0.19'],
+        'RANSAC': ['scikit-learn>=0.19'],
         'qrandom': ['quantumrandom'],
         'plots': ['matplotlib']
     },
