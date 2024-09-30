@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+
+* Regression tests for all major algorithms that check for small changes in the main output value.
+
 ### Changed
 ### Fixed
 
