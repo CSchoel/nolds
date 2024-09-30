@@ -20,3 +20,4 @@ _build
 
 # virtual environment
 .venv
+.venv*
