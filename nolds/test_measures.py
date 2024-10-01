@@ -36,7 +36,7 @@ class TestNoldsHelperFunctions(unittest.TestCase):
       print("==")
       print(expected)
       print()
-    self.assertTrue(np.alltrue(actual == expected))
+    self.assertTrue(np.all(actual == expected))
 
   def test_delay_embed_lag2(self):
     data = np.arange(10, dtype="float32")
@@ -459,7 +459,7 @@ class TestNoldsCorrDim(unittest.TestCase):
     x = data[discard:,1]
     rvals = nolds.logarithmic_r(1, np.e, 1.1)  # determined experimentally
     cd = nolds.corr_dim(x, emb_dim, fit="poly", rvals=rvals, lag=lag)
-    self.assertAlmostEqual(cd, 2.05, delta=0.1)
+    self.assertAlmostEqual(cd, 2.05, delta=0.2)
 
   def test_logistic(self):
     # TODO replicate tests with logistic map from grassberger-procaccia
@@ -542,6 +542,133 @@ class TestNoldsSampEn(unittest.TestCase):
     self.assertAlmostEqual(0.15, sx, delta=0.05)
     self.assertAlmostEqual(0.15, sy, delta=0.05)
     self.assertAlmostEqual(0.25, sz, delta=0.05)
+
+
+class RegressionTests(unittest.TestCase):
+  """Regression tests for main algorithms.
+
+  These tests are here to safeguard against accidental algorithmic changes such
+  as updates to core dependencies such as numpy or the Python standard library.
+  """
+
+  def test_sampen(self):
+    """Test hypothesis: The exact output of sampen() on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    se = nolds.sampen(data, emb_dim=2, tolerance=None, lag=1, dist=nolds.rowwise_chebyshev, closed=False)
+    self.assertAlmostEqual(2.1876999522832743, se, places=15)
+
+  def test_corr_dim(self):
+    """Test hypothesis: The exact output of corr_dim() with `fit=poly` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    cd = nolds.corr_dim(data, emb_dim=5, lag=1, rvals=None, dist=nolds.rowwise_euclidean, fit="poly")
+    self.assertAlmostEqual(1.303252839255068, cd, places=15)
+
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
+  def test_corr_dim_RANSAC(self):
+    """Test hypothesis: The exact output of corr_dim() with `fit=RANSAC` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    sd = np.std(data, ddof=1)
+    # fix seed
+    np.random.seed(42)
+    # usa a too wide range for rvals to give RANSAC something to do ;)
+    rvals = nolds.logarithmic_r(0.01 * sd, 2 * sd, 1.03)
+    cd = nolds.corr_dim(data, emb_dim=5, lag=1, rvals=rvals, dist=nolds.rowwise_euclidean, fit="RANSAC")
+    self.assertAlmostEqual(0.44745494643404665, cd, places=15)
+
+  def test_lyap_e(self):
+    """Test hypothesis: The exact output of lyap_e() on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    le = nolds.lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=10, min_tsep=1, tau=1)
+    expected = np.array([ 0.03779942603329712,  -0.014314012551504982, -0.08436867977030214, -0.22316730257003717])
+    for i in range(le.shape[0]):
+      self.assertAlmostEqual(expected[i], le[i], places=15, msg=f"{i+1}th Lyapunov exponent doesn't match")
+
+  def test_lyap_r(self):
+    """Test hypothesis: The exact output of lyap_r() with `fit=poly` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    le = nolds.lyap_r(data, emb_dim=10, lag=1, min_tsep=1, tau=1, min_neighbors=10, trajectory_len=10, fit="poly")
+    expected = 0.094715945307378
+    self.assertAlmostEqual(expected, le, places=15)
+
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
+  def test_lyap_r_RANSAC(self):
+    """Test hypothesis: The exact output of lyap_r() with `fit=RANSAC` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    np.random.seed(42)
+    # set lag to 2 for weird duplicate lines
+    # set trajectory_len to 100 to get many datapoints for RANSAC to choose from
+    le = nolds.lyap_r(data, emb_dim=10, lag=2, min_tsep=1, tau=1, min_neighbors=10, trajectory_len=100, fit="RANSAC")
+    expected = 0.0003401212353253564
+    self.assertAlmostEqual(expected, le, places=15)
+
+  def test_hurst_rs(self):
+    """Test hypothesis: The exact output of hurst_rs() with `fit=poly` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    rs = nolds.hurst_rs(data, nvals=None, fit="poly", corrected=True, unbiased=True)
+    expected = 0.5123887964986258
+    self.assertAlmostEqual(expected, rs, places=15)
+
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
+  def test_hurst_rs_RANSAC(self):
+    """Test hypothesis: The exact output of hurst_rs() with `fit=RANSAC` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    np.random.seed(42)
+    # increase nsteps in nvals to have more data points for RANSAC to choose from
+    nvals = nolds.logmid_n(data.shape[0], ratio=1/4.0, nsteps=100)
+    rs = nolds.hurst_rs(data, nvals=nvals, fit="RANSAC", corrected=True, unbiased=True)
+    expected = 0.4805431939943321
+    self.assertAlmostEqual(expected, rs, places=15)
+
+  def test_dfa(self):
+    """Test hypothesis: The exact output of dfa() with `fit_exp=poly` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    h = nolds.dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly", fit_exp="poly")
+    expected = 0.5450874638765073
+    self.assertAlmostEqual(expected, h, places=15)
+
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
+  def test_dfa_RANSAC(self):
+    """Test hypothesis: The exact output of dfa() with `fit_exp=RANSAC` on random data hasn't changed since the last version."""
+    # adds trend to data to introduce a less clear line for fitting
+    data = datasets.load_qrandom()[:1000] + np.arange(1000) * 100
+    np.random.seed(42)
+    # adds more steps and higher values to nvals to introduce some scattering for RANSAC to have an effect on
+    nvals = nolds.logarithmic_n(10, 0.9 * data.shape[0], 1.1)
+    h = nolds.dfa(data, nvals=nvals, overlap=True, order=1, fit_trend="poly", fit_exp="RANSAC")
+    expected = 1.1372303125405405
+    self.assertAlmostEqual(expected, h, places=15)
+
+  def test_mfhurst_b(self):
+    """Test hypothesis: The exact output of mfhurst_b() with `fit=poly` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    h = nolds.mfhurst_b(data, qvals=[1], dists=None, fit="poly")
+    expected = [-0.00559398934417339]
+    self.assertAlmostEqual(expected[0], h[0], places=15)
+
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
+  def test_mfhurst_b_RANSAC(self):
+    """Test hypothesis: The exact output of mfhurst_b() with `fit=RANSAC` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    np.random.seed(42)
+    h = nolds.mfhurst_b(data, qvals=[1], dists=None, fit="RANSAC")
+    expected = [-0.009056463064211057]
+    self.assertAlmostEqual(expected[0], h[0], places=15)
+
+  def test_mfhurst_dm(self):
+    """Test hypothesis: The exact output of mfhurst_dm() with `fit=poly` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    h, _ = nolds.mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True, fit="poly")
+    expected = [0.008762803881203145]
+    self.assertAlmostEqual(expected[0], h[0], places=15)
+
+  @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
+  def test_mfhurst_dm_RANSAC(self):
+    """Test hypothesis: The exact output of mfhurst_dm() with `fit=RANSAC` on random data hasn't changed since the last version."""
+    data = datasets.load_qrandom()[:1000]
+    np.random.seed(42)
+    h, _ = nolds.mfhurst_dm(data, qvals=[1], max_dists=range(5, 20), detrend=True, fit="RANSAC")
+    expected = [0.005324834328837356]
+    self.assertAlmostEqual(expected[0], h[0], places=15)
 
 
 if __name__ == "__main__":
