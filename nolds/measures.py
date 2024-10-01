@@ -1442,7 +1442,7 @@ def mfhurst_b(data, qvals=None, dists=None, fit='poly',
 
     Essentially, we can calculate c_q(d) of a discrete evenly sampled time
     series Y = [y_0, y_1, y_2, ... y_(N-1)] by taking the absolute differences
-    [|y_0 - y_d|, |y_1 - y_(d+1)|, ... , |y_(N-d-1) - y_(N-1)|] raising them to
+    [\|y_0 - y_d\|, \|y_1 - y_(d+1)\|, ... , \|y_(N-d-1) - y_(N-1)\|] raising them to
     the qth power and taking the mean.
 
     Now we take the logarithm on both sides of our relation c_q(d) ~ d^(q H_q)
