@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="../../">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nolds.datasets &#8212; Nolds 0.6.0 documentation</title>
+    <title>nolds.datasets &#8212; Nolds 0.6.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=c058f7c8" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=19a2ea7e" />
-    <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=1fc5d657" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=09aae1b8"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
-
   
-  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   
@@ -56,15 +54,19 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">def</span> <span class="nf">lorenz</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">state</span>
+    <span class="c1"># NOTE: Numpy 1.x stores intermediate results as float64</span>
+    <span class="c1"># =&gt; to achieve consistency between numpy versions, we have to use</span>
+    <span class="c1">#    float32 for all values that enter the formula to simulate numpy 1.x</span>
+    <span class="c1">#    behavior with numpy 2.x.</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-      <span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">),</span>
-      <span class="n">rho</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="n">z</span><span class="p">,</span>
-      <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">z</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">),</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="n">z</span><span class="p">,</span>
+      <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span>
     <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
   <span class="n">trajectory</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">length</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
   <span class="n">trajectory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">start</span>
   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">dt</span>
+    <span class="c1"># t = i * dt</span>
     <span class="n">trajectory</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">lorenz</span><span class="p">(</span><span class="n">trajectory</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span>
   <span class="k">return</span> <span class="n">trajectory</span>
 
@@ -81,9 +83,7 @@
   <span class="k">return</span> <span class="mi">3</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">sigma</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">rho</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="fbm">
-<a class="viewcode-back" href="../../nolds.html#nolds.fbm">[docs]</a>
-<span class="k">def</span> <span class="nf">fbm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+<div class="viewcode-block" id="fbm"><a class="viewcode-back" href="../../nolds.html#nolds.fbm">[docs]</a><span class="k">def</span> <span class="nf">fbm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
 <span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Generates fractional brownian motions of desired length.</span>
 
@@ -119,10 +119,7 @@
   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="fgn">
-<a class="viewcode-back" href="../../nolds.html#nolds.fgn">[docs]</a>
-<span class="k">def</span> <span class="nf">fgn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+<div class="viewcode-block" id="fgn"><a class="viewcode-back" href="../../nolds.html#nolds.fgn">[docs]</a><span class="k">def</span> <span class="nf">fgn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
 <span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Generates fractional gaussian noise of desired length.</span>
 
@@ -144,10 +141,7 @@
   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">fbm</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="n">H</span><span class="p">))</span></div>
 
 
-
-<div class="viewcode-block" id="qrandom">
-<a class="viewcode-back" href="../../nolds.html#nolds.qrandom">[docs]</a>
-<span class="k">def</span> <span class="nf">qrandom</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="qrandom"><a class="viewcode-back" href="../../nolds.html#nolds.qrandom">[docs]</a><span class="k">def</span> <span class="nf">qrandom</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Creates an array of n true random numbers obtained from the quantum random</span>
 <span class="sd">  number generator at qrng.anu.edu.au</span>
@@ -169,10 +163,7 @@
   <span class="p">])[:</span><span class="n">n</span><span class="p">]</span></div>
 
 
-
-<div class="viewcode-block" id="load_qrandom">
-<a class="viewcode-back" href="../../nolds.html#nolds.load_qrandom">[docs]</a>
-<span class="k">def</span> <span class="nf">load_qrandom</span><span class="p">():</span>
+<div class="viewcode-block" id="load_qrandom"><a class="viewcode-back" href="../../nolds.html#nolds.load_qrandom">[docs]</a><span class="k">def</span> <span class="nf">load_qrandom</span><span class="p">():</span>
 <span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Loads a set of 10000 random numbers generated by qrandom.</span>
 
@@ -186,7 +177,6 @@
   <span class="n">fname</span> <span class="o">=</span> <span class="s2">&quot;datasets/qrandom.npy&quot;</span>
   <span class="k">with</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">load_brown72</span><span class="p">():</span>
@@ -234,9 +224,7 @@
   <span class="k">return</span> <span class="n">data_in</span><span class="p">,</span> <span class="n">data_out</span>
 
 
-<div class="viewcode-block" id="tent_map">
-<a class="viewcode-back" href="../../nolds.html#nolds.tent_map">[docs]</a>
-<span class="k">def</span> <span class="nf">tent_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<div class="viewcode-block" id="tent_map"><a class="viewcode-back" href="../../nolds.html#nolds.tent_map">[docs]</a><span class="k">def</span> <span class="nf">tent_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Generates a time series of the tent map.</span>
 
@@ -286,14 +274,11 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">x</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mf">0.5</span> <span class="k">else</span> <span class="n">mu</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
     <span class="k">yield</span> <span class="n">x</span></div>
 
-
 <span class="c1"># TODO should all math be formatted like this, or should the documentation of</span>
 <span class="c1"># logistic_map revert to a version that is more readable as plain text</span>
 
 
-<div class="viewcode-block" id="logistic_map">
-<a class="viewcode-back" href="../../nolds.html#nolds.logistic_map">[docs]</a>
-<span class="k">def</span> <span class="nf">logistic_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="logistic_map"><a class="viewcode-back" href="../../nolds.html#nolds.logistic_map">[docs]</a><span class="k">def</span> <span class="nf">logistic_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
 <span class="w">  </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Generates a time series of the logistic map.</span>
 
@@ -385,10 +370,7 @@
     <span class="k">yield</span> <span class="n">x</span></div>
 
 
-
-<div class="viewcode-block" id="load_financial">
-<a class="viewcode-back" href="../../nolds.html#nolds.load_financial">[docs]</a>
-<span class="k">def</span> <span class="nf">load_financial</span><span class="p">():</span>
+<div class="viewcode-block" id="load_financial"><a class="viewcode-back" href="../../nolds.html#nolds.load_financial">[docs]</a><span class="k">def</span> <span class="nf">load_financial</span><span class="p">():</span>
 <span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Loads the following datasets from CSV files in this package:</span>
 
@@ -449,10 +431,7 @@
   <span class="k">return</span> <span class="n">data</span></div>
 
 
-
-<div class="viewcode-block" id="barabasi1991_fractal">
-<a class="viewcode-back" href="../../nolds.html#nolds.barabasi1991_fractal">[docs]</a>
-<span class="k">def</span> <span class="nf">barabasi1991_fractal</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+<div class="viewcode-block" id="barabasi1991_fractal"><a class="viewcode-back" href="../../nolds.html#nolds.barabasi1991_fractal">[docs]</a><span class="k">def</span> <span class="nf">barabasi1991_fractal</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
 <span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  Generates the simple fractal described in [bf]_.</span>
 
@@ -516,7 +495,6 @@
   <span class="k">return</span> <span class="n">fractal</span></div>
 
 
-
 <span class="n">brown72</span> <span class="o">=</span> <span class="n">load_brown72</span><span class="p">()</span>
 <span class="n">jkse</span><span class="p">,</span> <span class="n">n225</span><span class="p">,</span> <span class="n">ndx</span> <span class="o">=</span> <span class="n">load_financial</span><span class="p">()</span>
 </pre></div>
@@ -525,7 +503,7 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="../../index.html">Nolds</a></h1>
 
@@ -536,16 +514,7 @@
 
 
 
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../nolds.html"><code class="docutils literal notranslate"><span class="pre">nolds</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Nolds examples</a></li>
@@ -561,6 +530,16 @@
   </ul></li>
 </ul>
 </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -574,11 +553,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2016-2024, Christopher Schölzel.
+      &copy;2016-2024, Christopher Schölzel.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>
 

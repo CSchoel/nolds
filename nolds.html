@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nolds module &#8212; Nolds 0.6.0 documentation</title>
+    <title>nolds module &#8212; Nolds 0.6.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=19a2ea7e" />
-    <script src="_static/documentation_options.js?v=8fa8b3e9"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=1fc5d657" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=09aae1b8"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -20,9 +19,8 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-
   
-  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   
@@ -35,19 +33,19 @@
           <div class="body" role="main">
             
   <section id="nolds-module">
-<h1><code class="docutils literal notranslate"><span class="pre">nolds</span></code> module<a class="headerlink" href="#nolds-module" title="Link to this heading">¶</a></h1>
+<h1><code class="docutils literal notranslate"><span class="pre">nolds</span></code> module<a class="headerlink" href="#nolds-module" title="Permalink to this heading">¶</a></h1>
 <p>Nolds only consists of to single module called <code class="docutils literal notranslate"><span class="pre">nolds</span></code> which contains all
 relevant algorithms and helper functions.</p>
 <p>Internally these functions are subdivided into different modules such as
 <code class="docutils literal notranslate"><span class="pre">measures</span></code> and <code class="docutils literal notranslate"><span class="pre">datasets</span></code>, but you should not need to import these modules
 directly unless you want access to some internal helper functions.</p>
 <section id="algorithms">
-<h2>Algorithms<a class="headerlink" href="#algorithms" title="Link to this heading">¶</a></h2>
+<h2>Algorithms<a class="headerlink" href="#algorithms" title="Permalink to this heading">¶</a></h2>
 <section id="lyapunov-exponent-rosenstein-et-al">
-<h3>Lyapunov exponent (Rosenstein et al.)<a class="headerlink" href="#lyapunov-exponent-rosenstein-et-al" title="Link to this heading">¶</a></h3>
+<h3>Lyapunov exponent (Rosenstein et al.)<a class="headerlink" href="#lyapunov-exponent-rosenstein-et-al" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.lyap_r">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">lyap_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_tsep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectory_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RANSAC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.lyap_r" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">lyap_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_tsep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectory_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RANSAC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.lyap_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
 et al. <a class="reference internal" href="#lr-1" id="id1"><span>[lr_1]</span></a>.</p>
 <dl>
@@ -176,10 +174,10 @@ a strong indicator for chaos)</p>
 
 </section>
 <section id="lyapunov-exponent-eckmann-et-al">
-<h3>Lyapunov exponent (Eckmann et al.)<a class="headerlink" href="#lyapunov-exponent-eckmann-et-al" title="Link to this heading">¶</a></h3>
+<h3>Lyapunov exponent (Eckmann et al.)<a class="headerlink" href="#lyapunov-exponent-eckmann-et-al" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.lyap_e">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">lyap_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_tsep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_e"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.lyap_e" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">lyap_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_tsep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_e"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.lyap_e" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the Lyapunov exponents for the given data using the algorithm of
 Eckmann et al. <a class="reference internal" href="#le-1" id="id2"><span>[le_1]</span></a>.</p>
 <dl>
@@ -302,10 +300,10 @@ data is (x, matrix_dim).</p>
 
 </section>
 <section id="sample-entropy">
-<h3>Sample entropy<a class="headerlink" href="#sample-entropy" title="Link to this heading">¶</a></h3>
+<h3>Sample entropy<a class="headerlink" href="#sample-entropy" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.sampen">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">sampen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim=2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist=&lt;function</span> <span class="pre">rowwise_chebyshev&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.sampen" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">sampen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim=2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist=&lt;function</span> <span class="pre">rowwise_chebyshev&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#sampen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.sampen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the sample entropy of the given data.</p>
 <dl>
 <dt>Explanation of the sample entropy:</dt><dd><p>The sample entropy of a time series is defined as the negative natural
@@ -390,10 +388,10 @@ and for m + 1 (dists_m1).</p>
 
 </section>
 <section id="hurst-exponent">
-<h3>Hurst exponent<a class="headerlink" href="#hurst-exponent" title="Link to this heading">¶</a></h3>
+<h3>Hurst exponent<a class="headerlink" href="#hurst-exponent" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.hurst_rs">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">hurst_rs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RANSAC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corrected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unbiased</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#hurst_rs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.hurst_rs" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">hurst_rs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RANSAC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corrected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unbiased</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#hurst_rs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.hurst_rs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Hurst exponent by a standard rescaled range (R/S) approach.</p>
 <dl>
 <dt>Explanation of Hurst exponent:</dt><dd><p>The Hurst exponent is a measure for the “long-term memory” of a
@@ -566,10 +564,10 @@ coefficients (<code class="docutils literal notranslate"><span class="pre">[slop
 
 </section>
 <section id="correlation-dimension">
-<h3>Correlation dimension<a class="headerlink" href="#correlation-dimension" title="Link to this heading">¶</a></h3>
+<h3>Correlation dimension<a class="headerlink" href="#correlation-dimension" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.corr_dim">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">corr_dim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvals=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist=&lt;function</span> <span class="pre">rowwise_euclidean&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit='RANSAC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.corr_dim" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">corr_dim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvals=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist=&lt;function</span> <span class="pre">rowwise_euclidean&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit='RANSAC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#corr_dim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.corr_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the correlation dimension with the Grassberger-Procaccia algorithm</p>
 <dl>
 <dt>Explanation of correlation dimension:</dt><dd><p>The correlation dimension is a characteristic measure that can be used
@@ -675,10 +673,10 @@ coefficients (<code class="docutils literal notranslate"><span class="pre">[slop
 
 </section>
 <section id="detrended-fluctuation-analysis">
-<h3>Detrended fluctuation analysis<a class="headerlink" href="#detrended-fluctuation-analysis" title="Link to this heading">¶</a></h3>
+<h3>Detrended fluctuation analysis<a class="headerlink" href="#detrended-fluctuation-analysis" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.dfa">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">dfa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'poly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_exp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RANSAC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#dfa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.dfa" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">dfa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'poly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_exp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RANSAC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#dfa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.dfa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a detrended fluctuation analysis (DFA) on the given data</p>
 <dl>
 <dt>Recommendations for parameter settings by Hardstone et al.:</dt><dd><ul class="simple">
@@ -859,10 +857,10 @@ are the line coefficients (<code class="docutils literal notranslate"><span clas
 
 </section>
 <section id="generalized-hurst-exponent-barabasi-et-al">
-<h3>Generalized Hurst Exponent (Barabási et al.)<a class="headerlink" href="#generalized-hurst-exponent-barabasi-et-al" title="Link to this heading">¶</a></h3>
+<h3>Generalized Hurst Exponent (Barabási et al.)<a class="headerlink" href="#generalized-hurst-exponent-barabasi-et-al" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.mfhurst_b">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">mfhurst_b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'poly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#mfhurst_b"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.mfhurst_b" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">mfhurst_b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'poly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#mfhurst_b"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.mfhurst_b" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Generalized Hurst Exponent H_q for different q according to
 A.-L. Barabási and T. Vicsek.</p>
 <dl>
@@ -908,7 +906,7 @@ the exponent by a line fitting algorithm in a log-log plot, but they do not
 talk about the actual procedure or the required parameters.</p>
 <p>Essentially, we can calculate c_q(d) of a discrete evenly sampled time
 series Y = [y_0, y_1, y_2, … y_(N-1)] by taking the absolute differences
-[<a href="#id12"><span class="problematic" id="id13">|y_0 - y_d|</span></a>, <a href="#id14"><span class="problematic" id="id15">|y_1 - y_(d+1)|</span></a>, … , <a href="#id16"><span class="problematic" id="id17">|y_(N-d-1) - y_(N-1)|</span></a>] raising them to
+[|y_0 - y_d|, |y_1 - y_(d+1)|, … , |y_(N-d-1) - y_(N-1)|] raising them to
 the qth power and taking the mean.</p>
 <p>Now we take the logarithm on both sides of our relation c_q(d) ~ d^(q H_q)
 and get</p>
@@ -976,10 +974,10 @@ len(qvals) x 2.</p>
 
 </section>
 <section id="generalized-hurst-exponent-di-matteo-et-al">
-<h3>Generalized Hurst Exponent (Di Matteo et al.)<a class="headerlink" href="#generalized-hurst-exponent-di-matteo-et-al" title="Link to this heading">¶</a></h3>
+<h3>Generalized Hurst Exponent (Di Matteo et al.)<a class="headerlink" href="#generalized-hurst-exponent-di-matteo-et-al" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.mfhurst_dm">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">mfhurst_dm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dists</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">range(5,</span> <span class="pre">20)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detrend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'poly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#mfhurst_dm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.mfhurst_dm" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">mfhurst_dm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dists</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">range(5,</span> <span class="pre">20)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detrend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'poly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#mfhurst_dm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.mfhurst_dm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Generalized Hurst Exponent H_q for different q according to
 the MATLAB code of Tomaso Aste - one of the authors that introduced this
 measure.</p>
@@ -1097,10 +1095,10 @@ len(qvals) x 2.</p>
 </section>
 </section>
 <section id="helper-functions">
-<h2>Helper functions<a class="headerlink" href="#helper-functions" title="Link to this heading">¶</a></h2>
+<h2>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.binary_n">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">binary_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#binary_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.binary_n" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">binary_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#binary_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.binary_n" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a list of values by successively halving the total length total_N
 until the resulting value is less than min_n.</p>
 <p>Non-integer results are rounded down.</p>
@@ -1125,7 +1123,7 @@ until the resulting value is less than min_n.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.logarithmic_n">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">logarithmic_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#logarithmic_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.logarithmic_n" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">logarithmic_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#logarithmic_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.logarithmic_n" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a list of values by successively multiplying a minimum value min_n by
 a factor &gt; 1 until a maximum value max_n is reached.</p>
 <p>Non-integer results are rounded down.</p>
@@ -1150,7 +1148,7 @@ without duplicates</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.logarithmic_r">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">logarithmic_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#logarithmic_r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.logarithmic_r" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">logarithmic_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#logarithmic_r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.logarithmic_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a list of values by successively multiplying a minimum value min_n by
 a factor &gt; 1 until a maximum value max_n is reached.</p>
 <dl class="simple">
@@ -1173,7 +1171,7 @@ a factor &gt; 1 until a maximum value max_n is reached.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.expected_h">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">expected_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RANSAC'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#expected_h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.expected_h" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">expected_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RANSAC'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#expected_h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.expected_h" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses expected_rs to calculate the expected value for the Hurst exponent h
 based on the values of n used for the calculation.</p>
 <dl class="simple">
@@ -1199,7 +1197,7 @@ is more robust to outliers</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.expected_rs">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">expected_rs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#expected_rs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.expected_rs" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">expected_rs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#expected_rs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.expected_rs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the expected (R/S)_n for white noise for a given n.</p>
 <p>This is used as a correction factor in the function hurst_rs. It uses the
 formula of Anis-Lloyd-Peters (see <a class="reference internal" href="#h-3" id="id7"><span>[h_3]</span></a>).</p>
@@ -1219,7 +1217,7 @@ formula of Anis-Lloyd-Peters (see <a class="reference internal" href="#h-3" id="
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.logmid_n">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">logmid_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#logmid_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.logmid_n" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">logmid_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#logmid_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.logmid_n" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an array of integers that lie evenly spaced in the “middle” of the
 logarithmic scale from 0 to log(max_n).</p>
 <p>If max_n is very small and/or nsteps is very large, this may lead to
@@ -1254,7 +1252,7 @@ because only unique values are returned)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.lyap_r_len">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">lyap_r_len</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r_len"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.lyap_r_len" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">lyap_r_len</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_r_len"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.lyap_r_len" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function that calculates the minimum number of data points required
 to use lyap_r.</p>
 <p>Note that none of the required parameters may be set to None.</p>
@@ -1273,7 +1271,7 @@ parameters</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.lyap_e_len">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">lyap_e_len</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_e_len"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.lyap_e_len" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">lyap_e_len</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/measures.html#lyap_e_len"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.lyap_e_len" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function that calculates the minimum number of data points required
 to use lyap_e.</p>
 <p>Note that none of the required parameters may be set to None.</p>
@@ -1292,12 +1290,12 @@ parameters</p>
 
 </section>
 <section id="datasets">
-<h2>Datasets<a class="headerlink" href="#datasets" title="Link to this heading">¶</a></h2>
+<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this heading">¶</a></h2>
 <section id="benchmark-dataset-for-hurst-exponent">
-<h3>Benchmark dataset for hurst exponent<a class="headerlink" href="#benchmark-dataset-for-hurst-exponent" title="Link to this heading">¶</a></h3>
+<h3>Benchmark dataset for hurst exponent<a class="headerlink" href="#benchmark-dataset-for-hurst-exponent" title="Permalink to this heading">¶</a></h3>
 <dl class="py data">
 <dt class="sig sig-object py" id="nolds.brown72">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">brown72</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([45.47422,</span> <span class="pre">42.55601,</span> <span class="pre">46.5188</span> <span class="pre">,</span> <span class="pre">...,</span> <span class="pre">42.78297,</span> <span class="pre">44.34307,</span> <span class="pre">40.70655])</span></em><a class="headerlink" href="#nolds.brown72" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">brown72</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([45.47422,</span> <span class="pre">42.55601,</span> <span class="pre">46.5188</span> <span class="pre">,</span> <span class="pre">...,</span> <span class="pre">42.78297,</span> <span class="pre">44.34307,</span> <span class="pre">40.70655])</span></em><a class="headerlink" href="#nolds.brown72" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>ndarray(shape, dtype=float, buffer=None, offset=0,</dt><dd><p>strides=None, order=None)</p>
 </dd>
@@ -1313,7 +1311,7 @@ a low-level method (<cite>ndarray(…)</cite>) for instantiating an array.</p>
 <p>For more information, refer to the <cite>numpy</cite> module and examine the
 methods and attributes of an array.</p>
 <section id="parameters">
-<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h4>
+<h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h4>
 <p>(for the __new__ method; see Notes below)</p>
 <dl class="simple">
 <dt>shape<span class="classifier">tuple of ints</span></dt><dd><p>Shape of created array.</p>
@@ -1331,7 +1329,7 @@ methods and attributes of an array.</p>
 </dl>
 </section>
 <section id="attributes">
-<h4>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h4>
+<h4>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">¶</a></h4>
 <dl class="simple">
 <dt>T<span class="classifier">ndarray</span></dt><dd><p>Transpose of the array.</p>
 </dd>
@@ -1378,7 +1376,7 @@ array data is actually stored.</p>
 </dl>
 </section>
 <section id="see-also">
-<h4>See Also<a class="headerlink" href="#see-also" title="Link to this heading">¶</a></h4>
+<h4>See Also<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h4>
 <p>array : Construct an array.
 zeros : Create an array, each element of which is zero.
 empty : Create an array, but leave its allocated memory unchanged (i.e.,</p>
@@ -1392,7 +1390,7 @@ numpy.typing.NDArray : An ndarray alias <span class="xref std std-term">generic<
 </div></blockquote>
 </section>
 <section id="notes">
-<h4>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h4>
+<h4>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h4>
 <p>There are two modes of creating an array using <code class="docutils literal notranslate"><span class="pre">__new__</span></code>:</p>
 <ol class="arabic simple">
 <li><p>If <cite>buffer</cite> is None, then only <cite>shape</cite>, <cite>dtype</cite>, and <cite>order</cite>
@@ -1404,7 +1402,7 @@ all keywords are interpreted.</p></li>
 after the <code class="docutils literal notranslate"><span class="pre">__new__</span></code> method.</p>
 </section>
 <section id="examples">
-<h4>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h4>
+<h4>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h4>
 <p>These examples illustrate the low-level <cite>ndarray</cite> constructor.  Refer
 to the <cite>See Also</cite> section above for easier ways of constructing an
 ndarray.</p>
@@ -1469,10 +1467,10 @@ url: <a class="reference external" href="https://www.rdocumentation.org/packages
 
 </section>
 <section id="tent-map">
-<h3>Tent map<a class="headerlink" href="#tent-map" title="Link to this heading">¶</a></h3>
+<h3>Tent map<a class="headerlink" href="#tent-map" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.tent_map">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">tent_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#tent_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.tent_map" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">tent_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#tent_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.tent_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a time series of the tent map.</p>
 <dl>
 <dt>Characteristics and Background:</dt><dd><p>The name of the tent map is derived from the fact that the plot of x_i vs
@@ -1522,10 +1520,10 @@ is used for the definition of the lyapunov exponent:</p>
 
 </section>
 <section id="logistic-map">
-<h3>Logistic map<a class="headerlink" href="#logistic-map" title="Link to this heading">¶</a></h3>
+<h3>Logistic map<a class="headerlink" href="#logistic-map" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.logistic_map">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">logistic_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#logistic_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.logistic_map" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">logistic_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#logistic_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.logistic_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a time series of the logistic map.</p>
 <dl>
 <dt>Characteristics and Background:</dt><dd><p>The logistic map is among the simplest examples for a time series that can
@@ -1607,10 +1605,10 @@ have</p>
 
 </section>
 <section id="fractional-brownian-motion">
-<h3>Fractional brownian motion<a class="headerlink" href="#fractional-brownian-motion" title="Link to this heading">¶</a></h3>
+<h3>Fractional brownian motion<a class="headerlink" href="#fractional-brownian-motion" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.fbm">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">fbm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#fbm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.fbm" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">fbm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#fbm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.fbm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates fractional brownian motions of desired length.</p>
 <dl>
 <dt>Author:</dt><dd><p>Christian Thomae</p>
@@ -1642,10 +1640,10 @@ have</p>
 
 </section>
 <section id="fractional-gaussian-noise">
-<h3>Fractional gaussian noise<a class="headerlink" href="#fractional-gaussian-noise" title="Link to this heading">¶</a></h3>
+<h3>Fractional gaussian noise<a class="headerlink" href="#fractional-gaussian-noise" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.fgn">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">fgn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#fgn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.fgn" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">fgn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#fgn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.fgn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates fractional gaussian noise of desired length.</p>
 <dl>
 <dt>References:</dt><dd><div role="list" class="citation-list">
@@ -1675,10 +1673,10 @@ have</p>
 
 </section>
 <section id="quantum-random-numbers">
-<h3>Quantum random numbers<a class="headerlink" href="#quantum-random-numbers" title="Link to this heading">¶</a></h3>
+<h3>Quantum random numbers<a class="headerlink" href="#quantum-random-numbers" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.qrandom">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">qrandom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#qrandom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.qrandom" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">qrandom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#qrandom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.qrandom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an array of n true random numbers obtained from the quantum random
 number generator at qrng.anu.edu.au</p>
 <p>This function requires the package quantumrandom and an internet connection.</p>
@@ -1698,7 +1696,7 @@ number generator at qrng.anu.edu.au</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.load_qrandom">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">load_qrandom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#load_qrandom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.load_qrandom" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">load_qrandom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#load_qrandom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.load_qrandom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a set of 10000 random numbers generated by qrandom.</p>
 <p>This dataset can be used when you want to do some limited tests with “true”
 random data without an internet connection.</p>
@@ -1713,10 +1711,10 @@ random data without an internet connection.</p>
 
 </section>
 <section id="financial-example-datasets">
-<h3>Financial example datasets<a class="headerlink" href="#financial-example-datasets" title="Link to this heading">¶</a></h3>
+<h3>Financial example datasets<a class="headerlink" href="#financial-example-datasets" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.load_financial">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">load_financial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#load_financial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.load_financial" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">load_financial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#load_financial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.load_financial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the following datasets from CSV files in this package:</p>
 <ul class="simple">
 <li><p>jkse: Jakarta Composite Index, downloaded on 2019-02-12 from <a class="reference external" href="https://finance.yahoo.com/quote/%5EJKSE/history?period1=631148400&amp;period2=988668000&amp;interval=1d&amp;filter=history&amp;frequency=1d">https://finance.yahoo.com/quote/%5EJKSE/history?period1=631148400&amp;period2=988668000&amp;interval=1d&amp;filter=history&amp;frequency=1d</a></p></li>
@@ -1751,10 +1749,10 @@ follows:</p>
 
 </section>
 <section id="fractal-data-used-by-barabasi-et-al-1991">
-<h3>Fractal data used by Barabasi et al. (1991)<a class="headerlink" href="#fractal-data-used-by-barabasi-et-al-1991" title="Link to this heading">¶</a></h3>
+<h3>Fractal data used by Barabasi et al. (1991)<a class="headerlink" href="#fractal-data-used-by-barabasi-et-al-1991" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="nolds.barabasi1991_fractal">
-<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">barabasi1991_fractal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#barabasi1991_fractal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.barabasi1991_fractal" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nolds.</span></span><span class="sig-name descname"><span class="pre">barabasi1991_fractal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nolds/datasets.html#barabasi1991_fractal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nolds.barabasi1991_fractal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the simple fractal described in <a class="reference internal" href="#bf" id="id11"><span>[bf]</span></a>.</p>
 <p>The fractal divides a rectangular segment starting at (x0, y0) with width w
 and height h along the x axis into four line segments of equal size with the
@@ -1804,7 +1802,7 @@ fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">Nolds</a></h1>
 
@@ -1815,16 +1813,7 @@ fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.</p>
 
 
 
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">nolds</span></code> module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#algorithms">Algorithms</a><ul>
@@ -1875,6 +1864,16 @@ fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.</p>
   </ul></li>
 </ul>
 </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -1888,11 +1887,11 @@ fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2016-2024, Christopher Schölzel.
+      &copy;2016-2024, Christopher Schölzel.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/nolds.rst.txt"
