@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Regression tests for all major algorithms that check for small changes in the main output value.
 
 ### Changed
+
+* Nolds now supports numpy 2.x as well as 1.x.
+
 ### Fixed
 
 ## [0.6.0]

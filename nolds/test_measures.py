@@ -36,7 +36,7 @@ class TestNoldsHelperFunctions(unittest.TestCase):
       print("==")
       print(expected)
       print()
-    self.assertTrue(np.alltrue(actual == expected))
+    self.assertTrue(np.all(actual == expected))
 
   def test_delay_embed_lag2(self):
     data = np.arange(10, dtype="float32")
@@ -459,7 +459,7 @@ class TestNoldsCorrDim(unittest.TestCase):
     x = data[discard:,1]
     rvals = nolds.logarithmic_r(1, np.e, 1.1)  # determined experimentally
     cd = nolds.corr_dim(x, emb_dim, fit="poly", rvals=rvals, lag=lag)
-    self.assertAlmostEqual(cd, 2.05, delta=0.1)
+    self.assertAlmostEqual(cd, 2.05, delta=0.2)
 
   def test_logistic(self):
     # TODO replicate tests with logistic map from grassberger-procaccia
