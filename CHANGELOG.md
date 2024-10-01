@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+### Changed
+### Fixed
+
+## [0.6.1]
+
+### Added
 
 * Regression tests for all major algorithms that check for small changes in the main output value.
 
@@ -227,7 +233,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - Hurst exponent (`hurst_rs`)
   - detrended fluctuation analysis (DFA) (`dfa`)
 
-[Unreleased]: https://github.com/CSchoel/nolds/compare/0.6.0..HEAD
+[Unreleased]: https://github.com/CSchoel/nolds/compare/0.6.1..HEAD
+[0.6.1]: https://github.com/CSchoel/nolds/compare/0.6.0..0.6.1
 [0.6.0]: https://github.com/CSchoel/nolds/compare/0.5.2..0.6.0
 [0.5.2]: https://github.com/CSchoel/nolds/compare/0.5.1..0.5.2
 [0.5.1]: https://github.com/CSchoel/nolds/compare/0.5.0..0.5.1
