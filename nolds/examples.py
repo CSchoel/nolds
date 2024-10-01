@@ -586,7 +586,10 @@ if __name__ == "__main__":
     print("  sampen-tol")
     print("  aste-line")
     print("  hurst-mf-stock")
+    print("  hurst-mf-barabasi2")
+    print("  hurst-mf-barabasi3")
     print("  lorenz")
+ 
   if len(sys.argv) < 2:
     print("please tell me which tests you want to run")
     print_options()
