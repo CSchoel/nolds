@@ -671,5 +671,21 @@ class RegressionTests(unittest.TestCase):
     self.assertAlmostEqual(expected[0], h[0], places=15)
 
 
+class PreviousDefectTests(unittest.TestCase):
+  """Tests that ensure that a previous bug doesn't come back at some point."""
+
+  def test_lyap_r_complex_min_tsep(self):
+    """Test hypothesis: The `min_tsep` parameter can be calculated without creating complex numbers.
+    
+    Previously, this would lead to an exception in the code. See
+    https://github.com/CSchoel/nolds/issues/53 for reference.
+    """
+    data = np.cos(np.arange(100)*0.01)
+    # previously this would fail with the following exception:
+    #   TypeError: ufunc 'ceil' not supported for the input types, and the
+    #   inputs could not be safely coerced to any supported types according to
+    #   the casting rule ''safe''
+    nolds.lyap_r(data)
+
 if __name__ == "__main__":
   unittest.main()

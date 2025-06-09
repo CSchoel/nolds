@@ -161,7 +161,12 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     estimate for this value is to set min_tsep to the mean period of the
     signal, which can be obtained by calculating the mean frequency using the
     fast fourier transform. This procedure is used by default if the user sets
-    min_tsep = None.
+    min_tsep = None. Note that this default procedure uses a naive approach
+    for estimating the power spectral density, which just takes the FFT of the
+    whole signal without applying any windowing function to avoid biases. If
+    you have a non-stationary input and want more than a rough estimate,
+    consider calculating min_tsep manually using a sliding window approach
+    like Welch's method (implemented in `scipy.signal.welch`).
 
   Method for choosing lag:
     Another parameter that can be hard to choose by instinct alone is the lag
@@ -243,9 +248,14 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     # calculate min_tsep as mean period (= 1 / mean frequency)
     # to get the mean frequency, we weight the frequency buckets in the
     # fft result by the absolute power in that bucket and then divide
-    # by the total power accross all buckets to get a weigthed mean
-    mf = np.fft.rfftfreq(n * 2 - 1) * f**2
-    mf = np.sum(mf[1:]) / np.sum(f[1:]**2)
+    # by the total power accross all buckets to get a weigthed mean.
+    # This can be inaccurate for non-stationary inputs. A better approach would
+    # be to use scipy.signal.welch, but this requires making some other
+    # parameter choices like the size of the sliding window that require some
+    # knowledge about the input data, which we don't have at this point.
+    freqs = np.fft.rfftfreq(n * 2 - 1)
+    psd = np.abs(f)**2
+    mf = np.sum(freqs[1:] * psd[1:]) / np.sum(psd[1:])
     min_tsep = int(np.ceil(1.0 / mf))
     if min_tsep > max_tsep_factor * n:
       min_tsep = int(max_tsep_factor * n)
