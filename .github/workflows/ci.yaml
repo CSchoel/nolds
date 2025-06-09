@@ -14,7 +14,9 @@ jobs:
         include:
           - python: "3.7"
             os: ubuntu-22.04
-    runs-on: ubuntu-latest
+          - python: "3.10"
+            os: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
