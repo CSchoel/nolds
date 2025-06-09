@@ -3,7 +3,7 @@ name = "nolds"
 version = "0.6.0"
 description = "Nonlinear measures for dynamical systems (based on one-dimensional time series)"
 authors = [
-    {name= "Christopher Schölzel", email= "<christopher.schoelzel@mailbox.org>"
+    {name= "Christopher Schölzel", email= "christopher.schoelzel@mailbox.org"}
 ]
 license = "MIT"
 license-files = ["LICENSE.txt"]
@@ -34,10 +34,9 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12"
 ]
-readme = "README.md"
+readme = "README.rst"
 requires-python = ">=3.8"
 dependencies = [
-    "python>=3.8",
     "numpy>1.0,<3.0",
     "future>=1.0",
     "setuptools>=72.1.0"
@@ -50,8 +49,8 @@ plots = ["matplotlib"]
 
 [dependency-groups]
 dev = [
-    "ruff>=0.15",
-    "keepachangelog>=2.0.0",
+    "ruff>=0.11",
+    # "keepachangelog>=2.0.0",
 ]
 
 [project.urls]
@@ -69,8 +68,8 @@ build-backend = "hatchling.build"
 line-length = 100  # allow slightly longer lines
 indent-width = 2  # use two spaces for now to not upset existing code
 
-# Assume Python 3.11
-target-version = "py311"
+# Assume Python 3.8
+target-version = "py38"
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
