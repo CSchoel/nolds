@@ -1,3 +1,22 @@
 {
-    "restructuredtext.confPath": "${workspaceFolder}/doc/source"
+    "python.testing.pytestArgs": [
+        "nolds"
+    ],
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./nolds",
+        "-p",
+        "test_*.py"
+    ],
+    "[python]": {
+        "editor.formatOnSave": false, // disable format on save for now to not mess up any files that haven't been converted yet
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "never",
+            "source.organizeImports": "never"
+        }
+    }
 }
