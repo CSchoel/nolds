@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 
+* [#53](https://github.com/CSchoel/nolds/issues/53): Missing `np.abs` in calculation of `min_tsep` for `lyap_r` introduced complex values, which caused an exception.
+* [#61](https://github.com/CSchoel/nolds/issues/61): In `mfhurst_dm`, the second output was supposed to be the standard deviation of H values, but was a copy of the mean instead.
+
 ## [0.6.1]
 
 ### Added
