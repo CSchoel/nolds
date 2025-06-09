@@ -248,7 +248,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     # calculate min_tsep as mean period (= 1 / mean frequency)
     # to get the mean frequency, we weight the frequency buckets in the
     # fft result by the absolute power in that bucket and then divide
-    # by the total power accross all buckets to get a weigthed mean.
+    # by the total power across all buckets to get a weighted mean.
     # This can be inaccurate for non-stationary inputs. A better approach would
     # be to use scipy.signal.welch, but this requires making some other
     # parameter choices like the size of the sliding window that require some
