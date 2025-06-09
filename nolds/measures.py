@@ -267,7 +267,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     # given lag value
     def nb_neighbors(lag_value):
       min_len = lyap_r_len(
-        emb_dim=emb_dim, lag=i, trajectory_len=trajectory_len,
+        emb_dim=emb_dim, lag=lag_value, trajectory_len=trajectory_len,
         min_tsep=min_tsep
       )
       return max(0, n - min_len)
