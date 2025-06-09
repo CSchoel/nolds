@@ -22,7 +22,7 @@ class CleanCommand(Command):
 
 with io.open("README.rst", "r", encoding="utf-8") as f:
     readme = f.read()
-version = '0.6.0'
+version = '0.6.2'
 setup(
     name='nolds',
     packages=['nolds'],
@@ -57,7 +57,7 @@ setup(
     ],
     test_suite='nolds.test_measures',
     install_requires=[
-        'numpy<2.0',
+        'numpy>1.0,<3.0',
         'future',
         'setuptools'
     ],

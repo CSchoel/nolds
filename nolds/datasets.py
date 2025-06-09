@@ -23,15 +23,19 @@ def lorenz_euler(length, sigma, rho, beta, dt=0.01, start=[1,1,1]):
   """
   def lorenz(state, sigma, rho, beta):
     x, y, z = state
+    # NOTE: Numpy 1.x stores intermediate results as float64
+    # => to achieve consistency between numpy versions, we have to use
+    #    float32 for all values that enter the formula to simulate numpy 1.x
+    #    behavior with numpy 2.x.
     return np.array([
-      sigma * (y - x),
-      rho * x - y - x * z,
-      x * y - beta * z
+      np.float32(sigma) * (y - x),
+      np.float32(rho) * x - y - x * z,
+      x * y - np.float32(beta) * z
     ], dtype="float32")
   trajectory = np.zeros((length, 3), dtype="float32")
   trajectory[0] = start
   for i in range(1, length):
-    t = i * dt
+    # t = i * dt
     trajectory[i] = trajectory[i-1] + lorenz(trajectory[i-1], sigma, rho, beta) * dt
   return trajectory
 

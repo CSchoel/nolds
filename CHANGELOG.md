@@ -7,11 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+### Changed
+### Fixed
+
+## [0.6.2]
+
+### Fixed
+
+* [#53](https://github.com/CSchoel/nolds/issues/53): Missing `np.abs` in calculation of `min_tsep` for `lyap_r` introduced complex values, which caused an exception.
+* [#61](https://github.com/CSchoel/nolds/issues/61): In `mfhurst_dm`, the second output was supposed to be the standard deviation of H values, but was a copy of the mean instead.
+
+## [0.6.1]
+
+### Added
 
 * Regression tests for all major algorithms that check for small changes in the main output value.
 
 ### Changed
-### Fixed
+
+* Nolds now supports numpy 2.x as well as 1.x.
 
 ## [0.6.0]
 
@@ -224,7 +238,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - Hurst exponent (`hurst_rs`)
   - detrended fluctuation analysis (DFA) (`dfa`)
 
-[Unreleased]: https://github.com/CSchoel/nolds/compare/0.6.0..HEAD
+[Unreleased]: https://github.com/CSchoel/nolds/compare/0.6.2..HEAD
+[0.6.2]: https://github.com/CSchoel/nolds/compare/0.6.1..0.6.2
+[0.6.1]: https://github.com/CSchoel/nolds/compare/0.6.0..0.6.1
 [0.6.0]: https://github.com/CSchoel/nolds/compare/0.5.2..0.6.0
 [0.5.2]: https://github.com/CSchoel/nolds/compare/0.5.1..0.5.2
 [0.5.1]: https://github.com/CSchoel/nolds/compare/0.5.0..0.5.1
