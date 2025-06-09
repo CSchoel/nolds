@@ -24,6 +24,45 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.7"
 
+[tool.ruff]
+
+line-length = 100  # allow slightly longer lines
+indent-width = 2  # use two spaces for now to not upset existing code
+
+# Assume Python 3.11
+target-version = "py311"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+[tool.ruff.lint]
+# Select all rules by default
+select = ["ALL"]
+ignore = [
+    "TD002", # adding an author to TODOs wastes space and is redundant because of git history
+    "TD003", # once there is an issue, there is no need to keep the TODO => don't require links
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+# source: https://github.com/astral-sh/ruff/issues/4368#issue-1705468153
+"test/**/*.py" = [
+    # at least this three should be fine in tests:
+    "S101", # asserts allowed in tests...
+    "ARG",  # Unused function args -> fixtures nevertheless are functionally relevant...
+    "FBT",  # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
+    # The below are debateable
+    "PLR2004", # Magic value used in comparison, ...
+    "S311",    # Standard pseudo-random generators are not suitable for cryptographic purposes
+    "INP001",  # Test folders should not have an `__init__.py`
+]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

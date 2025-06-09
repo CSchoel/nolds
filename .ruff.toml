@@ -1,4 +1,3 @@
-[tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
@@ -26,12 +25,12 @@ exclude = [
 
 # Same as Black.
 line-length = 88
-indent-width = 4
+indent-width = 2
 
 # Assume Python 3.8
 target-version = "py38"
 
-[tool.ruff.lint]
+[lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
 # McCabe complexity (`C901`) by default.
@@ -45,7 +44,7 @@ unfixable = []
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
-[tool.ruff.format]
+[format]
 # Like Black, use double quotes for strings.
 quote-style = "double"
 
