@@ -1,28 +1,68 @@
-[tool.poetry]
+[project]
 name = "nolds"
 version = "0.6.0"
 description = "Nonlinear measures for dynamical systems (based on one-dimensional time series)"
-authors = ["Christopher Schölzel <christopher.schoelzel@mailbox.org>"]
+authors = [
+    {name= "Christopher Schölzel", email= "<christopher.schoelzel@mailbox.org>"
+]
 license = "MIT"
+license-files = ["LICENSE.txt"]
+keywords = [
+    "nonlinear",
+    "dynamical system",
+    "chaos",
+    "lyapunov",
+    "hurst",
+    "hurst exponent",
+    "rescaled range",
+    "DFA",
+    "detrended fluctuation analysis",
+    "sample entropy",
+    "correlation dimension"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
+]
 readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "python>=3.8",
+    "numpy>1.0,<3.0",
+    "future>=1.0",
+    "setuptools>=72.1.0"
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-numpy = "<2.0"
-scikit-learn = { version = "^1.0", optional = true }
-future = "^1.0.0"
-setuptools = "^72.1.0"
-
-[tool.poetry.extras]
-RANSAC = ["scikit-learn"]
+[project.optional-dependencies]
+RANSAC = ["scikit-learn>=1.0"]
 qrandom = ["quantumrandom"]
 plots = ["matplotlib"]
 
-[tool.poetry.group.dev]
-optional = true
+[dependency-groups]
+dev = [
+    "ruff>=0.15",
+    "keepachangelog>=2.0.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.5.7"
+[project.urls]
+Homepage = "https://github.com/CSchoel/nolds"
+Repository = "https://github.com/CSchoel/nolds"
+Issues = "https://github.com/CSchoel/nolds/issues"
+Changelog = "https://github.com/CSchoel/nolds/CHANGELOG.md"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 
@@ -63,6 +103,8 @@ convention = "google"
     "INP001",  # Test folders should not have an `__init__.py`
 ]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
