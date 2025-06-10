@@ -1,6 +1,6 @@
 [project]
 name = "nolds"
-version = "0.6.0"
+version = "0.6.2"
 description = "Nonlinear measures for dynamical systems (based on one-dimensional time series)"
 authors = [
     {name= "Christopher Schölzel", email= "christopher.schoelzel@mailbox.org"}
@@ -27,7 +27,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -43,7 +42,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-RANSAC = ["scikit-learn>=1.0"]
+RANSAC = ["scikit-learn>=0.19"]
 qrandom = ["quantumrandom"]
 plots = ["matplotlib"]
 
