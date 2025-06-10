@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 ### Changed
+
+* Switches from using `setup.py` to `pyproject.toml` using `uv`.
+* Moves ruff config into `pyproject.toml`.
+
 ### Fixed
 
 ## [0.6.2]
