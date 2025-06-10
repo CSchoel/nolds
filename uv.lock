@@ -818,7 +818,7 @@ wheels = [
 
 [[package]]
 name = "nolds"
-version = "0.6.0"
+version = "0.6.2"
 source = { editable = "." }
 dependencies = [
     { name = "future" },
@@ -856,7 +856,7 @@ requires-dist = [
     { name = "matplotlib", marker = "extra == 'plots'" },
     { name = "numpy", specifier = ">1.0,<3.0" },
     { name = "quantumrandom", marker = "extra == 'qrandom'" },
-    { name = "scikit-learn", marker = "extra == 'ransac'", specifier = ">=1.0" },
+    { name = "scikit-learn", marker = "extra == 'ransac'", specifier = ">=0.19" },
     { name = "setuptools", specifier = ">=72.1.0" },
 ]
 provides-extras = ["ransac", "qrandom", "plots"]
