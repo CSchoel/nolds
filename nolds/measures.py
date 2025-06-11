@@ -1,13 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import (
-  bytes, dict, int, list, object, range, str, ascii, chr, hex, input, next,
-  oct, open, pow, round, super, filter, map, zip
-)
-import numpy as np
-import warnings
 import math
+import warnings
+
+import numpy as np
 
 
 def rowwise_chebyshev(x, y):
@@ -30,13 +24,13 @@ def poly_fit(x, y, degree, fit="RANSAC"):
     except ImportError:
       warnings.warn(
         "fitting mode 'RANSAC' requires the package sklearn, using"
-        + " 'poly' instead",
-        RuntimeWarning)
+         " 'poly' instead",
+        RuntimeWarning, stacklevel=2)
       fit = "poly"
 
   if fit == "poly":
     return np.polyfit(x, y, degree)
-  elif fit == "RANSAC":
+  if fit == "RANSAC":
     model = sklin.RANSACRegressor(sklin.LinearRegression(fit_intercept=False))
     xdat = np.asarray(x)
     if len(xdat.shape) == 1:
@@ -50,17 +44,16 @@ def poly_fit(x, y, degree, fit="RANSAC"):
     except ValueError:
       warnings.warn(
         "RANSAC did not reach consensus, "
-        + "using numpy's polyfit",
-        RuntimeWarning)
+         "using numpy's polyfit",
+        RuntimeWarning, stacklevel=2)
       coef = np.polyfit(x, y, degree)
     return coef
-  else:
-    raise ValueError("invalid fitting mode ({})".format(fit))
+  msg = f"invalid fitting mode ({fit})"
+  raise ValueError(msg)
 
 
 def delay_embedding(data, emb_dim, lag=1):
-  """
-  Perform a time-delay embedding of a time series
+  """Perform a time-delay embedding of a time series.
 
   Args:
     data (array-like):
@@ -81,7 +74,7 @@ def delay_embedding(data, emb_dim, lag=1):
   min_len = (emb_dim - 1) * lag + 1
   if len(data) < min_len:
     msg = "cannot embed data of length {} with embedding dimension {} " \
-        + "and lag {}, minimum required length is {}"
+         "and lag {}, minimum required length is {}"
     raise ValueError(msg.format(len(data), emb_dim, lag, min_len))
   m = len(data) - min_len + 1
   indices = np.repeat([np.arange(emb_dim) * lag], m, axis=0)
@@ -90,8 +83,7 @@ def delay_embedding(data, emb_dim, lag=1):
 
 
 def lyap_r_len(**kwargs):
-  """
-  Helper function that calculates the minimum number of data points required
+  """Helper function that calculates the minimum number of data points required
   to use lyap_r.
 
   Note that none of the required parameters may be set to None.
@@ -106,19 +98,18 @@ def lyap_r_len(**kwargs):
     parameters
   """
   # minimum length required to find single orbit vector
-  min_len = (kwargs['emb_dim'] - 1) * kwargs['lag'] + 1
+  min_len = (kwargs["emb_dim"] - 1) * kwargs["lag"] + 1
   # we need trajectory_len orbit vectors to follow a complete trajectory
-  min_len += kwargs['trajectory_len'] - 1
+  min_len += kwargs["trajectory_len"] - 1
   # we need min_tsep * 2 + 1 orbit vectors to find neighbors for each
-  min_len += kwargs['min_tsep'] * 2 + 1
+  min_len += kwargs["min_tsep"] * 2 + 1
   return min_len
 
 
 def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
            trajectory_len=20, fit="RANSAC", debug_plot=False, debug_data=False,
            plot_file=None, fit_offset=0):
-  """
-  Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
+  """Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
   et al. [lr_1]_.
 
   Explanation of Lyapunov exponents:
@@ -260,7 +251,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     if min_tsep > max_tsep_factor * n:
       min_tsep = int(max_tsep_factor * n)
       msg = "signal has very low mean frequency, setting min_tsep = {:d}"
-      warnings.warn(msg.format(min_tsep), RuntimeWarning)
+      warnings.warn(msg.format(min_tsep), RuntimeWarning, stacklevel=2)
   if lag is None:
     # calculate the lag as point where the autocorrelation drops to (1 - 1/e)
     # times its maximum value
@@ -278,7 +269,7 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
     def nb_neighbors(lag_value):
       min_len = lyap_r_len(
         emb_dim=emb_dim, lag=lag_value, trajectory_len=trajectory_len,
-        min_tsep=min_tsep
+        min_tsep=min_tsep,
       )
       return max(0, n - min_len)
     # find lag
@@ -288,19 +279,19 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
         break
       if nb_neighbors(i) < min_neighbors:
         msg = "autocorrelation declined too slowly to find suitable lag" \
-          + ", setting lag to {}"
-        warnings.warn(msg.format(lag), RuntimeWarning)
+           ", setting lag to {}"
+        warnings.warn(msg.format(lag), RuntimeWarning, stacklevel=2)
         break
   min_len = lyap_r_len(
     emb_dim=emb_dim, lag=lag, trajectory_len=trajectory_len,
-    min_tsep=min_tsep
+    min_tsep=min_tsep,
   )
   if len(data) < min_len:
     msg = "for emb_dim = {}, lag = {}, min_tsep = {} and trajectory_len = {}" \
-      + " you need at least {} datapoints in your time series"
+       " you need at least {} datapoints in your time series"
     warnings.warn(
       msg.format(emb_dim, lag, min_tsep, trajectory_len, min_len),
-      RuntimeWarning
+      RuntimeWarning, stacklevel=2,
     )
   # delay embedding
   orbit = delay_embedding(data, emb_dim, lag)
@@ -318,14 +309,14 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
   min_traj = min_tsep * 2 + 2  # in each row min_tsep + 1 disances are inf
   if ntraj <= 0:
     msg = "Not enough data points. Need {} additional data points to follow " \
-        + "a complete trajectory."
+         "a complete trajectory."
     raise ValueError(msg.format(-ntraj+1))
   if ntraj < min_traj:
     # not enough data points => there are rows where all values are inf
     assert np.any(np.all(np.isinf(dists[:ntraj, :ntraj]), axis=1))
     msg = "Not enough data points. At least {} trajectories are required " \
-        + "to find a valid neighbor for each orbit vector with min_tsep={} " \
-        + "but only {} could be created."
+         "to find a valid neighbor for each orbit vector with min_tsep={} " \
+         "but only {} could be created."
     raise ValueError(msg.format(min_traj, min_tsep, ntraj))
   assert np.all(np.any(np.isfinite(dists[:ntraj, :ntraj]), axis=1))
   # find nearest neighbors (exclude last columns, because these vectors cannot
@@ -365,13 +356,11 @@ def lyap_r(data, emb_dim=10, lag=None, min_tsep=None, tau=1, min_neighbors=20,
   le = poly[0] / tau
   if debug_data:
     return (le, (ks, div_traj, poly))
-  else:
-    return le
+  return le
 
 
 def lyap_e_len(**kwargs):
-  """
-  Helper function that calculates the minimum number of data points required
+  """Helper function that calculates the minimum number of data points required
   to use lyap_e.
 
   Note that none of the required parameters may be set to None.
@@ -385,22 +374,21 @@ def lyap_e_len(**kwargs):
     minimum number of data points required to call lyap_e with the given
     parameters
   """
-  m = (kwargs['emb_dim'] - 1) // (kwargs['matrix_dim'] - 1)
+  m = (kwargs["emb_dim"] - 1) // (kwargs["matrix_dim"] - 1)
   # minimum length required to find single orbit vector
-  min_len = kwargs['emb_dim']
+  min_len = kwargs["emb_dim"]
   # we need to follow each starting point of an orbit vector for m more steps
   min_len += m
   # we need min_tsep * 2 + 1 orbit vectors to find neighbors for each
-  min_len += kwargs['min_tsep'] * 2
+  min_len += kwargs["min_tsep"] * 2
   # we need at least min_nb neighbors for each orbit vector
-  min_len += kwargs['min_nb']
+  min_len += kwargs["min_nb"]
   return min_len
 
 
 def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
            debug_plot=False, debug_data=False, plot_file=None):
-  """
-  Estimates the Lyapunov exponents for the given data using the algorithm of
+  r"""Estimates the Lyapunov exponents for the given data using the algorithm of
   Eckmann et al. [le_1]_.
 
   Recommendations for parameter settings by Eckmann et al.:
@@ -506,22 +494,23 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
   data = np.asarray(data, dtype=np.float64)
   n = len(data)
   if (emb_dim - 1) % (matrix_dim - 1) != 0:
-    raise ValueError("emb_dim - 1 must be divisible by matrix_dim - 1!")
+    msg = "emb_dim - 1 must be divisible by matrix_dim - 1!"
+    raise ValueError(msg)
   m = (emb_dim - 1) // (matrix_dim - 1)
   if min_nb is None:
     # minimal number of neighbors as suggested by Eckmann et al.
     min_nb = min(2 * matrix_dim, matrix_dim + 4)
 
   min_len = lyap_e_len(
-    emb_dim=emb_dim, matrix_dim=matrix_dim, min_nb=min_nb, min_tsep=min_tsep
+    emb_dim=emb_dim, matrix_dim=matrix_dim, min_nb=min_nb, min_tsep=min_tsep,
   )
   if n < min_len:
     msg = "{} data points are not enough! For emb_dim = {}, matrix_dim = {}" \
-      + ", min_tsep = {} and min_nb = {} you need at least {} data points " \
-      + "in your time series"
+       ", min_tsep = {} and min_nb = {} you need at least {} data points " \
+       "in your time series"
     warnings.warn(
       msg.format(n, emb_dim, matrix_dim, min_tsep, min_nb, min_len),
-      RuntimeWarning
+      RuntimeWarning, stacklevel=2,
     )
 
   # construct orbit as matrix (e = emb_dim)
@@ -536,7 +525,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
   if len(orbit) < min_nb:
     assert len(data) < min_len
     msg = "Not enough data points. Need at least {} additional data points " \
-        + "to have min_nb = {} neighbor candidates"
+         "to have min_nb = {} neighbor candidates"
     raise ValueError(msg.format(min_nb-len(orbit), min_nb))
   old_Q = np.identity(matrix_dim)
   lexp = np.zeros(matrix_dim, dtype=np.float64)
@@ -548,7 +537,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     # find neighbors for each vector in the orbit using the chebyshev distance
     diffs = rowwise_chebyshev(orbit, orbit[i])
     # ensure that we do not count the difference of the vector to itself
-    diffs[i] = float('inf')
+    diffs[i] = float("inf")
     # mask all neighbors that are too close in time to the vector itself
     mask_from = max(0, i - min_tsep)
     mask_to = min(len(diffs), i + min_tsep + 1)
@@ -559,8 +548,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     if np.isinf(r):
       assert len(data) < min_len
       msg = "Not enough data points. Orbit vector {} has less than min_nb = " \
-          + "{} valid neighbors that are at least min_tsep = {} time steps " \
-          + "away. Input must have at least length {}."
+           "{} valid neighbors that are at least min_tsep = {} time steps " \
+           "away. Input must have at least length {}."
       raise ValueError(msg.format(i, min_nb, min_tsep, min_len))
     # there may be more than min_nb vectors at distance r (if multiple vectors
     # have a distance of exactly r)
@@ -608,8 +597,8 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
     if max(np.max(indices), i) + matrix_dim * m >= len(data):
       assert len(data) < min_len
       msg = "Not enough data points. Cannot follow orbit vector {} for " \
-          + "{} (matrix_dim * m) time steps. Input must have at least " \
-          + "length {}."
+           "{} (matrix_dim * m) time steps. Input must have at least " \
+           "length {}."
       raise ValueError(msg.format(i, matrix_dim * m, min_len))
     vec_beta = data[indices + matrix_dim * m] - data[i + matrix_dim * m]
 
@@ -665,7 +654,7 @@ def lyap_e(data, emb_dim=10, matrix_dim=4, min_nb=None, min_tsep=0, tau=1,
   return lexp
 
 
-def plot_dists(dists, tolerance, m, title=None, fname=None):
+def plot_dists(dists, tolerance, m, title=None, fname=None) -> None:
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
   nstd = 3
@@ -679,7 +668,7 @@ def plot_dists(dists, tolerance, m, title=None, fname=None):
   colors = ["green", "blue"]
   for h, bins in [np.histogram(dat, nbins, rng) for dat in dists]:
     bw = bins[1] - bins[0]
-    plt.bar(bins[:-1], h, bw, label="m={:d}".format(m + i),
+    plt.bar(bins[:-1], h, bw, label=f"m={m + i:d}",
             color=colors[i], alpha=0.5)
     i += 1
   plt.axvline(tolerance, color="red")
@@ -698,8 +687,7 @@ def plot_dists(dists, tolerance, m, title=None, fname=None):
 
 def sampen(data, emb_dim=2, tolerance=None, lag=1, dist=rowwise_chebyshev,
            closed=False, debug_plot=False, debug_data=False, plot_file=None):
-  """
-  Computes the sample entropy of the given data.
+  """Computes the sample entropy of the given data.
 
   Explanation of the sample entropy:
     The sample entropy of a time series is defined as the negative natural
@@ -828,10 +816,10 @@ def sampen(data, emb_dim=2, tolerance=None, lag=1, dist=rowwise_chebyshev,
       zcounts.append("emb_dim + 1")
     warnings.warn(
       (
-        "Zero vectors are within tolerance for %s. " \
-        + "Consider raising the tolerance parameter to avoid %s result."
-      ) % (" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf"),
-      RuntimeWarning
+        "Zero vectors are within tolerance for {}. " \
+         "Consider raising the tolerance parameter to avoid {} result."
+      ).format(" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf"),
+      RuntimeWarning, stacklevel=2,
     )
     if counts[0] == 0 and counts[1] == 0:
       saen = np.nan
@@ -840,17 +828,15 @@ def sampen(data, emb_dim=2, tolerance=None, lag=1, dist=rowwise_chebyshev,
     else:
       saen = np.inf
   if debug_plot:
-    plot_dists(plot_data, tolerance, m, title="sampEn = {:.3f}".format(saen),
+    plot_dists(plot_data, tolerance, m, title=f"sampEn = {saen:.3f}",
                fname=plot_file)
   if debug_data:
     return (saen, counts, plot_data)
-  else:
-    return saen
+  return saen
 
 
 def binary_n(total_N, min_n=50):
-  """
-  Creates a list of values by successively halving the total length total_N
+  """Creates a list of values by successively halving the total length total_N
   until the resulting value is less than min_n.
 
   Non-integer results are rounded down.
@@ -872,8 +858,7 @@ def binary_n(total_N, min_n=50):
 
 
 def logarithmic_n(min_n, max_n, factor):
-  """
-  Creates a list of values by successively multiplying a minimum value min_n by
+  """Creates a list of values by successively multiplying a minimum value min_n by
   a factor > 1 until a maximum value max_n is reached.
 
   Non-integer results are rounded down.
@@ -906,8 +891,7 @@ def logarithmic_n(min_n, max_n, factor):
 
 
 def logmid_n(max_n, ratio=1/4.0, nsteps=15):
-  """
-  Creates an array of integers that lie evenly spaced in the "middle" of the
+  """Creates an array of integers that lie evenly spaced in the "middle" of the
   logarithmic scale from 0 to log(max_n).
 
   If max_n is very small and/or nsteps is very large, this may lead to
@@ -944,8 +928,7 @@ def logmid_n(max_n, ratio=1/4.0, nsteps=15):
 
 
 def logarithmic_r(min_n, max_n, factor):
-  """
-  Creates a list of values by successively multiplying a minimum value min_n by
+  """Creates a list of values by successively multiplying a minimum value min_n by
   a factor > 1 until a maximum value max_n is reached.
 
   Args:
@@ -967,8 +950,7 @@ def logarithmic_r(min_n, max_n, factor):
 
 
 def expected_rs(n):
-  """
-  Calculates the expected (R/S)_n for white noise for a given n.
+  """Calculates the expected (R/S)_n for white noise for a given n.
 
   This is used as a correction factor in the function hurst_rs. It uses the
   formula of Anis-Lloyd-Peters (see [h_3]_).
@@ -992,8 +974,7 @@ def expected_rs(n):
 
 
 def expected_h(nvals, fit="RANSAC"):
-  """
-  Uses expected_rs to calculate the expected value for the Hurst exponent h
+  """Uses expected_rs to calculate the expected value for the Hurst exponent h
   based on the values of n used for the calculation.
 
   Args:
@@ -1016,8 +997,7 @@ def expected_h(nvals, fit="RANSAC"):
 
 
 def rs(data, n, unbiased=True):
-  """
-  Calculates an individual R/S value in the rescaled range approach for
+  """Calculates an individual R/S value in the rescaled range approach for
   a given n.
 
   Note: This is just a helper function for hurst_rs and should not be called
@@ -1065,12 +1045,11 @@ def rs(data, n, unbiased=True):
   # it may happen that all ranges are zero (if all values in data are equal)
   if len(r) == 0:
     return np.nan
-  else:
-    # return mean of r/s along subsequence index
-    return np.mean(r / s)
+  # return mean of r/s along subsequence index
+  return np.mean(r / s)
 
 
-def plot_histogram_matrix(data, name, bin_range="3sigma", fname=None):
+def plot_histogram_matrix(data, name, bin_range="3sigma", fname=None) -> None:
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
   nhists = len(data[0])
@@ -1094,7 +1073,7 @@ def plot_histogram_matrix(data, name, bin_range="3sigma", fname=None):
     plt.bar(bins[:-1], h, bin_width)
     plt.axvline(np.mean(data[:, i]), color="red")
     plt.ylim(ylim)
-    plt.title("{:s}[{:d}]".format(name, i))
+    plt.title(f"{name:s}[{i:d}]")
   if fname is None:
     plt.show()
   else:
@@ -1103,9 +1082,8 @@ def plot_histogram_matrix(data, name, bin_range="3sigma", fname=None):
 
 
 def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
-             reg_label="regression line", fname=None):
-  """
-  Helper function to plot trend lines for line-fitting approaches. This
+             reg_label="regression line", fname=None) -> None:
+  """Helper function to plot trend lines for line-fitting approaches. This
   function will show a plot through ``plt.show()`` and close it after the
   window has been closed by the user.
 
@@ -1132,7 +1110,7 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
   plt.plot(xvals, yvals, "bo", label=data_label)
-  if not (poly is None):
+  if poly is not None:
     plt.plot(xvals, np.polyval(poly, xvals), "r-", label=reg_label)
   plt.xlabel(x_label)
   plt.ylabel(y_label)
@@ -1146,10 +1124,8 @@ def plot_reg(xvals, yvals, poly, x_label="x", y_label="y", data_label="data",
 
 def plot_reg_tiled(xvals, yvals, polys, x_label="x", y_label="y",
                    data_labels=None, reg_labels=None, fname=None,
-                   columns=None):
-  """
-  TODO
-  """
+                   columns=None) -> None:
+  """TODO."""
   # local import to avoid dependency for non-debug use
   import matplotlib.pyplot as plt
   max_span = max([np.max(y) - np.min(y) for y in yvals])
@@ -1163,7 +1139,7 @@ def plot_reg_tiled(xvals, yvals, polys, x_label="x", y_label="y",
   for i in range(len(xvals)):
     plt.subplot(int(np.ceil(len(xvals) / columns)), columns, i + 1)
     plt.plot(xvals[i], yvals[i], "bo", label=data_labels[i])
-    if not (polys is None):
+    if polys is not None:
       plt.plot(xvals[i], np.polyval(polys[i], xvals[i]), "r-", label=reg_labels[i])
     plt.xlabel(x_label)
     plt.ylabel(y_label)
@@ -1177,10 +1153,8 @@ def plot_reg_tiled(xvals, yvals, polys, x_label="x", y_label="y",
 
 
 def plot_reg_multiple(xvals, yvals, polys, x_label="x", y_label="y",
-                      data_labels=None, reg_labels=None, fname=None):
-  """
-  TODO
-  """
+                      data_labels=None, reg_labels=None, fname=None) -> None:
+  """TODO."""
   import matplotlib.pyplot as plt
   if data_labels is None:
     data_labels = ["data"] * len(xvals)
@@ -1188,7 +1162,7 @@ def plot_reg_multiple(xvals, yvals, polys, x_label="x", y_label="y",
     reg_labels = ["regression line"] * len(xvals)
   for i in range(len(xvals)):
     plt.plot(xvals[i], yvals[i], "+", label=data_labels[i])
-    if not (polys is None):
+    if polys is not None:
       plt.plot(xvals[i], np.polyval(polys[i], xvals[i]), label=reg_labels[i])
   plt.xlabel(x_label)
   plt.ylabel(y_label)
@@ -1202,8 +1176,7 @@ def plot_reg_multiple(xvals, yvals, polys, x_label="x", y_label="y",
 
 def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
              debug_data=False, plot_file=None, corrected=True, unbiased=True):
-  """
-  Calculates the Hurst exponent by a standard rescaled range (R/S) approach.
+  """Calculates the Hurst exponent by a standard rescaled range (R/S) approach.
 
   Explanation of Hurst exponent:
     The Hurst exponent is a measure for the "long-term memory" of a
@@ -1373,7 +1346,7 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
     if debug_plot:
       warnings.warn(
         "Cannot display debug plot, all (R/S)_n are NaN",
-        RuntimeWarning
+        RuntimeWarning, stacklevel=2,
       )
   else:
     # fit a line to the logarithm of the obtained (R/S)_n
@@ -1390,17 +1363,15 @@ def hurst_rs(data, nvals=None, fit="RANSAC", debug_plot=False,
   # return line slope (+ correction) as hurst exponent
   if debug_data:
     return (h, (np.log(nvals), np.log(rsvals), poly))
-  else:
-    return h
+  return h
 
 # TODO implement MFDFA as second (more reliable) measure for multifractality
 # NOTE: probably not needed, since mfhurst_b is already pretty reliable
 
 
-def mfhurst_b(data, qvals=None, dists=None, fit='poly',
+def mfhurst_b(data, qvals=None, dists=None, fit="poly",
               debug_plot=False, debug_data=False, plot_file=None):
-  """
-  Calculates the Generalized Hurst Exponent H_q for different q according to
+  r"""Calculates the Generalized Hurst Exponent H_q for different q according to
   A.-L. Barabási and T. Vicsek.
 
   Explanation of the Generalized Hurst Exponent:
@@ -1523,7 +1494,7 @@ def mfhurst_b(data, qvals=None, dists=None, fit='poly',
   dists = np.asarray(dists)
   if len(data) < 60:
     warnings.warn(
-      "H(q) is not reliable for small time series ({} < 60)".format(len(data))
+      f"H(q) is not reliable for small time series ({len(data)} < 60)", stacklevel=2,
     )
 
   def hhcorr(d, q):
@@ -1551,18 +1522,16 @@ def mfhurst_b(data, qvals=None, dists=None, fit='poly',
       [p / q for p, q in zip(polys, qvals)],
       x_label="log(x)", y_label="$\\log(c_q(x)) / q$",
       data_labels=["q = %d" % q for q in qvals],
-      reg_labels=["reg. line (H = {:.3f})".format(h) for h in H],
-      fname=plot_file
+      reg_labels=[f"reg. line (H = {h:.3f})" for h in H],
+      fname=plot_file,
     )
   if debug_data:
     return H, (xvals, yvals, polys)
-  else:
-    return H
+  return H
 
 
 def _genhurst(S, q):
-    """
-    Computes the generalized hurst exponent H_q for time series S.
+    """Computes the generalized hurst exponent H_q for time series S.
 
     This function should not be used. It is only kept here to demonstrate that
     ``mfhurst_dm`` is implemented correctly. You can use the following call to
@@ -1607,7 +1576,7 @@ def _genhurst(S, q):
     """
     L = len(S)
     if L < 100:
-        warnings.warn('Data series very short!')
+        warnings.warn("Data series very short!", stacklevel=2)
     H = np.zeros((len(range(5, 20)), 1))
     k = 0
 
@@ -1637,20 +1606,18 @@ def _genhurst(S, q):
         my = np.mean(np.log10(mcord))
         SSxy = np.sum(
           np.multiply(
-            np.log10(x), np.transpose(np.log10(mcord))
-          )
+            np.log10(x), np.transpose(np.log10(mcord)),
+          ),
         ) - Tmax*mx*my
         H[k] = SSxy/SSxx
         k = k + 1
-    mH = np.mean(H)/q
+    return np.mean(H)/q
 
-    return mH
 
 
 def _aste_line_fit(x, y):
-  """
-  Simple linear regression with ordinary least squares
-  https://en.wikipedia.org/wiki/Simple_linear_regression
+  """Simple linear regression with ordinary least squares
+  https://en.wikipedia.org/wiki/Simple_linear_regression.
 
   NOTE: this function is left here to demonstrate the correctness of
   T. Aste's MATLAB code for hurst_multifractal_dm. You can get the same
@@ -1694,8 +1661,7 @@ def _aste_line_fit(x, y):
 
 def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
                fit="poly", debug_plot=False, debug_data=False, plot_file=None):
-  """
-  Calculates the Generalized Hurst Exponent H_q for different q according to
+  """Calculates the Generalized Hurst Exponent H_q for different q according to
   the MATLAB code of Tomaso Aste - one of the authors that introduced this
   measure.
 
@@ -1791,7 +1757,7 @@ def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
     qvals = [1]
   if len(data) < 60:
     warnings.warn(
-      "H(q) is not reliable for small time series ({} < 60)".format(len(data))
+      f"H(q) is not reliable for small time series ({len(data)} < 60)", stacklevel=2,
     )
   max_max_dist = np.max(max_dists)
   hhcorr = []
@@ -1834,21 +1800,19 @@ def mfhurst_dm(data, qvals=None, max_dists=range(5, 20), detrend=True,
       polys,
       x_label="log(x)", y_label="$\\log(c_q(x)) / q$",
       data_labels=["q = %d" % q for q in qvals],
-      reg_labels=["reg. line (H = {:.3f})".format(h) for h in H[:, -1] / qvals],
-      fname=plot_file
+      reg_labels=[f"reg. line (H = {h:.3f})" for h in H[:, -1] / qvals],
+      fname=plot_file,
     )
   mH = np.mean(H, axis=1) / qvals
   sH = np.std(H, axis=1) / qvals
   if debug_data:
     return [mH, sH, (xvals, yvals, polys)]
-  else:
-    return [mH, sH]
+  return [mH, sH]
 
 
 def corr_dim(data, emb_dim, lag=1, rvals=None, dist=rowwise_euclidean,
              fit="RANSAC", debug_plot=False, debug_data=False, plot_file=None):
-  """
-  Calculates the correlation dimension with the Grassberger-Procaccia algorithm
+  """Calculates the correlation dimension with the Grassberger-Procaccia algorithm.
 
   Explanation of correlation dimension:
     The correlation dimension is a characteristic measure that can be used
@@ -1979,25 +1943,20 @@ def corr_dim(data, emb_dim, lag=1, rvals=None, dist=rowwise_euclidean,
              fname=plot_file)
   if debug_data:
     return (poly[0], (np.log(rvals), np.log(csums), poly))
-  else:
-    return poly[0]
+  return poly[0]
 
 
 def detrend_data(data, order=1, fit="poly"):
-  """
-  Removes a trend of given order from the data.
-  """
+  """Removes a trend of given order from the data."""
   # TODO also use this function in dfa
   xvals = np.arange(len(data))
   trend = poly_fit(xvals, data, order, fit=fit)
-  detrended = data - np.polyval(trend, xvals)
-  return detrended
+  return data - np.polyval(trend, xvals)
 
 
 def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
         fit_exp="RANSAC", debug_plot=False, debug_data=False, plot_file=None):
-  """
-  Performs a detrended fluctuation analysis (DFA) on the given data
+  """Performs a detrended fluctuation analysis (DFA) on the given data.
 
   Recommendations for parameter settings by Hardstone et al.:
     * nvals should be equally spaced on a logarithmic scale so that each window
@@ -2036,7 +1995,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     in this sense are smooth signals with monotonous or slowly oscillating
     behavior that are caused by external effects and not the dynamical system
     under study.
-  
+
     To get a hold of these trends, the first step is to calculate the "profile"
     of our time series as the cumulative sum of deviations from the mean,
     effectively integrating our data. This both smoothes out measurement noise
@@ -2052,7 +2011,7 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     size has the form
 
     W_(n,i) = [y_i, y_(i+1), y_(i+2), ... y_(i+n-1)]
-    
+
     The local trends are then removed for each window separately by fitting a
     polynomial p_(n,i) to the window W_(n,i) and then calculating
     W'_(n,i) = W_(n,i) - p_(n,i) (element-wise subtraction).
@@ -2166,14 +2125,17 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
     else:
       nvals = [total_N-2, total_N-1]
       msg = "choosing nvals = {} , DFA with less than ten data points is " \
-          + "extremely unreliable"
-      warnings.warn(msg.format(nvals), RuntimeWarning)
+           "extremely unreliable"
+      warnings.warn(msg.format(nvals), RuntimeWarning, stacklevel=2)
   if len(nvals) < 2:
-    raise ValueError("at least two nvals are needed")
+    msg = "at least two nvals are needed"
+    raise ValueError(msg)
   if np.min(nvals) < 2:
-    raise ValueError("nvals must be at least two")
+    msg = "nvals must be at least two"
+    raise ValueError(msg)
   if np.max(nvals) >= total_N:
-    raise ValueError("nvals cannot be larger than the input size")
+    msg = "nvals cannot be larger than the input size"
+    raise ValueError(msg)
   # create the signal profile
   # (cumulative sum of deviations from the mean => "walk")
   walk = np.cumsum(data - np.mean(data))
@@ -2218,5 +2180,4 @@ def dfa(data, nvals=None, overlap=True, order=1, fit_trend="poly",
              fname=plot_file)
   if debug_data:
     return (poly[0], (np.log(nvals), np.log(fluctuations), poly))
-  else:
-    return poly[0]
+  return poly[0]
