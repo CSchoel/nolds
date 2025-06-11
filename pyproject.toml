@@ -83,6 +83,7 @@ select = ["ALL"]
 ignore = [
     "TD002", # adding an author to TODOs wastes space and is redundant because of git history
     "TD003", # once there is an issue, there is no need to keep the TODO => don't require links
+    "COM812", # missing trailing commas are already fixed by the formatter
 ]
 
 [tool.ruff.lint.pydocstyle]
