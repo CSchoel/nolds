@@ -1,10 +1,21 @@
+"""Contains functions to load example datasets used in nolds."""
+
+from __future__ import annotations
+
 import datetime
 
 import numpy as np
 import pkg_resources
 
 
-def lorenz_euler(length, sigma, rho, beta, dt=0.01, start=None):
+def lorenz_euler(
+    length: int,
+    sigma: float,
+    rho: float,
+    beta: float,
+    dt: float = 0.01,
+    start: list[float] | None = None,
+) -> np.ndarray[tuple[int, int], np.dtype[np.float32]]:
     """Simulates the Lorenz system using a simple Euler method.
 
     The Lorenz system is a three dimensional dynamical system given
@@ -13,11 +24,24 @@ def lorenz_euler(length, sigma, rho, beta, dt=0.01, start=None):
     dx/dt = sigma * (y - x)
     dy/dt = rho * x - y - x * z
     dz/dt = x * y - beta * z
+
+    Args:
+        length: Number of data points to generate.
+        sigma: Sigma parameter of the Lorenz system.
+        rho: Rho parameter of the Lorenz system.
+        beta: Beta paramete rof the Lorenz system.
+        dt: Time delta between two data points.
+        start: Optional starting point for the trajectory.
+
+    Returns:
+        2d-array of (x, y, z) data points in the simulated Lorenz system.
     """
     if start is None:
         start = [1, 1, 1]
 
-    def lorenz(state, sigma, rho, beta):
+    def lorenz(
+        state: np.ndarray[tuple[int], np.dtype[np.float32]], sigma: float, rho: float, beta: float
+    ) -> np.ndarray[tuple[int], np.dtype[np.float32]]:
         x, y, z = state
         # NOTE: Numpy 1.x stores intermediate results as float64
         # => to achieve consistency between numpy versions, we have to use
@@ -29,90 +53,106 @@ def lorenz_euler(length, sigma, rho, beta, dt=0.01, start=None):
                 np.float32(rho) * x - y - x * z,
                 x * y - np.float32(beta) * z,
             ],
-            dtype="float32",
+            dtype=np.float32,
         )
 
-    trajectory = np.zeros((length, 3), dtype="float32")
+    trajectory = np.zeros((length, 3), dtype=np.float32)
     trajectory[0] = start
     for i in range(1, length):
-        # t = i * dt
         trajectory[i] = trajectory[i - 1] + lorenz(trajectory[i - 1], sigma, rho, beta) * dt
     return trajectory
 
 
-def lorenz_lyap(sigma, rho, beta):
-    """Calculates the exact Lyapunov dimension of the Lorenz system according to
-    Leonov 2015 [ll_1]_.
+def lorenz_lyap(sigma: float, rho: float, beta: float) -> float:
+    """Calculate the exact Lyapunov dimension of the Lorenz system.
+
+    This uses the definition according to Leonov 2015 [ll_1]_.
+
+    Args:
+        sigma: Sigma parameter of the Lorenz system.
+        rho: Rho parameter of the Lorenz system.
+        beta: Beta paramete rof the Lorenz system.
+
+    Returns:
+        Prescribed Lyapunov dimension for the Lorenz system according to Leonov 2015.
 
     References:
-      .. [ll_1] G. A. Leonov and N. V. Kuznetsov, “On differences and similarities in the
-         analysis of Lorenz, Chen, and Lu systems,” Applied Mathematics and Computation,
-         vol. 256, pp. 334–343, Apr. 2015, doi: 10.1016/j.amc.2014.12.132.
+        .. [ll_1] G. A. Leonov and N. V. Kuznetsov, “On differences and similarities in the
+           analysis of Lorenz, Chen, and Lu systems,” Applied Mathematics and Computation,
+           vol. 256, pp. 334–343, Apr. 2015, doi: 10.1016/j.amc.2014.12.132.
     """
     return 3 - 2 * (sigma + beta + 1) / (sigma + 1 + np.sqrt((sigma - 1) ** 2 + 4 * sigma * rho))
 
 
-def fbm(n, H=0.75):
+def fbm(
+    n: int,
+    H: float = 0.75,  # noqa: N803
+    random_seed: int | None = None,
+) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
     """Generates fractional brownian motions of desired length.
 
     Author:
-      Christian Thomae
+        Christian Thomae
 
     References:
-      .. [fbm_1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation
+        .. [fbm_1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion#Method_1_of_simulation
 
     Args:
-      n (int):
-        length of sequence to generate
-    Kwargs:
-      H (float):
-        hurst parameter
+        n: Length of sequence to generate.
+        H: Hurst parameter.
+        random_seed: Seed used for random number generation.
 
     Returns:
-      array of float:
-        simulated fractional brownian motion
+        array of float:
+            simulated fractional brownian motion
     """
-    # TODO more detailed description of fbm
-    assert H > 0
-    assert H < 1
+    if H < 0 or H > 1:
+        msg = f"H must be between 0 and 1, got {H} instead."
+        raise ValueError(msg)
 
-    def R(t, s):
-        twoH = 2 * H
+    def R(  # noqa: N802
+        t: np.ndarray[tuple[int], np.dtype[np.float64]],
+        s: np.ndarray[tuple[int], np.dtype[np.float64]],
+    ) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
+        twoH = 2 * H  # noqa: N806
         return 0.5 * (s**twoH + t**twoH - np.abs(t - s) ** twoH)
 
     # form the matrix tau
     gamma = R(*np.mgrid[0:n, 0:n])  # apply R to every element in matrix
-    w, P = np.linalg.eigh(gamma)
-    L = np.diag(w)
+    w, P = np.linalg.eigh(gamma)  # noqa: N806
+    L = np.diag(w)  # noqa: N806
     sigma = np.dot(np.dot(P, np.sqrt(L)), np.linalg.inv(P))
-    v = np.random.randn(n)
+    gen = np.random.default_rng(seed=random_seed)
+    v = gen.standard_normal(n)
     return np.dot(sigma, v)
 
 
-def fgn(n, H=0.75):
+def fgn(
+    n: int,
+    H: float = 0.75,  # noqa: N803
+    random_seed: int | None = None,
+) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
     """Generates fractional gaussian noise of desired length.
 
     References:
       .. [fgn_1] https://en.wikipedia.org/wiki/Fractional_Brownian_motion
 
     Args:
-      n (int):
-        length of sequence to generate
-
-    Kwargs:
-      H (float):
-        hurst parameter
+      n: Length of sequence to generate.
+      H: Hurst parameter.
+      random_seed: Seed used for random number generation.
 
     Returns:
       array of float:
         simulated fractional gaussian noise
     """
-    return np.diff(fbm(n + 1, H=H))
+    return np.diff(fbm(n + 1, H=H, random_seed=random_seed))
 
 
-def qrandom(n):
-    """Creates an array of n true random numbers obtained from the quantum random
-    number generator at qrng.anu.edu.au.
+def qrandom(n: int) -> np.ndarray[tuple[int], np.dtype[np.uint16]]:
+    """Creates an array of n true random numbers.
+
+    The data is obtained from the quantum random number generator at qrng.anu.edu.au.
 
     This function requires the package quantumrandom and an internet connection.
 
@@ -249,7 +289,7 @@ def tent_map(x, steps, mu=2):
 def logistic_map(x, steps, r=4):
     r"""Generates a time series of the logistic map.
 
-  Characteristics and Background:
+    Characteristics and Background:
     The logistic map is among the simplest examples for a time series that can
     exhibit chaotic behavior depending on the parameter r. For r between 2 and
     3, the series quickly becomes static. At r=3 the first bifurcation point is
@@ -257,7 +297,7 @@ def logistic_map(x, steps, r=4):
     it shows chaotic behavior with a few islands of stability until perfect
     chaos is achieved at r = 4.
 
-  Calculating the Lyapunov exponent:
+    Calculating the Lyapunov exponent:
     To calculate the "true" Lyapunov exponent of the logistic map, we first
     have to make a few observations for maps in general that are repeated
     applications of a function to a starting value.
@@ -314,24 +354,24 @@ def logistic_map(x, steps, r=4):
 
 
 
-  References:
+    References:
     .. [lm_1] https://en.wikipedia.org/wiki/Tent_map
     .. [lm_2] https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/
 
-  Args:
+    Args:
     x (float):
       starting point
     steps (int):
       number of steps for which the generator should run
 
-  Kwargs:
+    Kwargs:
     r (int):
       parameter r that controls the behavior of the map
 
-  Returns:
+    Returns:
     generator object:
       the generator that creates the time series
-  """
+    """
     for _ in range(steps):
         x = r * x * (1 - x)
         yield x
