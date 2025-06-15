@@ -185,7 +185,7 @@ def load_qrandom():
         the dataset
     """
     fname = "datasets/qrandom.npy"
-    with importlib.resources.files("nolds.datasets").joinpath(fname).open("rb") as f:
+    with importlib.resources.files("nolds").joinpath(fname).open("rb") as f:
         return np.load(f)
 
 
@@ -199,7 +199,7 @@ def load_brown72():
         the dataset
     """
     fname = "datasets/brown72.npy"
-    with importlib.resources.files("nolds.datasets").joinpath(fname).open("rb") as f:
+    with importlib.resources.files("nolds").joinpath(fname).open("rb") as f:
         return np.load(f)
 
 
@@ -224,10 +224,10 @@ def load_lorenz_physionet():
         x- and y-coordinates of the line fitting step in the PhysioNet output
     """
     fname = "datasets/lorenz.txt"
-    with importlib.resources.files("nolds.datasets").joinpath(fname).open("rb") as f:
+    with importlib.resources.files("nolds").joinpath(fname).open("rb") as f:
         data_in = np.loadtxt(f)
     fname = "datasets/lorenz_physionet.txt"
-    with importlib.resources.files("nolds.datasets").joinpath(fname).open("rb") as f:
+    with importlib.resources.files("nolds").joinpath(fname).open("rb") as f:
         data_out = np.loadtxt(f)
     return data_in, data_out
 
@@ -430,7 +430,7 @@ def load_financial():
     data = []
     for index in ["^JKSE", "^N225", "^NDX"]:
         fname = f"datasets/{index}.csv"
-        with importlib.resources.files("nolds.datasets").joinpath(fname).open("rb") as f:
+        with importlib.resources.files("nolds").joinpath(fname).open("rb") as f:
             days, values = load_finance_yahoo_data(f)
             pad_opening_values(values)
             data.append((days, values))
