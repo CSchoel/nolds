@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Switches from using `setup.py` to `pyproject.toml` using `uv`.
 * Moves ruff config into `pyproject.toml`.
+* CSV-based datasets are now loaded with `csv.reader`.
+* Datasets that are available as global variables are loaded lazily now.
+* `datasets.qrandom` output now has a more accurate dtype of `np.uint16`.
+* Uses `importlib.resources.files` instead of deprecated `pkg_resources.resource_stream`.
+* Applies Ruff formatting throughout the codebase and addresses all linting errors.
 
 ### Fixed
 
