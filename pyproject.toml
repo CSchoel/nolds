@@ -84,6 +84,8 @@ ignore = [
     "TD002", # adding an author to TODOs wastes space and is redundant because of git history
     "TD003", # once there is an issue, there is no need to keep the TODO => don't require links
     "COM812", # missing trailing commas are already fixed by the formatter
+    "PLR0913", # this is a scientific library, functions just have a bazillion parameters
+    "RUF002", # en-dashes are used for bibliographical references in docstrings
 ]
 
 [tool.ruff.lint.pydocstyle]
