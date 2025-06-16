@@ -1,18 +1,57 @@
+"""Main module containing all measures implemented in nolds."""
+
+from __future__ import annotations
+
 import math
 import warnings
+from pathlib import Path
+from typing import Literal, TypeVar, cast, overload
 
 import numpy as np
 
+D = TypeVar("D", bound=np.integer | np.floating)
 
-def rowwise_chebyshev(x, y):
+
+def rowwise_chebyshev(
+    x: np.ndarray[tuple[int, int], np.dtype[D]], y: np.ndarray[tuple[int], np.dtype[D]]
+) -> np.ndarray[tuple[int], np.dtype[D]]:
+    """Returns the Chebyshev distances between each row of matrix x and the reference row y."""
     return np.max(np.abs(x - y), axis=1)
 
 
-def rowwise_euclidean(x, y):
+def rowwise_euclidean(
+    x: np.ndarray[tuple[int, int], np.dtype[D]], y: np.ndarray[tuple[int], np.dtype[D]]
+) -> np.ndarray[tuple[int], np.dtype[D]]:
+    """Returns the Euclidean distances between each row of matrix x and the reference row y."""
     return np.sqrt(np.sum((x - y) ** 2, axis=1))
 
 
-def poly_fit(x, y, degree, fit="RANSAC"):
+FittingMethod = Literal["RANSAC", "poly"]
+
+
+def poly_fit(
+    x: np.ndarray[tuple[int], np.dtype[D]],
+    y: np.ndarray[tuple[int], np.dtype[D]],
+    degree: int,
+    fit: FittingMethod = "RANSAC",
+) -> np.ndarray[tuple[int], np.dtype[np.float32]]:
+    """Fits a polynomial of the given degree to the data.
+
+    This currently supports two fittting algorithms.
+
+    - "poly" uses the standard `np.ployfit` function to perform a least squares fit.
+    - "RANSAC" uses the RANSAC algorithm, which is more robust to outliers but
+        introuces inaccuracies due to randomness.
+
+    If "RANSAC" is chosen, but scikit-learn is not installed, "poly" is used as
+    a fallback option.
+
+    Args:
+        x: x-axis values
+        y: y-axis values
+        degree: degree of the polynomial
+        fit: algorithm to use for fitting
+    """
     # check if we can use RANSAC
     if fit == "RANSAC":
         try:
@@ -30,7 +69,7 @@ def poly_fit(x, y, degree, fit="RANSAC"):
             fit = "poly"
 
     if fit == "poly":
-        return np.polyfit(x, y, degree)
+        return np.polyfit(x, y, degree).astype(np.float32)
     if fit == "RANSAC":
         model = sklin.RANSACRegressor(sklin.LinearRegression(fit_intercept=False))
         xdat = np.asarray(x)
@@ -41,7 +80,7 @@ def poly_fit(x, y, degree, fit="RANSAC"):
         polydat = skpre.PolynomialFeatures(degree).fit_transform(xdat)
         try:
             model.fit(polydat, y)
-            coef = model.estimator_.coef_[::-1]
+            coef = cast("sklin.LinearRegression", model.estimator_).coef_[::-1]
         except ValueError:
             warnings.warn(
                 "RANSAC did not reach consensus, using numpy's polyfit",
@@ -49,30 +88,27 @@ def poly_fit(x, y, degree, fit="RANSAC"):
                 stacklevel=2,
             )
             coef = np.polyfit(x, y, degree)
-        return coef
+        return coef.astype(np.float32)
     msg = f"invalid fitting mode ({fit})"
     raise ValueError(msg)
 
 
-def delay_embedding(data, emb_dim, lag=1):
+def delay_embedding(
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike, emb_dim: int, lag: int = 1
+) -> np.ndarray[tuple[int, int], np.dtype[np.float32]]:
     """Perform a time-delay embedding of a time series.
 
     Args:
-      data (array-like):
-        the data that should be embedded
-      emb_dim (int):
-        the embedding dimension
-    Kwargs:
-      lag (int):
-        the lag between elements in the embedded vectors
+        data: the data that should be embedded
+        emb_dim: the embedding dimension
+        lag: the lag between elements in the embedded vectors
 
     Returns:
-      emb_dim x m array:
-        matrix of embedded vectors of the form
+        Matrix of shape (m, emb_dim) containing embedded vectors of the form
         [data[i], data[i+lag], data[i+2*lag], ... data[i+(emb_dim-1)*lag]]
         for i in 0 to m-1 (m = len(data)-(emb_dim-1)*lag)
     """
-    data = np.asarray(data)
+    data = np.asarray(data, dtype=np.float32)
     min_len = (emb_dim - 1) * lag + 1
     if len(data) < min_len:
         msg = (
@@ -86,162 +122,204 @@ def delay_embedding(data, emb_dim, lag=1):
     return data[indices]
 
 
-def lyap_r_len(**kwargs):
-    """Helper function that calculates the minimum number of data points required
-    to use lyap_r.
+def lyap_r_len(emb_dim: int, lag: int, trajectory_len: int, min_tsep: int) -> int:
+    """Calculates the minimum number of data points required to use lyap_r.
 
     Note that none of the required parameters may be set to None.
 
-    Kwargs:
-      kwargs(dict):
-        arguments used for lyap_r (required: emb_dim, lag, trajectory_len and
-        min_tsep)
+    Args:
+        emb_dim: embedding dimension for delay embedding
+        lag: lag for delay embedding
+        min_tsep: minimal temporal separation (in number of data points) between two "neighbors"
+        trajectory_len: the time (in number of data points) to follow the distance
+            trajectories between two neighboring points
+
 
     Returns:
-      minimum number of data points required to call lyap_r with the given
-      parameters
+        minimum number of data points required to call lyap_r with the given
+        parameters
     """
     # minimum length required to find single orbit vector
-    min_len = (kwargs["emb_dim"] - 1) * kwargs["lag"] + 1
+    min_len = (emb_dim - 1) * lag + 1
     # we need trajectory_len orbit vectors to follow a complete trajectory
-    min_len += kwargs["trajectory_len"] - 1
+    min_len += trajectory_len - 1
     # we need min_tsep * 2 + 1 orbit vectors to find neighbors for each
-    min_len += kwargs["min_tsep"] * 2 + 1
+    min_len += min_tsep * 2 + 1
     return min_len
 
 
+@overload
 def lyap_r(
-    data,
-    emb_dim=10,
-    lag=None,
-    min_tsep=None,
-    tau=1,
-    min_neighbors=20,
-    trajectory_len=20,
-    fit="RANSAC",
-    debug_plot=False,
-    debug_data=False,
-    plot_file=None,
-    fit_offset=0,
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    emb_dim: int = 10,
+    *,
+    lag: int | None = None,
+    min_tsep: int | None = None,
+    tau: float = 1,
+    min_neighbors: int = 20,
+    trajectory_len: int = 20,
+    fit: FittingMethod = "RANSAC",
+    debug_plot: bool = False,
+    debug_data: Literal[False] = False,
+    plot_file: str | Path | None = None,
+    fit_offset: int = 0,
+) -> float: ...
+
+
+@overload
+def lyap_r(
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    emb_dim: int = 10,
+    *,
+    lag: int | None = None,
+    min_tsep: int | None = None,
+    tau: float = 1,
+    min_neighbors: int = 20,
+    trajectory_len: int = 20,
+    fit: FittingMethod = "RANSAC",
+    debug_plot: bool = False,
+    debug_data: Literal[True] = True,
+    plot_file: str | Path | None = None,
+    fit_offset: int = 0,
+) -> tuple[
+    float,
+    tuple[
+        np.ndarray[tuple[int], np.dtype[np.int32]],
+        np.ndarray[tuple[int], np.dtype[np.float32]],
+        np.ndarray[tuple[int], np.dtype[np.float32]],
+    ],
+]: ...
+
+
+def lyap_r(  # noqa: C901, PLR0912, PLR0915
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    emb_dim: int = 10,
+    *,
+    lag: int | None = None,
+    min_tsep: int | None = None,
+    tau: float = 1,
+    min_neighbors: int = 20,
+    trajectory_len: int = 20,
+    fit: FittingMethod = "RANSAC",
+    debug_plot: bool = False,
+    debug_data: bool = False,
+    plot_file: str | Path | None = None,
+    fit_offset: int = 0,
+) -> (
+    float
+    | tuple[
+        float,
+        tuple[
+            np.ndarray[tuple[int], np.dtype[np.int32]],
+            np.ndarray[tuple[int], np.dtype[np.float32]],
+            np.ndarray[tuple[int], np.dtype[np.float32]],
+        ],
+    ]
 ):
-    """Estimates the largest Lyapunov exponent using the algorithm of Rosenstein
-    et al. [lr_1]_.
+    """Estimates the largest Lyapunov exponent with the method of Rosenstein et al. [lr_1]_.
 
     Explanation of Lyapunov exponents:
-      See lyap_e.
+        See lyap_e.
 
     Explanation of the algorithm:
-      The algorithm of Rosenstein et al. is only able to recover the largest
-      Lyapunov exponent, but behaves rather robust to parameter choices.
+        The algorithm of Rosenstein et al. is only able to recover the largest
+        Lyapunov exponent, but behaves rather robust to parameter choices.
 
-      The idea for the algorithm relates closely to the definition of Lyapunov
-      exponents. First, the dynamics of the data are reconstructed using a delay
-      embedding method with a lag, such that each value x_i of the data is mapped
-      to the vector
+        The idea for the algorithm relates closely to the definition of Lyapunov
+        exponents. First, the dynamics of the data are reconstructed using a delay
+        embedding method with a lag, such that each value x_i of the data is mapped
+        to the vector
 
-      X_i = [x_i, x_(i+lag), x_(i+2*lag), ..., x_(i+(emb_dim-1) * lag)]
+        X_i = [x_i, x_(i+lag), x_(i+2*lag), ..., x_(i+(emb_dim-1) * lag)]
 
-      For each such vector X_i, we find the closest neighbor X_j using the
-      euclidean distance. We know that as we follow the trajectories from X_i and
-      X_j in time in a chaotic system the distances between X_(i+k) and X_(j+k)
-      denoted as d_i(k) will increase according to a power law
-      d_i(k) = c * e^(lambda * k) where lambda is a good approximation of the
-      highest Lyapunov exponent, because the exponential expansion along the axis
-      associated with this exponent will quickly dominate the expansion or
-      contraction along other axes.
+        For each such vector X_i, we find the closest neighbor X_j using the
+        euclidean distance. We know that as we follow the trajectories from X_i and
+        X_j in time in a chaotic system the distances between X_(i+k) and X_(j+k)
+        denoted as d_i(k) will increase according to a power law
+        d_i(k) = c * e^(lambda * k) where lambda is a good approximation of the
+        highest Lyapunov exponent, because the exponential expansion along the axis
+        associated with this exponent will quickly dominate the expansion or
+        contraction along other axes.
 
-      To calculate lambda, we look at the logarithm of the distance trajectory,
-      because log(d_i(k)) = log(c) + lambda * k. This gives a set of lines
-      (one for each index i) whose slope is an approximation of lambda. We
-      therefore extract the mean log trajectory d'(k) by taking the mean of
-      log(d_i(k)) over all orbit vectors X_i. We then fit a straight line to
-      the plot of d'(k) versus k. The slope of the line gives the desired
-      parameter lambda.
+        To calculate lambda, we look at the logarithm of the distance trajectory,
+        because log(d_i(k)) = log(c) + lambda * k. This gives a set of lines
+        (one for each index i) whose slope is an approximation of lambda. We
+        therefore extract the mean log trajectory d'(k) by taking the mean of
+        log(d_i(k)) over all orbit vectors X_i. We then fit a straight line to
+        the plot of d'(k) versus k. The slope of the line gives the desired
+        parameter lambda.
 
     Method for choosing min_tsep:
-      Usually we want to find neighbors between points that are close in phase
-      space but not too close in time, because we want to avoid spurious
-      correlations between the obtained trajectories that originate from temporal
-      dependencies rather than the dynamic properties of the system. Therefore it
-      is critical to find a good value for min_tsep. One rather plausible
-      estimate for this value is to set min_tsep to the mean period of the
-      signal, which can be obtained by calculating the mean frequency using the
-      fast fourier transform. This procedure is used by default if the user sets
-      min_tsep = None. Note that this default procedure uses a naive approach
-      for estimating the power spectral density, which just takes the FFT of the
-      whole signal without applying any windowing function to avoid biases. If
-      you have a non-stationary input and want more than a rough estimate,
-      consider calculating min_tsep manually using a sliding window approach
-      like Welch's method (implemented in `scipy.signal.welch`).
+        Usually we want to find neighbors between points that are close in phase
+        space but not too close in time, because we want to avoid spurious
+        correlations between the obtained trajectories that originate from temporal
+        dependencies rather than the dynamic properties of the system. Therefore it
+        is critical to find a good value for min_tsep. One rather plausible
+        estimate for this value is to set min_tsep to the mean period of the
+        signal, which can be obtained by calculating the mean frequency using the
+        fast fourier transform. This procedure is used by default if the user sets
+        min_tsep = None. Note that this default procedure uses a naive approach
+        for estimating the power spectral density, which just takes the FFT of the
+        whole signal without applying any windowing function to avoid biases. If
+        you have a non-stationary input and want more than a rough estimate,
+        consider calculating min_tsep manually using a sliding window approach
+        like Welch's method (implemented in `scipy.signal.welch`).
 
     Method for choosing lag:
-      Another parameter that can be hard to choose by instinct alone is the lag
-      between individual values in a vector of the embedded orbit. Here,
-      Rosenstein et al. suggest to set the lag to the distance where the
-      autocorrelation function drops below 1 - 1/e times its original (maximal)
-      value. This procedure is used by default if the user sets lag = None.
+        Another parameter that can be hard to choose by instinct alone is the lag
+        between individual values in a vector of the embedded orbit. Here,
+        Rosenstein et al. suggest to set the lag to the distance where the
+        autocorrelation function drops below 1 - 1/e times its original (maximal)
+        value. This procedure is used by default if the user sets lag = None.
 
     References:
-      .. [lr_1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca,
-         “A practical method for calculating largest Lyapunov exponents from
-         small data sets,” Physica D: Nonlinear Phenomena, vol. 65, no. 1,
-         pp. 117–134, 1993.
+        .. [lr_1] M. T. Rosenstein, J. J. Collins, and C. J. De Luca,
+            “A practical method for calculating largest Lyapunov exponents from
+            small data sets,” Physica D: Nonlinear Phenomena, vol. 65, no. 1,
+            pp. 117–134, 1993.
 
     Reference Code:
-      .. [lr_a] mirwais, "Largest Lyapunov Exponent with Rosenstein's Algorithm",
-         url: http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm
-      .. [lr_b] Shapour Mohammadi, "LYAPROSEN: MATLAB function to calculate
-         Lyapunov exponent",
-         url: https://ideas.repec.org/c/boc/bocode/t741502.html
-      .. [lr_c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, "TISEAN 3.0.0 - Nonlinear Time Series Analysis",
-         url: https://www.pks.mpg.de/tisean/Tisean_3.0.0/docs/docs_c/lyap_r.html
+        .. [lr_a] mirwais, "Largest Lyapunov Exponent with Rosenstein's Algorithm",
+            url: http://www.mathworks.com/matlabcentral/fileexchange/38424-largest-lyapunov-exponent-with-rosenstein-s-algorithm
+        .. [lr_b] Shapour Mohammadi, "LYAPROSEN: MATLAB function to calculate
+            Lyapunov exponent",
+            url: https://ideas.repec.org/c/boc/bocode/t741502.html
+        .. [lr_c] Rainer Hegger, Holger Kantz, and Thomas Schreiber,
+            "TISEAN 3.0.0 - Nonlinear Time Series Analysis",
+            url: https://www.pks.mpg.de/tisean/Tisean_3.0.0/docs/docs_c/lyap_r.html
 
     Args:
-      data (iterable of float):
-        (one-dimensional) time series
-    Kwargs:
-      emb_dim (int):
-        embedding dimension for delay embedding
-      lag (float):
-        lag for delay embedding
-      min_tsep (float):
-        minimal temporal separation between two "neighbors" (default:
-        find a suitable value by calculating the mean period of the data)
-      tau (float):
-        step size between data points in the time series in seconds
-        (normalization scaling factor for exponents)
-      min_neighbors (int):
-        if lag=None, the search for a suitable lag will be stopped when the
-        number of potential neighbors for a vector drops below min_neighbors
-      trajectory_len (int):
-        the time (in number of data points) to follow the distance
-        trajectories between two neighboring points
-      fit (str):
-        the fitting method to use for the line fit, either 'poly' for normal
-        least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
-        is more robust to outliers
-      debug_plot (boolean):
-        if True, a simple plot of the final line-fitting step will
-        be shown
-      debug_data (boolean):
-        if True, debugging data will be returned alongside the result
-      plot_file (str):
-        if debug_plot is True and plot_file is not None, the plot will be saved
-        under the given file name instead of directly showing it through
-        ``plt.show()``
-      fit_offset (int):
-        neglect the first fit_offset steps when fitting
+        data: (one-dimensional) time series
+        emb_dim: embedding dimension for delay embedding
+        lag: lag for delay embedding
+        min_tsep: minimal temporal separation between two "neighbors" (default:
+            find a suitable value by calculating the mean period of the data)
+        tau: step size between data points in the time series in seconds
+            (normalization scaling factor for exponents)
+        min_neighbors: if lag=None, the search for a suitable lag will be stopped when the
+            number of potential neighbors for a vector drops below min_neighbors
+        trajectory_len: the time (in number of data points) to follow the distance
+            trajectories between two neighboring points
+        fit: the fitting method to use for the line fit, either 'poly' for normal
+            least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+            is more robust to outliers
+        debug_plot: if True, a simple plot of the final line-fitting step will
+            be shown
+        debug_data: if True, debugging data will be returned alongside the result
+        plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
+            under the given file name instead of directly showing it through
+            ``plt.show()``
+        fit_offset: neglect the first fit_offset steps when fitting
 
     Returns:
-      float:
-        an estimate of the largest Lyapunov exponent (a positive exponent is
-        a strong indicator for chaos)
-      (1d-vector, 1d-vector, list):
-        only present if debug_data is True: debug data of the form
-        ``(ks, div_traj, poly)`` where ``ks`` are the x-values of the line fit,
-        ``div_traj`` are the y-values and ``poly`` are the line coefficients
-        (``[slope, intercept]``).
+        An estimate of the largest Lyapunov exponent (a positive exponent is
+        a strong indicator for chaos). If `debug_data = True`, the return
+        type is a tuple instead with the second element being another tuple
+        containing
 
+        - the x-values of the line fit
+        - the y-values of the line fit
+        - the line coefficients (`[slope, intercept]`).
     """
     # convert data to float to avoid overflow errors in rowwise_euclidean
     data = np.asarray(data, dtype=np.float64)
@@ -279,9 +357,8 @@ def lyap_r(
         eps = acorr[n - 1] * (1 - 1.0 / np.e)
         lag = 1
 
-        # small helper function to calculate resulting number of vectors for a
-        # given lag value
-        def nb_neighbors(lag_value):
+        def nb_neighbors(lag_value: int) -> int:
+            """Returns resulting number of vectors for a given lag value."""
             min_len = lyap_r_len(
                 emb_dim=emb_dim,
                 lag=lag_value,
@@ -337,21 +414,23 @@ def lyap_r(
         raise ValueError(msg.format(-ntraj + 1))
     if ntraj < min_traj:
         # not enough data points => there are rows where all values are inf
-        assert np.any(np.all(np.isinf(dists[:ntraj, :ntraj]), axis=1))
+        assert np.any(np.all(np.isinf(dists[:ntraj, :ntraj]), axis=1)), "no inf rows found"
         msg = (
             "Not enough data points. At least {} trajectories are required "
             "to find a valid neighbor for each orbit vector with min_tsep={} "
             "but only {} could be created."
         )
         raise ValueError(msg.format(min_traj, min_tsep, ntraj))
-    assert np.all(np.any(np.isfinite(dists[:ntraj, :ntraj]), axis=1))
+    assert np.all(np.any(np.isfinite(dists[:ntraj, :ntraj]), axis=1)), (
+        "some distances are not finite"
+    )
     # find nearest neighbors (exclude last columns, because these vectors cannot
     # be followed in time for trajectory_len steps)
     nb_idx = np.argmin(dists[:ntraj, :ntraj], axis=1)
 
     # build divergence trajectory by averaging distances along the trajectory
     # over all neighbor pairs
-    div_traj = np.zeros(trajectory_len, dtype=float)
+    div_traj = np.zeros(trajectory_len, dtype=np.float32)
     for k in range(trajectory_len):
         # calculate mean trajectory distance at step k
         indices = (np.arange(ntraj) + k, nb_idx + k)
@@ -371,7 +450,7 @@ def lyap_r(
     if len(ks) < 1:
         # if all points or all but one point in the trajectory is -inf, we cannot
         # fit a line through the remaining points => return -inf as exponent
-        poly = [-np.inf, 0]
+        poly = np.array([-np.inf, 0], dtype=np.float32)
     else:
         # normal line fitting
         poly = poly_fit(ks[fit_offset:], div_traj[fit_offset:], 1, fit=fit)
