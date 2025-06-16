@@ -34,7 +34,7 @@ def poly_fit(
     y: np.ndarray[tuple[int], np.dtype[D]],
     degree: int,
     fit: FittingMethod = "RANSAC",
-) -> np.ndarray[tuple[int], np.dtype[np.float32]]:
+) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
     """Fits a polynomial of the given degree to the data.
 
     This currently supports two fittting algorithms.
@@ -69,7 +69,7 @@ def poly_fit(
             fit = "poly"
 
     if fit == "poly":
-        return np.polyfit(x, y, degree).astype(np.float32)
+        return np.polyfit(x, y, degree)
     if fit == "RANSAC":
         model = sklin.RANSACRegressor(sklin.LinearRegression(fit_intercept=False))
         xdat = np.asarray(x)
@@ -88,14 +88,14 @@ def poly_fit(
                 stacklevel=2,
             )
             coef = np.polyfit(x, y, degree)
-        return coef.astype(np.float32)
+        return coef
     msg = f"invalid fitting mode ({fit})"
     raise ValueError(msg)
 
 
 def delay_embedding(
     data: np.typing.FloatArrayLike | np.typing.IntArrayLike, emb_dim: int, lag: int = 1
-) -> np.ndarray[tuple[int, int], np.dtype[np.float32]]:
+) -> np.ndarray[tuple[int, int], np.dtype[np.float64]]:
     """Perform a time-delay embedding of a time series.
 
     Args:
@@ -108,7 +108,8 @@ def delay_embedding(
         [data[i], data[i+lag], data[i+2*lag], ... data[i+(emb_dim-1)*lag]]
         for i in 0 to m-1 (m = len(data)-(emb_dim-1)*lag)
     """
-    data = np.asarray(data, dtype=np.float32)
+    if not isinstance(data, np.ndarray):
+        data = np.asarray(data, dtype=np.float64)
     min_len = (emb_dim - 1) * lag + 1
     if len(data) < min_len:
         msg = (
@@ -163,7 +164,7 @@ def lyap_r(
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
     fit_offset: int = 0,
-) -> float: ...
+) -> np.float64: ...
 
 
 @overload
@@ -182,11 +183,11 @@ def lyap_r(
     plot_file: str | Path | None = None,
     fit_offset: int = 0,
 ) -> tuple[
-    float,
+    np.float64,
     tuple[
         np.ndarray[tuple[int], np.dtype[np.int32]],
-        np.ndarray[tuple[int], np.dtype[np.float32]],
-        np.ndarray[tuple[int], np.dtype[np.float32]],
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+        np.ndarray[tuple[int], np.dtype[np.float64]],
     ],
 ]: ...
 
@@ -206,13 +207,13 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
     plot_file: str | Path | None = None,
     fit_offset: int = 0,
 ) -> (
-    float
+    np.float64
     | tuple[
         float,
         tuple[
             np.ndarray[tuple[int], np.dtype[np.int32]],
-            np.ndarray[tuple[int], np.dtype[np.float32]],
-            np.ndarray[tuple[int], np.dtype[np.float32]],
+            np.ndarray[tuple[int], np.dtype[np.float64]],
+            np.ndarray[tuple[int], np.dtype[np.float64]],
         ],
     ]
 ):
@@ -430,7 +431,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
 
     # build divergence trajectory by averaging distances along the trajectory
     # over all neighbor pairs
-    div_traj = np.zeros(trajectory_len, dtype=np.float32)
+    div_traj = np.zeros(trajectory_len, dtype=np.float64)
     for k in range(trajectory_len):
         # calculate mean trajectory distance at step k
         indices = (np.arange(ntraj) + k, nb_idx + k)
@@ -450,7 +451,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
     if len(ks) < 1:
         # if all points or all but one point in the trajectory is -inf, we cannot
         # fit a line through the remaining points => return -inf as exponent
-        poly = np.array([-np.inf, 0], dtype=np.float32)
+        poly = np.array([-np.inf, 0], dtype=np.float64)
     else:
         # normal line fitting
         poly = poly_fit(ks[fit_offset:], div_traj[fit_offset:], 1, fit=fit)
