@@ -463,35 +463,32 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
     return le
 
 
-def lyap_e_len(**kwargs):
-    """Helper function that calculates the minimum number of data points required
-    to use lyap_e.
+def lyap_e_len(emb_dim: int, matrix_dim: int, min_tsep: int, min_nb: int) -> int:
+    """Returns the minimum number of data points required to use lyap_e.
 
     Note that none of the required parameters may be set to None.
 
-    Kwargs:
-      kwargs(dict):
-        arguments used for lyap_e (required: emb_dim, matrix_dim, min_nb
-        and min_tsep)
-
-    Returns:
-      minimum number of data points required to call lyap_e with the given
-      parameters
+    Args:
+        matrix_dim: matrix dimension (emb_dim - 1 must be divisible by matrix_dim - 1)
+        min_nb: minimal number of neighbors
+            (default: min(2 * matrix_dim, matrix_dim + 4))
+        min_tsep: minimal temporal separation between two "neighbors"
+        emb_dim: embedding dimension
     """
-    m = (kwargs["emb_dim"] - 1) // (kwargs["matrix_dim"] - 1)
+    m = (emb_dim - 1) // (matrix_dim - 1)
     # minimum length required to find single orbit vector
-    min_len = kwargs["emb_dim"]
+    min_len = emb_dim
     # we need to follow each starting point of an orbit vector for m more steps
     min_len += m
     # we need min_tsep * 2 + 1 orbit vectors to find neighbors for each
-    min_len += kwargs["min_tsep"] * 2
+    min_len += min_tsep * 2
     # we need at least min_nb neighbors for each orbit vector
-    min_len += kwargs["min_nb"]
+    min_len += min_nb
     return min_len
 
 
 def lyap_e(
-    data,
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
     emb_dim=10,
     matrix_dim=4,
     min_nb=None,
@@ -573,24 +570,16 @@ def lyap_e(
         (scalar) data points
 
     Kwargs:
-      emb_dim (int):
-        embedding dimension
-      matrix_dim (int):
-        matrix dimension (emb_dim - 1 must be divisible by matrix_dim - 1)
-      min_nb (int):
-        minimal number of neighbors
+      emb_dim: embedding dimension
+      matrix_dim: matrix dimension (emb_dim - 1 must be divisible by matrix_dim - 1)
+      min_nb: minimal number of neighbors
         (default: min(2 * matrix_dim, matrix_dim + 4))
-      min_tsep (int):
-        minimal temporal separation between two "neighbors"
-      tau (float):
-        step size of the data in seconds
+      min_tsep: minimal temporal separation between two "neighbors"
+      tau: step size of the data in seconds
         (normalization scaling factor for exponents)
-      debug_plot (boolean):
-        if True, a histogram matrix of the individual estimates will be shown
-      debug_data (boolean):
-        if True, debugging data will be returned alongside the result
-      plot_file (str):
-        if debug_plot is True and plot_file is not None, the plot will be saved
+      debug_plot: if True, a histogram matrix of the individual estimates will be shown
+      debug_data: if True, debugging data will be returned alongside the result
+      plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
         under the given file name instead of directly showing it through
         ``plt.show()``
 
