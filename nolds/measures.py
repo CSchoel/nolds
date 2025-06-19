@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 import warnings
 from pathlib import Path
-from typing import Literal, TypeVar, cast, overload
+from typing import Callable, Literal, TypeVar, cast, overload
 
 import numpy as np
 
@@ -486,111 +486,143 @@ def lyap_e_len(emb_dim: int, matrix_dim: int, min_tsep: int, min_nb: int) -> int
     min_len += min_nb
     return min_len
 
-
+@overload
 def lyap_e(
     data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
-    emb_dim=10,
-    matrix_dim=4,
-    min_nb=None,
-    min_tsep=0,
-    tau=1,
-    debug_plot=False,
-    debug_data=False,
-    plot_file=None,
+    *,
+    emb_dim: int = 10,
+    matrix_dim: int = 4,
+    min_nb: int | None = None,
+    min_tsep: int = 0,
+    tau: float = 1,
+    debug_plot: bool = False,
+    debug_data: Literal[False] = False,
+    plot_file: str | Path | None = None,
+) -> np.ndarray[tuple[int], np.dtype[np.float64]]: ...
+
+
+@overload
+def lyap_e(
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    *,
+    emb_dim: int = 10,
+    matrix_dim: int = 4,
+    min_nb: int | None = None,
+    min_tsep: int = 0,
+    tau: float = 1,
+    debug_plot: bool = False,
+    debug_data: Literal[True] = True,
+    plot_file: str | Path | None = None,
+) -> tuple[
+    np.ndarray[tuple[int], np.dtype[np.float64]], np.ndarray[tuple[int, int], np.dtype[np.float64]]
+]: ...
+
+
+def lyap_e(  # noqa: C901, PLR0915
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    *,
+    emb_dim: int = 10,
+    matrix_dim: int = 4,
+    min_nb: int | None = None,
+    min_tsep: int = 0,
+    tau: float = 1,
+    debug_plot: bool = False,
+    debug_data: bool = False,
+    plot_file: str | Path | None = None,
+) -> (
+    np.ndarray[tuple[int], np.dtype[np.float64]]
+    | tuple[
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+        np.ndarray[tuple[int, int], np.dtype[np.float64]],
+    ]
 ):
-    r"""Estimates the Lyapunov exponents for the given data using the algorithm of
-    Eckmann et al. [le_1]_.
+    r"""Estimates the Lyapunov exponents using the algorithm of Eckmann et al. [le_1]_.
 
     Recommendations for parameter settings by Eckmann et al.:
-      * long recording time improves accuracy, small tau does not
-      * use large values for emb_dim
-      * matrix_dim should be 'somewhat larger than the expected number of
-        positive Lyapunov exponents'
-      * min_nb = min(2 * matrix_dim, matrix_dim + 4)
+        * long recording time improves accuracy, small tau does not
+        * use large values for emb_dim
+        * matrix_dim should be 'somewhat larger than the expected number of
+            positive Lyapunov exponents'
+        * min_nb = min(2 * matrix_dim, matrix_dim + 4)
 
     Explanation of Lyapunov exponents:
-      The Lyapunov exponent describes the rate of separation of two
-      infinitesimally close trajectories of a dynamical system in phase space.
-      In a chaotic system, these trajectories diverge exponentially following
-      the equation:
+        The Lyapunov exponent describes the rate of separation of two
+        infinitesimally close trajectories of a dynamical system in phase space.
+        In a chaotic system, these trajectories diverge exponentially following
+        the equation:
 
-      \|X(t, X_0) - X(t, X_0 + eps)| = e^(lambda * t) * \|eps|
+        \|X(t, X_0) - X(t, X_0 + eps)| = e^(lambda * t) * \|eps|
 
-      In this equation X(t, X_0) is the trajectory of the system X starting at
-      the point X_0 in phase space at time t. eps is the (infinitesimal)
-      difference vector and lambda is called the Lyapunov exponent. If the
-      system has more than one free variable, the phase space is
-      multidimensional and each dimension has its own Lyapunov exponent. The
-      existence of at least one positive Lyapunov exponent is generally seen as
-      a strong indicator for chaos.
+        In this equation X(t, X_0) is the trajectory of the system X starting at
+        the point X_0 in phase space at time t. eps is the (infinitesimal)
+        difference vector and lambda is called the Lyapunov exponent. If the
+        system has more than one free variable, the phase space is
+        multidimensional and each dimension has its own Lyapunov exponent. The
+        existence of at least one positive Lyapunov exponent is generally seen as
+        a strong indicator for chaos.
 
     Explanation of the Algorithm:
-      To calculate the Lyapunov exponents analytically, the Jacobian of the
-      system is required. The algorithm of Eckmann et al. therefore tries to
-      estimate this Jacobian by reconstructing the dynamics of the system from
-      which the time series was obtained. For this, several steps are required:
+        To calculate the Lyapunov exponents analytically, the Jacobian of the
+        system is required. The algorithm of Eckmann et al. therefore tries to
+        estimate this Jacobian by reconstructing the dynamics of the system from
+        which the time series was obtained. For this, several steps are required:
 
-      * Embed the time series [x_1, x_2, ..., x_(N-1)] in an orbit of emb_dim
-        dimensions (map each point x_i of the time series to a vector
-        [x_i, x_(i+1), x_(i+2), ... x_(i+emb_dim-1)]).
-      * For each vector X_i in this orbit find a radius r_i so that at least
-        min_nb other vectors lie within (chebyshev-)distance r_i around X_i.
-        These vectors will be called "neighbors" of X_i.
-      * Find the Matrix T_i that sends points from the neighborhood of X_i to
-        the neighborhood of X_(i+1). To avoid undetermined values in T_i, we
-        construct T_i not with size (emb_dim x emb_dim) but with size
-        (matrix_dim x matrix_dim), so that we have a larger "step size" m in the
-        X_i, which are now defined as X'_i = [x_i, x_(i+m), x_(i+2m),
-        ... x_(i+(matrix_dim-1)*m)]. This means that emb_dim-1 must be divisible
-        by matrix_dim-1. The T_i are then found by a linear least squares fit,
-        assuring that T_i (X_j - X_i) ~= X_(j+m) - X_(i+m) for any X_j in the
-        neighborhood of X_i.
-      * Starting with i = 1 and Q_0 = identity successively decompose the matrix
-        T_i * Q_(i-1) into the matrices Q_i and R_i by a QR-decomposition.
-      * Calculate the Lyapunov exponents from the mean of the logarithm of the
-        diagonal elements of the matrices R_i. To normalize the Lyapunov
-        exponents, they have to be divided by m and by the step size tau of the
-        original time series.
+        * Embed the time series [x_1, x_2, ..., x_(N-1)] in an orbit of emb_dim
+            dimensions (map each point x_i of the time series to a vector
+            [x_i, x_(i+1), x_(i+2), ... x_(i+emb_dim-1)]).
+        * For each vector X_i in this orbit find a radius r_i so that at least
+            min_nb other vectors lie within (chebyshev-)distance r_i around X_i.
+            These vectors will be called "neighbors" of X_i.
+        * Find the Matrix T_i that sends points from the neighborhood of X_i to
+            the neighborhood of X_(i+1). To avoid undetermined values in T_i, we
+            construct T_i not with size (emb_dim x emb_dim) but with size
+            (matrix_dim x matrix_dim), so that we have a larger "step size" m in the
+            X_i, which are now defined as X'_i = [x_i, x_(i+m), x_(i+2m),
+            ... x_(i+(matrix_dim-1)*m)]. This means that emb_dim-1 must be divisible
+            by matrix_dim-1. The T_i are then found by a linear least squares fit,
+            assuring that T_i (X_j - X_i) ~= X_(j+m) - X_(i+m) for any X_j in the
+            neighborhood of X_i.
+        * Starting with i = 1 and Q_0 = identity successively decompose the matrix
+            T_i * Q_(i-1) into the matrices Q_i and R_i by a QR-decomposition.
+        * Calculate the Lyapunov exponents from the mean of the logarithm of the
+            diagonal elements of the matrices R_i. To normalize the Lyapunov
+            exponents, they have to be divided by m and by the step size tau of the
+            original time series.
 
     References:
-      .. [le_1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,
-         “Liapunov exponents from time series,” Physical Review A,
-         vol. 34, no. 6, pp. 4971–4979, 1986.
+        .. [le_1] J. P. Eckmann, S. O. Kamphorst, D. Ruelle, and S. Ciliberto,
+            “Liapunov exponents from time series,” Physical Review A,
+            vol. 34, no. 6, pp. 4971–4979, 1986.
 
     Reference code:
-      .. [le_a] Manfred Füllsack, "Lyapunov exponent",
-         url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
-      .. [le_b] Steve SIU, Lyapunov Exponents Toolbox (LET),
-         url: http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m
-      .. [le_c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,
-         url: http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/index.html
+        .. [le_a] Manfred Füllsack, "Lyapunov exponent",
+            url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
+        .. [le_b] Steve SIU, Lyapunov Exponents Toolbox (LET),
+            url: http://www.mathworks.com/matlabcentral/fileexchange/233-let/content/LET/findlyap.m
+        .. [le_c] Rainer Hegger, Holger Kantz, and Thomas Schreiber, TISEAN,
+            url: http://www.mpipks-dresden.mpg.de/~tisean/Tisean_3.0.1/index.html
 
     Args:
-      data (array-like of float):
-        (scalar) data points
-
-    Kwargs:
-      emb_dim: embedding dimension
-      matrix_dim: matrix dimension (emb_dim - 1 must be divisible by matrix_dim - 1)
-      min_nb: minimal number of neighbors
-        (default: min(2 * matrix_dim, matrix_dim + 4))
-      min_tsep: minimal temporal separation between two "neighbors"
-      tau: step size of the data in seconds
-        (normalization scaling factor for exponents)
-      debug_plot: if True, a histogram matrix of the individual estimates will be shown
-      debug_data: if True, debugging data will be returned alongside the result
-      plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
-        under the given file name instead of directly showing it through
-        ``plt.show()``
+        data: (scalar) data points
+        emb_dim: embedding dimension
+        matrix_dim: matrix dimension (emb_dim - 1 must be divisible by matrix_dim - 1)
+        min_nb: minimal number of neighbors
+            (default: min(2 * matrix_dim, matrix_dim + 4))
+        min_tsep: minimal temporal separation between two "neighbors"
+        tau: step size of the data in seconds
+            (normalization scaling factor for exponents)
+        debug_plot: if True, a histogram matrix of the individual estimates will be shown
+        debug_data: if True, debugging data will be returned alongside the result
+        plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
+            under the given file name instead of directly showing it through
+            ``plt.show()``
 
     Returns:
-      float array:
-        array of matrix_dim Lyapunov exponents (positive exponents are indicators
-        for chaos)
-      2d-array of floats:
-        only present if debug_data is True: all estimates for the matrix_dim
-        Lyapunov exponents from the x iterations of R_i. The shape of this debug
-        data is (x, matrix_dim).
+        Array of matrix_dim Lyapunov exponents (positive exponents are indicators
+        for chaos). If `debug_data = True`, the return type is a tuple instead
+        with the first element being the Lyapunov exponents and the second element
+        being all estimates for the matrix_dim Lyapunov exponents from the x
+        iterations of R_i. The shape of this debug data is (x, matrix_dim).
     """
     # convert to float to avoid errors when using 'inf' as distance
     data = np.asarray(data, dtype=np.float64)
@@ -641,8 +673,6 @@ def lyap_e(
     lexp = np.zeros(matrix_dim, dtype=np.float64)
     lexp_counts = np.zeros(lexp.shape)
     debug_values = []
-    # TODO reduce number of points to visit?
-    # TODO performance test!
     for i in range(len(orbit)):
         # find neighbors for each vector in the orbit using the chebyshev distance
         diffs = rowwise_chebyshev(orbit, orbit[i])
@@ -666,7 +696,7 @@ def lyap_e(
         # there may be more than min_nb vectors at distance r (if multiple vectors
         # have a distance of exactly r)
         # => update index accordingly
-        indices = np.where(diffs <= r)[0]
+        indices = (diffs <= r).nonzero()[0]
 
         # find the matrix T_i that satisifies
         # T_i (orbit'[j] - orbit'[i]) = (orbit'[j+m] - orbit'[i+m])
@@ -698,7 +728,7 @@ def lyap_e(
         # x_j2 - x_i   x_j2+m - x_i+m   ...   x_j2+(d_M-1)m - x_i+(d_M-1)m
         # ...
 
-        # note: emb_dim = (d_M - 1) * m + 1
+        # note: emb_dim = (d_M - 1) * m + 1  # noqa: ERA001
         mat_X = np.array([data[j : j + emb_dim : m] for j in indices])
         mat_X -= data[i : i + emb_dim : m]
 
@@ -706,7 +736,7 @@ def lyap_e(
         # x_j1+(d_M)m - x_i+(d_M)m
         # x_j2+(d_M)m - x_i+(d_M)m
         # ...
-        if max(np.max(indices), i) + matrix_dim * m >= len(data):
+        if max(int(np.max(indices)), i) + matrix_dim * m >= len(data):
             assert len(data) < min_len
             msg = (
                 "Not enough data points. Cannot follow orbit vector {} for "
@@ -768,7 +798,23 @@ def lyap_e(
     return lexp
 
 
-def plot_dists(dists, tolerance, m, title=None, fname=None) -> None:
+def plot_dists(
+    dists: list[np.ndarray[tuple[int], np.dtype[np.float64]]],
+    tolerance: float,
+    m: int,
+    title: str | None = None,
+    fname: str | Path | None = None,
+) -> None:
+    """Plots a histogram per distance array in dists.
+
+    Args:
+        dists: Distance arrays for which to plot the histograms.
+        tolerance: Tolerance value for the distance (will be highlighted).
+        m: Embedding dimension (used for labeling the histograms).
+        title: Title for the plot (optional).
+        fname: If not None, the plot will be saved under this file name instead of
+            showing it directly with ``plt.show()``.
+    """
     # local import to avoid dependency for non-debug use
     import matplotlib.pyplot as plt
 
@@ -778,13 +824,11 @@ def plot_dists(dists, tolerance, m, title=None, fname=None) -> None:
     ymax = len(dists_full) * 0.05
     mean = np.mean(dists_full)
     std = np.std(dists_full, ddof=1)
-    rng = (0, mean + std * nstd)
-    i = 0
+    rng = (0.0, float(mean + std * nstd))
     colors = ["green", "blue"]
-    for h, bins in [np.histogram(dat, nbins, rng) for dat in dists]:
+    for i, (h, bins) in enumerate([np.histogram(dat, bins=nbins, range=rng) for dat in dists]):
         bw = bins[1] - bins[0]
         plt.bar(bins[:-1], h, bw, label=f"m={m + i:d}", color=colors[i], alpha=0.5)
-        i += 1
     plt.axvline(tolerance, color="red")
     plt.legend(loc="best")
     plt.xlabel("distance")
@@ -799,87 +843,143 @@ def plot_dists(dists, tolerance, m, title=None, fname=None) -> None:
     plt.close()
 
 
+@overload
 def sampen(
-    data,
-    emb_dim=2,
-    tolerance=None,
-    lag=1,
-    dist=rowwise_chebyshev,
-    closed=False,
-    debug_plot=False,
-    debug_data=False,
-    plot_file=None,
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    *,
+    emb_dim: int = 2,
+    tolerance: float | None = None,
+    lag: int = 1,
+    dist: Callable[
+        [
+            np.ndarray[tuple[int, int], np.dtype[np.float64]],
+            np.ndarray[tuple[int], np.dtype[np.float64]],
+        ],
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+    ] = rowwise_chebyshev,
+    closed: bool = False,
+    debug_plot: bool = False,
+    debug_data: Literal[False] = False,
+    plot_file: str | Path | None = None,
+) -> float: ...
+
+
+@overload
+def sampen(
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    *,
+    emb_dim: int = 2,
+    tolerance: float | None = None,
+    lag: int = 1,
+    dist: Callable[
+        [
+            np.ndarray[tuple[int, int], np.dtype[np.float64]],
+            np.ndarray[tuple[int], np.dtype[np.float64]],
+        ],
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+    ] = rowwise_chebyshev,
+    closed: bool = False,
+    debug_plot: bool = False,
+    debug_data: Literal[True],
+    plot_file: str | Path | None = None,
+) -> tuple[
+    float,
+    list[float],
+    list[np.ndarray[tuple[int], np.dtype[np.float64]]],
+]: ...
+
+
+def sampen(  # noqa: C901, PLR0912
+    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    *,
+    emb_dim: int = 2,
+    tolerance: float | None = None,
+    lag: int = 1,
+    dist: Callable[
+        [
+            np.ndarray[tuple[int, int], np.dtype[np.float64]],
+            np.ndarray[tuple[int], np.dtype[np.float64]],
+        ],
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+    ] = rowwise_chebyshev,
+    closed: bool = False,
+    debug_plot: bool = False,
+    debug_data: bool = False,
+    plot_file: str | Path | None = None,
+) -> (
+    float
+    | tuple[
+        float,
+        list[float],
+        list[np.ndarray[tuple[int], np.dtype[np.float64]]],
+    ]
 ):
     """Computes the sample entropy of the given data.
 
     Explanation of the sample entropy:
-      The sample entropy of a time series is defined as the negative natural
-      logarithm of the conditional probability that two sequences similar for
-      emb_dim points remain similar at the next point, excluding self-matches.
+        The sample entropy of a time series is defined as the negative natural
+        logarithm of the conditional probability that two sequences similar for
+        emb_dim points remain similar at the next point, excluding self-matches.
 
-      A lower value for the sample entropy therefore corresponds to a higher
-      probability indicating more self-similarity.
+        A lower value for the sample entropy therefore corresponds to a higher
+        probability indicating more self-similarity.
 
     Explanation of the algorithm:
-      The algorithm constructs all subsequences of length emb_dim
-      [s_1, s_1+lag, s_1+2*lag, ...] and then counts each pair (s_i, s_j) with i != j
-      where dist(s_i, s_j) < tolerance. The same process is repeated for all
-      subsequences of length emb_dim + 1. The sum of similar sequence pairs
-      with length emb_dim + 1 is divided by the sum of similar sequence pairs
-      with length emb_dim. The result of the algorithm is the negative logarithm
-      of this ratio/probability.
+        The algorithm constructs all subsequences of length emb_dim
+        [s_1, s_1+lag, s_1+2*lag, ...] and then counts each pair (s_i, s_j) with i != j
+        where dist(s_i, s_j) < tolerance. The same process is repeated for all
+        subsequences of length emb_dim + 1. The sum of similar sequence pairs
+        with length emb_dim + 1 is divided by the sum of similar sequence pairs
+        with length emb_dim. The result of the algorithm is the negative logarithm
+        of this ratio/probability.
 
     References:
-      .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
-         analysis using approximate entropy and sample entropy,”
-         American Journal of Physiology-Heart and Circulatory Physiology,
-         vol. 278, no. 6, pp. H2039–H2049, 2000.
+        .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+            analysis using approximate entropy and sample entropy,”
+            American Journal of Physiology-Heart and Circulatory Physiology,
+            vol. 278, no. 6, pp. H2039–H2049, 2000.
 
     Reference code:
-      .. [se_a] "sample_entropy" function in R-package "pracma",
-          url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
+        .. [se_a] "sample_entropy" function in R-package "pracma",
+            url: https://cran.r-project.org/web/packages/pracma/pracma.pdf
 
     Args:
-      data (array-like of float):
-        input data
-
-    Kwargs:
-      emb_dim (int):
-        the embedding dimension (length of vectors to compare)
-      tolerance (float):
-        distance threshold for two template vectors to be considered equal
-        (default: 0.2 * std(data) at emb_dim = 2, corrected for dimension effect
-        for other values of emb_dim)
-      lag (int):
-        delay for the delay embedding
-      dist (function (2d-array, 1d-array) -> 1d-array):
-        distance function used to calculate the distance between template
-        vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
-        use something else, if you are sure that you need it.
-      closed (boolean):
-        if True, will check for vector pairs whose distance is in the closed
-        interval [0, r] (less or equal to r), otherwise the open interval
-        [0, r) (less than r) will be used
-      debug_plot (boolean):
-        if True, a histogram of the individual distances for m and m+1
-      debug_data (boolean):
-        if True, debugging data will be returned alongside the result
-      plot_file (str):
-        if debug_plot is True and plot_file is not None, the plot will be saved
-        under the given file name instead of directly showing it through
-        ``plt.show()``
+        data: input data
+        emb_dim (int):
+            the embedding dimension (length of vectors to compare)
+        tolerance (float):
+            distance threshold for two template vectors to be considered equal
+            (default: 0.2 * std(data) at emb_dim = 2, corrected for dimension effect
+            for other values of emb_dim)
+        lag (int):
+            delay for the delay embedding
+        dist (function (2d-array, 1d-array) -> 1d-array):
+            distance function used to calculate the distance between template
+            vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
+            use something else, if you are sure that you need it.
+        closed (boolean):
+            if True, will check for vector pairs whose distance is in the closed
+            interval [0, r] (less or equal to r), otherwise the open interval
+            [0, r) (less than r) will be used
+        debug_plot (boolean):
+            if True, a histogram of the individual distances for m and m+1
+        debug_data (boolean):
+            if True, debugging data will be returned alongside the result
+        plot_file (str):
+            if debug_plot is True and plot_file is not None, the plot will be saved
+            under the given file name instead of directly showing it through
+            ``plt.show()``
 
     Returns:
-      float:
-        the sample entropy of the data (negative logarithm of ratio between
-        similar template vectors of length emb_dim + 1 and emb_dim)
-      [c_m, c_m1]:
-        list of two floats: count of similar template vectors of length emb_dim
-        (c_m) and of length emb_dim + 1 (c_m1)
-      [float list, float list]:
-        Lists of lists of the form ``[dists_m, dists_m1]`` containing the
-        distances between template vectors for m (dists_m)
-        and for m + 1 (dists_m1).
+        The sample entropy of the data (negative logarithm of ratio between
+        similar template vectors of length emb_dim + 1 and emb_dim). If
+        `debug_data` is True, the return type is a tuple instead, containing
+
+        - sampen: the sample entropy
+        - [c_m, c_m1]: list of two floats: count of similar template vectors of
+            length emb_dim (c_m) and of length emb_dim + 1 (c_m1)
+        - [dists_m, dists_m1]: the distances between template vectors for m
+            (dists_m) and for m + 1 (dists_m1).
     """
     data = np.asarray(data)
 
@@ -891,7 +991,7 @@ def sampen(
         #    the chebyshev distance of vectors sampled from a univariate normal
         #    distribution
         # 4. 0.1164 is used as a factor to ensure that tolerance == std * 0.2 for
-        #    emb_dim == 2
+        #    emb_dim == 2  # noqa: ERA001
         tolerance = np.std(data, ddof=1) * 0.1164 * (0.5627 * np.log(emb_dim) + 1.3334)
     n = len(data)
 
@@ -925,9 +1025,9 @@ def sampen(
                 plot_data[-1].extend(dsts)
             # count how many distances are smaller than the tolerance
             if closed:
-                counts[-1] += np.sum(dsts <= tolerance)
+                counts[-1] += np.sum(dsts <= cast("float", tolerance))
             else:
-                counts[-1] += np.sum(dsts < tolerance)
+                counts[-1] += np.sum(dsts < cast("float", tolerance))
     if counts[0] > 0 and counts[1] > 0:
         saen = -np.log(1.0 * counts[1] / counts[0])
     else:
@@ -952,7 +1052,9 @@ def sampen(
         else:
             saen = np.inf
     if debug_plot:
-        plot_dists(plot_data, tolerance, m, title=f"sampEn = {saen:.3f}", fname=plot_file)
+        plot_dists(
+            plot_data, cast("float", tolerance), m, title=f"sampEn = {saen:.3f}", fname=plot_file
+        )
     if debug_data:
         return (saen, counts, plot_data)
     return saen

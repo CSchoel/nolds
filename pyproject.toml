@@ -3,7 +3,7 @@ name = "nolds"
 version = "0.6.2"
 description = "Nonlinear measures for dynamical systems (based on one-dimensional time series)"
 authors = [
-    {name= "Christopher Schölzel", email= "christopher.schoelzel@mailbox.org"}
+    { name = "Christopher Schölzel", email = "christopher.schoelzel@mailbox.org" },
 ]
 license = "MIT"
 license-files = ["LICENSE.txt"]
@@ -18,7 +18,7 @@ keywords = [
     "DFA",
     "detrended fluctuation analysis",
     "sample entropy",
-    "correlation dimension"
+    "correlation dimension",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -31,15 +31,11 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12"
+    "Programming Language :: Python :: 3.12",
 ]
 readme = "README.rst"
 requires-python = ">=3.8"
-dependencies = [
-    "numpy>1.0,<3.0",
-    "future>=1.0",
-    "setuptools>=72.1.0"
-]
+dependencies = ["numpy>1.0,<3.0", "future>=1.0", "setuptools>=72.1.0"]
 
 [project.optional-dependencies]
 RANSAC = ["scikit-learn>=0.19"]
@@ -64,7 +60,7 @@ build-backend = "hatchling.build"
 
 [tool.ruff]
 
-line-length = 100  # allow slightly longer lines
+line-length = 100 # allow slightly longer lines
 indent-width = 4
 
 # Assume Python 3.8
@@ -81,14 +77,15 @@ indent-style = "space"
 # Select all rules by default
 select = ["ALL"]
 ignore = [
-    "TD002", # adding an author to TODOs wastes space and is redundant because of git history
-    "TD003", # once there is an issue, there is no need to keep the TODO => don't require links
-    "COM812", # missing trailing commas are already fixed by the formatter
+    "TD002",   # adding an author to TODOs wastes space and is redundant because of git history
+    "TD003",   # once there is an issue, there is no need to keep the TODO => don't require links
+    "COM812",  # missing trailing commas are already fixed by the formatter
     "PLR0913", # this is a scientific library, functions just have a bazillion parameters
-    "S101", # nolds uses assers as legitimate checks for programming (not user) errors
+    "S101",    # nolds uses assers as legitimate checks for programming (not user) errors
+    "N806",    # some variables are kept close to the papers, which means they will have uppercase letters in them
 ]
 allowed-confusables = [
-    "–" # en-dashes are used for bibliographical references in docstrings
+    "–", # en-dashes are used for bibliographical references in docstrings
 ]
 
 
