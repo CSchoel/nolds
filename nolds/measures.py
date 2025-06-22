@@ -486,6 +486,7 @@ def lyap_e_len(emb_dim: int, matrix_dim: int, min_tsep: int, min_nb: int) -> int
     min_len += min_nb
     return min_len
 
+
 @overload
 def lyap_e(
     data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
@@ -1041,7 +1042,7 @@ def sampen(  # noqa: C901, PLR0912
             (
                 "Zero vectors are within tolerance for {}. "
                 "Consider raising the tolerance parameter to avoid {} result."
-            ).format(" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf"),
+            ).format(" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf"),  # noqa: PLR2004
             RuntimeWarning,
             stacklevel=2,
         )
@@ -1060,49 +1061,48 @@ def sampen(  # noqa: C901, PLR0912
     return saen
 
 
-def binary_n(total_N, min_n=50):
-    """Creates a list of values by successively halving the total length total_N
-    until the resulting value is less than min_n.
+def binary_n(total_N: int, min_n: int = 50) -> list[int]:
+    """Creates a list of values by successively halving the total length total_N.
 
-    Non-integer results are rounded down.
+    The iteration stops when the resulting value is less than min_n. Non-integer
+    results are rounded down.
 
     Args:
-      total_N (int):
-        total length
-    Kwargs:
-      min_n (int):
-        minimal length after division
+        total_N: total length
+        min_n: minimal length after division
 
     Returns:
-      list of integers:
-        total_N/2, total_N/4, total_N/8, ... until total_N/2^i < min_n
+        [total_N/2, total_N/4, total_N/8, ...] until total_N/2^i < min_n
     """
     max_exp = np.log2(1.0 * total_N / min_n)
     max_exp = int(np.floor(max_exp))
     return [int(np.floor(1.0 * total_N / (2**i))) for i in range(1, max_exp + 1)]
 
 
-def logarithmic_n(min_n, max_n, factor):
-    """Creates a list of values by successively multiplying a minimum value min_n by
-    a factor > 1 until a maximum value max_n is reached.
+def logarithmic_n(min_n: int, max_n: int, factor: float) -> list[int]:
+    """Creates a list of window sizes that are equidistant on a logarithmic scale.
+
+    The values are calculated by multiplying a minimum value min_n by a factor > 1
+    until a maximum value max_n is reached.
 
     Non-integer results are rounded down.
 
     Args:
-      min_n (float):
-        minimum value (must be < max_n)
-      max_n (float):
-        maximum value (must be > min_n)
-      factor (float):
-        factor used to increase min_n (must be > 1)
+        min_n: minimum value (must be < max_n)
+        max_n: maximum value (must be > min_n)
+        factor: factor used to increase min_n (must be > 1)
 
     Returns:
-      list of integers:
-        min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i < max_n
-        without duplicates
+        [min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i] where
+        all values are < max_n. Duplicates (due to step sizes less than 1) are
+        discarded.
     """
-    assert max_n > min_n
-    assert factor > 1
+    if max_n <= min_n:
+        msg = f"max_n must be larger than min_n ({max_n} <= {min_n})."
+        raise ValueError(msg)
+    if factor <= 1:
+        msg = f"Factor must be larger than 1, but got {factor}."
+        raise ValueError(msg)
     # stop condition: min * f^x = max
     # => f^x = max/min
     # => x = log(max/min) / log(f)
@@ -1115,134 +1115,121 @@ def logarithmic_n(min_n, max_n, factor):
     return ns
 
 
-def logmid_n(max_n, ratio=1 / 4.0, nsteps=15):
-    """Creates an array of integers that lie evenly spaced in the "middle" of the
-    logarithmic scale from 0 to log(max_n).
+def logmid_n(
+    max_n: int, ratio: float = 1 / 4.0, nsteps: int = 15
+) -> np.ndarray[tuple[int], np.dtype[np.int32]]:
+    """Creates an array of equidistant values in the "middle" of [0, max_n] on a logarithmic scale.
 
     If max_n is very small and/or nsteps is very large, this may lead to
     duplicate values which will be removed from the output.
 
     This function has benefits in hurst_rs, because it cuts away both very small
     and very large n, which both can cause problems, and still produces a
-    logarithmically spaced sequence.
+    sequence that is equidistant on the logarithmic scale.
 
     Args:
-      max_n (int):
-        largest possible output value (should be the sequence length when used in
-        hurst_rs)
-
-    Kwargs:
-      ratio (float):
-        width of the "middle" of the logarithmic interval relative to log(max_n).
-        For example, for ratio=1/2.0 the logarithm of the resulting values will
-        lie between 0.25 * log(max_n) and 0.75 * log(max_n).
-      nsteps (float):
-        (maximum) number of values to take from the specified range
+        max_n: largest possible output value (should be the sequence length when
+            used in hurst_rs)
+        ratio: width of the "middle" of the logarithmic interval relative to log(max_n).
+            For example, for ratio=1/2.0 the logarithm of the resulting values will
+            lie between 0.25 * log(max_n) and 0.75 * log(max_n).
+        nsteps: (maximum) number of values to take from the specified range
 
     Returns:
-      array of int:
-        a logarithmically spaced sequence of at most nsteps values (may be less,
-        because only unique values are returned)
+      A logarithmically spaced sequence of at most nsteps values (may be less
+      because only unique values are returned).
     """
-    l = np.log(max_n)
-    span = l * ratio
-    start = l * (1 - ratio) * 0.5
+    logmax = np.log(max_n)
+    span = logmax * ratio
+    start = logmax * (1 - ratio) * 0.5
     midrange = start + 1.0 * np.arange(nsteps) / nsteps * span
-    nvals = np.round(np.exp(midrange)).astype("int32")
+    nvals = np.round(np.exp(midrange)).astype(np.int32)
     return np.unique(nvals)
 
 
-def logarithmic_r(min_n, max_n, factor):
-    """Creates a list of values by successively multiplying a minimum value min_n by
+def logarithmic_r(min_n: int, max_n: int, factor: float) -> list[float]:
+    """Creates a list of real values that are equidistant on a logarithmic scale.
+
+    The values are generated by successively multiplying a minimum value min_n by
     a factor > 1 until a maximum value max_n is reached.
 
     Args:
-      min_n (float):
-        minimum value (must be < max_n)
-      max_n (float):
-        maximum value (must be > min_n)
-      factor (float):
-        factor used to increase min_n (must be > 1)
+        min_n: minimum value (must be < max_n)
+        max_n: maximum value (must be > min_n)
+        factor: factor used to increase min_n (must be > 1)
 
     Returns:
-      list of floats:
-        min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i < max_n
+        [min_n, min_n * factor, min_n * factor^2, ... min_n * factor^i] where
+        all values are < max_n.
     """
-    assert max_n > min_n
-    assert factor > 1
+    if max_n <= min_n:
+        msg = f"max_n must be larger than min_n ({max_n} <= {min_n})."
+        raise ValueError(msg)
+    if factor <= 1:
+        msg = f"Factor must be larger than 1, but got {factor}."
+        raise ValueError(msg)
     max_i = int(np.floor(np.log(1.0 * max_n / min_n) / np.log(factor)))
     return [min_n * (factor**i) for i in range(max_i + 1)]
 
 
-def expected_rs(n):
-    """Calculates the expected (R/S)_n for white noise for a given n.
+def expected_rs(n: int) -> float:
+    """Approximates the expected (R/S)_n for white noise for a given n.
 
     This is used as a correction factor in the function hurst_rs. It uses the
     formula of Anis-Lloyd-Peters (see [h_3]_).
 
     Args:
-      n (int):
-        the value of n for which the expected (R/S)_n should be calculated
+        n: the value of n for which the expected (R/S)_n should be calculated
 
     Returns:
-      float:
         expected (R/S)_n for white noise
     """
     front = (n - 0.5) / n
     i = np.arange(1, n)
     back = np.sum(np.sqrt((n - i) / i))
-    if n <= 340:
+    small = 340  # small values behave differently
+    if n <= small:
         middle = math.gamma((n - 1) * 0.5) / math.sqrt(math.pi) / math.gamma(n * 0.5)
     else:
         middle = 1.0 / math.sqrt(n * math.pi * 0.5)
     return front * middle * back
 
 
-def expected_h(nvals, fit="RANSAC"):
-    """Uses expected_rs to calculate the expected value for the Hurst exponent h
-    based on the values of n used for the calculation.
+def expected_h(nvals: np.typing.IntArrayLike, fit: FittingMethod = "RANSAC") -> float:
+    """Uses expected_rs to calculate the expected value for the Hurst exponent h.
 
     Args:
-      nvals (iterable of int):
-        the values of n used to calculate the individual (R/S)_n
-
-    KWargs:
-      fit (str):
-        the fitting method to use for the line fit, either 'poly' for normal
-        least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
-        is more robust to outliers
+        nvals: The values of n used to calculate the individual (R/S)_n
+        fit: the fitting method to use for the line fit, either 'poly' for normal
+            least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+            is more robust to outliers
 
     Returns:
-      float:
         expected h for white noise
     """
+    nvals = np.asarray(nvals, dtype=np.int32)
     rsvals = [expected_rs(n) for n in nvals]
     poly = poly_fit(np.log(nvals), np.log(rsvals), 1, fit=fit)
     return poly[0]
 
 
-def rs(data, n, unbiased=True):
-    """Calculates an individual R/S value in the rescaled range approach for
-    a given n.
+def rs(
+    data: np.ndarray[tuple[int], np.dtype[np.float64]], n: int, *, unbiased: bool = True
+) -> float:
+    """Calculates an individual R/S value in the rescaled range approach for a given n.
 
     Note: This is just a helper function for hurst_rs and should not be called
     directly.
 
     Args:
-      data (array-like of float):
-        time series
-      n (float):
-        size of the subseries in which data should be split
-
-    Kwargs:
-      unbiased (boolean):
-        if True, the standard deviation based on the unbiased variance
-        (1/(N-1) instead of 1/N) will be used. This should be the default choice,
-        since the true mean of the sequences is not known. This parameter should
-        only be changed to recreate results of other implementations.
+        data: time series
+        n: size of the subseries in which data should be split
+        unbiased: if True, the standard deviation based on the unbiased variance
+            (1/(N-1) instead of 1/N) will be used. This should be the default choice,
+            since the true mean of the sequences is not known. This parameter should
+            only be changed to recreate results of other implementations.
 
     Returns:
-      float:
         (R/S)_n
     """
     data = np.asarray(data)
@@ -1274,7 +1261,24 @@ def rs(data, n, unbiased=True):
     return np.mean(r / s)
 
 
-def plot_histogram_matrix(data, name, bin_range="3sigma", fname=None) -> None:
+def plot_histogram_matrix(
+    data: np.ndarray[tuple[int, int], np.dtype[np.float64]],
+    name: str,
+    bin_range: Literal["absmax", "1sigma", "2sigma", "3sigma", "4sigma", "5sigma"] = "3sigma",
+    fname: str | Path | None = None,
+) -> None:
+    """Plot a quadratic matrix of histograms.
+
+    Args:
+        data: matrix of shape (N, K) where K is the number of histograms and N is the size of
+            a single dimension of which to take a histogram.
+        name: Title of the plots.
+        bin_range: How to determine the range of the histogram. "absmax" uses the absolute
+            maximum and minimum, while Xsigma cuts off values outside the X sigma range
+            assuming a normal distributed dataset.
+        fname: File name to use to store the plot. If this is not given, the plot is displayed
+            with show() instead.
+    """
     # local import to avoid dependency for non-debug use
     import matplotlib.pyplot as plt
 
@@ -1285,19 +1289,19 @@ def plot_histogram_matrix(data, name, bin_range="3sigma", fname=None) -> None:
     plt.figure(figsize=(nrows * 4, nrows * 4))
     for i in range(nhists):
         plt.subplot(nrows, nrows, i + 1)
-        absmax = max(abs(np.max(data[:, i])), abs(np.min(data[:, i])))
+        absmax = max(float(abs(np.max(data[:, i]))), float(abs(np.min(data[:, i]))))
         if bin_range == "absmax":
             rng = (-absmax, absmax)
         elif bin_range.endswith("sigma"):
             n = int(bin_range[: -len("sigma")])
             mu = np.mean(data[:, i])
             sigma = np.std(data[:, i], ddof=1)
-            rng = (mu - n * sigma, mu + n * sigma)
+            rng = (float(mu - n * sigma), float(mu + n * sigma))
         h, bins = np.histogram(data[:, i], nbins, rng)
         bin_width = bins[1] - bins[0]
         h = h.astype(np.float64) / np.sum(h)
         plt.bar(bins[:-1], h, bin_width)
-        plt.axvline(np.mean(data[:, i]), color="red")
+        plt.axvline(float(np.mean(data[:, i])), color="red")
         plt.ylim(ylim)
         plt.title(f"{name:s}[{i:d}]")
     if fname is None:

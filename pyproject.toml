@@ -83,6 +83,7 @@ ignore = [
     "PLR0913", # this is a scientific library, functions just have a bazillion parameters
     "S101",    # nolds uses assers as legitimate checks for programming (not user) errors
     "N806",    # some variables are kept close to the papers, which means they will have uppercase letters in them
+    "N803",    # same as for variables: We use conventions from scientific papers, which inlcude uppercase letters
 ]
 allowed-confusables = [
     "–", # en-dashes are used for bibliographical references in docstrings
