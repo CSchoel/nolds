@@ -2424,7 +2424,9 @@ def corr_dim(
     return poly[0]
 
 
-def detrend_data(data, order=1, fit="poly"):
+def detrend_data(
+    data: np.ndarray[tuple[int], np.dtype[np.float64]], order: int = 1, fit: FittingMethod = "poly"
+) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
     """Removes a trend of given order from the data."""
     # TODO also use this function in dfa
     xvals = np.arange(len(data))
