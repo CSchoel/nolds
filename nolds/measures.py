@@ -456,7 +456,14 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
         # normal line fitting
         poly = poly_fit(ks[fit_offset:], div_traj[fit_offset:], 1, fit=fit)
     if debug_plot:
-        plot_reg(ks[fit_offset:], div_traj[fit_offset:], poly, "k", "log(d(k))", fname=plot_file)
+        plot_reg(
+            ks[fit_offset:].astype(np.float64),
+            div_traj[fit_offset:],
+            poly,
+            "k",
+            "log(d(k))",
+            fname=plot_file,
+        )
     le = poly[0] / tau
     if debug_data:
         return (le, (ks, div_traj, poly))
@@ -1416,7 +1423,7 @@ def plot_reg_tiled(
 def plot_reg_multiple(
     xvals: np.ndarray[tuple[int, int], np.dtype[np.float64]],
     yvals: np.ndarray[tuple[int, int], np.dtype[np.float64]],
-    polys: list[np.ndarray[tuple[int], np.dtype[np.float64]]] | None = None,
+    polys: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None = None,
     x_label: str = "x",
     y_label: str = "y",
     data_labels: list[str] | None = None,
@@ -1459,6 +1466,7 @@ def plot_reg_multiple(
     else:
         plt.savefig(fname)
     plt.close()
+
 
 @overload
 def hurst_rs(
@@ -1700,6 +1708,7 @@ def hurst_rs(
         return (h, (np.log(nvals), np.log(rsvals), poly))
     return h
 
+
 @overload
 def mfhurst_b(
     data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
@@ -1711,6 +1720,7 @@ def mfhurst_b(
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
 ) -> np.ndarray[tuple[int], np.dtype[np.float64]]: ...
+
 
 @overload
 def mfhurst_b(
@@ -1730,6 +1740,7 @@ def mfhurst_b(
         np.ndarray[tuple[int], np.dtype[np.float64]],
     ],
 ]: ...
+
 
 def mfhurst_b(
     data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
@@ -1894,7 +1905,7 @@ def mfhurst_b(
         plot_reg_multiple(
             np.array([xvals] * len(qvals), dtype=np.float64),
             np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64),
-            [p / q for p, q in zip(polys, qvals)],
+            np.array([p / q for p, q in zip(polys, qvals)], dtype=np.float64),
             x_label="log(x)",
             y_label="$\\log(c_q(x)) / q$",
             data_labels=[f"q = {q}" for q in qvals],
@@ -2051,7 +2062,9 @@ def mfhurst_dm(
     debug_plot: bool = False,
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
-): ...
+) -> tuple[
+    np.ndarray[tuple[int], np.dtype[np.float64]], np.ndarray[tuple[int], np.dtype[np.float64]]
+]: ...
 
 
 @overload
@@ -2065,7 +2078,15 @@ def mfhurst_dm(
     debug_plot: bool = False,
     debug_data: Literal[True] = True,
     plot_file: str | Path | None = None,
-): ...
+) -> tuple[
+    np.ndarray[tuple[int], np.dtype[np.float64]],
+    np.ndarray[tuple[int], np.dtype[np.float64]],
+    tuple[
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+        np.ndarray[tuple[int, int], np.dtype[np.float64]],
+        np.ndarray[tuple[int, int], np.dtype[np.float64]],
+    ],
+]: ...
 
 
 def mfhurst_dm(
@@ -2078,6 +2099,19 @@ def mfhurst_dm(
     debug_plot: bool = False,
     debug_data: bool = False,
     plot_file: str | Path | None = None,
+) -> (
+    tuple[
+        np.ndarray[tuple[int], np.dtype[np.float64]], np.ndarray[tuple[int], np.dtype[np.float64]]
+    ]
+    | tuple[
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+        tuple[
+            np.ndarray[tuple[int], np.dtype[np.float64]],
+            np.ndarray[tuple[int, int], np.dtype[np.float64]],
+            np.ndarray[tuple[int, int], np.dtype[np.float64]],
+        ],
+    ]
 ):
     """Calculates the Generalized Hurst Exponent H_q according to Di Mattheo and Aste.
 
@@ -2143,13 +2177,17 @@ def mfhurst_dm(
             ``plt.show()``
 
     Returns:
-        array of mH_q for every q given in ``qvals`` where mH_q is the mean of
-        all H_q calculated for different max distances in max_dists.
+        tuple containing
+
+        - mH: array of mH_q for every q given in ``qvals`` where mH_q is the mean of
+            all H_q calculated for different max distances in max_dists.
+        - sH: same as mH, but calculating the standard deviation instead of the mean.
 
         If ``debug_data`` is True, the return value is instead a tuple containing
 
-        * mH_q: array of mean H_q for each q in ``qvals``
-        * debug_data: a tuple of three arrays
+        - mH: array of mean H_q for each q in ``qvals``
+        - sH: array of standard deviation of H_q for each q in ``qvals``
+        - debug_data: a tuple of three arrays
             - xvals: the logarithm of the distances used for the height-height
                 correlation
             - yvals: the logarithm of the height-height correlations for each
@@ -2205,7 +2243,10 @@ def mfhurst_dm(
         dtype=np.float64,
     ).reshape(len(qvals), len(max_dists))
     if debug_plot:
-        polys = [np.array(poly_fit(xvals, yvals[:, qi], 1)) / qvals[qi] for qi in range(len(qvals))]
+        polys = np.array(
+            [poly_fit(xvals, yvals[:, qi], 1) / qvals[qi] for qi in range(len(qvals))],
+            dtype=np.float64,
+        )
         plot_reg_multiple(
             np.array([xvals] * len(qvals), dtype=np.float64),
             np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64),
@@ -2219,8 +2260,9 @@ def mfhurst_dm(
     mH = np.mean(H, axis=1) / qvals
     sH = np.std(H, axis=1) / qvals
     if debug_data:
-        return [mH, sH, (xvals, yvals, polys)]
-    return [mH, sH]
+        return (mH, sH, (xvals, yvals, polys))
+    return (mH, sH)
+
 
 @overload
 def corr_dim(
@@ -2269,6 +2311,7 @@ def corr_dim(
         np.ndarray[tuple[int], np.dtype[np.float64]],
     ],
 ]: ...
+
 
 def corr_dim(
     data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
@@ -2354,6 +2397,8 @@ def corr_dim(
     Args:
         data: time series of data points
         emb_dim: embedding dimension
+        lag: the distance between two successive elements in the embedding vectors
+            (given in number of datapoints)
         rvals: list of values for to use for r
             (default: logarithmic_r(0.1 * std, 0.5 * std, 1.03))
         dist: row-wise difference function
@@ -2385,6 +2430,7 @@ def corr_dim(
     if rvals is None:
         sd = float(np.std(data, ddof=1))
         rvals = logarithmic_r(0.1 * sd, 0.5 * sd, 1.03)
+    rvals = np.asarray(rvals, dtype=np.float64)
     orbit = delay_embedding(data, emb_dim, lag=lag)
     n = len(orbit)
     dists = np.zeros((len(orbit), len(orbit)), dtype=np.float64)
@@ -2393,7 +2439,7 @@ def corr_dim(
         # NOTE: strictly speaking, [cd_1] does not specify to exclude self-matches
         # however, since both [cd_2] and [cd_3] specify to only compare i with j != i
         # or j > i respectively, it is safe to assume that this was an oversight in
-        # [cd_1]
+        # [cd_1]  # noqa: ERA001
         d = dist(orbit[i + 1 :], orbit[i])
         dists[i + 1 :, i] = d  # fill column i
         dists[i, i + 1 :] = d  # fill row i
@@ -2434,191 +2480,235 @@ def detrend_data(
     return data - np.polyval(trend, xvals)
 
 
+@overload
 def dfa(
-    data,
-    nvals=None,
-    overlap=True,
-    order=1,
-    fit_trend="poly",
-    fit_exp="RANSAC",
-    debug_plot=False,
-    debug_data=False,
-    plot_file=None,
+    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
+    nvals: np.typing.IntArrayLike | None = None,
+    *,
+    overlap: bool = True,
+    order: int = 1,
+    fit_trend: FittingMethod = "poly",
+    fit_exp: FittingMethod = "RANSAC",
+    debug_plot: bool = False,
+    debug_data: Literal[False] = False,
+    plot_file: str | Path | None = None,
+) -> float: ...
+
+
+@overload
+def dfa(
+    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
+    nvals: np.typing.IntArrayLike | None = None,
+    *,
+    overlap: bool = True,
+    order: int = 1,
+    fit_trend: FittingMethod = "poly",
+    fit_exp: FittingMethod = "RANSAC",
+    debug_plot: bool = False,
+    debug_data: Literal[True] = True,
+    plot_file: str | Path | None = None,
+) -> tuple[
+    float,
+    tuple[
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+        np.ndarray[tuple[int], np.dtype[np.float64]],
+    ],
+]: ...
+
+
+def dfa(  # noqa: C901, PLR0912
+    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
+    nvals: np.typing.IntArrayLike | None = None,
+    *,
+    overlap: bool = True,
+    order: int = 1,
+    fit_trend: FittingMethod = "poly",
+    fit_exp: FittingMethod = "RANSAC",
+    debug_plot: bool = False,
+    debug_data: bool = False,
+    plot_file: str | Path | None = None,
+) -> (
+    float
+    | tuple[
+        float,
+        tuple[
+            np.ndarray[tuple[int], np.dtype[np.float64]],
+            np.ndarray[tuple[int], np.dtype[np.float64]],
+            np.ndarray[tuple[int], np.dtype[np.float64]],
+        ],
+    ]
 ):
     """Performs a detrended fluctuation analysis (DFA) on the given data.
 
     Recommendations for parameter settings by Hardstone et al.:
-      * nvals should be equally spaced on a logarithmic scale so that each window
-        scale hase the same weight
-      * min(nvals) < 4 does not make much sense as fitting a polynomial (even if
-        it is only of order 1) to 3 or less data points is very prone to errors.
-      * max(nvals) > len(data) / 10 does not make much sense as we will then have
-        less than 10 windows to calculate the average fluctuation
-      * use overlap=True to obtain more windows and therefore better statistics
-        (at an increased computational cost)
+        * nvals should be equally spaced on a logarithmic scale so that each window
+            scale hase the same weight
+        * min(nvals) < 4 does not make much sense as fitting a polynomial (even if
+            it is only of order 1) to 3 or less data points is very prone to errors.
+        * max(nvals) > len(data) / 10 does not make much sense as we will then have
+            less than 10 windows to calculate the average fluctuation
+        * use overlap=True to obtain more windows and therefore better statistics
+            (at an increased computational cost)
 
     Explanation of DFA:
-      Detrended fluctuation analysis, much like the Hurst exponent, is used to
-      find long-term statistical dependencies in time series. However, while the
-      Hurst exponent will indicate long-term correlations for any non-stationary
-      process (i.e. a stochastic process whose probability distribution changes
-      when shifted in time, such as a random walk whose mean changes over time),
-      DFA was designed to distinguish between correlations that are purely an
-      artifact of non-stationarity and those that show inherent long-term
-      behavior of the studied system.
+        Detrended fluctuation analysis, much like the Hurst exponent, is used to
+        find long-term statistical dependencies in time series. However, while the
+        Hurst exponent will indicate long-term correlations for any non-stationary
+        process (i.e. a stochastic process whose probability distribution changes
+        when shifted in time, such as a random walk whose mean changes over time),
+        DFA was designed to distinguish between correlations that are purely an
+        artifact of non-stationarity and those that show inherent long-term
+        behavior of the studied system.
 
-      Mathematically, the long-term correlations that we are interested in can
-      be characterized using the autocorrelation function C(s). For a time series
-      (x_i) with i = 1, ..., N it is defined as follows:
+        Mathematically, the long-term correlations that we are interested in can
+        be characterized using the autocorrelation function C(s). For a time series
+        (x_i) with i = 1, ..., N it is defined as follows:
 
-      C(s) = 1/(N-s) * (y_1 * y_1+s + y_2 * y_2+s + ... y_(N-s) * y_N)
+        C(s) = 1/(N-s) * (y_1 * y_1+s + y_2 * y_2+s + ... y_(N-s) * y_N)
 
-      with y_i = x_i - mean(x). If there are no correlations at all, C(s) would
-      be zero for s > 0. For short-range correlations, C(s) will decline
-      exponentially, but for long-term correlations the decline follows a power
-      law of the form C(s) ~ s^(-gamma) instead with 0 < gamma < 1.
+        with y_i = x_i - mean(x). If there are no correlations at all, C(s) would
+        be zero for s > 0. For short-range correlations, C(s) will decline
+        exponentially, but for long-term correlations the decline follows a power
+        law of the form C(s) ~ s^(-gamma) instead with 0 < gamma < 1.
 
-      Due to noise and underlying trends, calculating C(s) directly is usually not
-      feasible. The main idea of DFA is therefore to remove trends up to a given
-      order from the input data and analyze the remaining fluctuations. Trends
-      in this sense are smooth signals with monotonous or slowly oscillating
-      behavior that are caused by external effects and not the dynamical system
-      under study.
+        Due to noise and underlying trends, calculating C(s) directly is usually not
+        feasible. The main idea of DFA is therefore to remove trends up to a given
+        order from the input data and analyze the remaining fluctuations. Trends
+        in this sense are smooth signals with monotonous or slowly oscillating
+        behavior that are caused by external effects and not the dynamical system
+        under study.
 
-      To get a hold of these trends, the first step is to calculate the "profile"
-      of our time series as the cumulative sum of deviations from the mean,
-      effectively integrating our data. This both smoothes out measurement noise
-      and makes it easier to distinguish the fractal properties of bounded time
-      series (i.e. time series whose values cannot grow or shrink beyond certain
-      bounds such as most biological or physical signals) by applying random walk
-      theory (see [dfa_3]_ and [dfa_4]_).
+        To get a hold of these trends, the first step is to calculate the "profile"
+        of our time series as the cumulative sum of deviations from the mean,
+        effectively integrating our data. This both smoothes out measurement noise
+        and makes it easier to distinguish the fractal properties of bounded time
+        series (i.e. time series whose values cannot grow or shrink beyond certain
+        bounds such as most biological or physical signals) by applying random walk
+        theory (see [dfa_3]_ and [dfa_4]_).
 
-      y_i = x_1 - mean(x) + x_2 - mean(x) + ... + x_i - mean(x).
+        y_i = x_1 - mean(x) + x_2 - mean(x) + ... + x_i - mean(x).
 
-      After that, we split Y(i) into (usually non-overlapping) windows of length
-      n to calculate local trends at this given scale. The ith window of this
-      size has the form
+        After that, we split Y(i) into (usually non-overlapping) windows of length
+        n to calculate local trends at this given scale. The ith window of this
+        size has the form
 
-      W_(n,i) = [y_i, y_(i+1), y_(i+2), ... y_(i+n-1)]
+        W_(n,i) = [y_i, y_(i+1), y_(i+2), ... y_(i+n-1)]
 
-      The local trends are then removed for each window separately by fitting a
-      polynomial p_(n,i) to the window W_(n,i) and then calculating
-      W'_(n,i) = W_(n,i) - p_(n,i) (element-wise subtraction).
+        The local trends are then removed for each window separately by fitting a
+        polynomial p_(n,i) to the window W_(n,i) and then calculating
+        W'_(n,i) = W_(n,i) - p_(n,i) (element-wise subtraction).
 
-      This leaves us with the deviations from the trend - the "fluctuations" -
-      that we are interested in. To quantify them, we take the root mean square
-      of these fluctuations. It is important to note that we have to sum up all
-      individual fluctuations across all windows and divide by the total number
-      of fluctuations here before finally taking the root as last step. Some
-      implementations apply another root per window, which skews the result.
+        This leaves us with the deviations from the trend - the "fluctuations" -
+        that we are interested in. To quantify them, we take the root mean square
+        of these fluctuations. It is important to note that we have to sum up all
+        individual fluctuations across all windows and divide by the total number
+        of fluctuations here before finally taking the root as last step. Some
+        implementations apply another root per window, which skews the result.
 
-      The resulting fluctuation F(n) is then only dependent on the window size n,
-      the scale at which we observe our data. It behaves similar to the
-      autocorrelation function in that it follows a power-law for long-term
-      correlations:
+        The resulting fluctuation F(n) is then only dependent on the window size n,
+        the scale at which we observe our data. It behaves similar to the
+        autocorrelation function in that it follows a power-law for long-term
+        correlations:
 
-      F(n) ~ n^alpha
+        F(n) ~ n^alpha
 
-      Where alpha is the Hurst parameter, which we can obtain from fitting a line
-      into the plot of log(n) versus log(F(n)) and taking the slope.
+        Where alpha is the Hurst parameter, which we can obtain from fitting a line
+        into the plot of log(n) versus log(F(n)) and taking the slope.
 
-      The result can be interpreted as follows: For alpha < 1 the underlying
-      process is stationary and can be modelled as fractional Gaussian noise with
-      H = alpha. This means for alpha = 0.5 we have no long-term correlation or
-      "memory", for 0.5 < alpha < 1 we have positive long-term correlations and
-      for alpha < 0.5 the long-term correlations are negative.
+        The result can be interpreted as follows: For alpha < 1 the underlying
+        process is stationary and can be modelled as fractional Gaussian noise with
+        H = alpha. This means for alpha = 0.5 we have no long-term correlation or
+        "memory", for 0.5 < alpha < 1 we have positive long-term correlations and
+        for alpha < 0.5 the long-term correlations are negative.
 
-      For alpha > 1 the underlying process is non-stationary and can be modeled
-      as fractional Brownian motion with H = alpha - 1.
+        For alpha > 1 the underlying process is non-stationary and can be modeled
+        as fractional Brownian motion with H = alpha - 1.
 
     References:
-      .. [dfa_1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,
-                 H. E. Stanley, and A. L. Goldberger, “Mosaic organization of
-                 DNA nucleotides,” Physical Review E, vol. 49, no. 2, 1994.
-      .. [dfa_2] J. W. Kantelhardt, E. Koscielny-Bunde, H. H. A. Rego, S.
-                 Havlin, and A. Bunde, “Detecting long-range correlations with
-                 detrended fluctuation analysis,” Physica A: Statistical
-                 Mechanics and its Applications, vol. 295, no. 3–4, pp. 441–454,
-                 Jun. 2001, doi: 10.1016/S0378-4371(01)00144-3.
-      .. [dfa_3] C. Peng, J. M. Hausdorff, and A. L. Goldberger, “Fractal
-                 mechanisms in neuronal control: human heartbeat and gait
-                 dynamics in health and disease,” in Self-Organized Biological
-                 Dynamics and Nonlinear Control, 1st ed., J. Walleczek, Ed.,
-                 Cambridge University Press, 2000, pp. 66–96.
-                 doi: 10.1017/CBO9780511535338.006.
-      .. [dfa_4] A. Bashan, R. Bartsch, J. W. Kantelhardt, and S. Havlin,
-                 “Comparison of detrending methods for fluctuation analysis,”
-                 Physica A: Statistical Mechanics and its Applications, vol. 387,
-                 no. 21, pp. 5080–5090, Sep. 2008,
-                 doi: 10.1016/j.physa.2008.04.023.
-      .. [dfa_5] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
-                 V. V. Nikulin, H. D. Mansvelder, and K. Linkenkaer-Hansen,
-                 “Detrended fluctuation analysis: A scale-free view on neuronal
-                 oscillations,” Frontiers in Physiology, vol. 30, 2012.
+        .. [dfa_1] C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons,
+            H. E. Stanley, and A. L. Goldberger, “Mosaic organization of
+            DNA nucleotides,” Physical Review E, vol. 49, no. 2, 1994.
+        .. [dfa_2] J. W. Kantelhardt, E. Koscielny-Bunde, H. H. A. Rego, S.
+            Havlin, and A. Bunde, “Detecting long-range correlations with
+            detrended fluctuation analysis,” Physica A: Statistical
+            Mechanics and its Applications, vol. 295, no. 3–4, pp. 441–454,
+            Jun. 2001, doi: 10.1016/S0378-4371(01)00144-3.
+        .. [dfa_3] C. Peng, J. M. Hausdorff, and A. L. Goldberger, “Fractal
+            mechanisms in neuronal control: human heartbeat and gait
+            dynamics in health and disease,” in Self-Organized Biological
+            Dynamics and Nonlinear Control, 1st ed., J. Walleczek, Ed.,
+            Cambridge University Press, 2000, pp. 66–96.
+            doi: 10.1017/CBO9780511535338.006.
+        .. [dfa_4] A. Bashan, R. Bartsch, J. W. Kantelhardt, and S. Havlin,
+            “Comparison of detrending methods for fluctuation analysis,”
+            Physica A: Statistical Mechanics and its Applications, vol. 387,
+            no. 21, pp. 5080–5090, Sep. 2008,
+            doi: 10.1016/j.physa.2008.04.023.
+        .. [dfa_5] R. Hardstone, S.-S. Poil, G. Schiavone, R. Jansen,
+            V. V. Nikulin, H. D. Mansvelder, and K. Linkenkaer-Hansen,
+            “Detrended fluctuation analysis: A scale-free view on neuronal
+            oscillations,” Frontiers in Physiology, vol. 30, 2012.
 
     Reference code:
-      .. [dfa_a] Peter Jurica, "Introduction to MDFA in Python",
-         url: http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html
-      .. [dfa_b] JE Mietus, "dfa",
-         url: https://www.physionet.org/physiotools/dfa/dfa-1.htm
-      .. [dfa_c] "DFA" function in R package "fractal"
+        .. [dfa_a] Peter Jurica, "Introduction to MDFA in Python",
+            url: http://bsp.brain.riken.jp/~juricap/mdfa/mdfaintro.html
+        .. [dfa_b] JE Mietus, "dfa",
+            url: https://www.physionet.org/physiotools/dfa/dfa-1.htm
+        .. [dfa_c] "DFA" function in R package "fractal"
 
     Args:
-      data (array-like of float):
-        time series
-    Kwargs:
-      nvals (iterable of int):
-        subseries sizes at which to calculate fluctuation
-        (default: logarithmic_n(4, 0.1*len(data), 1.2))
-      overlap (boolean):
-        if True, the windows W_(n,i) will have a 50% overlap,
-        otherwise non-overlapping windows will be used
-      order (int):
-        (polynomial) order of trend to remove
-      fit_trend (str):
-        the fitting method to use for fitting the trends, either 'poly'
-        for normal least squares polynomial fitting or 'RANSAC' for
-        RANSAC-fitting which is more robust to outliers but also tends to
-        lead to unstable results
-      fit_exp (str):
-        the fitting method to use for the line fit, either 'poly' for normal
-        least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
-        is more robust to outliers
-      debug_plot (boolean):
-        if True, a simple plot of the final line-fitting step will be shown
-      debug_data (boolean):
-        if True, debugging data will be returned alongside the result
-      plot_file (str):
-        if debug_plot is True and plot_file is not None, the plot will be saved
-        under the given file name instead of directly showing it through
-        ``plt.show()``
+        data: time series
+        nvals: subseries sizes at which to calculate fluctuation
+            (default: logarithmic_n(4, 0.1*len(data), 1.2))
+        overlap: if True, the windows W_(n,i) will have a 50% overlap,
+            otherwise non-overlapping windows will be used
+        order: (polynomial) order of trend to remove
+        fit_trend: the fitting method to use for fitting the trends, either 'poly'
+            for normal least squares polynomial fitting or 'RANSAC' for
+            RANSAC-fitting which is more robust to outliers but also tends to
+            lead to unstable results
+        fit_exp: the fitting method to use for the line fit, either 'poly' for normal
+            least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+            is more robust to outliers
+        debug_plot: if True, a simple plot of the final line-fitting step will be shown
+        debug_data: if True, debugging data will be returned alongside the result
+        plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
+            under the given file name instead of directly showing it through
+            ``plt.show()``
     Returns:
-      float:
         the estimate alpha for the Hurst parameter (alpha < 1: stationary
         process similar to fractional Gaussian noise with H = alpha,
         alpha > 1: non-stationary process similar to fractional Brownian
         motion with H = alpha - 1)
-      (1d-vector, 1d-vector, list):
-        only present if debug_data is True: debug data of the form
-        ``(nvals, fluctuations, poly)`` where ``nvals`` are the values used for
-        log(n), ``fluctuations`` are the corresponding log(std(X,n)) and ``poly``
-        are the line coefficients (``[slope, intercept]``)
+
+        If ``debug_data`` is set to ``True``, the return value is instead a tuple containing
+
+        - H: Hurst parameter
+        - nvals: the values used for log(n)
+        - fluctuations: the corresponding log(std(X,n))
+        - poly: the line coefficients (``[slope, intercept]``)
     """
     data = np.asarray(data)
     total_N = len(data)
     if nvals is None:
-        if total_N > 70:
-            nvals = logarithmic_n(4, 0.1 * total_N, 1.2)
-        elif total_N > 10:
+        min_n_for_log_scale = 70
+        min_n = 10
+        if total_N > min_n_for_log_scale:
+            nvals = logarithmic_n(4, np.floor(0.1 * total_N), 1.2)
+        elif total_N > min_n:
             nvals = [4, 5, 6, 7, 8, 9]
         else:
             nvals = [total_N - 2, total_N - 1]
             msg = "choosing nvals = {} , DFA with less than ten data points is extremely unreliable"
             warnings.warn(msg.format(nvals), RuntimeWarning, stacklevel=2)
-    if len(nvals) < 2:
+    nvals = np.asarray(nvals, dtype=np.int32)
+    min_number_of_nvals = 2
+    min_nval = 2
+    if nvals.shape[0] < min_number_of_nvals:
         msg = "at least two nvals are needed"
         raise ValueError(msg)
-    if np.min(nvals) < 2:
+    if np.min(nvals) < min_nval:
         msg = "nvals must be at least two"
         raise ValueError(msg)
     if np.max(nvals) >= total_N:
@@ -2658,7 +2748,7 @@ def dfa(
     fluctuations = fluctuations[nonzero]
     if len(fluctuations) == 0:
         # all fluctuations are zero => we cannot fit a line
-        poly = [np.nan, np.nan]
+        poly = np.array([np.nan, np.nan], dtype=np.float64)
     else:
         poly = poly_fit(np.log(nvals), np.log(fluctuations), 1, fit=fit_exp)
     if debug_plot:
