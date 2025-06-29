@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import math
 import warnings
-from pathlib import Path
-from typing import Callable, Literal, TypeVar, cast, overload
+from typing import TYPE_CHECKING, Callable, Literal, TypeVar, cast, overload
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 import numpy as np
 
@@ -2517,7 +2519,7 @@ def dfa(
 ]: ...
 
 
-def dfa(  # noqa: C901, PLR0912
+def dfa(  # noqa: C901, PLR0912, PLR0915
     data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
     nvals: np.typing.IntArrayLike | None = None,
     *,
@@ -2719,7 +2721,7 @@ def dfa(  # noqa: C901, PLR0912
     walk = np.cumsum(data - np.mean(data))
     fluctuations = []
     for n in nvals:
-        assert n >= 2
+        assert n >= min_nval
         # subdivide data into chunks of size n
         if overlap:
             # step size n/2 instead of n
