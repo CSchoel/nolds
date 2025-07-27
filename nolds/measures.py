@@ -1715,7 +1715,7 @@ def hurst_rs(
 def mfhurst_b(
     data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
     qvals: np.typing.FloatArrayLike | None = None,
-    dists: np.typing.FloatArrayLike | None = None,
+    dists: np.typing.IntArrayLike | None = None,
     fit: FittingMethod = "poly",
     *,
     debug_plot: bool = False,
@@ -1728,7 +1728,7 @@ def mfhurst_b(
 def mfhurst_b(
     data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
     qvals: np.typing.FloatArrayLike | None = None,
-    dists: np.typing.FloatArrayLike | None = None,
+    dists: np.typing.IntArrayLike | None = None,
     fit: FittingMethod = "poly",
     *,
     debug_plot: bool = False,
@@ -1747,7 +1747,7 @@ def mfhurst_b(
 def mfhurst_b(
     data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
     qvals: np.typing.FloatArrayLike | None = None,
-    dists: np.typing.FloatArrayLike | None = None,
+    dists: np.typing.IntArrayLike | None = None,
     fit: FittingMethod = "poly",
     *,
     debug_plot: bool = False,
@@ -1877,7 +1877,7 @@ def mfhurst_b(
     qvals = np.asarray(qvals, dtype=np.float64)
     if dists is None:
         dists = logarithmic_n(1, np.ceil(max(20, 0.02 * len(data))), 1.5)
-    dists = np.asarray(dists, dtype=np.float64)
+    dists = np.asarray(dists, dtype=np.int32)
     min_reliable_n = 60
     if len(data) < min_reliable_n:
         warnings.warn(
@@ -1885,7 +1885,7 @@ def mfhurst_b(
             stacklevel=2,
         )
 
-    def hhcorr(d: int, q: int) -> float:
+    def hhcorr(d: int, q: float) -> float:
         """Calculates the height-height correlation for a given distance d and q."""
         diffs = np.abs(data[:-d] - data[d:])
         diffs = diffs[np.where(diffs > 0)]
