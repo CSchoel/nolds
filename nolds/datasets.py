@@ -88,7 +88,7 @@ def lorenz_lyap(sigma: float, rho: float, beta: float) -> float:
 
 def fbm(
     n: int,
-    H: float = 0.75,  # noqa: N803
+    H: float = 0.75,
     random_seed: int | None = None,
 ) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
     """Generates fractional brownian motions of desired length.
@@ -115,13 +115,13 @@ def fbm(
         t: np.ndarray[tuple[int], np.dtype[np.float64]],
         s: np.ndarray[tuple[int], np.dtype[np.float64]],
     ) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
-        twoH = 2 * H  # noqa: N806
+        twoH = 2 * H
         return 0.5 * (s**twoH + t**twoH - np.abs(t - s) ** twoH)
 
     # form the matrix tau
     gamma = R(*np.mgrid[0:n, 0:n])  # apply R to every element in matrix
-    w, P = np.linalg.eigh(gamma)  # noqa: N806
-    L = np.diag(w)  # noqa: N806
+    w, P = np.linalg.eigh(gamma)
+    L = np.diag(w)
     sigma = np.dot(np.dot(P, np.sqrt(L)), np.linalg.inv(P))
     gen = np.random.default_rng(seed=random_seed)
     v = gen.standard_normal(n)
@@ -130,7 +130,7 @@ def fbm(
 
 def fgn(
     n: int,
-    H: float = 0.75,  # noqa: N803
+    H: float = 0.75,
     random_seed: int | None = None,
 ) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
     """Generates fractional gaussian noise of desired length.
@@ -226,7 +226,7 @@ def load_lorenz_physionet() -> tuple[
     return data_in, data_out
 
 
-def tent_map(x: float, steps: int, mu: int = 2) -> Generator[float, None, None]:
+def tent_map(x: float, steps: int, mu: float = 2) -> Generator[float, None, None]:
     """Generates a time series of the tent map.
 
     Characteristics and Background:
