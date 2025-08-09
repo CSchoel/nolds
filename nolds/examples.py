@@ -1,12 +1,24 @@
+"""Example use cases for measures implemented in nolds.
+
+The functions in this module aim to recreate experiments published in literature.
+"""
+
+from __future__ import annotations
+
+import argparse
+from typing import TYPE_CHECKING, Literal
+
 import numpy as np
 
 from . import datasets
 from . import measures as nolds
 
+if TYPE_CHECKING:
+    from nolds.measures import FloatArray1D, FloatArray2D, IntArray1D, NumberArrayLike1D
 
-def weron_2002_figure2(n=10000) -> None:
-    """Recreates figure 2 of [w]_ comparing the reported values by Weron to the
-    values obtained by the functions in this package.
+
+def weron_2002_figure2(n: int = 10000) -> None:
+    """Recreates figure 2 of Weron 2002 ([w]_).
 
     The experiment consists of n iterations where the hurst exponent of randomly
     generated gaussian noise is calculated. This is done with differing sequence
@@ -33,10 +45,9 @@ def weron_2002_figure2(n=10000) -> None:
        properties and confidence intervals,” Physica A: Statistical Mechanics
        and its Applications, vol. 312, no. 1, pp. 285–299, 2002.
 
-    Kwargs:
-      n (int):
-        number of iterations of the experiment (Weron used 10000, but this takes
-        a while)
+    Args:
+        n: number of iterations of the experiment (Weron used 10000, but this takes
+            a while)
     """
     # local import to avoid dependency for non-debug use
     import matplotlib.pyplot as plt
@@ -46,23 +57,31 @@ def weron_2002_figure2(n=10000) -> None:
     reported = [6.708, 13.103, 20.240, 21.924, 22.256, 24.112, 24.054, 26.299, 26.897]
     reported_raw = [160.599, 141.663, 128.454, 115.617, 103.651, 95.481, 86.810, 81.799, 76.270]
 
-    def height_to_h(height):
+    def height_to_h(
+        height: FloatArray1D,
+    ) -> FloatArray1D:
+        """Returns Hurst exponent for specific height coordinates in the inkscape file.
+
+        Args:
+            height: The height coordinates from the inkscape file.
+        """
         return 0.49 + height / 29.894 * 0.01
 
     reported = height_to_h(np.array(reported))
     reported_raw = height_to_h(np.array(reported_raw))
+    rng = np.random.default_rng(3897509205)
     data = []
     for e in range(8, 17):
-        l = 2**e
+        length = 2**e
         nvals = 2 ** np.arange(6, e)
-        rsn = np.mean([nolds.hurst_rs(np.random.normal(size=l), fit="poly") for _ in range(n)])
+        rsn = np.mean([nolds.hurst_rs(rng.normal(size=length), fit="poly") for _ in range(n)])
         rs50 = np.mean(
-            [nolds.hurst_rs(np.random.normal(size=l), fit="poly", nvals=nvals) for _ in range(n)]
+            [nolds.hurst_rs(rng.normal(size=length), fit="poly", nvals=nvals) for _ in range(n)]
         )
         rs50_raw = np.mean(
             [
                 nolds.hurst_rs(
-                    np.random.normal(size=l),
+                    rng.normal(size=length),
                     fit="poly",
                     nvals=nvals,
                     corrected=False,
@@ -75,33 +94,34 @@ def weron_2002_figure2(n=10000) -> None:
     r = plt.plot(np.arange(8, 17), reported)
     rr = plt.plot(np.arange(8, 17), reported_raw)
     plt.legend(r + rr + lines, ("weron", "weron_raw", "rsn", "rs50", "rs50_raw"))
-    plt.xticks(np.arange(8, 17), 2 ** np.arange(8, 17))
+    plt.xticks(np.arange(8, 17), [str(x) for x in 2 ** np.arange(8, 17)])
     plt.xlabel("sequence length")
     plt.ylabel("estimated hurst exponent")
     plt.show()
 
 
 def plot_hurst_hist() -> None:
-    """Plots a histogram of values obtained for the hurst exponent of uniformly
-    distributed white noise.
+    """Plots a histogram of values obtained for the hurst exponent of white noise.
 
     This function requires the package ``matplotlib``.
     """
     # local import to avoid dependency for non-debug use
     import matplotlib.pyplot as plt
 
-    hs = [nolds.hurst_rs(np.random.random(size=10000), corrected=True) for _ in range(100)]
+    rng = np.random.default_rng(869879538)
+    hs = [nolds.hurst_rs(rng.random(size=10000), corrected=True) for _ in range(100)]
     plt.hist(hs, bins=20)
     plt.xlabel("esimated value of hurst exponent")
     plt.ylabel("number of experiments")
     plt.show()
 
 
-def plot_lyap(maptype="logistic") -> None:
-    """Plots a bifurcation plot of the given map and superimposes the true
-    lyapunov exponent as well as the estimates of the largest lyapunov exponent
-    obtained by ``lyap_r`` and ``lyap_e``. The idea for this plot is taken
-    from [ll]_.
+def plot_lyap(maptype: Literal["logistic", "tent"] = "logistic") -> None:
+    """Creates a bifurcation plot of the given map and its lyapunov exponents.
+
+    This superimposes the true lyapunov exponent as well as the estimates of the
+    largest lyapunov exponent obtained by ``lyap_r`` and ``lyap_e``.
+    The idea for this plot is taken from [ll]_.
 
     This function requires the package ``matplotlib``.
 
@@ -110,10 +130,8 @@ def plot_lyap(maptype="logistic") -> None:
     .. [ll] Manfred Füllsack, "Lyapunov exponent",
        url: http://systems-sciences.uni-graz.at/etextbook/sw2/lyapunov.html
 
-    Kwargs:
-      maptype (str):
-        can be either ``"logistic"`` for the logistic map or ``"tent"`` for the
-        tent map.
+    Args:
+      maptype: can be either ``"logistic"`` for the logistic map or ``"tent"`` for the tent map.
     """
     # local import to avoid dependency for non-debug use
     import matplotlib.pyplot as plt
@@ -126,7 +144,7 @@ def plot_lyap(maptype="logistic") -> None:
         param_range = np.arange(2, 4, 0.01)
         full_data = np.array(
             [
-                np.fromiter(datasets.logistic_map(x_start, n, r), dtype="float32")
+                np.fromiter(datasets.logistic_map(x_start, n, float(r)), dtype="float32")
                 for r in param_range
             ]
         )
@@ -138,15 +156,19 @@ def plot_lyap(maptype="logistic") -> None:
         # https://blog.abhranil.net/2015/05/15/lyapunov-exponent-of-the-logistic-map-mathematica-code/
         # Derivative of logistic map: f(x) = r * x * (1 - x) = r * x - r * x²
         # => f'(x) = r - 2 * r * x
+        x_0 = 0.5  # avoid zero crossings in f'(x)
         lambdas = [
-            np.mean(np.log(abs(r - 2 * r * x[np.where(x != 0.5)])))
+            np.mean(np.log(abs(r - 2 * r * x[np.where(x != x_0)])))
             for x, r in zip(full_data, param_range)
         ]
     elif maptype == "tent":
         param_name = "$\\mu$"
         param_range = np.arange(0, 2, 0.01)
-        full_data = np.array(
-            [np.fromiter(datasets.tent_map(x_start, n, mu), dtype="float32") for mu in param_range]
+        full_data: FloatArray2D = np.array(
+            [
+                np.fromiter(datasets.tent_map(x_start, n, float(mu)), dtype="float32")
+                for mu in param_range
+            ]
         )
         # for the tent map the lyapunov exponent is much easier to calculate
         # since the values are multiplied by mu in each step, two trajectories
@@ -156,12 +178,12 @@ def plot_lyap(maptype="logistic") -> None:
         lambdas[np.where(param_range <= 0)] = np.nan
     else:
         msg = f"maptype {maptype} not recognized"
-        raise Error(msg)
+        raise ValueError(msg)
 
     kwargs_e = {"emb_dim": 6, "matrix_dim": 2}
     kwargs_r = {"emb_dim": 6, "lag": 2, "min_tsep": 20, "trajectory_len": 20}
-    lambdas_e = [max(nolds.lyap_e(d, **kwargs_e)) for d in full_data]
-    lambdas_r = [nolds.lyap_r(d, **kwargs_r) for d in full_data]
+    lambdas_e = [np.max(nolds.lyap_e(d, **kwargs_e)) for d in full_data]  # pyright: ignore reportCallIssue
+    lambdas_r = [nolds.lyap_r(d, **kwargs_r) for d in full_data]  # pyright: ignore reportCallIssue
     bifur_x = np.repeat(param_range, nbifur)
     bifur = np.reshape(full_data[:, -nbifur:], nbifur * param_range.shape[0])
 
@@ -181,29 +203,24 @@ def plot_lyap(maptype="logistic") -> None:
 
 
 def profiling() -> None:
-    """Runs a profiling test for the function ``lyap_e`` (mainly used for
-    development).
+    """Runs a profiling test for the function ``lyap_e``.
 
-    This function requires the package ``cProfile``.
+    This function is mainly used for development and requires the package ``cProfile``.
     """
     import cProfile
 
     n = 10000
-    data = np.cumsum(np.random.random(n) - 0.5)
+    rng = np.random.default_rng(2030628104)
+    data = np.cumsum(rng.random(n) - 0.5)
     cProfile.runctx("lyap_e(data)", {"lyap_e": nolds.lyap_e}, {"data": data})
 
 
-def hurst_compare_nvals(data, nvals=None) -> None:
-    """Creates a plot that compares the results of different choices for nvals
-    for the function hurst_rs.
+def hurst_compare_nvals(data: NumberArrayLike1D, nvals: IntArray1D | None = None) -> None:
+    """Creates a plot that compares the results of different nvals for the function hurst_rs.
 
     Args:
-      data (array-like of float):
-        the input data from which the hurst exponent should be estimated
-
-    Kwargs:
-      nvals (array of int):
-        a manually selected value for the nvals parameter that should be plotted
+      data: the input data from which the hurst exponent should be estimated
+      nvals: a manually selected value for the nvals parameter that should be plotted
         in comparison to the default choices
     """
     import matplotlib.pyplot as plt
@@ -216,7 +233,8 @@ def hurst_compare_nvals(data, nvals=None) -> None:
     n_div = n_all[np.where(len(data) % n_all[:-1] == 0)]
     dd_div = nolds.hurst_rs(data, nvals=n_div, debug_data=True, fit="poly")
 
-    def corr(nvals):
+    def corr(nvals: IntArray1D) -> list[np.float64]:
+        """Calculacte correction offset using expected_rs."""
         return [np.log(nolds.expected_rs(n)) for n in nvals]
 
     l_all = plt.plot(dd_all[1][0], dd_all[1][1] - corr(n_all), "o")
@@ -235,31 +253,16 @@ def hurst_compare_nvals(data, nvals=None) -> None:
         l_all + l_def + l_div + l_cst,
         ["all", "default", "divisors", *t_cst],
     )
-    labeled_data = zip([dd_all[0], dd_def[0], dd_div[0]], ["all", "def", "div"])
-    for data, _label in labeled_data:
-        pass
-    if nvals is not None:
-        pass
     plt.show()
 
 
-def sampen_default_tolerance() -> None:
-    data = list(datasets.logistic_map(0.34, 1000, r=3.9))
-    oldtol = 0.2 * np.std(data, ddof=1)
-    old_res = [nolds.sampen(data, emb_dim=i, tolerance=oldtol) for i in range(1, 30)]
-    new_res = [nolds.sampen(data, emb_dim=i) for i in range(1, 30)]
-    for _i, _old, _new in zip(range(1, 30), old_res, new_res):
-        pass
-
-
-def aste_line_fitting(N=100) -> None:
-    """Shows plot that proves that the line fitting in T. Astes original MATLAB code
-    provides the same results as `np.polyfit`.
-    """
-    slope = np.random.random() * 10 - 5
-    intercept = np.random.random() * 100 - 50
+def aste_line_fitting(N: int = 100) -> None:
+    """Proves equivalence of T. Aste's original MATLAB code and `np.polyfit`."""
+    rng = np.random.default_rng(528714688)
+    slope = rng.random() * 10 - 5
+    intercept = rng.random() * 100 - 50
     xvals = np.arange(N)
-    yvals = xvals * slope + intercept + np.random.randn(N) * 100
+    yvals = xvals * slope + intercept + rng.standard_normal(N) * 100
     import matplotlib.pyplot as plt
 
     plt.plot(xvals, yvals, "rx", label="data")
@@ -270,7 +273,7 @@ def aste_line_fitting(N=100) -> None:
         label=f"true ({slope:.3f} x + {intercept:.3f})",
         alpha=0.5,
     )
-    i_aste, s_aste = nolds._aste_line_fit(xvals, yvals)
+    i_aste, s_aste = nolds._aste_line_fit(xvals, yvals)  # noqa: SLF001
     s_np, i_np = np.polyfit(xvals, yvals, 1)
     plt.plot(
         [0, N - 1],
@@ -290,9 +293,8 @@ def aste_line_fitting(N=100) -> None:
     plt.show()
 
 
-def hurst_mf_stock(debug=False) -> None:
-    """Recreates results from [mfs_1]_ (table at start of section 4) as print
-    output.
+def hurst_mf_stock(*, debug: bool = False) -> None:
+    """Recreates results from [mfs_1]_ (table at start of section 4) as print output.
 
     Unfortunately as a layman in finance, I could not determine the exact data
     that Di Matteo et al. used. Instead I use the data from
@@ -317,13 +319,12 @@ def hurst_mf_stock(debug=False) -> None:
 
     References:
 
-      .. [mfs_1] T. Di Matteo, T. Aste, and M. M. Dacorogna, “Scaling behaviors
-         in differently developed markets,” Physica A: Statistical Mechanics
-         and its Applications, vol. 324, no. 1–2, pp. 183–188, 2003.
+        .. [mfs_1] T. Di Matteo, T. Aste, and M. M. Dacorogna, “Scaling behaviors
+            in differently developed markets,” Physica A: Statistical Mechanics
+            and its Applications, vol. 324, no. 1–2, pp. 183–188, 2003.
 
-    Kwargs:
-      debug (boolean):
-        if `True`, a debug plot will be shown for each calculated GHE value
+    Args:
+      debug: if `True`, a debug plot will be shown for each calculated GHE value
         except for the ones generated by `_genhurst`.
     """
     financial = [
@@ -332,18 +333,18 @@ def hurst_mf_stock(debug=False) -> None:
         (datasets.ndx, "ndx"),
     ]
     for data, _lab in financial:
-        data = data[1][:, 0]
-        data = np.log(data)
+        timeseries = data[1][:, 0]
+        timeseries = np.log(timeseries)
         dists = range(1, 20)
-        nolds.mfhurst_b(data, qvals=[2], dists=dists, debug_plot=debug)[0]
+        nolds.mfhurst_b(timeseries, qvals=[2], dists=dists, debug_plot=debug)[0]
         nolds.mfhurst_b(
-            nolds.detrend_data(data, order=1),
+            nolds.detrend_data(timeseries, order=1),
             qvals=[2],
             dists=dists,
             debug_plot=debug,
         )[0]
-        nolds.mfhurst_dm(data, qvals=[2], debug_plot=debug)[0][0]
-        nolds._genhurst(data, 2)
+        nolds.mfhurst_dm(timeseries, qvals=[2], debug_plot=debug)[0][0]
+        nolds._genhurst(timeseries, 2)  # noqa: SLF001
 
 
 def barabasi_1991_figure2() -> None:
@@ -354,8 +355,8 @@ def barabasi_1991_figure2() -> None:
     with b1 = 0.8 and b2 = 0.5.
 
     References:
-      .. [bf2] A.-L. Barabási and T. Vicsek, “Multifractality of self-affine
-         fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.
+        .. [bf2] A.-L. Barabási and T. Vicsek, “Multifractality of self-affine
+            fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.
     """
     import matplotlib.pyplot as plt
 
@@ -365,7 +366,6 @@ def barabasi_1991_figure2() -> None:
     b1 = 0.8
     b2 = 0.5
     dists = [4**i for i in range(6, 11)]
-    # dists = nolds.logarithmic_n(100, 0.01 * len(b1991), 2)
     Hq = nolds.mfhurst_b(b1991, qvals=qvals, dists=dists)
     Hq_t = [np.log((b1**q + b2**q) / 2) / np.log(0.25) / q for q in qvals_t]
     plt.plot(qvals, Hq, "r+", label="mfhurst_b")
@@ -383,16 +383,16 @@ def barabasi_1991_figure3() -> None:
     Brownian motion that moves in unit steps (-1 or +1) in each time step.
 
     References:
-      .. [bf3] A.-L. Barabási and T. Vicsek, “Multifractality of self-affine
-         fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.
+        .. [bf3] A.-L. Barabási and T. Vicsek, “Multifractality of self-affine
+            fractals,” Physical Review A, vol. 44, no. 4, pp. 2730–2733, 1991.
     """
     import matplotlib.pyplot as plt
 
-    brown = np.cumsum(np.random.randint(0, 2, size=10000000) * 2 - 1)
+    rng = np.random.default_rng(2562651293)
+    brown = np.cumsum(rng.integers(0, 2, size=10000000) * 2 - 1)
     qvals = [-5, -4, -3, -2, -1.1, 0.1, 1, 2, 3, 4, 5]
     Hq_t = [0.5 if q > -1 else -0.5 / q for q in qvals]
     dists = [2**i for i in range(6, 15)]
-    # dists = nolds.logarithmic_n(100, 0.01 * len(brown), 1.5)
     Hq = nolds.mfhurst_b(brown, qvals=qvals, dists=dists, debug_plot=False)
     plt.plot(qvals, Hq, "r+", label="mfhurst_b")
     plt.plot(qvals, Hq_t, label="calculated value")
@@ -404,7 +404,9 @@ def barabasi_1991_figure3() -> None:
 
 
 def lorenz() -> None:
-    """Calculates different measures for the Lorenz system of ordinary
+    """Compares nolds results with prescribed results for Lorenz system.
+
+    Calculates different measures for the Lorenz system of ordinary
     differential equations and compares nolds results with prescribed
     results from the literature.
 
@@ -438,46 +440,39 @@ def lorenz() -> None:
 
     References:
 
-      .. [l_1] P. Grassberger and I. Procaccia, “Measuring the strangeness
-         of strange attractors,” Physica D: Nonlinear Phenomena, vol. 9,
-         no. 1, pp. 189–208, 1983.
-      .. [l_2] F. Kaffashi, R. Foglyano, C. G. Wilson, and K. A. Loparo,
-         “The effect of time delay on Approximate & Sample Entropy
-         calculations,” Physica D: Nonlinear Phenomena, vol. 237, no. 23,
-         pp. 3069–3074, 2008, doi: 10.1016/j.physd.2008.06.005.
-      .. [l_3] V. Suyal, A. Prasad, and H. P. Singh, “Nonlinear Time Series
-         Analysis of Sunspot Data,” Sol Phys, vol. 260, no. 2, pp. 441–449,
-         2009, doi: 10.1007/s11207-009-9467-x.
-      .. [l_4] G. A. Leonov and N. V. Kuznetsov, “On differences and
-         similarities in the analysis of Lorenz, Chen, and Lu systems,”
-         Applied Mathematics and Computation, vol. 256, pp. 334–343, 2015,
-         doi: 10.1016/j.amc.2014.12.132.
-      .. [l_5] S. Wallot, J. P. Irmer, M. Tschense, N. Kuznetsov, A. Højlund,
-         and M. Dietz, “A Multivariate Method for Dynamic System Analysis:
-         Multivariate Detrended Fluctuation Analysis Using Generalized Variance,”
-         Topics in Cognitive Science, p. tops.12688, Sep. 2023,
-         doi: 10.1111/tops.12688.
-
-
+        .. [l_1] P. Grassberger and I. Procaccia, “Measuring the strangeness
+            of strange attractors,” Physica D: Nonlinear Phenomena, vol. 9,
+            no. 1, pp. 189–208, 1983.
+        .. [l_2] F. Kaffashi, R. Foglyano, C. G. Wilson, and K. A. Loparo,
+            “The effect of time delay on Approximate & Sample Entropy
+            calculations,” Physica D: Nonlinear Phenomena, vol. 237, no. 23,
+            pp. 3069–3074, 2008, doi: 10.1016/j.physd.2008.06.005.
+        .. [l_3] V. Suyal, A. Prasad, and H. P. Singh, “Nonlinear Time Series
+            Analysis of Sunspot Data,” Sol Phys, vol. 260, no. 2, pp. 441–449,
+            2009, doi: 10.1007/s11207-009-9467-x.
+        .. [l_4] G. A. Leonov and N. V. Kuznetsov, “On differences and
+            similarities in the analysis of Lorenz, Chen, and Lu systems,”
+            Applied Mathematics and Computation, vol. 256, pp. 334–343, 2015,
+            doi: 10.1016/j.amc.2014.12.132.
+        .. [l_5] S. Wallot, J. P. Irmer, M. Tschense, N. Kuznetsov, A. Højlund,
+            and M. Dietz, “A Multivariate Method for Dynamic System Analysis:
+            Multivariate Detrended Fluctuation Analysis Using Generalized Variance,”
+            Topics in Cognitive Science, p. tops.12688, Sep. 2023,
+            doi: 10.1111/tops.12688.
     """
     sigma = 10
     rho = 28
     beta = 8.0 / 3
-    start = [0, 22, 10]
+    start = [0.0, 22.0, 10.0]
     n = 10000
     skip = 10000
     dt = 0.012
     data = datasets.lorenz_euler(n + skip, sigma, rho, beta, start=start, dt=dt)[skip:]
 
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111, projection="3d")
-    # ax.plot(data[:, 0], data[:, 1], data[:, 2])
-    # plt.show()
-    # plt.close(fig)
-
     datasets.lorenz_lyap(sigma, rho, beta)
     # Rationale for argument values:
-    # start with medium settings for min_tsep and lag, span a large area with trajectory_len, set fit_offset to 0
+    # start with medium settings for min_tsep and lag, span a large area with trajectory_len,
+    # set fit_offset to 0
     # up the embedding dimension until you get a clear line in the debug plot
     # adjust trajectory_len and fit_offset to split off only the linear part
     # in general: the longer the linear part of the plot, the better
@@ -534,7 +529,7 @@ def lorenz() -> None:
     data_dfa = datasets.lorenz_euler(120000, 10, 28, 8 / 3.0, start=[0.1, 0.1, 0.1], dt=0.002)[
         20000:
     ]
-    nvals = nolds.logarithmic_n(200, len(data_dfa) / 8, 2**0.2)
+    nvals = nolds.logarithmic_n(200, np.ceil(len(data_dfa) / 8), 2**0.2)
     dfa_args = {"nvals": nvals, "order": 2, "overlap": False, "fit_exp": "poly"}
     nolds.dfa(data_dfa[:, 0], **dfa_args)
     nolds.dfa(data_dfa[:, 1], **dfa_args)
@@ -543,45 +538,64 @@ def lorenz() -> None:
     # reference: Kaffashi 2008
     # Rationale for argument values: Just follow paper.
     sampen_args = {"emb_dim": 2, "lag": 1}
-    nolds.sampen(data[:, 0], **sampen_args)
-    nolds.sampen(data[:, 1], **sampen_args)
-    nolds.sampen(data[:, 2], **sampen_args)
+    nolds.sampen(data[:, 0], **sampen_args)  # pyright: ignore reportCallIssue
+    nolds.sampen(data[:, 1], **sampen_args)  # pyright: ignore reportCallIssue
+    nolds.sampen(data[:, 2], **sampen_args)  # pyright: ignore reportCallIssue
 
 
 if __name__ == "__main__":
     # run this with the following command:
     # python -m nolds.examples lyapunov-logistic
-    import sys
 
-    def print_options() -> None:
-        pass
+    parser = argparse.ArgumentParser(
+        prog="nolds.examples", description="Run examples for nolds metrics."
+    )
+    parser.add_argument(
+        "example",
+        choices=[
+            "lyapunov-logistic",
+            "lyapunov-tent",
+            "profiling",
+            "hurst-weron2",
+            "hurst-hist",
+            "hurst-nvals",
+            "aste-line",
+            "hurst-mf-stock",
+            "hurst-mf-barabasi2",
+            "hurst-mf-barabasi3",
+            "lorenz",
+        ],
+        help="Which example to run.",
+    )
+    parser.add_argument(
+        "--size",
+        "-n",
+        default=None,
+        type=int,
+        help="number of iterations or datapoints to use for certain examples",
+    )
+    args = parser.parse_args()
 
-    if len(sys.argv) < 2:
-        print_options()
-    elif sys.argv[1] == "lyapunov-logistic":
-        plot_lyap()
-    elif sys.argv[1] == "lyapunov-tent":
-        plot_lyap("tent")
-    elif sys.argv[1] == "profiling":
-        profiling()
-    elif sys.argv[1] == "hurst-weron2":
-        n = 1000 if len(sys.argv) < 3 else int(sys.argv[2])
-        weron_2002_figure2(n)
-    elif sys.argv[1] == "hurst-hist":
-        plot_hurst_hist()
-    elif sys.argv[1] == "hurst-nvals":
-        hurst_compare_nvals(datasets.brown72)
-    elif sys.argv[1] == "sampen-tol":
-        sampen_default_tolerance()
-    elif sys.argv[1] == "aste-line":
-        aste_line_fitting()
-    elif sys.argv[1] == "hurst-mf-stock":
-        hurst_mf_stock()
-    elif sys.argv[1] == "hurst-mf-barabasi2":
-        barabasi_1991_figure2()
-    elif sys.argv[1] == "hurst-mf-barabasi3":
-        barabasi_1991_figure3()
-    elif sys.argv[1] == "lorenz":
-        lorenz()
-    else:
-        print_options()
+    match args.example:
+        case "lyapunov-logistic":
+            plot_lyap()
+        case "lyapunov-tent":
+            plot_lyap("tent")
+        case "profiling":
+            profiling()
+        case "hurst-weron2":
+            weron_2002_figure2(1000 if args.size is None else args.size)
+        case "hurst-hist":
+            plot_hurst_hist()
+        case "hurst-nvals":
+            hurst_compare_nvals(datasets.brown72)
+        case "aste-line":
+            aste_line_fitting(100 if args.size is None else args.size)
+        case "hurst-mf-stock":
+            hurst_mf_stock()
+        case "hurst-mf-barabasi2":
+            barabasi_1991_figure2()
+        case "hurst-mf-barabasi3":
+            barabasi_1991_figure3()
+        case "lorenz":
+            lorenz()
