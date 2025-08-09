@@ -4,26 +4,46 @@ from __future__ import annotations
 
 import math
 import warnings
-from typing import TYPE_CHECKING, Callable, Literal, TypeVar, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    Literal,
+    TypeAlias,
+    TypeVar,
+    cast,
+    overload,
+)
+
+import numpy as np
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-import numpy as np
+    from numpy.typing import ArrayLike
 
-D = TypeVar("D", bound=np.integer | np.floating)
+    D = TypeVar("D", bound=np.integer | np.floating)
+    # Array type definitions
+    # NOTE: We define aliases here to save space and to make it easy to update
+    # the types when numpy settles on a best practice for annotating array dimensions.
+    IntArray1D: TypeAlias = np.ndarray[tuple[int], np.dtype[np.int32]]
+    FloatArray1D: TypeAlias = np.ndarray[tuple[int], np.dtype[np.float64]]
+    FloatArray2D: TypeAlias = np.ndarray[tuple[int, int], np.dtype[np.float64]]
+    NumberArray1D: TypeAlias = np.ndarray[tuple[int], np.dtype[D]]
+    NumberArray2D: TypeAlias = np.ndarray[tuple[int, int], np.dtype[D]]
+    # Define more specific aliases for input data
+    # NOTE: These don't change anything in type checking, but the type name servers as
+    # additional documentation for users.
+    IntArrayLike1D: TypeAlias = ArrayLike  # 1D structure containing int values
+    FloatArrayLike1D: TypeAlias = ArrayLike  # 1D structure containing float values
+    NumberArrayLike1D: TypeAlias = ArrayLike  # 1D structure containing number values
 
 
-def rowwise_chebyshev(
-    x: np.ndarray[tuple[int, int], np.dtype[D]], y: np.ndarray[tuple[int], np.dtype[D]]
-) -> np.ndarray[tuple[int], np.dtype[D]]:
+def rowwise_chebyshev(x: NumberArray2D, y: NumberArray1D) -> NumberArray1D:
     """Returns the Chebyshev distances between each row of matrix x and the reference row y."""
     return np.max(np.abs(x - y), axis=1)
 
 
-def rowwise_euclidean(
-    x: np.ndarray[tuple[int, int], np.dtype[D]], y: np.ndarray[tuple[int], np.dtype[D]]
-) -> np.ndarray[tuple[int], np.dtype[D]]:
+def rowwise_euclidean(x: NumberArray2D, y: NumberArray1D) -> NumberArray1D:
     """Returns the Euclidean distances between each row of matrix x and the reference row y."""
     return np.sqrt(np.sum((x - y) ** 2, axis=1))
 
@@ -32,11 +52,11 @@ FittingMethod = Literal["RANSAC", "poly"]
 
 
 def poly_fit(
-    x: np.ndarray[tuple[int], np.dtype[D]],
-    y: np.ndarray[tuple[int], np.dtype[D]],
+    x: NumberArray1D,
+    y: NumberArray1D,
     degree: int,
     fit: FittingMethod = "RANSAC",
-) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
+) -> FloatArray1D:
     """Fits a polynomial of the given degree to the data.
 
     This currently supports two fittting algorithms.
@@ -96,8 +116,8 @@ def poly_fit(
 
 
 def delay_embedding(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike, emb_dim: int, lag: int = 1
-) -> np.ndarray[tuple[int, int], np.dtype[np.float64]]:
+    data: NumberArrayLike1D, emb_dim: int, lag: int = 1
+) -> FloatArray2D:
     """Perform a time-delay embedding of a time series.
 
     Args:
@@ -153,7 +173,7 @@ def lyap_r_len(emb_dim: int, lag: int, trajectory_len: int, min_tsep: int) -> in
 
 @overload
 def lyap_r(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    data: NumberArrayLike1D,
     emb_dim: int = 10,
     *,
     lag: int | None = None,
@@ -171,7 +191,7 @@ def lyap_r(
 
 @overload
 def lyap_r(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    data: NumberArrayLike1D,
     emb_dim: int = 10,
     *,
     lag: int | None = None,
@@ -187,15 +207,15 @@ def lyap_r(
 ) -> tuple[
     np.float64,
     tuple[
-        np.ndarray[tuple[int], np.dtype[np.int32]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        IntArray1D,
+        FloatArray1D,
+        FloatArray1D,
     ],
 ]: ...
 
 
 def lyap_r(  # noqa: C901, PLR0912, PLR0915
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    data: NumberArrayLike1D,
     emb_dim: int = 10,
     *,
     lag: int | None = None,
@@ -213,9 +233,9 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
     | tuple[
         float,
         tuple[
-            np.ndarray[tuple[int], np.dtype[np.int32]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            IntArray1D,
+            FloatArray1D,
+            FloatArray1D,
         ],
     ]
 ):
@@ -417,7 +437,9 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
         raise ValueError(msg.format(-ntraj + 1))
     if ntraj < min_traj:
         # not enough data points => there are rows where all values are inf
-        assert np.any(np.all(np.isinf(dists[:ntraj, :ntraj]), axis=1)), "no inf rows found"
+        assert np.any(np.all(np.isinf(dists[:ntraj, :ntraj]), axis=1)), (
+            "no inf rows found"
+        )
         msg = (
             "Not enough data points. At least {} trajectories are required "
             "to find a valid neighbor for each orbit vector with min_tsep={} "
@@ -498,7 +520,7 @@ def lyap_e_len(emb_dim: int, matrix_dim: int, min_tsep: int, min_nb: int) -> int
 
 @overload
 def lyap_e(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    data: NumberArrayLike1D,
     *,
     emb_dim: int = 10,
     matrix_dim: int = 4,
@@ -508,12 +530,12 @@ def lyap_e(
     debug_plot: bool = False,
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
-) -> np.ndarray[tuple[int], np.dtype[np.float64]]: ...
+) -> FloatArray1D: ...
 
 
 @overload
 def lyap_e(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    data: NumberArrayLike1D,
     *,
     emb_dim: int = 10,
     matrix_dim: int = 4,
@@ -524,12 +546,13 @@ def lyap_e(
     debug_data: Literal[True] = True,
     plot_file: str | Path | None = None,
 ) -> tuple[
-    np.ndarray[tuple[int], np.dtype[np.float64]], np.ndarray[tuple[int, int], np.dtype[np.float64]]
+    FloatArray1D,
+    FloatArray2D,
 ]: ...
 
 
 def lyap_e(  # noqa: C901, PLR0915
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    data: NumberArrayLike1D,
     *,
     emb_dim: int = 10,
     matrix_dim: int = 4,
@@ -540,10 +563,10 @@ def lyap_e(  # noqa: C901, PLR0915
     debug_data: bool = False,
     plot_file: str | Path | None = None,
 ) -> (
-    np.ndarray[tuple[int], np.dtype[np.float64]]
+    FloatArray1D
     | tuple[
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int, int], np.dtype[np.float64]],
+        FloatArray1D,
+        FloatArray2D,
     ]
 ):
     r"""Estimates the Lyapunov exponents using the algorithm of Eckmann et al. [le_1]_.
@@ -809,7 +832,7 @@ def lyap_e(  # noqa: C901, PLR0915
 
 
 def plot_dists(
-    dists: list[np.ndarray[tuple[int], np.dtype[np.float64]]],
+    dists: list[FloatArray1D],
     tolerance: float,
     m: int,
     title: str | None = None,
@@ -836,7 +859,9 @@ def plot_dists(
     std = np.std(dists_full, ddof=1)
     rng = (0.0, float(mean + std * nstd))
     colors = ["green", "blue"]
-    for i, (h, bins) in enumerate([np.histogram(dat, bins=nbins, range=rng) for dat in dists]):
+    for i, (h, bins) in enumerate(
+        [np.histogram(dat, bins=nbins, range=rng) for dat in dists]
+    ):
         bw = bins[1] - bins[0]
         plt.bar(bins[:-1], h, bw, label=f"m={m + i:d}", color=colors[i], alpha=0.5)
     plt.axvline(tolerance, color="red")
@@ -855,17 +880,17 @@ def plot_dists(
 
 @overload
 def sampen(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    data: NumberArrayLike1D,
     *,
     emb_dim: int = 2,
     tolerance: float | None = None,
     lag: int = 1,
     dist: Callable[
         [
-            np.ndarray[tuple[int, int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray2D,
+            FloatArray1D,
         ],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
     ] = rowwise_chebyshev,
     closed: bool = False,
     debug_plot: bool = False,
@@ -876,17 +901,17 @@ def sampen(
 
 @overload
 def sampen(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    data: NumberArrayLike1D,
     *,
     emb_dim: int = 2,
     tolerance: float | None = None,
     lag: int = 1,
     dist: Callable[
         [
-            np.ndarray[tuple[int, int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray2D,
+            FloatArray1D,
         ],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
     ] = rowwise_chebyshev,
     closed: bool = False,
     debug_plot: bool = False,
@@ -895,22 +920,22 @@ def sampen(
 ) -> tuple[
     float,
     list[float],
-    list[np.ndarray[tuple[int], np.dtype[np.float64]]],
+    list[FloatArray1D],
 ]: ...
 
 
 def sampen(  # noqa: C901, PLR0912
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
+    data: NumberArrayLike1D,
     *,
     emb_dim: int = 2,
     tolerance: float | None = None,
     lag: int = 1,
     dist: Callable[
         [
-            np.ndarray[tuple[int, int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray2D,
+            FloatArray1D,
         ],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
     ] = rowwise_chebyshev,
     closed: bool = False,
     debug_plot: bool = False,
@@ -921,7 +946,7 @@ def sampen(  # noqa: C901, PLR0912
     | tuple[
         float,
         list[float],
-        list[np.ndarray[tuple[int], np.dtype[np.float64]]],
+        list[FloatArray1D],
     ]
 ):
     """Computes the sample entropy of the given data.
@@ -1063,7 +1088,11 @@ def sampen(  # noqa: C901, PLR0912
             saen = np.inf
     if debug_plot:
         plot_dists(
-            plot_data, cast("float", tolerance), m, title=f"sampEn = {saen:.3f}", fname=plot_file
+            plot_data,
+            cast("float", tolerance),
+            m,
+            title=f"sampEn = {saen:.3f}",
+            fname=plot_file,
         )
     if debug_data:
         return (saen, counts, plot_data)
@@ -1124,9 +1153,7 @@ def logarithmic_n(min_n: int, max_n: int, factor: float) -> list[int]:
     return ns
 
 
-def logmid_n(
-    max_n: int, ratio: float = 1 / 4.0, nsteps: int = 15
-) -> np.ndarray[tuple[int], np.dtype[np.int32]]:
+def logmid_n(max_n: int, ratio: float = 1 / 4.0, nsteps: int = 15) -> IntArray1D:
     """Creates an array of equidistant values in the "middle" of [0, max_n] on a logarithmic scale.
 
     If max_n is very small and/or nsteps is very large, this may lead to
@@ -1181,7 +1208,7 @@ def logarithmic_r(min_r: float, max_r: float, factor: float) -> list[float]:
     return [min_r * (factor**i) for i in range(max_i + 1)]
 
 
-def expected_rs(n: int) -> float:
+def expected_rs(n: np.integer) -> float:
     """Approximates the expected (R/S)_n for white noise for a given n.
 
     This is used as a correction factor in the function hurst_rs. It uses the
@@ -1204,7 +1231,7 @@ def expected_rs(n: int) -> float:
     return front * middle * back
 
 
-def expected_h(nvals: np.typing.IntArrayLike, fit: FittingMethod = "RANSAC") -> float:
+def expected_h(nvals: IntArrayLike1D, fit: FittingMethod = "RANSAC") -> float:
     """Uses expected_rs to calculate the expected value for the Hurst exponent h.
 
     Args:
@@ -1222,9 +1249,7 @@ def expected_h(nvals: np.typing.IntArrayLike, fit: FittingMethod = "RANSAC") -> 
     return poly[0]
 
 
-def rs(
-    data: np.ndarray[tuple[int], np.dtype[np.float64]], n: int, *, unbiased: bool = True
-) -> float:
+def rs(data: FloatArray1D, n: np.integer, *, unbiased: bool = True) -> float:
     """Calculates an individual R/S value in the rescaled range approach for a given n.
 
     Note: This is just a helper function for hurst_rs and should not be called
@@ -1271,9 +1296,11 @@ def rs(
 
 
 def plot_histogram_matrix(
-    data: np.ndarray[tuple[int, int], np.dtype[np.float64]],
+    data: FloatArray2D,
     name: str,
-    bin_range: Literal["absmax", "1sigma", "2sigma", "3sigma", "4sigma", "5sigma"] = "3sigma",
+    bin_range: Literal[
+        "absmax", "1sigma", "2sigma", "3sigma", "4sigma", "5sigma"
+    ] = "3sigma",
     fname: str | Path | None = None,
 ) -> None:
     """Plot a quadratic matrix of histograms.
@@ -1321,9 +1348,9 @@ def plot_histogram_matrix(
 
 
 def plot_reg(
-    xvals: np.ndarray[tuple[int], np.dtype[np.float64]],
-    yvals: np.ndarray[tuple[int], np.dtype[np.float64]],
-    poly: np.ndarray[tuple[int], np.dtype[np.float64]] | None = None,
+    xvals: FloatArray1D,
+    yvals: FloatArray1D,
+    poly: FloatArray1D | None = None,
     x_label: str = "x",
     y_label: str = "y",
     data_label: str = "data",
@@ -1363,11 +1390,11 @@ def plot_reg(
     plt.close()
 
 
-# TODO this is not used anywhere. Do we still need it?
+# TODO: this is not used anywhere. Do we still need it?
 def plot_reg_tiled(
-    xvals: np.ndarray[tuple[int, int], np.dtype[np.float64]],
-    yvals: np.ndarray[tuple[int, int], np.dtype[np.float64]],
-    polys: list[np.ndarray[tuple[int], np.dtype[np.float64]]] | None = None,
+    xvals: FloatArray2D,
+    yvals: FloatArray2D,
+    polys: list[FloatArray1D] | None = None,
     x_label: str = "x",
     y_label: str = "y",
     data_labels: list[str] | None = None,
@@ -1410,7 +1437,9 @@ def plot_reg_tiled(
         plt.subplot(int(np.ceil(len(xvals) / columns)), columns, i + 1)
         plt.plot(xvals[i], yvals[i], "bo", label=data_labels[i])
         if polys is not None:
-            plt.plot(xvals[i], np.polyval(polys[i], xvals[i]), "r-", label=reg_labels[i])
+            plt.plot(
+                xvals[i], np.polyval(polys[i], xvals[i]), "r-", label=reg_labels[i]
+            )
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.ylim(means[i] - max_span / 2, means[i] + max_span / 2)
@@ -1423,9 +1452,9 @@ def plot_reg_tiled(
 
 
 def plot_reg_multiple(
-    xvals: np.ndarray[tuple[int, int], np.dtype[np.float64]],
-    yvals: np.ndarray[tuple[int, int], np.dtype[np.float64]],
-    polys: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None = None,
+    xvals: FloatArray2D,
+    yvals: FloatArray2D,
+    polys: FloatArray2D | None = None,
     x_label: str = "x",
     y_label: str = "y",
     data_labels: list[str] | None = None,
@@ -1472,8 +1501,8 @@ def plot_reg_multiple(
 
 @overload
 def hurst_rs(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
-    nvals: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    nvals: IntArrayLike1D | None = None,
     fit: FittingMethod = "RANSAC",
     *,
     debug_plot: bool = False,
@@ -1486,8 +1515,8 @@ def hurst_rs(
 
 @overload
 def hurst_rs(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
-    nvals: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    nvals: IntArrayLike1D | None = None,
     fit: FittingMethod = "RANSAC",
     *,
     debug_plot: bool = False,
@@ -1498,16 +1527,16 @@ def hurst_rs(
 ) -> tuple[
     float,
     tuple[
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
+        FloatArray1D,
+        FloatArray1D,
     ],
 ]: ...
 
 
 def hurst_rs(
-    data: np.typing.FloatArrayLike | np.typing.IntArrayLike,
-    nvals: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    nvals: IntArrayLike1D | None = None,
     fit: FittingMethod = "RANSAC",
     *,
     debug_plot: bool = False,
@@ -1520,9 +1549,9 @@ def hurst_rs(
     | tuple[
         float,
         tuple[
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray1D,
+            FloatArray1D,
+            FloatArray1D,
         ],
     ]
 ):
@@ -1713,54 +1742,54 @@ def hurst_rs(
 
 @overload
 def mfhurst_b(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    qvals: np.typing.FloatArrayLike | None = None,
-    dists: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    qvals: FloatArrayLike1D | None = None,
+    dists: IntArrayLike1D | None = None,
     fit: FittingMethod = "poly",
     *,
     debug_plot: bool = False,
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
-) -> np.ndarray[tuple[int], np.dtype[np.float64]]: ...
+) -> FloatArray1D: ...
 
 
 @overload
 def mfhurst_b(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    qvals: np.typing.FloatArrayLike | None = None,
-    dists: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    qvals: FloatArrayLike1D | None = None,
+    dists: IntArrayLike1D | None = None,
     fit: FittingMethod = "poly",
     *,
     debug_plot: bool = False,
     debug_data: Literal[True] = True,
     plot_file: str | Path | None = None,
 ) -> tuple[
-    np.ndarray[tuple[int], np.dtype[np.float64]],
+    FloatArray1D,
     tuple[
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
+        FloatArray1D,
+        FloatArray1D,
     ],
 ]: ...
 
 
 def mfhurst_b(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    qvals: np.typing.FloatArrayLike | None = None,
-    dists: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    qvals: FloatArrayLike1D | None = None,
+    dists: IntArrayLike1D | None = None,
     fit: FittingMethod = "poly",
     *,
     debug_plot: bool = False,
     debug_data: bool = False,
     plot_file: str | Path | None = None,
 ) -> (
-    np.ndarray[tuple[int], np.dtype[np.float64]]
+    FloatArray1D
     | tuple[
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
         tuple[
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray1D,
+            FloatArray1D,
+            FloatArray1D,
         ],
     ]
 ):
@@ -1885,7 +1914,7 @@ def mfhurst_b(
             stacklevel=2,
         )
 
-    def hhcorr(d: int, q: float) -> float:
+    def hhcorr(d: np.integer, q: np.floating) -> np.floating:
         """Calculates the height-height correlation for a given distance d and q."""
         diffs = np.abs(data[:-d] - data[d:])
         diffs = diffs[np.where(diffs > 0)]
@@ -1900,13 +1929,16 @@ def mfhurst_b(
     xvals = np.log(dists)
     yvals = np.log(corrvals)
     polys = np.array(
-        [poly_fit(xvals, yvals[:, qi], 1, fit=fit) for qi in range(len(qvals))], dtype=np.float64
+        [poly_fit(xvals, yvals[:, qi], 1, fit=fit) for qi in range(len(qvals))],
+        dtype=np.float64,
     )
     H = np.array(polys)[:, 0] / qvals
     if debug_plot:
         plot_reg_multiple(
             np.array([xvals] * len(qvals), dtype=np.float64),
-            np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64),
+            np.array(
+                [yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64
+            ),
             np.array([p / q for p, q in zip(polys, qvals)], dtype=np.float64),
             x_label="log(x)",
             y_label="$\\log(c_q(x)) / q$",
@@ -1919,7 +1951,7 @@ def mfhurst_b(
     return H
 
 
-def _genhurst(S: np.ndarray[tuple[int], np.dtype[np.float64]], q: float) -> float:
+def _genhurst(S: FloatArray1D, q: float) -> float:
     """Computes the generalized hurst exponent H_q for time series S.
 
     This function should not be used. It is only kept here to demonstrate that
@@ -2006,9 +2038,9 @@ def _genhurst(S: np.ndarray[tuple[int], np.dtype[np.float64]], q: float) -> floa
 
 
 def _aste_line_fit(
-    x: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    y: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-) -> list[float]:
+    x: NumberArrayLike1D,
+    y: NumberArrayLike1D,
+) -> list[np.floating]:
     """Simple linear regression with ordinary least squares.
 
     See https://en.wikipedia.org/wiki/Simple_linear_regression.
@@ -2055,9 +2087,9 @@ def _aste_line_fit(
 
 @overload
 def mfhurst_dm(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    qvals: np.typing.FloatArrayLike | None = None,
-    max_dists: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    qvals: FloatArrayLike1D | None = None,
+    max_dists: IntArrayLike1D | None = None,
     *,
     detrend: bool = True,
     fit: FittingMethod = "poly",
@@ -2065,15 +2097,16 @@ def mfhurst_dm(
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
 ) -> tuple[
-    np.ndarray[tuple[int], np.dtype[np.float64]], np.ndarray[tuple[int], np.dtype[np.float64]]
+    FloatArray1D,
+    FloatArray1D,
 ]: ...
 
 
 @overload
 def mfhurst_dm(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    qvals: np.typing.FloatArrayLike | None = None,
-    max_dists: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    qvals: FloatArrayLike1D | None = None,
+    max_dists: IntArrayLike1D | None = None,
     *,
     detrend: bool = True,
     fit: FittingMethod = "poly",
@@ -2081,20 +2114,20 @@ def mfhurst_dm(
     debug_data: Literal[True] = True,
     plot_file: str | Path | None = None,
 ) -> tuple[
-    np.ndarray[tuple[int], np.dtype[np.float64]],
-    np.ndarray[tuple[int], np.dtype[np.float64]],
+    FloatArray1D,
+    FloatArray1D,
     tuple[
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int, int], np.dtype[np.float64]],
-        np.ndarray[tuple[int, int], np.dtype[np.float64]],
+        FloatArray1D,
+        FloatArray2D,
+        FloatArray2D,
     ],
 ]: ...
 
 
 def mfhurst_dm(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    qvals: np.typing.FloatArrayLike | None = None,
-    max_dists: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    qvals: FloatArrayLike1D | None = None,
+    max_dists: IntArrayLike1D | None = None,
     *,
     detrend: bool = True,
     fit: FittingMethod = "poly",
@@ -2103,15 +2136,16 @@ def mfhurst_dm(
     plot_file: str | Path | None = None,
 ) -> (
     tuple[
-        np.ndarray[tuple[int], np.dtype[np.float64]], np.ndarray[tuple[int], np.dtype[np.float64]]
+        FloatArray1D,
+        FloatArray1D,
     ]
     | tuple[
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
+        FloatArray1D,
         tuple[
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int, int], np.dtype[np.float64]],
-            np.ndarray[tuple[int, int], np.dtype[np.float64]],
+            FloatArray1D,
+            FloatArray2D,
+            FloatArray2D,
         ],
     ]
 ):
@@ -2229,7 +2263,12 @@ def mfhurst_dm(
         if detrend:
             stepdata = detrend_data(stepdata, order=1)
         diffs = stepdata[1:] - stepdata[:-1]
-        hhcorr.append([np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q) for q in qvals])
+        hhcorr.append(
+            [
+                np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q)
+                for q in qvals
+            ]
+        )
     hhcorr = np.array(hhcorr, dtype=np.float64)
     xvals = np.log(np.arange(1, max_max_dist + 1))
     yvals = np.log(hhcorr)
@@ -2251,7 +2290,9 @@ def mfhurst_dm(
         )
         plot_reg_multiple(
             np.array([xvals] * len(qvals), dtype=np.float64),
-            np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64),
+            np.array(
+                [yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64
+            ),
             polys,
             x_label="log(x)",
             y_label="$\\log(c_q(x)) / q$",
@@ -2268,16 +2309,16 @@ def mfhurst_dm(
 
 @overload
 def corr_dim(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
+    data: NumberArrayLike1D,
     emb_dim: int = 2,
     lag: int = 1,
-    rvals: np.typing.FloatArrayLike | None = None,
+    rvals: FloatArrayLike1D | None = None,
     dist: Callable[
         [
-            np.ndarray[tuple[int, int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray2D,
+            FloatArray1D,
         ],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
     ] = rowwise_euclidean,
     fit: FittingMethod = "RANSAC",
     *,
@@ -2289,16 +2330,16 @@ def corr_dim(
 
 @overload
 def corr_dim(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
+    data: NumberArrayLike1D,
     emb_dim: int = 2,
     lag: int = 1,
-    rvals: np.typing.FloatArrayLike | None = None,
+    rvals: FloatArrayLike1D | None = None,
     dist: Callable[
         [
-            np.ndarray[tuple[int, int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray2D,
+            FloatArray1D,
         ],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
     ] = rowwise_euclidean,
     fit: FittingMethod = "RANSAC",
     *,
@@ -2308,24 +2349,24 @@ def corr_dim(
 ) -> tuple[
     float,
     tuple[
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
+        FloatArray1D,
+        FloatArray1D,
     ],
 ]: ...
 
 
 def corr_dim(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
+    data: NumberArrayLike1D,
     emb_dim: int = 2,
     lag: int = 1,
-    rvals: np.typing.FloatArrayLike | None = None,
+    rvals: FloatArrayLike1D | None = None,
     dist: Callable[
         [
-            np.ndarray[tuple[int, int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray2D,
+            FloatArray1D,
         ],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
     ] = rowwise_euclidean,
     fit: FittingMethod = "RANSAC",
     *,
@@ -2337,9 +2378,9 @@ def corr_dim(
     | tuple[
         float,
         tuple[
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray1D,
+            FloatArray1D,
+            FloatArray1D,
         ],
     ]
 ):
@@ -2424,11 +2465,11 @@ def corr_dim(
             - csums: the corresponding log(C(r))
             - poly: the line coefficients (``[slope, intercept]``)
     """
-    # TODO determine lag in units of time instead of number of datapoints
+    # TODO: determine lag in units of time instead of number of datapoints
     data = np.asarray(data)
 
-    # TODO what are good values for r?
-    # TODO do this for multiple values of emb_dim?
+    # TODO: what are good values for r?
+    # TODO: do this for multiple values of emb_dim?
     if rvals is None:
         sd = float(np.std(data, ddof=1))
         rvals = logarithmic_r(0.1 * sd, 0.5 * sd, 1.03)
@@ -2466,17 +2507,21 @@ def corr_dim(
     else:
         poly = poly_fit(np.log(rvals), np.log(csums), 1, fit=fit)
     if debug_plot:
-        plot_reg(np.log(rvals), np.log(csums), poly, "log(r)", "log(C(r))", fname=plot_file)
+        plot_reg(
+            np.log(rvals), np.log(csums), poly, "log(r)", "log(C(r))", fname=plot_file
+        )
     if debug_data:
         return (poly[0], (np.log(rvals), np.log(csums), poly))
     return poly[0]
 
 
 def detrend_data(
-    data: np.ndarray[tuple[int], np.dtype[np.float64]], order: int = 1, fit: FittingMethod = "poly"
-) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
+    data: FloatArray1D,
+    order: int = 1,
+    fit: FittingMethod = "poly",
+) -> FloatArray1D:
     """Removes a trend of given order from the data."""
-    # TODO also use this function in dfa
+    # TODO: also use this function in dfa
     xvals = np.arange(len(data))
     trend = poly_fit(xvals, data, order, fit=fit)
     return data - np.polyval(trend, xvals)
@@ -2484,8 +2529,8 @@ def detrend_data(
 
 @overload
 def dfa(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    nvals: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    nvals: IntArrayLike1D | None = None,
     *,
     overlap: bool = True,
     order: int = 1,
@@ -2499,8 +2544,8 @@ def dfa(
 
 @overload
 def dfa(
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    nvals: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    nvals: IntArrayLike1D | None = None,
     *,
     overlap: bool = True,
     order: int = 1,
@@ -2512,16 +2557,16 @@ def dfa(
 ) -> tuple[
     float,
     tuple[
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
-        np.ndarray[tuple[int], np.dtype[np.float64]],
+        FloatArray1D,
+        FloatArray1D,
+        FloatArray1D,
     ],
 ]: ...
 
 
 def dfa(  # noqa: C901, PLR0912, PLR0915
-    data: np.typing.IntArrayLike | np.typing.FloatArrayLike,
-    nvals: np.typing.IntArrayLike | None = None,
+    data: NumberArrayLike1D,
+    nvals: IntArrayLike1D | None = None,
     *,
     overlap: bool = True,
     order: int = 1,
@@ -2535,9 +2580,9 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
     | tuple[
         float,
         tuple[
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
-            np.ndarray[tuple[int], np.dtype[np.float64]],
+            FloatArray1D,
+            FloatArray1D,
+            FloatArray1D,
         ],
     ]
 ):
@@ -2754,7 +2799,14 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
     else:
         poly = poly_fit(np.log(nvals), np.log(fluctuations), 1, fit=fit_exp)
     if debug_plot:
-        plot_reg(np.log(nvals), np.log(fluctuations), poly, "log(n)", "std(X,n)", fname=plot_file)
+        plot_reg(
+            np.log(nvals),
+            np.log(fluctuations),
+            poly,
+            "log(n)",
+            "std(X,n)",
+            fname=plot_file,
+        )
     if debug_data:
         return (poly[0], (np.log(nvals), np.log(fluctuations), poly))
     return poly[0]
