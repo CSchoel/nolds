@@ -6,7 +6,7 @@ import unittest
 import warnings
 
 # from numpy.testing import assert_equal as assert_array_equal
-from typing import Any
+from typing import Any, Protocol
 
 import numpy as np
 from numpy.typing import ArrayLike, DTypeLike
@@ -142,6 +142,13 @@ class TestNoldsUtility(unittest.TestCase):
         self.assertSequenceEqual(x, [4, 6.04, 9.1204])
 
 
+class NoldsMeasure(Protocol):
+    """Protocol for typing methods that take a float array as first parameter."""
+
+    def __call__(self, data: measures.FloatArrayLike1D) -> Any:  # noqa: ANN401
+        """Call the measure."""
+
+
 class TestNoldsLyap(unittest.TestCase):
     """Tests for lyap_e and lyap_r."""
 
@@ -220,6 +227,53 @@ class TestNoldsLyap(unittest.TestCase):
         le = measures.lyap_e(data, emb_dim=7, matrix_dim=3)
         self.assertGreater(float(np.max(le)), 0)
 
+    def assert_insufficient_length(
+        self,
+        min_len: int,
+        kwargs: dict[str, Any],
+        input_data: measures.FloatArray1D,
+        measure: NoldsMeasure,
+    ) -> None:
+        """Ensures that the length of the given data would actually lead to an error.
+
+        Args:
+            min_len: reported minimum length
+            kwargs: kwargs to be passed to the measure
+            input_data: data with length less than `min_len`
+            measure: the nolds measure to test (either `lyap_r` or `lyap_e`)
+        """
+        msg = (
+            f"{min_len} data points should be required for kwargs {kwargs}, "
+            f"but {input_data.shape[0]} were enough"
+        )
+        with self.assertRaises(ValueError, msg=msg), warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)
+            measure(input_data, **kwargs)  # pyright: ignore reportArgumentType
+
+    def assert_sufficient_length(
+        self,
+        min_len: int,
+        kwargs: dict[str, Any],
+        input_data: measures.FloatArray1D,
+        measure: NoldsMeasure,
+    ) -> None:
+        """Ensures that the length of the given data does not lead to an error.
+
+        Args:
+            min_len: reported minimum length
+            kwargs: kwargs to be passed to the measure
+            input_data: data with length at least `min_len`
+            measure: the nolds measure to test (either `lyap_r` or `lyap_e`)
+        """
+        msg = (
+            f"{min_len} data points should be enough for kwargs {kwargs}, but "
+            f"{input_data.shape[0]} were too few"
+        )
+        try:
+            assert np.all(np.isfinite(measure(input_data, **kwargs))), msg
+        except ValueError as e:
+            raise ValueError(msg) from e
+
     def test_lyap_r_limits(self) -> None:
         """Hypothesis: Minimal input size for lyap_r is correctly calculated.
 
@@ -228,37 +282,16 @@ class TestNoldsLyap(unittest.TestCase):
         minimum we expect the call of lyap_r to fail, for numbers greater or equal, it
         should succeed.
         """
-
-        def expect_fail(required: int, kwargs: dict[str, Any], actual: int) -> None:
-            msg = (
-                f"{required} data points should be required for kwargs {kwargs}, "
-                f"but {actual} were enough"
-            )
-            with self.assertRaises(ValueError, msg=msg), warnings.catch_warnings():
-                warnings.simplefilter("ignore", RuntimeWarning)
-                measures.lyap_r(data, fit="poly", **kwargs)  # pyright: ignore reportArgumentType
-
-        def expect_success(required: int, kwargs: dict[str, Any], actual: int) -> None:
-            msg = (
-                f"{required} data points should be enough for kwargs {kwargs}, but "
-                f"{actual} were too few"
-            )
-            try:
-                assert np.all(np.isfinite(measures.lyap_r(data, fit="poly", **kwargs))), (  # pyright: ignore reportArgumentType
-                    msg
-                )
-            except ValueError as e:
-                raise ValueError(msg) from e
-
         rng = np.random.default_rng(seed=0)
         for _ in range(10):
-            kwargs = {
+            kwargs: dict[str, Any] = {
                 "emb_dim": rng.integers(1, 10),
                 "lag": rng.integers(1, 6),
                 "min_tsep": rng.integers(0, 5),
                 "trajectory_len": rng.integers(2, 10),
             }
             min_len = measures.lyap_r_len(**kwargs)  # pyright: ignore reportArgumentType
+            kwargs["fit"] = "poly"
             for actual_len in reversed(range(max(1, min_len - 5), min_len + 5)):
                 data = rng.random(actual_len)
                 with self.subTest(
@@ -271,51 +304,44 @@ class TestNoldsLyap(unittest.TestCase):
                 ):
                     if actual_len < min_len:
                         ## too few data points => execution should fail
-                        expect_fail(min_len, kwargs, actual_len)
+                        self.assert_insufficient_length(
+                            min_len=min_len, kwargs=kwargs, input_data=data, measure=measures.lyap_r
+                        )
                     else:
                         ## enough data points => execution should succeed
-                        expect_success(min_len, kwargs, actual_len)
+                        self.assert_sufficient_length(
+                            min_len=min_len, kwargs=kwargs, input_data=data, measure=measures.lyap_r
+                        )
 
     def test_lyap_e_limits(self) -> None:
         """Tests if minimal input size is correctly calculated."""
-        np.random.seed(1)
-        for i in range(10):
+        rng = np.random.default_rng(seed=1)
+        for _ in range(10):
             kwargs = {
-                "matrix_dim": np.random.randint(2, 10),
-                "min_tsep": np.random.randint(0, 10),
-                "min_nb": np.random.randint(2, 15),
+                "matrix_dim": rng.integers(2, 10),
+                "min_tsep": rng.integers(0, 10),
+                "min_nb": rng.integers(2, 15),
             }
-            kwargs["emb_dim"] = np.random.randint(1, 4) * (kwargs["matrix_dim"] - 1) + 1
-            min_len = measures.lyap_e_len(**kwargs)
-            for i in reversed(range(max(1, min_len - 5), min_len + 5)):
-                data = np.random.random(i)
-                if i < min_len:
-                    ## too few data points => execution should fail
-                    try:
-                        with warnings.catch_warnings():
-                            warnings.simplefilter("ignore", RuntimeWarning)
-                            measures.lyap_e(data, **kwargs)
-                        msg = "{} data points should be required for kwargs {}, but {} where enough"
-                        self.fail(
-                            msg.format(
-                                min_len,
-                                kwargs,
-                                i,
-                            )
+            kwargs["emb_dim"] = rng.integers(1, 4) * (kwargs["matrix_dim"] - 1) + 1
+            min_len = measures.lyap_e_len(**kwargs)  # pyright: ignore reportArgumentType
+            for actual_len in reversed(range(max(1, min_len - 5), min_len + 5)):
+                data = rng.random(actual_len)
+                with self.subTest(
+                    matrix_dim=kwargs["matrix_dim"],
+                    min_tsep=kwargs["min_tsep"],
+                    min_nb=kwargs["min_nb"],
+                    min_len=min_len,
+                    actual_len=actual_len,
+                ):
+                    if actual_len < min_len:
+                        ## too few data points => execution should fail
+                        self.assert_insufficient_length(
+                            min_len=min_len, kwargs=kwargs, input_data=data, measure=measures.lyap_e
                         )
-                    except ValueError:
-                        # print(e)
-                        pass
-                else:
-                    ## enough data points => execution should succeed
-                    msg = "{} data points should be enough for kwargs {}, but  {} where too few"
-                    try:
-                        assert np.all(np.isfinite(measures.lyap_e(data, **kwargs))), msg.format(
-                            min_len, kwargs, i
-                        )
-                    except ValueError as e:
-                        self.fail(
-                            msg.format(min_len, kwargs, i) + ", original error: " + str(e),
+                    else:
+                        ## enough data points => execution should succeed
+                        self.assert_sufficient_length(
+                            min_len=min_len, kwargs=kwargs, input_data=data, measure=measures.lyap_e
                         )
 
 
