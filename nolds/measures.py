@@ -56,6 +56,7 @@ def poly_fit(
     y: NumberArray1D,
     degree: int,
     fit: FittingMethod = "RANSAC",
+    random_state: int | None = None,
 ) -> FloatArray1D:
     """Fits a polynomial of the given degree to the data.
 
@@ -73,6 +74,7 @@ def poly_fit(
         y: y-axis values
         degree: degree of the polynomial
         fit: algorithm to use for fitting
+        random_state: Seed for random number generator used for RANSAC
     """
     # check if we can use RANSAC
     if fit == "RANSAC":
@@ -93,7 +95,9 @@ def poly_fit(
     if fit == "poly":
         return np.polyfit(x, y, degree)
     if fit == "RANSAC":
-        model = sklin.RANSACRegressor(sklin.LinearRegression(fit_intercept=False))
+        model = sklin.RANSACRegressor(
+            sklin.LinearRegression(fit_intercept=False), random_state=random_state
+        )
         xdat = np.asarray(x)
         if len(xdat.shape) == 1:
             # interpret 1d-array as list of len(x) samples instead of
@@ -186,6 +190,7 @@ def lyap_r(
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
     fit_offset: int = 0,
+    random_state: int | None = None,
 ) -> np.float64: ...
 
 
@@ -204,6 +209,7 @@ def lyap_r(
     debug_data: Literal[True] = True,
     plot_file: str | Path | None = None,
     fit_offset: int = 0,
+    random_state: int | None = None,
 ) -> tuple[
     np.float64,
     tuple[
@@ -228,6 +234,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
     debug_data: bool = False,
     plot_file: str | Path | None = None,
     fit_offset: int = 0,
+    random_state: int | None = None,
 ) -> (
     np.float64
     | tuple[
@@ -333,6 +340,8 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
             under the given file name instead of directly showing it through
             ``plt.show()``
         fit_offset: neglect the first fit_offset steps when fitting
+        random_state: Seed for random number generator used for RANSAC
+
 
     Returns:
         An estimate of the largest Lyapunov exponent (a positive exponent is
@@ -478,7 +487,13 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
         poly = np.array([-np.inf, 0], dtype=np.float64)
     else:
         # normal line fitting
-        poly = poly_fit(ks[fit_offset:], div_traj[fit_offset:], 1, fit=fit)
+        poly = poly_fit(
+            ks[fit_offset:],
+            div_traj[fit_offset:],
+            1,
+            fit=fit,
+            random_state=random_state,
+        )
     if debug_plot:
         plot_reg(
             ks[fit_offset:].astype(np.float64),
@@ -1231,7 +1246,11 @@ def expected_rs(n: np.integer) -> float:
     return front * middle * back
 
 
-def expected_h(nvals: IntArrayLike1D, fit: FittingMethod = "RANSAC") -> float:
+def expected_h(
+    nvals: IntArrayLike1D,
+    fit: FittingMethod = "RANSAC",
+    random_state: int | None = None,
+) -> float:
     """Uses expected_rs to calculate the expected value for the Hurst exponent h.
 
     Args:
@@ -1239,13 +1258,17 @@ def expected_h(nvals: IntArrayLike1D, fit: FittingMethod = "RANSAC") -> float:
         fit: the fitting method to use for the line fit, either 'poly' for normal
             least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
             is more robust to outliers
+        random_state: Seed for random number generator used for RANSAC
+
 
     Returns:
         expected h for white noise
     """
     nvals = np.asarray(nvals, dtype=np.int32)
     rsvals = [expected_rs(n) for n in nvals]
-    poly = poly_fit(np.log(nvals), np.log(rsvals), 1, fit=fit)
+    poly = poly_fit(
+        np.log(nvals), np.log(rsvals), 1, fit=fit, random_state=random_state
+    )
     return poly[0]
 
 
@@ -1510,6 +1533,7 @@ def hurst_rs(
     plot_file: str | Path | None = None,
     corrected: bool = True,
     unbiased: bool = True,
+    random_state: int | None = None,
 ) -> float: ...
 
 
@@ -1524,6 +1548,7 @@ def hurst_rs(
     plot_file: str | Path | None = None,
     corrected: bool = True,
     unbiased: bool = True,
+    random_state: int | None = None,
 ) -> tuple[
     float,
     tuple[
@@ -1544,6 +1569,7 @@ def hurst_rs(
     plot_file: str | Path | None = None,
     corrected: bool = True,
     unbiased: bool = True,
+    random_state: int | None = None,
 ) -> (
     float
     | tuple[
@@ -1683,6 +1709,7 @@ def hurst_rs(
             (1/(N-1) instead of 1/N) will be used. This should be the default choice,
             since the true mean of the sequences is not known. This parameter should
             only be changed to recreate results of other implementations.
+        random_state: Seed for random number generator used for RANSAC
 
     Returns:
         Estimated Hurst exponent K using a rescaled range approach (if K = 0.5
@@ -1729,7 +1756,7 @@ def hurst_rs(
         yvals = np.log(rsvals)
         if corrected:
             yvals -= np.log([expected_rs(n) for n in nvals])
-        poly = poly_fit(xvals, yvals, 1, fit=fit)
+        poly = poly_fit(xvals, yvals, 1, fit=fit, random_state=random_state)
         if debug_plot:
             plot_reg(xvals, yvals, poly, "log(n)", "log((R/S)_n)", fname=plot_file)
     # account for correction if necessary
@@ -1750,6 +1777,7 @@ def mfhurst_b(
     debug_plot: bool = False,
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> FloatArray1D: ...
 
 
@@ -1763,6 +1791,7 @@ def mfhurst_b(
     debug_plot: bool = False,
     debug_data: Literal[True] = True,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> tuple[
     FloatArray1D,
     tuple[
@@ -1782,6 +1811,7 @@ def mfhurst_b(
     debug_plot: bool = False,
     debug_data: bool = False,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> (
     FloatArray1D
     | tuple[
@@ -1882,6 +1912,7 @@ def mfhurst_b(
         plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
             under the given file name instead of directly showing it through
             ``plt.show()``
+        random_state: Seed for random number generator used for RANSAC
 
     Returns:
         list of H_q for every q given in ``qvals``. If ``debug_data`` is True,
@@ -1929,7 +1960,10 @@ def mfhurst_b(
     xvals = np.log(dists)
     yvals = np.log(corrvals)
     polys = np.array(
-        [poly_fit(xvals, yvals[:, qi], 1, fit=fit) for qi in range(len(qvals))],
+        [
+            poly_fit(xvals, yvals[:, qi], 1, fit=fit, random_state=random_state)
+            for qi in range(len(qvals))
+        ],
         dtype=np.float64,
     )
     H = np.array(polys)[:, 0] / qvals
@@ -2096,6 +2130,7 @@ def mfhurst_dm(
     debug_plot: bool = False,
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> tuple[
     FloatArray1D,
     FloatArray1D,
@@ -2113,6 +2148,7 @@ def mfhurst_dm(
     debug_plot: bool = False,
     debug_data: Literal[True] = True,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> tuple[
     FloatArray1D,
     FloatArray1D,
@@ -2134,6 +2170,7 @@ def mfhurst_dm(
     debug_plot: bool = False,
     debug_data: bool = False,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> (
     tuple[
         FloatArray1D,
@@ -2211,6 +2248,7 @@ def mfhurst_dm(
         plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
             under the given file name instead of directly showing it through
             ``plt.show()``
+        random_state: Seed for random number generator used for RANSAC
 
     Returns:
         tuple containing
@@ -2261,7 +2299,7 @@ def mfhurst_dm(
         step_size = dist
         stepdata = data[::step_size]
         if detrend:
-            stepdata = detrend_data(stepdata, order=1)
+            stepdata = detrend_data(stepdata, order=1, random_state=random_state)
         diffs = stepdata[1:] - stepdata[:-1]
         hhcorr.append(
             [
@@ -2277,7 +2315,9 @@ def mfhurst_dm(
     # ranges and does not introduce any new information.
     H = np.array(
         [
-            poly_fit(xvals[:md], yvals[:md, qi], 1, fit=fit)[0]
+            poly_fit(xvals[:md], yvals[:md, qi], 1, fit=fit, random_state=random_state)[
+                0
+            ]
             for qi in range(len(qvals))
             for md in max_dists
         ],
@@ -2325,6 +2365,7 @@ def corr_dim(
     debug_plot: bool = False,
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> float: ...
 
 
@@ -2346,6 +2387,7 @@ def corr_dim(
     debug_plot: bool = False,
     debug_data: Literal[True] = True,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> tuple[
     float,
     tuple[
@@ -2373,6 +2415,7 @@ def corr_dim(
     debug_plot: bool = False,
     debug_data: bool = False,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> (
     float
     | tuple[
@@ -2453,6 +2496,7 @@ def corr_dim(
         plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
             under the given file name instead of directly showing it through
             ``plt.show()``
+        random_state: Seed for random number generator used for RANSAC
 
     Returns:
         correlation dimension as slope of the line fitted to log(r) vs log(C(r))
@@ -2505,7 +2549,9 @@ def corr_dim(
         # all sums are zero => we cannot fit a line
         poly = np.array([np.nan, np.nan], dtype=np.float64)
     else:
-        poly = poly_fit(np.log(rvals), np.log(csums), 1, fit=fit)
+        poly = poly_fit(
+            np.log(rvals), np.log(csums), 1, fit=fit, random_state=random_state
+        )
     if debug_plot:
         plot_reg(
             np.log(rvals), np.log(csums), poly, "log(r)", "log(C(r))", fname=plot_file
@@ -2519,11 +2565,12 @@ def detrend_data(
     data: FloatArray1D,
     order: int = 1,
     fit: FittingMethod = "poly",
+    random_state: int | None = None,
 ) -> FloatArray1D:
     """Removes a trend of given order from the data."""
     # TODO: also use this function in dfa
     xvals = np.arange(len(data))
-    trend = poly_fit(xvals, data, order, fit=fit)
+    trend = poly_fit(xvals, data, order, fit=fit, random_state=random_state)
     return data - np.polyval(trend, xvals)
 
 
@@ -2539,6 +2586,7 @@ def dfa(
     debug_plot: bool = False,
     debug_data: Literal[False] = False,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> float: ...
 
 
@@ -2554,6 +2602,7 @@ def dfa(
     debug_plot: bool = False,
     debug_data: Literal[True] = True,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> tuple[
     float,
     tuple[
@@ -2575,6 +2624,7 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
     debug_plot: bool = False,
     debug_data: bool = False,
     plot_file: str | Path | None = None,
+    random_state: int | None = None,
 ) -> (
     float
     | tuple[
@@ -2723,6 +2773,7 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
         plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
             under the given file name instead of directly showing it through
             ``plt.show()``
+        random_state: Seed for random number generator used for RANSAC
     Returns:
         the estimate alpha for the Hurst parameter (alpha < 1: stationary
         process similar to fractional Gaussian noise with H = alpha,
@@ -2777,7 +2828,10 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
             d = d.reshape((total_N // n, n))
         # calculate local trends as polynomes
         x = np.arange(n)
-        tpoly = [poly_fit(x, d[i], order, fit=fit_trend) for i in range(len(d))]
+        tpoly = [
+            poly_fit(x, d[i], order, fit=fit_trend, random_state=random_state)
+            for i in range(len(d))
+        ]
         tpoly = np.array(tpoly)
         trend = np.array([np.polyval(tpoly[i], x) for i in range(len(d))])
         # calculate mean-square differences for each walk in d around trend
@@ -2797,7 +2851,13 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
         # all fluctuations are zero => we cannot fit a line
         poly = np.array([np.nan, np.nan], dtype=np.float64)
     else:
-        poly = poly_fit(np.log(nvals), np.log(fluctuations), 1, fit=fit_exp)
+        poly = poly_fit(
+            np.log(nvals),
+            np.log(fluctuations),
+            1,
+            fit=fit_exp,
+            random_state=random_state,
+        )
     if debug_plot:
         plot_reg(
             np.log(nvals),
