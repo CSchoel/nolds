@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+
+* Type hints for the complete API.
+* Documentation for test hypotheses.
+
 ### Changed
 
 * Switches from using `setup.py` to `pyproject.toml` using `uv`.
@@ -15,9 +19,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Datasets that are available as global variables are loaded lazily now.
 * `datasets.qrandom` output now has a more accurate dtype of `np.uint16`.
 * Uses `importlib.resources.files` instead of deprecated `pkg_resources.resource_stream`.
+* Applies dtype `float64` or `int32` in all internal conversions using `asarray` or `array`.
 * Applies Ruff formatting throughout the codebase and addresses all linting errors.
+* Switches from two spaces to four spaces for indentation.
+* Supported range of Python versions is now 3.10–3.13. Updated CI accordingly.
 
 ### Fixed
+
+* Swaps deprecated `pkg_resources` for `importlib.resources`.
 
 ## [0.6.2]
 
