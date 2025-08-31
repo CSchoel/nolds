@@ -95,7 +95,7 @@ class TestNoldsHelperFunctions(unittest.TestCase):
         self.assert_array_equal(expected, embedded)
 
     def test_delay_embed_empty(self) -> None:
-        """Hpoythesis: An error is raised when settings would lead to an empty orbit vector list."""
+        """Hypothesis: An error is raised when settings would lead to an empty orbit vector list."""
         data = np.arange(10, dtype=np.float64)
         try:
             embedded = measures.delay_embedding(data, 11)
