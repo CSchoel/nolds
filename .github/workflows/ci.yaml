@@ -24,7 +24,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install uv
         uses: astral-sh/setup-uv@v5
-      - run: uv sync ${{ matrix.extras }}
+      - run: uv sync ${{ matrix.extras }} --python ${{ matrix.python }}
       - run: uv pip install codecov
       - run: uv run coverage run -m unittest nolds.test_measures
       - run: uv run codecov
