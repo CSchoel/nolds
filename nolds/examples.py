@@ -159,7 +159,7 @@ def plot_lyap(maptype: Literal["logistic", "tent"] = "logistic") -> None:
         x_0 = 0.5  # avoid zero crossings in f'(x)
         lambdas = [
             np.mean(np.log(abs(r - 2 * r * x[np.where(x != x_0)])))
-            for x, r in zip(full_data, param_range)
+            for x, r in zip(full_data, param_range, strict=True)
         ]
     elif maptype == "tent":
         param_name = "$\\mu$"

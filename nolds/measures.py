@@ -6,7 +6,6 @@ import math
 import warnings
 from typing import (
     TYPE_CHECKING,
-    Callable,
     Literal,
     TypeAlias,
     TypeVar,
@@ -17,6 +16,7 @@ from typing import (
 import numpy as np
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from pathlib import Path
 
     from numpy.typing import ArrayLike
@@ -119,9 +119,7 @@ def poly_fit(
     raise ValueError(msg)
 
 
-def delay_embedding(
-    data: NumberArrayLike1D, emb_dim: int, lag: int = 1
-) -> FloatArray2D:
+def delay_embedding(data: NumberArrayLike1D, emb_dim: int, lag: int = 1) -> FloatArray2D:
     """Perform a time-delay embedding of a time series.
 
     Args:
@@ -446,9 +444,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
         raise ValueError(msg.format(-ntraj + 1))
     if ntraj < min_traj:
         # not enough data points => there are rows where all values are inf
-        assert np.any(np.all(np.isinf(dists[:ntraj, :ntraj]), axis=1)), (
-            "no inf rows found"
-        )
+        assert np.any(np.all(np.isinf(dists[:ntraj, :ntraj]), axis=1)), "no inf rows found"
         msg = (
             "Not enough data points. At least {} trajectories are required "
             "to find a valid neighbor for each orbit vector with min_tsep={} "
@@ -874,9 +870,7 @@ def plot_dists(
     std = np.std(dists_full, ddof=1)
     rng = (0.0, float(mean + std * nstd))
     colors = ["green", "blue"]
-    for i, (h, bins) in enumerate(
-        [np.histogram(dat, bins=nbins, range=rng) for dat in dists]
-    ):
+    for i, (h, bins) in enumerate([np.histogram(dat, bins=nbins, range=rng) for dat in dists]):
         bw = bins[1] - bins[0]
         plt.bar(bins[:-1], h, bw, label=f"m={m + i:d}", color=colors[i], alpha=0.5)
     plt.axvline(tolerance, color="red")
@@ -1266,9 +1260,7 @@ def expected_h(
     """
     nvals = np.asarray(nvals, dtype=np.int32)
     rsvals = [expected_rs(n) for n in nvals]
-    poly = poly_fit(
-        np.log(nvals), np.log(rsvals), 1, fit=fit, random_state=random_state
-    )
+    poly = poly_fit(np.log(nvals), np.log(rsvals), 1, fit=fit, random_state=random_state)
     return poly[0]
 
 
@@ -1321,9 +1313,7 @@ def rs(data: FloatArray1D, n: np.integer, *, unbiased: bool = True) -> float:
 def plot_histogram_matrix(
     data: FloatArray2D,
     name: str,
-    bin_range: Literal[
-        "absmax", "1sigma", "2sigma", "3sigma", "4sigma", "5sigma"
-    ] = "3sigma",
+    bin_range: Literal["absmax", "1sigma", "2sigma", "3sigma", "4sigma", "5sigma"] = "3sigma",
     fname: str | Path | None = None,
 ) -> None:
     """Plot a quadratic matrix of histograms.
@@ -1460,9 +1450,7 @@ def plot_reg_tiled(
         plt.subplot(int(np.ceil(len(xvals) / columns)), columns, i + 1)
         plt.plot(xvals[i], yvals[i], "bo", label=data_labels[i])
         if polys is not None:
-            plt.plot(
-                xvals[i], np.polyval(polys[i], xvals[i]), "r-", label=reg_labels[i]
-            )
+            plt.plot(xvals[i], np.polyval(polys[i], xvals[i]), "r-", label=reg_labels[i])
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.ylim(means[i] - max_span / 2, means[i] + max_span / 2)
@@ -1970,10 +1958,8 @@ def mfhurst_b(
     if debug_plot:
         plot_reg_multiple(
             np.array([xvals] * len(qvals), dtype=np.float64),
-            np.array(
-                [yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64
-            ),
-            np.array([p / q for p, q in zip(polys, qvals)], dtype=np.float64),
+            np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64),
+            np.array([p / q for p, q in zip(polys, qvals, strict=False)], dtype=np.float64),
             x_label="log(x)",
             y_label="$\\log(c_q(x)) / q$",
             data_labels=[f"q = {q}" for q in qvals],
@@ -2301,12 +2287,7 @@ def mfhurst_dm(
         if detrend:
             stepdata = detrend_data(stepdata, order=1, random_state=random_state)
         diffs = stepdata[1:] - stepdata[:-1]
-        hhcorr.append(
-            [
-                np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q)
-                for q in qvals
-            ]
-        )
+        hhcorr.append([np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q) for q in qvals])
     hhcorr = np.array(hhcorr, dtype=np.float64)
     xvals = np.log(np.arange(1, max_max_dist + 1))
     yvals = np.log(hhcorr)
@@ -2315,9 +2296,7 @@ def mfhurst_dm(
     # ranges and does not introduce any new information.
     H = np.array(
         [
-            poly_fit(xvals[:md], yvals[:md, qi], 1, fit=fit, random_state=random_state)[
-                0
-            ]
+            poly_fit(xvals[:md], yvals[:md, qi], 1, fit=fit, random_state=random_state)[0]
             for qi in range(len(qvals))
             for md in max_dists
         ],
@@ -2330,9 +2309,7 @@ def mfhurst_dm(
         )
         plot_reg_multiple(
             np.array([xvals] * len(qvals), dtype=np.float64),
-            np.array(
-                [yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64
-            ),
+            np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64),
             polys,
             x_label="log(x)",
             y_label="$\\log(c_q(x)) / q$",
@@ -2549,13 +2526,9 @@ def corr_dim(
         # all sums are zero => we cannot fit a line
         poly = np.array([np.nan, np.nan], dtype=np.float64)
     else:
-        poly = poly_fit(
-            np.log(rvals), np.log(csums), 1, fit=fit, random_state=random_state
-        )
+        poly = poly_fit(np.log(rvals), np.log(csums), 1, fit=fit, random_state=random_state)
     if debug_plot:
-        plot_reg(
-            np.log(rvals), np.log(csums), poly, "log(r)", "log(C(r))", fname=plot_file
-        )
+        plot_reg(np.log(rvals), np.log(csums), poly, "log(r)", "log(C(r))", fname=plot_file)
     if debug_data:
         return (poly[0], (np.log(rvals), np.log(csums), poly))
     return poly[0]

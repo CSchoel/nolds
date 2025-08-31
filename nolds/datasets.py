@@ -5,9 +5,13 @@ from __future__ import annotations
 import csv
 import datetime
 import importlib.resources
-from typing import IO, Any, Generator
+import itertools
+from typing import IO, TYPE_CHECKING, Any
 
 import numpy as np
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 def lorenz_euler(
@@ -480,7 +484,7 @@ def barabasi1991_fractal(
             d, nxtp = b1991(x1, fractal[x1], x2 - x1, fractal[x2 - 1] - fractal[x1])
             fractal[x1:x2] = d
             next_intervals.extend(
-                [(np1, np2) for np1, np2 in zip(nxtp[:-1], nxtp[1:])],
+                [(np1, np2) for np1, np2 in itertools.pairwise(nxtp)],
             )
         intervals = next_intervals
     return fractal

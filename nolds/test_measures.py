@@ -161,7 +161,7 @@ class TestNoldsLyap(unittest.TestCase):
             """Logistic map."""
             return r * x * (1 - x)
 
-        for r, s in zip(rvals, sign):
+        for r, s in zip(rvals, sign, strict=True):
             log = []
             x = x0
             for _ in range(100):
