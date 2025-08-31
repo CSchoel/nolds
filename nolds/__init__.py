@@ -1,6 +1,63 @@
-from .measures import lyap_r, lyap_e, sampen, hurst_rs, corr_dim, dfa, \
-    binary_n, logarithmic_n, logarithmic_r, expected_h, logmid_n, expected_rs, \
-    lyap_r_len, lyap_e_len, rowwise_chebyshev, rowwise_euclidean, mfhurst_b, \
-    mfhurst_dm
-from .datasets import brown72, tent_map, logistic_map, fbm, fgn, qrandom, \
-    load_qrandom, load_financial, barabasi1991_fractal
+"""Main module for nolds, containing all important user-facing API elements."""
+
+from .datasets import (
+    barabasi1991_fractal,
+    brown72,
+    fbm,
+    fgn,
+    load_financial,
+    load_qrandom,
+    logistic_map,
+    qrandom,
+    tent_map,
+)
+from .measures import (
+    binary_n,
+    corr_dim,
+    dfa,
+    expected_h,
+    expected_rs,
+    hurst_rs,
+    logarithmic_n,
+    logarithmic_r,
+    logmid_n,
+    lyap_e,
+    lyap_e_len,
+    lyap_r,
+    lyap_r_len,
+    mfhurst_b,
+    mfhurst_dm,
+    rowwise_chebyshev,
+    rowwise_euclidean,
+    sampen,
+)
+
+__all__ = [
+    "barabasi1991_fractal",
+    "binary_n",
+    "brown72",
+    "corr_dim",
+    "dfa",
+    "expected_h",
+    "expected_rs",
+    "fbm",
+    "fgn",
+    "hurst_rs",
+    "load_financial",
+    "load_qrandom",
+    "logarithmic_n",
+    "logarithmic_r",
+    "logistic_map",
+    "logmid_n",
+    "lyap_e",
+    "lyap_e_len",
+    "lyap_r",
+    "lyap_r_len",
+    "mfhurst_b",
+    "mfhurst_dm",
+    "qrandom",
+    "rowwise_chebyshev",
+    "rowwise_euclidean",
+    "sampen",
+    "tent_map",
+]

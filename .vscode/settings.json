@@ -7,16 +7,16 @@
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        "./nolds",
+        ".",
         "-p",
         "test_*.py"
     ],
     "[python]": {
-        "editor.formatOnSave": false, // disable format on save for now to not mess up any files that haven't been converted yet
+        "editor.formatOnSave": true,
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.codeActionsOnSave": {
-            "source.fixAll": "never",
-            "source.organizeImports": "never"
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
         }
     }
 }
