@@ -37,6 +37,25 @@ if TYPE_CHECKING:
     FloatArrayLike1D: TypeAlias = ArrayLike  # 1D structure containing float values
     NumberArrayLike1D: TypeAlias = ArrayLike  # 1D structure containing number values
 
+float_precision = np.float64
+"""Default floating point precision used by nolds.
+
+Within nolds, this is considered static. However, downstream code might want to
+change the precision for a specific measure to save time and space.
+
+This use case is not common enough to warrant an entire API around it, but
+by introducing this variable we at least enable it in principle.
+"""
+int_precision = np.int32
+"""Default integer precision used by nolds.
+
+Within nolds, this is considered static. However, downstream code might want to
+change the precision for a specific measure to save time and space.
+
+This use case is not common enough to warrant an entire API around it, but
+by introducing this variable we at least enable it in principle.
+"""
+
 
 def rowwise_chebyshev(x: NumberArray2D, y: NumberArray1D) -> NumberArray1D:
     """Returns the Chebyshev distances between each row of matrix x and the reference row y."""
@@ -133,7 +152,7 @@ def delay_embedding(data: NumberArrayLike1D, emb_dim: int, lag: int = 1) -> Floa
         for i in 0 to m-1 (m = len(data)-(emb_dim-1)*lag)
     """
     if not isinstance(data, np.ndarray):
-        data = np.asarray(data, dtype=np.float64)
+        data = np.asarray(data, dtype=float_precision)
     min_len = (emb_dim - 1) * lag + 1
     if len(data) < min_len:
         msg = (
@@ -189,7 +208,7 @@ def lyap_r(
     plot_file: str | Path | None = None,
     fit_offset: int = 0,
     random_state: int | None = None,
-) -> np.float64: ...
+) -> float_precision: ...
 
 
 @overload
@@ -209,7 +228,7 @@ def lyap_r(
     fit_offset: int = 0,
     random_state: int | None = None,
 ) -> tuple[
-    np.float64,
+    float_precision,
     tuple[
         IntArray1D,
         FloatArray1D,
@@ -234,7 +253,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
     fit_offset: int = 0,
     random_state: int | None = None,
 ) -> (
-    np.float64
+    float_precision
     | tuple[
         float,
         tuple[
@@ -352,7 +371,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
         - the line coefficients (`[slope, intercept]`).
     """
     # convert data to float to avoid overflow errors in rowwise_euclidean
-    data = np.asarray(data, dtype=np.float64)
+    data = np.asarray(data, dtype=float_precision)
     n = len(data)
     max_tsep_factor = 0.25
     if lag is None or min_tsep is None:
@@ -426,7 +445,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
     orbit = delay_embedding(data, emb_dim, lag)
     m = len(orbit)
     # construct matrix with pairwise distances between vectors in orbit
-    dists = np.array([rowwise_euclidean(orbit, orbit[i]) for i in range(m)])
+    dists = np.array([rowwise_euclidean(orbit, orbit[i]) for i in range(m)], dtype=float_precision)
     # we do not want to consider vectors as neighbor that are less than min_tsep
     # time steps together => mask the distances min_tsep to the right and left of
     # each index by setting them to infinity (will never be considered as nearest
@@ -460,7 +479,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
 
     # build divergence trajectory by averaging distances along the trajectory
     # over all neighbor pairs
-    div_traj = np.zeros(trajectory_len, dtype=np.float64)
+    div_traj = np.zeros(trajectory_len, dtype=float_precision)
     for k in range(trajectory_len):
         # calculate mean trajectory distance at step k
         indices = (np.arange(ntraj) + k, nb_idx + k)
@@ -480,7 +499,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
     if len(ks) < 1:
         # if all points or all but one point in the trajectory is -inf, we cannot
         # fit a line through the remaining points => return -inf as exponent
-        poly = np.array([-np.inf, 0], dtype=np.float64)
+        poly = np.array([-np.inf, 0], dtype=float_precision)
     else:
         # normal line fitting
         poly = poly_fit(
@@ -492,7 +511,7 @@ def lyap_r(  # noqa: C901, PLR0912, PLR0915
         )
     if debug_plot:
         plot_reg(
-            ks[fit_offset:].astype(np.float64),
+            ks[fit_offset:].astype(float_precision),
             div_traj[fit_offset:],
             poly,
             "k",
@@ -669,7 +688,7 @@ def lyap_e(  # noqa: C901, PLR0915
         iterations of R_i. The shape of this debug data is (x, matrix_dim).
     """
     # convert to float to avoid errors when using 'inf' as distance
-    data = np.asarray(data, dtype=np.float64)
+    data = np.asarray(data, dtype=float_precision)
     n = len(data)
     if (emb_dim - 1) % (matrix_dim - 1) != 0:
         msg = "emb_dim - 1 must be divisible by matrix_dim - 1!"
@@ -714,7 +733,7 @@ def lyap_e(  # noqa: C901, PLR0915
         )
         raise ValueError(msg.format(min_nb - len(orbit), min_nb))
     old_Q = np.identity(matrix_dim)
-    lexp = np.zeros(matrix_dim, dtype=np.float64)
+    lexp = np.zeros(matrix_dim, dtype=float_precision)
     lexp_counts = np.zeros(lexp.shape)
     debug_values = []
     for i in range(len(orbit)):
@@ -773,7 +792,7 @@ def lyap_e(  # noqa: C901, PLR0915
         # ...
 
         # note: emb_dim = (d_M - 1) * m + 1  # noqa: ERA001
-        mat_X = np.array([data[j : j + emb_dim : m] for j in indices])
+        mat_X = np.array([data[j : j + emb_dim : m] for j in indices], dtype=float_precision)
         mat_X -= data[i : i + emb_dim : m]
 
         # build vector beta for linear least squares
@@ -817,7 +836,7 @@ def lyap_e(  # noqa: C901, PLR0915
         diag_R = np.diag(mat_R)
         # filter zeros in mat_R (would lead to -infs)
         idx = np.where(diag_R > 0)
-        lexp_i = np.zeros(diag_R.shape, dtype=np.float64)
+        lexp_i = np.zeros(diag_R.shape, dtype=float_precision)
         lexp_i[idx] = np.log(diag_R[idx])
         lexp_i[np.where(diag_R == 0)] = np.inf
         if debug_plot or debug_data:
@@ -828,7 +847,9 @@ def lyap_e(  # noqa: C901, PLR0915
     # it may happen that all R-matrices contained zeros => exponent really has
     # to be -inf
     if debug_plot:
-        plot_histogram_matrix(np.array(debug_values), "layp_e", fname=plot_file)
+        plot_histogram_matrix(
+            np.array(debug_values, dtype=float_precision), "layp_e", fname=plot_file
+        )
     # normalize exponents over number of individual mat_Rs
     idx = np.where(lexp_counts > 0)
     lexp[idx] /= lexp_counts[idx]
@@ -838,7 +859,7 @@ def lyap_e(  # noqa: C901, PLR0915
     # take m into account
     lexp /= m
     if debug_data:
-        return (lexp, np.array(debug_values))
+        return (lexp, np.array(debug_values, dtype=float_precision))
     return lexp
 
 
@@ -1025,7 +1046,7 @@ def sampen(  # noqa: C901, PLR0912
         - [dists_m, dists_m1]: the distances between template vectors for m
             (dists_m) and for m + 1 (dists_m1).
     """
-    data = np.asarray(data)
+    data = np.asarray(data, dtype=float_precision)
 
     if tolerance is None:
         # the reasoning behind this default value is the following:
@@ -1258,7 +1279,7 @@ def expected_h(
     Returns:
         expected h for white noise
     """
-    nvals = np.asarray(nvals, dtype=np.int32)
+    nvals = np.asarray(nvals, dtype=int_precision)
     rsvals = [expected_rs(n) for n in nvals]
     poly = poly_fit(np.log(nvals), np.log(rsvals), 1, fit=fit, random_state=random_state)
     return poly[0]
@@ -1281,7 +1302,7 @@ def rs(data: FloatArray1D, n: np.integer, *, unbiased: bool = True) -> float:
     Returns:
         (R/S)_n
     """
-    data = np.asarray(data)
+    data = np.asarray(data, dtype=float_precision)
     total_N = len(data)
     m = total_N // n  # number of sequences
     # cut values at the end of data to make the array divisible by n
@@ -1348,7 +1369,7 @@ def plot_histogram_matrix(
             rng = (float(mu - n * sigma), float(mu + n * sigma))
         h, bins = np.histogram(data[:, i], nbins, rng)
         bin_width = bins[1] - bins[0]
-        h = h.astype(np.float64) / np.sum(h)
+        h = h.astype(float_precision) / np.sum(h)
         plt.bar(bins[:-1], h, bin_width)
         plt.axvline(float(np.mean(data[:, i])), color="red")
         plt.ylim(ylim)
@@ -1713,7 +1734,7 @@ def hurst_rs(
             - rsvals: the corresponding (R/S)_n values
             - poly: the coefficients of the line fit (``[slope, intercept]``
     """
-    data = np.asarray(data)
+    data = np.asarray(data, dtype=float_precision)
     total_N = len(data)
     if nvals is None:
         # chooses a default value for nvals that will give 15 logarithmically
@@ -1721,17 +1742,17 @@ def hurst_rs(
         # (since both too small and too large n introduce too much variance)
         nvals = logmid_n(total_N, ratio=1 / 4.0, nsteps=15)
     else:
-        nvals = np.array(nvals, dtype=np.int32)
+        nvals = np.array(nvals, dtype=int_precision)
     # get individual values for (R/S)_n
-    rsvals = np.array([rs(data, n, unbiased=unbiased) for n in nvals])
+    rsvals = np.array([rs(data, n, unbiased=unbiased) for n in nvals], dtype=float_precision)
     # filter NaNs (zeros should not be possible, because if R is 0 then
     # S is also zero)
     not_nan = np.logical_not(np.isnan(rsvals))
     rsvals = rsvals[not_nan]
-    nvals = np.asarray(nvals)[not_nan]
+    nvals = np.asarray(nvals, dtype=int_precision)[not_nan]
     # it may happen that no rsvals are left (if all values of data are the same)
     if len(rsvals) == 0:
-        poly = np.array([np.nan, np.nan], dtype=np.float64)
+        poly = np.array([np.nan, np.nan], dtype=float_precision)
         if debug_plot:
             warnings.warn(
                 "Cannot display debug plot, all (R/S)_n are NaN",
@@ -1917,15 +1938,15 @@ def mfhurst_b(
                 for each q in the shape (len(qvals), 2).
     """
     # transform to array if necessary
-    data = np.asarray(data, dtype=np.float64)
+    data = np.asarray(data, dtype=float_precision)
     if qvals is None:
         # actual default parameter would introduce shared list
         # see: http://pylint-messages.wikidot.com/messages:w0102
         qvals = [1]
-    qvals = np.asarray(qvals, dtype=np.float64)
+    qvals = np.asarray(qvals, dtype=float_precision)
     if dists is None:
         dists = logarithmic_n(1, np.ceil(max(20, 0.02 * len(data))), 1.5)
-    dists = np.asarray(dists, dtype=np.int32)
+    dists = np.asarray(dists, dtype=int_precision)
     min_reliable_n = 60
     if len(data) < min_reliable_n:
         warnings.warn(
@@ -1941,7 +1962,7 @@ def mfhurst_b(
 
     # calculate height-height correlations
     corrvals = [hhcorr(d, q) for d in dists for q in qvals]
-    corrvals = np.array(corrvals, dtype=np.float64)
+    corrvals = np.array(corrvals, dtype=float_precision)
     corrvals = corrvals.reshape(len(dists), len(qvals))
 
     # line fitting
@@ -1952,14 +1973,14 @@ def mfhurst_b(
             poly_fit(xvals, yvals[:, qi], 1, fit=fit, random_state=random_state)
             for qi in range(len(qvals))
         ],
-        dtype=np.float64,
+        dtype=float_precision,
     )
-    H = np.array(polys)[:, 0] / qvals
+    H = polys[:, 0] / qvals
     if debug_plot:
         plot_reg_multiple(
-            np.array([xvals] * len(qvals), dtype=np.float64),
-            np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64),
-            np.array([p / q for p, q in zip(polys, qvals, strict=False)], dtype=np.float64),
+            np.array([xvals] * len(qvals), dtype=float_precision),
+            np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=float_precision),
+            np.array([p / q for p, q in zip(polys, qvals, strict=False)], dtype=float_precision),
             x_label="log(x)",
             y_label="$\\log(c_q(x)) / q$",
             data_labels=[f"q = {q}" for q in qvals],
@@ -2029,7 +2050,7 @@ def _genhurst(S: FloatArray1D, q: float) -> float:
             dV = S[np.arange(tt, L, tt)] - S[np.arange(tt, L, tt) - tt]
             VV = S[np.arange(tt, L + tt, tt) - tt]
             N = len(dV) + 1
-            X = np.arange(1, N + 1, dtype=np.float64)
+            X = np.arange(1, N + 1, dtype=float_precision)
             Y = VV
             mx = np.sum(X) / N
             SSxx = np.sum(X**2) - N * mx**2
@@ -2038,7 +2059,7 @@ def _genhurst(S: FloatArray1D, q: float) -> float:
             cc1 = SSxy / SSxx
             cc2 = my - cc1 * mx
             ddVd = dV - cc1
-            VVVd = VV - np.multiply(cc1, np.arange(1, N + 1, dtype=np.float64)) - cc2
+            VVVd = VV - np.multiply(cc1, np.arange(1, N + 1, dtype=float_precision)) - cc2
             mcord[tt - 1] = np.mean(np.abs(ddVd) ** q) / np.mean(np.abs(VVVd) ** q)
         mx = np.mean(np.log10(x))
         SSxx = np.sum(np.log10(x) ** 2) - Tmax * mx**2
@@ -2070,8 +2091,8 @@ def _aste_line_fit(
     results with a call to ``np.polyfit(x, y, 1)[::-1]``.
     """
     # convert to float to avoid integer overflow problems
-    x = np.asarray(x, dtype=np.float64)
-    y = np.asarray(y, dtype=np.float64)
+    x = np.asarray(x, dtype=float_precision)
+    y = np.asarray(y, dtype=float_precision)
     N = len(x)
     mx = np.mean(x)
     my = np.mean(y)
@@ -2257,15 +2278,15 @@ def mfhurst_dm(
                 for each q in the shape (len(qvals), 2).
     """
     # transform to array if necessary
-    data = np.asarray(data)
+    data = np.asarray(data, dtype=float_precision)
     if qvals is None:
         # actual default parameter would introduce shared list
         # see: http://pylint-messages.wikidot.com/messages:w0102
         qvals = [1]
-    qvals = np.asarray(qvals, dtype=np.float64)
+    qvals = np.asarray(qvals, dtype=float_precision)
     if max_dists is None:
         max_dists = range(5, 20)
-    max_dists = np.asarray(max_dists, dtype=np.int32)
+    max_dists = np.asarray(max_dists, dtype=int_precision)
     min_reliable_n = 60
     if len(data) < min_reliable_n:
         warnings.warn(
@@ -2288,7 +2309,7 @@ def mfhurst_dm(
             stepdata = detrend_data(stepdata, order=1, random_state=random_state)
         diffs = stepdata[1:] - stepdata[:-1]
         hhcorr.append([np.mean(np.abs(diffs) ** q) / np.mean(np.abs(stepdata) ** q) for q in qvals])
-    hhcorr = np.array(hhcorr, dtype=np.float64)
+    hhcorr = np.array(hhcorr, dtype=float_precision)
     xvals = np.log(np.arange(1, max_max_dist + 1))
     yvals = np.log(hhcorr)
     # NOTE: Using several maximum distances seems to be a strange way to
@@ -2300,16 +2321,16 @@ def mfhurst_dm(
             for qi in range(len(qvals))
             for md in max_dists
         ],
-        dtype=np.float64,
+        dtype=float_precision,
     ).reshape(len(qvals), len(max_dists))
     if debug_plot:
         polys = np.array(
             [poly_fit(xvals, yvals[:, qi], 1) / qvals[qi] for qi in range(len(qvals))],
-            dtype=np.float64,
+            dtype=float_precision,
         )
         plot_reg_multiple(
-            np.array([xvals] * len(qvals), dtype=np.float64),
-            np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=np.float64),
+            np.array([xvals] * len(qvals), dtype=float_precision),
+            np.array([yvals[:, qi] / qvals[qi] for qi in range(len(qvals))], dtype=float_precision),
             polys,
             x_label="log(x)",
             y_label="$\\log(c_q(x)) / q$",
@@ -2487,17 +2508,17 @@ def corr_dim(
             - poly: the line coefficients (``[slope, intercept]``)
     """
     # TODO: determine lag in units of time instead of number of datapoints
-    data = np.asarray(data)
+    data = np.asarray(data, dtype=float_precision)
 
     # TODO: what are good values for r?
     # TODO: do this for multiple values of emb_dim?
     if rvals is None:
         sd = float(np.std(data, ddof=1))
         rvals = logarithmic_r(0.1 * sd, 0.5 * sd, 1.03)
-    rvals = np.asarray(rvals, dtype=np.float64)
+    rvals = np.asarray(rvals, dtype=float_precision)
     orbit = delay_embedding(data, emb_dim, lag=lag)
     n = len(orbit)
-    dists = np.zeros((len(orbit), len(orbit)), dtype=np.float64)
+    dists = np.zeros((len(orbit), len(orbit)), dtype=float_precision)
     for i in range(len(orbit)):
         # calculate distances between X_i and X_i+1, X_i+2, ... , X_n-1
         # NOTE: strictly speaking, [cd_1] does not specify to exclude self-matches
@@ -2517,14 +2538,14 @@ def corr_dim(
         # also exclude self-matches from the denominator.
         s = 1.0 / (n * (n - 1)) * np.sum(dists <= r)
         csums.append(s)
-    csums = np.array(csums)
+    csums = np.array(csums, dtype=float_precision)
     # filter zeros from csums
     nonzero = np.where(csums != 0)
-    rvals = np.array(rvals)[nonzero]
+    rvals = rvals[nonzero]
     csums = csums[nonzero]
     if len(csums) == 0:
         # all sums are zero => we cannot fit a line
-        poly = np.array([np.nan, np.nan], dtype=np.float64)
+        poly = np.array([np.nan, np.nan], dtype=float_precision)
     else:
         poly = poly_fit(np.log(rvals), np.log(csums), 1, fit=fit, random_state=random_state)
     if debug_plot:
@@ -2760,7 +2781,7 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
         - fluctuations: the corresponding log(std(X,n))
         - poly: the line coefficients (``[slope, intercept]``)
     """
-    data = np.asarray(data)
+    data = np.asarray(data, dtype=float_precision)
     total_N = len(data)
     if nvals is None:
         min_n_for_log_scale = 70
@@ -2773,7 +2794,7 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
             nvals = [total_N - 2, total_N - 1]
             msg = "choosing nvals = {} , DFA with less than ten data points is extremely unreliable"
             warnings.warn(msg.format(nvals), RuntimeWarning, stacklevel=2)
-    nvals = np.asarray(nvals, dtype=np.int32)
+    nvals = np.asarray(nvals, dtype=int_precision)
     min_number_of_nvals = 2
     min_nval = 2
     if nvals.shape[0] < min_number_of_nvals:
@@ -2794,7 +2815,9 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
         # subdivide data into chunks of size n
         if overlap:
             # step size n/2 instead of n
-            d = np.array([walk[i : i + n] for i in range(0, len(walk) - n, n // 2)])
+            d = np.array(
+                [walk[i : i + n] for i in range(0, len(walk) - n, n // 2)], dtype=float_precision
+            )
         else:
             # non-overlapping windows => we can simply do a reshape
             d = walk[: total_N - (total_N % n)]
@@ -2805,8 +2828,8 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
             poly_fit(x, d[i], order, fit=fit_trend, random_state=random_state)
             for i in range(len(d))
         ]
-        tpoly = np.array(tpoly)
-        trend = np.array([np.polyval(tpoly[i], x) for i in range(len(d))])
+        tpoly = np.array(tpoly, dtype=float_precision)
+        trend = np.array([np.polyval(tpoly[i], x) for i in range(len(d))], dtype=float_precision)
         # calculate mean-square differences for each walk in d around trend
         flucs = np.sum((d - trend) ** 2, axis=1) / n
         # take another mean across all walks and finally take the square root of that
@@ -2815,14 +2838,14 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
         # windows and the last window matches the end of the data perfectly.
         f_n = np.sqrt(np.sum(flucs) / len(flucs))
         fluctuations.append(f_n)
-    fluctuations = np.array(fluctuations)
+    fluctuations = np.array(fluctuations, dtype=float_precision)
     # filter zeros from fluctuations
     nonzero = np.where(fluctuations != 0)
-    nvals = np.array(nvals)[nonzero]
+    nvals = nvals[nonzero]
     fluctuations = fluctuations[nonzero]
     if len(fluctuations) == 0:
         # all fluctuations are zero => we cannot fit a line
-        poly = np.array([np.nan, np.nan], dtype=np.float64)
+        poly = np.array([np.nan, np.nan], dtype=float_precision)
     else:
         poly = poly_fit(
             np.log(nvals),

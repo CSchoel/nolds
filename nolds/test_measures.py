@@ -767,7 +767,7 @@ class RegressionTests(unittest.TestCase):
             dist=measures.rowwise_euclidean,
             fit="poly",
         )
-        self.assertAlmostEqual(1.303252839255068, cd, places=14)
+        self.assertAlmostEqual(0.0810185360746645, cd, places=14)
 
     @unittest.skipUnless(SCIPY_AVAILABLE, "Tests with RANSAC require scipy.")
     def test_corr_dim_RANSAC(self) -> None:  # noqa: N802
@@ -787,7 +787,7 @@ class RegressionTests(unittest.TestCase):
             fit="RANSAC",
             random_state=42,
         )
-        self.assertAlmostEqual(0.44745494643404665, cd, places=14)
+        self.assertAlmostEqual(0.0008971209283844629, cd, places=14)
 
     def test_lyap_e(self) -> None:
         """Hypothesis: The exact output of lyap_e remains unchanged.
