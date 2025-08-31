@@ -35,7 +35,7 @@ def lorenz_euler(
         length: Number of data points to generate.
         sigma: Sigma parameter of the Lorenz system.
         rho: Rho parameter of the Lorenz system.
-        beta: Beta paramete rof the Lorenz system.
+        beta: Beta parameter of the Lorenz system.
         dt: Time delta between two data points.
         start: Optional starting point for the trajectory.
 
@@ -77,7 +77,7 @@ def lorenz_lyap(sigma: float, rho: float, beta: float) -> float:
     Args:
         sigma: Sigma parameter of the Lorenz system.
         rho: Rho parameter of the Lorenz system.
-        beta: Beta paramete rof the Lorenz system.
+        beta: Beta parameter of the Lorenz system.
 
     Returns:
         Prescribed Lyapunov dimension for the Lorenz system according to Leonov 2015.

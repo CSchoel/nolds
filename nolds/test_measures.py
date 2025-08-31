@@ -168,10 +168,10 @@ class TestNoldsLyap(unittest.TestCase):
                 x = logistic(x, r)
                 log.append(x)
             log = np.array(log, dtype=np.float64)
-            with self.subTest(meashure="lyap_e", r=r):
+            with self.subTest(measure="lyap_e", r=r):
                 le = np.max(measures.lyap_e(log, emb_dim=6, matrix_dim=2))
                 self.assertEqual(s, np.sign(le))
-            with self.subTest(meashure="lyap_r", r=r):
+            with self.subTest(measure="lyap_r", r=r):
                 lr = measures.lyap_r(log, emb_dim=6, lag=2, min_tsep=10, trajectory_len=20)
                 self.assertEqual(s, np.sign(lr))
 
@@ -479,7 +479,6 @@ class TestNoldsDFA(unittest.TestCase):
         h_walk = measures.dfa(self.positive_correlation)
         # expected h is around 1.0
         self.assertGreater(h_walk, 0.7)
-        assert h_walk > 0.7
 
     def test_dfa_fbm(self) -> None:
         """Hypothesis: H ~= h + 1 for fractional brownian motion with Hurst parameter h."""
