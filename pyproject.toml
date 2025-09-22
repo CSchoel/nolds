@@ -1,0 +1,42 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=77.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nolds"
+version = "nolds"
+
+authors = [
+    { name="Christopher Schölzel", email="christopher.schoelzel@gmx.net" },
+]
+description = "Nonlinear measures for dynamical systems (based on one-dimensional time series)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file="LICENSE" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+
+# Ana bağımlılıklarınız
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "'setuptools",
+    "future",
+]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov", "pytest-mock", "ruff", "numpy", "matplotlib", "scikit-learn", "quantumrandom",]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[project.urls]
+Homepage = "https://github.com/CSchoel/nolds"
+Repository = "https://github.com/CSchoel/nolds"
