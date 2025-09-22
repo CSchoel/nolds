@@ -27,7 +27,7 @@ classifiers = [
 dependencies = [
     "numpy",
     "matplotlib",
-    "'setuptools",
+    "setuptools",
     "future",
 ]
 
