@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 
+## [0.6.3]
+
+### Fixed
+
+* Switched from deprecated `pkg_resources` to `importlib.resources`.
+
 ## [0.6.2]
 
 ### Fixed
@@ -238,7 +244,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - Hurst exponent (`hurst_rs`)
   - detrended fluctuation analysis (DFA) (`dfa`)
 
-[Unreleased]: https://github.com/CSchoel/nolds/compare/0.6.2..HEAD
+[Unreleased]: https://github.com/CSchoel/nolds/compare/0.6.3..HEAD
+[0.6.3]: https://github.com/CSchoel/nolds/compare/0.6.1..0.6.3
 [0.6.2]: https://github.com/CSchoel/nolds/compare/0.6.1..0.6.2
 [0.6.1]: https://github.com/CSchoel/nolds/compare/0.6.0..0.6.1
 [0.6.0]: https://github.com/CSchoel/nolds/compare/0.5.2..0.6.0

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup, Command
-import shutil
 import io
+import shutil
+
+from setuptools import Command, setup
 
 
 class CleanCommand(Command):
@@ -22,7 +23,7 @@ class CleanCommand(Command):
 
 with io.open("README.rst", "r", encoding="utf-8") as f:
     readme = f.read()
-version = '0.6.2'
+version = "0.6.3"
 setup(
     name='nolds',
     packages=['nolds'],
