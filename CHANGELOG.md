@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 
+* [#80](https://github.com/CSchoel/nolds/issues/80): Importing nolds failed on Python < 3.12 with `TypeError: 'nolds.datasets' is not a package`, because the datasets were loaded with `importlib.resources.files` on the module name instead of the package name.
+
 ## [0.6.3]
 
 ### Fixed

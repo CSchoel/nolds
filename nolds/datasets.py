@@ -144,7 +144,7 @@ def load_qrandom():
       the dataset
   """
   fname = "datasets/qrandom.npy"
-  with resources.files(__name__).joinpath(fname).open('rb') as f:
+  with resources.files(__package__).joinpath(fname).open('rb') as f:
     return np.load(f)
 
 
@@ -159,7 +159,7 @@ def load_brown72():
       the dataset
   """
   fname = "datasets/brown72.npy"
-  with resources.files(__name__).joinpath(fname).open('rb') as f:
+  with resources.files(__package__).joinpath(fname).open('rb') as f:
     return np.load(f)
 
 
@@ -185,10 +185,10 @@ def load_lorenz_physionet():
       x- and y-coordinates of the line fitting step in the PhysioNet output
   """
   fname = "datasets/lorenz.txt"
-  with resources.files(__name__).joinpath(fname).open('rb') as f:
+  with resources.files(__package__).joinpath(fname).open('rb') as f:
     data_in = np.loadtxt(f)
   fname = "datasets/lorenz_physionet.txt"
-  with resources.files(__name__).joinpath(fname).open('rb') as f:
+  with resources.files(__package__).joinpath(fname).open('rb') as f:
     data_out = np.loadtxt(f)
   return data_in, data_out
 
@@ -393,7 +393,7 @@ def load_financial():
   data = []
   for index in ["^JKSE", "^N225", "^NDX"]:
     fname = "datasets/{}.csv".format(index)
-    with resources.files(__name__).joinpath(fname).open('rb') as f:
+    with resources.files(__package__).joinpath(fname).open('rb') as f:
       days, values = load_finance_yahoo_data(f)
       pad_opening_values(values)
       data.append((days, values))

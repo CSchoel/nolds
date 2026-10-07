@@ -687,5 +687,17 @@ class PreviousDefectTests(unittest.TestCase):
     #   the casting rule ''safe''
     nolds.lyap_r(data)
 
+  def test_datasets_load_from_package(self):
+    """Test hypothesis: The bundled datasets can be loaded on all supported Python versions.
+
+    Before Python 3.12, `importlib.resources.files` only accepts packages, so using the
+    module name `nolds.datasets` failed already on import. See
+    https://github.com/CSchoel/nolds/issues/80 for reference.
+    """
+    self.assertEqual(datasets.load_brown72().shape, (1024,))
+    self.assertEqual(datasets.load_qrandom().shape, (10000,))
+    self.assertEqual(len(datasets.load_lorenz_physionet()), 2)
+    self.assertEqual(len(datasets.load_financial()), 3)
+
 if __name__ == "__main__":
   unittest.main()
