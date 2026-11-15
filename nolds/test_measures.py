@@ -546,6 +546,73 @@ class TestNoldsDFA(unittest.TestCase):
         self.assertAlmostEqual(0.5, h, delta=0.1)
 
 
+class TestNoldsMFDFA(unittest.TestCase):
+    """Tests for mfdfa."""
+
+    def test_mfdfa_equals_dfa_for_q2(self) -> None:
+        """Hypothesis: h(2) is the result of dfa without overlap if all windows fit exactly."""
+        data = np.random.default_rng(seed=1).standard_normal(1024)
+        nvals = [8, 16, 32, 64, 128]
+        _, (_, mf_flucs, _) = measures.mfdfa(data, qvals=[2], nvals=nvals, debug_data=True)
+        _, (_, dfa_flucs, _) = measures.dfa(
+            data, nvals=nvals, overlap=False, fit_exp="poly", debug_data=True
+        )
+        assert_almost_equal(mf_flucs[:, 0], dfa_flucs, decimal=12)
+
+    def test_mfdfa_fgn(self) -> None:
+        """Hypothesis: h(q) ~= H for fractional gaussian noise with Hurst parameter H."""
+        for h in [0.3, 0.5, 0.7]:
+            with self.subTest(h=h):
+                data = datasets.fgn(1024, H=h, random_seed=42)
+                for hq in measures.mfdfa(data, qvals=[1, 2, 3]):
+                    self.assertAlmostEqual(hq, h, delta=0.1)
+
+    def test_mfdfa_binomial_cascade(self) -> None:
+        """Hypothesis: h(q) has the analytic shape for the binomial multifractal model.
+
+        For the binomial cascade with parameter a, Kantelhardt et al. (2002, eq. 23) derive
+        h(q) = 1/q - ln(a^q + (1-a)^q) / (q ln 2). Finite size shifts all h(q) by the same
+        small offset, so the test compares h(q) - h(2).
+        """
+        a = 0.3
+        data = np.array([1.0])
+        for _ in range(14):
+            data = np.stack([data * a, data * (1 - a)], axis=1).ravel()
+        qvals = np.array([-3, -2, -1, 1, 2, 3, 4, 5], dtype=float)
+        expected = 1 / qvals - np.log(a**qvals + (1 - a) ** qvals) / (qvals * np.log(2))
+        hq = measures.mfdfa(data, qvals=qvals, nvals=[2**e for e in range(5, 11)])
+        assert_almost_equal(hq - hq[4], expected - expected[4], decimal=3)
+        self.assertAlmostEqual(hq[4], expected[4], delta=0.06)
+
+    def test_mfdfa_agreement_with_mfdfa_package(self) -> None:
+        """Hypothesis: The output of nolds is identical to the Python package MFDFA.
+
+        Reference values for detrending orders 1 to 3 were calculated with MFDFA 0.4.3
+        (https://github.com/LRydin/MFDFA) by fitting a line to log(lag) versus log(F).
+        """
+        data = datasets.load_qrandom()[:1000]
+        nvals = [8, 11, 16, 23, 32, 45, 64, 90]
+        qvals = [-3, -1, 1, 2, 4]
+        expected = {
+            1: [0.5637678128384981, 0.5560006333035814, 0.5555966878435826, 0.557367714085176,
+                0.5616507232492933],
+            2: [0.5839597490442465, 0.5612526388735589, 0.5465650006662872, 0.5415505238527745,
+                0.5341113412771517],
+            3: [0.6488920434528812, 0.5902440036778115, 0.5621015743003219, 0.5545503430090439,
+                0.5445069950037761],
+        }  # fmt: skip
+        for order, hq in expected.items():
+            with self.subTest(order=order):
+                assert_almost_equal(
+                    measures.mfdfa(data, qvals=qvals, nvals=nvals, order=order), hq, decimal=10
+                )
+
+    def test_mfdfa_constant(self) -> None:
+        """Hypothesis: A signal without any fluctuation gives NaN instead of raising."""
+        hq = measures.mfdfa(np.ones(1000))
+        self.assertTrue(np.all(np.isnan(hq)))
+
+
 class TestNoldsCorrDim(unittest.TestCase):
     """Tests for corr_dim."""
 
@@ -967,6 +1034,16 @@ class RegressionTests(unittest.TestCase):
         )
         expected = [0.0068840609945006685]
         self.assertAlmostEqual(expected[0], h[0], places=14)
+
+    def test_mfdfa(self) -> None:
+        """Hypothesis: The exact output of mfdfa with `fit_exp=poly` remains unchanged.
+
+        The test uses random data as input and compares outputs to the previous version.
+        """
+        hq = measures.mfdfa(self.random_data, qvals=[-2, 0, 2], nvals=None, order=1, fit_exp="poly")
+        expected = [0.5553588488044559, 0.5518375409350877, 0.5540541143226582]
+        for e, h in zip(expected, hq, strict=True):
+            self.assertAlmostEqual(e, h, places=14)
 
 
 class PreviousDefectTests(unittest.TestCase):
