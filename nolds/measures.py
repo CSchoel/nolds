@@ -2866,3 +2866,228 @@ def dfa(  # noqa: C901, PLR0912, PLR0915
     if debug_data:
         return (poly[0], (np.log(nvals), np.log(fluctuations), poly))
     return poly[0]
+
+
+@overload
+def mfdfa(
+    data: NumberArrayLike1D,
+    qvals: FloatArrayLike1D | None = None,
+    nvals: IntArrayLike1D | None = None,
+    *,
+    order: int = 1,
+    fit_exp: FittingMethod = "poly",
+    debug_plot: bool = False,
+    debug_data: Literal[False] = False,
+    plot_file: str | Path | None = None,
+    random_state: int | None = None,
+) -> FloatArray1D: ...
+
+
+@overload
+def mfdfa(
+    data: NumberArrayLike1D,
+    qvals: FloatArrayLike1D | None = None,
+    nvals: IntArrayLike1D | None = None,
+    *,
+    order: int = 1,
+    fit_exp: FittingMethod = "poly",
+    debug_plot: bool = False,
+    debug_data: Literal[True] = True,
+    plot_file: str | Path | None = None,
+    random_state: int | None = None,
+) -> tuple[
+    FloatArray1D,
+    tuple[
+        FloatArray1D,
+        FloatArray2D,
+        FloatArray2D,
+    ],
+]: ...
+
+
+def mfdfa(  # noqa: C901, PLR0912
+    data: NumberArrayLike1D,
+    qvals: FloatArrayLike1D | None = None,
+    nvals: IntArrayLike1D | None = None,
+    *,
+    order: int = 1,
+    fit_exp: FittingMethod = "poly",
+    debug_plot: bool = False,
+    debug_data: bool = False,
+    plot_file: str | Path | None = None,
+    random_state: int | None = None,
+) -> (
+    FloatArray1D
+    | tuple[
+        FloatArray1D,
+        tuple[
+            FloatArray1D,
+            FloatArray2D,
+            FloatArray2D,
+        ],
+    ]
+):
+    """Performs a multifractal detrended fluctuation analysis (MFDFA) on the given data.
+
+    Explanation of MFDFA:
+        MFDFA by Kantelhardt et al. [mfdfa_1]_ generalizes DFA (see ``dfa``) to
+        multifractal time series. The first steps are the same: The "profile" of
+        the time series is calculated as the cumulative sum of deviations from
+        the mean
+
+        y_i = x_1 - mean(x) + x_2 - mean(x) + ... + x_i - mean(x)
+
+        and split into N_n = floor(N / n) non-overlapping windows of length n.
+        Since N is usually not a multiple of n, the same procedure is repeated
+        starting from the end of the profile, so that no data point is ignored.
+        This gives 2 N_n windows W_(n,v). In each window, a polynomial p_(n,v)
+        of the given order is fitted by least squares and the variance of the
+        residuals is calculated:
+
+        F^2(n, v) = 1/n * sum((W_(n,v) - p_(n,v))^2)
+
+        Instead of taking a single root mean square over all windows as in DFA,
+        MFDFA averages the variances with an exponent q:
+
+        F_q(n) = (1/(2 N_n) * sum_v (F^2(n, v))^(q/2))^(1/q)
+
+        For q = 0, where this formula diverges, the logarithmic average is used:
+
+        F_0(n) = exp(1/(4 N_n) * sum_v log(F^2(n, v)))
+
+        Positive values of q emphasize the windows with large fluctuations and
+        negative values of q the windows with small fluctuations. If the time
+        series has long-range power-law correlations, F_q(n) ~ n^h(q), and the
+        generalized Hurst exponent h(q) is the slope of the line fitted into
+        the plot of log(n) versus log(F_q(n)).
+
+        For q = 2, MFDFA is the same as DFA without overlapping windows, so
+        h(2) can be interpreted like the result of ``dfa``. For a monofractal
+        time series, such as fractional Gaussian noise, h(q) is constant. If
+        h(q) depends on q, small and large fluctuations scale differently,
+        which is a sign of multifractality.
+
+        The multifractal scaling exponent and the singularity spectrum follow
+        from h(q) with tau(q) = q * h(q) - 1, alpha = d tau / d q and
+        f(alpha) = q * alpha - tau(q) (see [mfdfa_1]_).
+
+        Windows without any fluctuation (F^2(n, v) = 0, e.g. for constant
+        stretches of data) would make F_q(n) infinite for q <= 0 and are
+        therefore ignored.
+
+    References:
+        .. [mfdfa_1] J. W. Kantelhardt, S. A. Zschiegner, E. Koscielny-Bunde,
+            S. Havlin, A. Bunde, and H. E. Stanley, “Multifractal detrended
+            fluctuation analysis of nonstationary time series,” Physica A:
+            Statistical Mechanics and its Applications, vol. 316, no. 1–4,
+            pp. 87–114, Dec. 2002, doi: 10.1016/S0378-4371(02)01383-3.
+
+    Reference code:
+        .. [mfdfa_a] L. Rydin Gorjão, G. Hassan, J. Kurths, and D. Witthaut,
+            "MFDFA", url: https://github.com/LRydin/MFDFA
+
+    Args:
+        data: time series
+        qvals: values of q for which h(q) should be calculated
+            (default: [-5, -4, ..., 4, 5])
+        nvals: window sizes at which to calculate the fluctuation, each at least
+            ``order + 2``
+            (default: logarithmic_n(max(10, order + 2), 0.1*len(data), 1.2), which
+            needs at least 120 data points; Kantelhardt et al. report systematic
+            deviations of F_q(n) for windows smaller than 10)
+        order: (polynomial) order of trend to remove in each window
+        fit_exp: the fitting method to use for the line fit, either 'poly' for normal
+            least squares polynomial fitting or 'RANSAC' for RANSAC-fitting which
+            is more robust to outliers
+        debug_plot: if True, a simple plot of the final line-fitting step will be shown
+        debug_data: if True, debugging data will be returned alongside the result
+        plot_file: if debug_plot is True and plot_file is not None, the plot will be saved
+            under the given file name instead of directly showing it through
+            ``plt.show()``
+        random_state: Seed for random number generator used for RANSAC
+
+    Returns:
+        array of h(q) for every q given in ``qvals``. If ``debug_data`` is True,
+        the return value is instead a tuple containing
+
+        * the h(q) values for each q in ``qvals``
+        * a tuple of three arrays
+            - xvals: the logarithm of the window sizes
+            - yvals: the logarithm of the fluctuation F_q(n) for each window
+                size (first dimension) and each q (second dimension) with shape
+                (len(nvals), len(qvals))
+            - poly: the coefficients of the line fit (``[slope, intercept]``)
+                for each q in the shape (len(qvals), 2).
+    """
+    data = np.asarray(data, dtype=float_precision)
+    total_N = len(data)
+    if qvals is None:
+        qvals = np.arange(-5, 6)
+    qvals = np.asarray(qvals, dtype=float_precision)
+    if nvals is None:
+        nvals = logarithmic_n(max(10, order + 2), np.floor(0.1 * total_N), 1.2)
+    nvals = np.asarray(nvals, dtype=int_precision)
+    min_number_of_nvals = 2
+    if nvals.shape[0] < min_number_of_nvals:
+        msg = "at least two nvals are needed"
+        raise ValueError(msg)
+    if np.min(nvals) < order + 2:
+        msg = f"nvals must be at least order + 2 = {order + 2}"
+        raise ValueError(msg)
+    if np.max(nvals) >= total_N:
+        msg = "nvals cannot be larger than the input size"
+        raise ValueError(msg)
+    # create the signal profile
+    # (cumulative sum of deviations from the mean => "walk")
+    walk = np.cumsum(data - np.mean(data))
+    fluctuations = np.zeros((len(nvals), len(qvals)), dtype=float_precision)
+    for i, n in enumerate(nvals):
+        # windows of size n taken from the start and from the end of the walk
+        rest = total_N % n
+        d = np.concatenate([walk[: total_N - rest].reshape(-1, n), walk[rest:].reshape(-1, n)])
+        # least squares fit of the local trends (one column per window)
+        x = np.arange(n)
+        trend = np.vander(x, order + 1) @ np.polyfit(x, d.T, order)
+        # variance of each window around its trend
+        flucs = np.mean((d.T - trend) ** 2, axis=0)
+        flucs = flucs[flucs > 0]
+        if len(flucs) == 0:
+            # no fluctuation at all at this scale => filtered out below
+            continue
+        for j, q in enumerate(qvals):
+            if q == 0:
+                fluctuations[i, j] = np.exp(0.5 * np.mean(np.log(flucs)))
+            else:
+                fluctuations[i, j] = np.mean(flucs ** (q / 2)) ** (1 / q)
+    # filter window sizes without any fluctuation
+    nonzero = np.where(np.all(fluctuations > 0, axis=1))
+    nvals = nvals[nonzero]
+    fluctuations = fluctuations[nonzero]
+    xvals = np.log(nvals)
+    yvals = np.log(fluctuations)
+    if len(nvals) < min_number_of_nvals:
+        # not enough window sizes left to fit a line
+        polys = np.full((len(qvals), 2), np.nan, dtype=float_precision)
+    else:
+        polys = np.array(
+            [
+                poly_fit(xvals, yvals[:, qi], 1, fit=fit_exp, random_state=random_state)
+                for qi in range(len(qvals))
+            ],
+            dtype=float_precision,
+        )
+    H = polys[:, 0]
+    if debug_plot:
+        plot_reg_multiple(
+            np.array([xvals] * len(qvals), dtype=float_precision),
+            yvals.T,
+            polys,
+            x_label="log(n)",
+            y_label="$\\log(F_q(n))$",
+            data_labels=[f"q = {q}" for q in qvals],
+            reg_labels=[f"reg. line (h = {h:.3f})" for h in H],
+            fname=plot_file,
+        )
+    if debug_data:
+        return H, (xvals, yvals, polys)
+    return H

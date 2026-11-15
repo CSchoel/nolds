@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+* [#18](https://github.com/CSchoel/nolds/issues/18): New measure `mfdfa` for multifractal detrended fluctuation analysis according to Kantelhardt et al. (2002).
 * Type hints for the complete API.
 * Documentation for test hypotheses.
 

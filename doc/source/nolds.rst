@@ -35,6 +35,10 @@ Detrended fluctuation analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: nolds.dfa
 
+Multifractal detrended fluctuation analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autofunction:: nolds.mfdfa
+
 Generalized Hurst Exponent (Barabási et al.)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: nolds.mfhurst_b
